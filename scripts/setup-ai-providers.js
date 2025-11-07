@@ -11,116 +11,132 @@ const path = require('path');
 // AI供应商配置数据
 const AI_PROVIDERS = {
   // 国际供应商
-  'openai': {
+  openai: {
     name: 'OpenAI',
     baseUrl: 'https://api.openai.com/v1',
     models: ['gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'gpt-4o', 'gpt-4o-mini'],
-    description: '最稳定的GPT模型，推理能力强'
+    description: '最稳定的GPT模型，推理能力强',
+    pricingUrl: 'https://openai.com/api/pricing/',
   },
-  'anthropic': {
+  anthropic: {
     name: 'Anthropic',
     baseUrl: 'https://api.anthropic.com',
     models: ['claude-3-5-sonnet-20241022', 'claude-3-haiku-20240307', 'claude-3-sonnet-20240229'],
-    description: '推理能力优秀，安全系数高'
+    description: '推理能力优秀，安全系数高',
+    pricingUrl: 'https://console.anthropic.com/settings/billing',
   },
-  'google': {
+  google: {
     name: 'Google',
     baseUrl: 'https://generativelanguage.googleapis.com',
     models: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'],
-    description: '多模态能力强，性价比高'
+    description: '多模态能力强，性价比高',
+    pricingUrl: 'https://ai.google.dev/pricing',
   },
-  'xai': {
+  xai: {
     name: 'xAI',
     baseUrl: 'https://api.x.ai/v1',
     models: ['grok-beta', 'grok-vision-beta'],
-    description: '实时信息获取，幽默风趣'
+    description: '实时信息获取，幽默风趣',
+    pricingUrl: 'https://x.ai/api',
   },
-  'mistral': {
+  mistral: {
     name: 'Mistral',
     baseUrl: 'https://api.mistral.ai/v1',
     models: ['mistral-large-latest', 'mistral-medium', 'mistral-small'],
-    description: '开源模型，性能均衡'
+    description: '开源模型，性能均衡',
+    pricingUrl: 'https://mistral.ai/pricing/',
   },
-  'together': {
+  together: {
     name: 'TogetherAI',
     baseUrl: 'https://api.together.xyz/v1',
     models: ['meta-llama/Llama-2-70b-chat-hf', 'mistralai/Mistral-7B-Instruct-v0.1'],
-    description: '模型选择丰富，价格实惠'
+    description: '模型选择丰富，价格实惠',
+    pricingUrl: 'https://www.together.ai/pricing',
   },
-  'openrouter': {
+  openrouter: {
     name: 'OpenRouter',
     baseUrl: 'https://openrouter.ai/api/v1',
     models: ['gpt-4-turbo', 'claude-3-5-sonnet', 'gemini-pro'],
-    description: '一站式模型聚合平台'
+    description: '一站式模型聚合平台',
+    pricingUrl: 'https://openrouter.ai/models',
   },
-  'nvidia': {
+  nvidia: {
     name: 'NVIDIA',
     baseUrl: 'https://integrate.api.nvidia.com/v1',
     models: ['meta/llama3-70b-instruct', 'meta/llama3-8b-instruct'],
-    description: 'GPU加速，推理速度快'
+    description: 'GPU加速，推理速度快',
+    pricingUrl: 'https://build.nvidia.com/explore/pricing',
   },
 
   // 国内供应商
-  'deepseek': {
+  deepseek: {
     name: 'DeepSeek',
     baseUrl: 'https://api.deepseek.com/v1',
     models: ['deepseek-chat', 'deepseek-coder'],
-    description: '开源模型，性价比极高'
+    description: '开源模型，性价比极高',
+    pricingUrl: 'https://platform.deepseek.com/pricing',
   },
-  'zhipu': {
+  zhipu: {
     name: '智谱AI',
     baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
     models: ['glm-4', 'glm-3-turbo', 'chatglm_turbo'],
-    description: '国内合规，中文优化'
+    description: '国内合规，中文优化',
+    pricingUrl: 'https://open.bigmodel.cn/pricing',
   },
-  'baichuan': {
+  baichuan: {
     name: '百川智能',
     baseUrl: 'https://api.baichuan-ai.com/v1',
     models: ['Baichuan4', 'Baichuan3-Turbo', 'Baichuan2-53B'],
-    description: '轻量化模型，推理速度快'
+    description: '轻量化模型，推理速度快',
+    pricingUrl: 'https://platform.baichuan-ai.com/price',
   },
-  'moonshot': {
+  moonshot: {
     name: '月之暗面',
     baseUrl: 'https://api.moonshot.cn/v1',
     models: ['moonshot-v1-8k', 'moonshot-v1-32k', 'moonshot-v1-128k'],
-    description: '长文本处理能力强'
+    description: '长文本处理能力强',
+    pricingUrl: 'https://platform.moonshot.cn/pricing',
   },
-  'siliconflow': {
+  siliconflow: {
     name: '硅基流动',
     baseUrl: 'https://api.siliconflow.cn/v1',
     models: ['deepseek-ai/deepseek-v2-chat', 'meta-llama/Meta-Llama-3.1-70B-Instruct'],
-    description: '模型丰富，价格实惠'
+    description: '模型丰富，价格实惠',
+    pricingUrl: 'https://siliconflow.cn/zh-cn/pricing',
   },
-  'volcengine': {
+  volcengine: {
     name: '火山引擎',
     baseUrl: 'https://ark.cn-beijing.volces.com/api/v3',
     models: ['doubao-lite-32k', 'doubao-lite-4k', 'doubao-pro-32k'],
-    description: '字节跳动出品，性能稳定'
+    description: '字节跳动出品，性能稳定',
+    pricingUrl: 'https://www.volcengine.com/product/ark',
   },
-  'tencent': {
+  tencent: {
     name: '腾讯混元',
     baseUrl: 'https://api.hunyuan.cloud.tencent.com/v1',
     models: ['hunyuan-lite', 'hunyuan-standard', 'hunyuan-pro'],
-    description: '腾讯云生态集成'
+    description: '腾讯云生态集成',
+    pricingUrl: 'https://cloud.tencent.com/product/hunyuan',
   },
-  'aliyun': {
+  aliyun: {
     name: '阿里云通义千问',
     baseUrl: 'https://dashscope.aliyuncs.com/api/v1',
     models: ['qwen-turbo', 'qwen-plus', 'qwen-max'],
-    description: '阿里云生态，安全合规'
-  }
+    description: '阿里云生态，安全合规',
+    pricingUrl: 'https://dashscope.aliyuncs.com/pricing',
+  },
 };
 
 // 角色映射
 const ROLE_MODELS = {
-  'narrative_synthesis': ['gpt-4-turbo', 'claude-3-5-sonnet-20241022', 'glm-4'],
-  'logic_parsing': ['gpt-4', 'claude-3-sonnet-20240229', 'glm-3-turbo'],
-  'planner': ['gpt-4-turbo', 'claude-3-5-sonnet-20241022', 'deepseek-chat'],
-  'critic': ['gpt-4', 'claude-3-haiku-20240307', 'moonshot-v1-8k'],
-  'summarizer': ['gpt-3.5-turbo', 'gemini-1.5-flash', 'qwen-turbo'],
-  'converter': ['gpt-4', 'claude-3-sonnet-20240229', 'glm-4'],
-  'novelist': ['gpt-4-turbo', 'claude-3-5-sonnet-20241022', 'hunyuan-pro'],
-  'supervisor': ['gpt-4', 'claude-3-haiku-20240307', 'deepseek-chat']
+  narrative_synthesis: ['gpt-4-turbo', 'claude-3-5-sonnet-20241022', 'glm-4'],
+  logic_parsing: ['gpt-4', 'claude-3-sonnet-20240229', 'glm-3-turbo'],
+  planner: ['gpt-4-turbo', 'claude-3-5-sonnet-20241022', 'deepseek-chat'],
+  critic: ['gpt-4', 'claude-3-haiku-20240307', 'moonshot-v1-8k'],
+  summarizer: ['gpt-3.5-turbo', 'gemini-1.5-flash', 'qwen-turbo'],
+  converter: ['gpt-4', 'claude-3-sonnet-20240229', 'glm-4'],
+  novelist: ['gpt-4-turbo', 'claude-3-5-sonnet-20241022', 'hunyuan-pro'],
+  supervisor: ['gpt-4', 'claude-3-haiku-20240307', 'deepseek-chat'],
 };
 
 function showProviders() {
@@ -128,13 +144,33 @@ function showProviders() {
 
   console.log('🌍 国际供应商:');
   Object.entries(AI_PROVIDERS).forEach(([key, provider]) => {
-    if (!['deepseek', 'zhipu', 'baichuan', 'moonshot', 'siliconflow', 'volcengine', 'tencent', 'aliyun'].includes(key)) {
+    if (
+      ![
+        'deepseek',
+        'zhipu',
+        'baichuan',
+        'moonshot',
+        'siliconflow',
+        'volcengine',
+        'tencent',
+        'aliyun',
+      ].includes(key)
+    ) {
       console.log(`  ${key.padEnd(12)} - ${provider.name}: ${provider.description}`);
     }
   });
 
   console.log('\n🇨🇳 国内供应商:');
-  ['deepseek', 'zhipu', 'baichuan', 'moonshot', 'siliconflow', 'volcengine', 'tencent', 'aliyun'].forEach(key => {
+  [
+    'deepseek',
+    'zhipu',
+    'baichuan',
+    'moonshot',
+    'siliconflow',
+    'volcengine',
+    'tencent',
+    'aliyun',
+  ].forEach((key) => {
     const provider = AI_PROVIDERS[key];
     console.log(`  ${key.padEnd(12)} - ${provider.name}: ${provider.description}`);
   });
@@ -155,15 +191,16 @@ function showProviderDetails(providerName) {
   const provider = AI_PROVIDERS[providerName];
   console.log(`\n📋 ${provider.name} 配置详情:`);
   console.log(`   Base URL: ${provider.baseUrl}`);
+  console.log(`   价格页面: ${provider.pricingUrl}`);
   console.log(`   描述: ${provider.description}`);
   console.log(`   支持模型:`);
-  provider.models.forEach(model => {
+  provider.models.forEach((model) => {
     console.log(`     - ${model}`);
   });
 
   console.log(`\n💡 推荐用于的角色:`);
   Object.entries(ROLE_MODELS).forEach(([role, models]) => {
-    if (models.some(model => provider.models.includes(model))) {
+    if (models.some((model) => provider.models.includes(model))) {
       console.log(`   ${role}: ✅`);
     }
   });
@@ -199,16 +236,17 @@ function setupProvider(providerName, apiKey) {
     `AI_PROVIDER=${provider.name}`,
     `AI_API_KEY=${apiKey}`,
     `AI_BASE_URL=${provider.baseUrl}`,
-    `AI_MODEL=${provider.models[0]}`,  // 使用第一个模型作为默认
-    ''
+    `AI_MODEL=${provider.models[0]}`, // 使用第一个模型作为默认
+    '',
   ];
 
   // 移除旧的AI配置
-  const filteredLines = envLines.filter(line =>
-    !line.startsWith('AI_PROVIDER=') &&
-    !line.startsWith('AI_API_KEY=') &&
-    !line.startsWith('AI_BASE_URL=') &&
-    !line.startsWith('AI_MODEL=')
+  const filteredLines = envLines.filter(
+    (line) =>
+      !line.startsWith('AI_PROVIDER=') &&
+      !line.startsWith('AI_API_KEY=') &&
+      !line.startsWith('AI_BASE_URL=') &&
+      !line.startsWith('AI_MODEL='),
   );
 
   // 添加新的配置
