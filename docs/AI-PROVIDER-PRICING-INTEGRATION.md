@@ -7,12 +7,14 @@
 ## 🎯 集成目标
 
 ### 主要目标
+
 - 为所有支持的AI供应商提供完整的价格文档链接
 - 提升开发者和用户的成本透明度
 - 提供便捷的价格查询和对比工具
 - 确保文档的实时性和准确性
 
 ### 预期收益
+
 - **成本控制**: 开发者可以轻松了解各供应商的定价策略
 - **决策支持**: 提供价格对比，帮助选择最适合的供应商
 - **用户体验**: 透明的价格信息提升用户信任度
@@ -22,35 +24,36 @@
 
 ### 🌍 国际供应商 (8个)
 
-| 供应商名称 | Base URL | 价格页面 | 集成状态 |
-|:----------|:--------|:--------|:--------|
-| **OpenAI** | `https://api.openai.com/v1` | https://openai.com/api/pricing/ | ✅ 完成 |
-| **Anthropic** | `https://api.anthropic.com` | https://console.anthropic.com/settings/billing | ✅ 完成 |
-| **Google** | `https://generativelanguage.googleapis.com` | https://ai.google.dev/pricing | ✅ 完成 |
-| **xAI** | `https://api.x.ai/v1` | https://x.ai/api | ✅ 完成 |
-| **Mistral** | `https://api.mistral.ai/v1` | https://mistral.ai/pricing/ | ✅ 完成 |
-| **TogetherAI** | `https://api.together.xyz/v1` | https://www.together.ai/pricing | ✅ 完成 |
-| **OpenRouter** | `https://openrouter.ai/api/v1` | https://openrouter.ai/models | ✅ 完成 |
-| **NVIDIA** | `https://integrate.api.nvidia.com/v1` | https://build.nvidia.com/explore/pricing | ✅ 完成 |
+| 供应商名称     | Base URL                                    | 价格页面                                       | 集成状态 |
+| :------------- | :------------------------------------------ | :--------------------------------------------- | :------- |
+| **OpenAI**     | `https://api.openai.com/v1`                 | https://openai.com/api/pricing/                | ✅ 完成  |
+| **Anthropic**  | `https://api.anthropic.com`                 | https://console.anthropic.com/settings/billing | ✅ 完成  |
+| **Google**     | `https://generativelanguage.googleapis.com` | https://ai.google.dev/pricing                  | ✅ 完成  |
+| **xAI**        | `https://api.x.ai/v1`                       | https://x.ai/api                               | ✅ 完成  |
+| **Mistral**    | `https://api.mistral.ai/v1`                 | https://mistral.ai/pricing/                    | ✅ 完成  |
+| **TogetherAI** | `https://api.together.xyz/v1`               | https://www.together.ai/pricing                | ✅ 完成  |
+| **OpenRouter** | `https://openrouter.ai/api/v1`              | https://openrouter.ai/models                   | ✅ 完成  |
+| **NVIDIA**     | `https://integrate.api.nvidia.com/v1`       | https://build.nvidia.com/explore/pricing       | ✅ 完成  |
 
 ### 🇨🇳 国内供应商 (10个)
 
-| 供应商名称 | Base URL | 价格页面 | 集成状态 |
-|:----------|:--------|:--------|:--------|
-| **DeepSeek** | `https://api.deepseek.com/v1` | https://platform.deepseek.com/pricing | ✅ 完成 |
-| **智谱AI** | `https://open.bigmodel.cn/api/paas/v4` | https://open.bigmodel.cn/pricing | ✅ 完成 |
-| **百川智能** | `https://api.baichuan-ai.com/v1` | https://platform.baichuan-ai.com/price | ✅ 完成 |
-| **月之暗面** | `https://api.moonshot.cn/v1` | https://platform.moonshot.cn/pricing | ✅ 完成 |
-| **硅基流动** | `https://api.siliconflow.cn/v1` | https://siliconflow.cn/zh-cn/pricing | ✅ 完成 |
-| **火山引擎** | `https://ark.cn-beijing.volces.com/api/v3` | https://www.volcengine.com/product/ark | ✅ 完成 |
-| **腾讯混元** | `https://api.hunyuan.cloud.tencent.com/v1` | https://cloud.tencent.com/product/hunyuan | ✅ 完成 |
-| **阿里云通义千问** | `https://dashscope.aliyuncs.com/api/v1` | https://dashscope.aliyuncs.com/pricing | ✅ 完成 |
+| 供应商名称         | Base URL                                   | 价格页面                                  | 集成状态 |
+| :----------------- | :----------------------------------------- | :---------------------------------------- | :------- |
+| **DeepSeek**       | `https://api.deepseek.com/v1`              | https://platform.deepseek.com/pricing     | ✅ 完成  |
+| **智谱AI**         | `https://open.bigmodel.cn/api/paas/v4`     | https://open.bigmodel.cn/pricing          | ✅ 完成  |
+| **百川智能**       | `https://api.baichuan-ai.com/v1`           | https://platform.baichuan-ai.com/price    | ✅ 完成  |
+| **月之暗面**       | `https://api.moonshot.cn/v1`               | https://platform.moonshot.cn/pricing      | ✅ 完成  |
+| **硅基流动**       | `https://api.siliconflow.cn/v1`            | https://siliconflow.cn/zh-cn/pricing      | ✅ 完成  |
+| **火山引擎**       | `https://ark.cn-beijing.volces.com/api/v3` | https://www.volcengine.com/product/ark    | ✅ 完成  |
+| **腾讯混元**       | `https://api.hunyuan.cloud.tencent.com/v1` | https://cloud.tencent.com/product/hunyuan | ✅ 完成  |
+| **阿里云通义千问** | `https://dashscope.aliyuncs.com/api/v1`    | https://dashscope.aliyuncs.com/pricing    | ✅ 完成  |
 
 ## 🛠️ 技术实现
 
 ### 1. 文档结构设计
 
 #### 供应商信息架构
+
 ```json
 {
   "name": "供应商名称",
@@ -62,6 +65,7 @@
 ```
 
 #### 文档组织方式
+
 - **分组展示**: 按国际/国内供应商分类
 - **信息完整性**: 包含Base URL、模型列表、特点描述、价格链接
 - **易读性**: 使用表格和图标增强可读性
@@ -70,11 +74,13 @@
 ### 2. 脚本工具增强
 
 #### 新增功能
+
 - `pricingUrl` 字段: 为每个供应商添加价格链接
 - 显示增强: 在供应商详情中展示价格信息
 - 数据完整性: 确保所有供应商都有对应的价格链接
 
 #### 使用示例
+
 ```bash
 # 查看供应商详情（包含价格链接）
 node scripts/setup-ai-providers.js --info openai
@@ -93,12 +99,14 @@ node scripts/setup-ai-providers.js --info openai
 ### 3. 集成验证
 
 #### 链接有效性检查
+
 - ✅ 所有价格页面链接经过手动验证
 - ✅ 确保链接可以正常访问
 - ✅ 验证链接指向正确的价格页面
 - ✅ 检查页面内容与供应商匹配
 
 #### 文档一致性验证
+
 - ✅ 数据结构统一性
 - ✅ 信息完整性检查
 - ✅ 格式标准化
@@ -107,6 +115,7 @@ node scripts/setup-ai-providers.js --info openai
 ## 📊 集成成果
 
 ### 统计数据
+
 - **总供应商数**: 18个
 - **价格链接**: 18个（100%覆盖）
 - **文档更新**: 2个文件
@@ -114,6 +123,7 @@ node scripts/setup-ai-providers.js --info openai
 - **验证通过**: 所有链接有效
 
 ### 功能特性
+
 - 🔗 **一键访问**: 直接点击链接查看价格
 - 📋 **集中管理**: 所有价格信息统一管理
 - 🔍 **快速查找**: 通过供应商名称快速定位
@@ -125,6 +135,7 @@ node scripts/setup-ai-providers.js --info openai
 ### 开发者使用
 
 #### 1. 查看价格信息
+
 ```bash
 # 查看特定供应商的价格信息
 node scripts/setup-ai-providers.js --info openai
@@ -134,6 +145,7 @@ node scripts/setup-ai-providers.js --list
 ```
 
 #### 2. 文档查询
+
 - 打开 `docs/ai-api-providers.md`
 - 找到对应的供应商
 - 点击价格链接查看详细信息
@@ -141,11 +153,13 @@ node scripts/setup-ai-providers.js --list
 ### 用户使用
 
 #### 1. 成本估算
+
 - 在配置AI服务前，先查看各供应商价格
 - 根据使用频率选择最经济的方案
 - 了解不同模型的定价差异
 
 #### 2. 供应商选择
+
 - 比较不同供应商的价格优势
 - 结合性能和价格选择最佳方案
 - 关注价格更新和优惠活动
@@ -153,12 +167,14 @@ node scripts/setup-ai-providers.js --list
 ## 🔧 维护指南
 
 ### 定期更新
+
 - **价格页面**: 每季度检查价格页面的有效性
 - **新供应商**: 添加新供应商时必须包含价格链接
 - **链接失效**: 及时更新失效的链接
 - **价格变化**: 记录重要的价格调整
 
 ### 更新流程
+
 1. 检查价格页面的有效性
 2. 更新文档中的链接
 3. 更新脚本中的数据
@@ -166,6 +182,7 @@ node scripts/setup-ai-providers.js --list
 5. 在CHANGELOG中记录更新
 
 ### 质量保证
+
 - 所有价格链接必须经过验证
 - 文档格式保持一致性
 - 脚本功能正常工作
@@ -174,6 +191,7 @@ node scripts/setup-ai-providers.js --list
 ## 📈 影响评估
 
 ### 对项目的影响
+
 - **正面影响**:
   - 提升了项目的专业性和透明度
   - 为用户提供了更好的决策支持
@@ -186,6 +204,7 @@ node scripts/setup-ai-providers.js --list
   - 用户可能会基于价格做出选择
 
 ### 对用户的影响
+
 - **好处**:
   - 透明的价格信息
   - 便捷的成本对比
@@ -200,16 +219,19 @@ node scripts/setup-ai-providers.js --list
 ## 🎯 后续计划
 
 ### 短期目标 (1个月内)
+
 - [ ] 建立价格监控机制
 - [ ] 添加价格对比功能
 - [ ] 优化文档显示效果
 
 ### 中期目标 (3个月内)
+
 - [ ] 集成价格计算器
 - [ ] 添加成本优化建议
 - [ ] 支持多货币显示
 
 ### 长期目标 (6个月内)
+
 - [ ] 建立价格历史数据库
 - [ ] 提供价格趋势分析
 - [ ] 智能推荐最优配置
@@ -227,6 +249,6 @@ node scripts/setup-ai-providers.js --list
 
 ---
 
-*集成完成日期: 2025年11月7日*
-*集成负责人: 创世星环开发团队*
-*文档版本: v1.0*
+_集成完成日期: 2025年11月7日_
+_集成负责人: 创世星环开发团队_
+_文档版本: v1.0_

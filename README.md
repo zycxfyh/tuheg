@@ -1036,7 +1036,7 @@ graph TD
 
 **1️⃣ 准备环境**
 
-   ```bash
+```bash
 # Fork项目到你的GitHub账户
 # 克隆到本地
 git clone https://github.com/YOUR_USERNAME/tuheg.git
@@ -1046,29 +1046,29 @@ cd tuheg
 pnpm install
 
 # 创建特性分支
-   git checkout -b feature/amazing-feature
+git checkout -b feature/amazing-feature
 # 或修复bug
 git checkout -b fix/bug-description
-   ```
+```
 
 **2️⃣ 本地开发**
 
-   ```bash
+```bash
 # 启动开发环境
 pnpm dev
 
 # 运行测试确保无问题
 pnpm test
-   pnpm industrial-test
+pnpm industrial-test
 
 # 代码质量检查
 pnpm lint
 pnpm type-check
-   ```
+```
 
 **3️⃣ 提交代码**
 
-   ```bash
+```bash
 # 添加更改的文件
 git add .
 
@@ -1355,15 +1355,15 @@ git checkout -b hotfix/critical-bug-fix
 
 <div align="center">
 
-|         文档类型          |                                文档链接                                |   重要性   | 更新频率   |
-| :-----------------------: | :--------------------------------------------------------------------: | :--------: | :--------- |
-|   **🔬 工业验证流水线**   |          [INDUSTRIAL-VALIDATION.md](INDUSTRIAL-VALIDATION.md)          | ⭐⭐⭐⭐⭐ | 每次发布时 |
-| **🔍 验证流水线分析报告** | [INDUSTRIAL-VALIDATION-ANALYSIS.md](INDUSTRIAL-VALIDATION-ANALYSIS.md) | ⭐⭐⭐⭐⭐ | 问题发生时 |
-| **🤖 AI供应商价格指南**   |   [AI-PROVIDER-PRICING-INTEGRATION.md](docs/AI-PROVIDER-PRICING-INTEGRATION.md)   | ⭐⭐⭐⭐⭐ | 供应商更新时 |
-|     **📄 MIT许可证**      |                           [LICENSE](LICENSE)                           | ⭐⭐⭐⭐⭐ | 项目更新时 |
-|      **🛡️ 安全指南**      |                       [SECURITY.md](SECURITY.md)                       | ⭐⭐⭐⭐⭐ | 安全事件时 |
-|      **🔒 隐私政策**      |                 [PRIVACY-POLICY.md](PRIVACY-POLICY.md)                 |  ⭐⭐⭐⭐  | 功能变更时 |
-|      **📋 使用协议**      |               [TERMS-OF-SERVICE.md](TERMS-OF-SERVICE.md)               |  ⭐⭐⭐⭐  | 功能变更时 |
+|         文档类型          |                                   文档链接                                    |   重要性   | 更新频率     |
+| :-----------------------: | :---------------------------------------------------------------------------: | :--------: | :----------- |
+|   **🔬 工业验证流水线**   |             [INDUSTRIAL-VALIDATION.md](INDUSTRIAL-VALIDATION.md)              | ⭐⭐⭐⭐⭐ | 每次发布时   |
+| **🔍 验证流水线分析报告** |    [INDUSTRIAL-VALIDATION-ANALYSIS.md](INDUSTRIAL-VALIDATION-ANALYSIS.md)     | ⭐⭐⭐⭐⭐ | 问题发生时   |
+|  **🤖 AI供应商价格指南**  | [AI-PROVIDER-PRICING-INTEGRATION.md](docs/AI-PROVIDER-PRICING-INTEGRATION.md) | ⭐⭐⭐⭐⭐ | 供应商更新时 |
+|     **📄 MIT许可证**      |                              [LICENSE](LICENSE)                               | ⭐⭐⭐⭐⭐ | 项目更新时   |
+|      **🛡️ 安全指南**      |                          [SECURITY.md](SECURITY.md)                           | ⭐⭐⭐⭐⭐ | 安全事件时   |
+|      **🔒 隐私政策**      |                    [PRIVACY-POLICY.md](PRIVACY-POLICY.md)                     |  ⭐⭐⭐⭐  | 功能变更时   |
+|      **📋 使用协议**      |                  [TERMS-OF-SERVICE.md](TERMS-OF-SERVICE.md)                   |  ⭐⭐⭐⭐  | 功能变更时   |
 
 **[📖 查看完整免责声明](DISCLAIMER.md)** • **[⚖️ 法律咨询](mailto:1666384464@qq.com)**
 

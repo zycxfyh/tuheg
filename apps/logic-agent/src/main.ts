@@ -58,9 +58,17 @@ async function bootstrap() {
     },
   });
 
+  // [新增] 配置HTTP服务器
+  const httpPort = configService.get<number>('LOGIC_AGENT_HTTP_PORT', 8081);
+  app.setGlobalPrefix('api/v1/logic'); // API前缀
+
   try {
     await app.startAllMicroservices();
-    console.log('🚀 Logic Agent is listening for tasks on the event bus...');
+    await app.listen(httpPort);
+
+    console.log('🚀 Logic Agent is running:');
+    console.log(`   📡 Microservices: listening for tasks on the event bus`);
+    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/logic`);
   } catch (err) {
     Sentry.captureException(err);
     console.error('Failed to start Logic Agent:', err);

@@ -22,6 +22,7 @@
     "test:integration": "./scripts/industrial-integration-test.sh",
     "test:e2e": "./scripts/industrial-e2e-test.sh",
     "test:regression": "./scripts/industrial-regression-test.sh",
+    "test:ai-agents": "./scripts/test-ai-agents-api.sh",
     "format": "prettier --write \"**/*.{ts,js,json,md,vue}\"",
     "prepare": "husky"
   },
