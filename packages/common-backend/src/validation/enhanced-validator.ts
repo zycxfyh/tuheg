@@ -157,10 +157,9 @@ export class EnhancedValidator {
 
       // 添加约束信息
       if (err.code === 'too_small' || err.code === 'too_big') {
-        const tooSmallErr = err as any;
-        const tooBigErr = err as any;
-        validationError.expected = `minimum: ${tooSmallErr.minimum ?? tooBigErr.minimum ?? 'N/A'}, maximum: ${tooSmallErr.maximum ?? tooBigErr.maximum ?? 'N/A'}`;
-        validationError.received = (err as any).received;
+        const constraintErr = err as { minimum?: number; maximum?: number; received?: unknown };
+        validationError.expected = `minimum: ${constraintErr.minimum ?? 'N/A'}, maximum: ${constraintErr.maximum ?? 'N/A'}`;
+        validationError.received = constraintErr.received;
       }
 
       return validationError;

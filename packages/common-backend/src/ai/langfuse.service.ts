@@ -63,7 +63,7 @@ export class LangfuseService implements OnModuleInit, OnModuleDestroy {
    */
   async createTrace(
     name: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
     tags?: string[],
   ): Promise<LangfuseTrace> {
     if (!this.langfuse) {
@@ -126,7 +126,7 @@ export class LangfuseService implements OnModuleInit, OnModuleDestroy {
   /**
    * 完成Span
    */
-  async endSpan(spanId: string, output?: any): Promise<void> {
+  async endSpan(spanId: string, output?: unknown): Promise<void> {
     if (!this.langfuse) {
       this.logger.debug(`Mock ended span: ${spanId}`, { output });
       return;
@@ -167,9 +167,9 @@ export class LangfuseService implements OnModuleInit, OnModuleDestroy {
   async recordModelCall(
     traceId: string,
     modelName: string,
-    input: any,
-    output: any,
-    metadata?: Record<string, any>,
+    input: unknown,
+    output: unknown,
+    metadata?: Record<string, unknown>,
   ): Promise<void> {
     if (!this.langfuse) {
       this.logger.debug(`Mock recorded model call: ${modelName} in trace ${traceId}`, {
@@ -234,9 +234,9 @@ export class LangfuseService implements OnModuleInit, OnModuleDestroy {
   async logGeneration(
     traceId: string,
     modelName: string,
-    input: any,
-    output: any,
-    metadata?: Record<string, any>,
+    input: unknown,
+    output: unknown,
+    metadata?: Record<string, unknown>,
   ): Promise<void> {
     await this.recordModelCall(traceId, modelName, input, output, metadata);
   }

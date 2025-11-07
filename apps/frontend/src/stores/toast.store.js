@@ -60,3 +60,4 @@ export const useToastStore = defineStore('toast', () => {
     clearAllToasts,
   };
 });
+
