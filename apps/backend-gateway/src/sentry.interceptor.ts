@@ -19,10 +19,9 @@ export class SentryInterceptor implements NestInterceptor {
       }
 
       if (params) {
-        Object.keys(params).forEach((key) => {
-          const value = params[key];
+        Object.entries(params).forEach(([key, paramValue]) => {
           // 安全地将参数值转换为字符串，避免对象注入
-          const safeValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+          const safeValue = typeof paramValue === 'object' ? JSON.stringify(paramValue) : String(paramValue);
           scope.setTag(`param_${key}`, safeValue);
         });
       }

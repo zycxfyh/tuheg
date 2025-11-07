@@ -110,7 +110,7 @@ export async function callAiWithGuard<T extends z.ZodType>(
   params: object,
   schema: T,
 ): Promise<z.infer<T>> {
-  let lastError: any = null;
+  let lastError: unknown = null;
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {

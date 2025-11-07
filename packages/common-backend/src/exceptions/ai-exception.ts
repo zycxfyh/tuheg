@@ -3,7 +3,7 @@
 export class AiGenerationException extends Error {
   constructor(
     message: string,
-    public readonly details?: any,
+    public readonly details?: unknown,
   ) {
     super(message);
     this.name = 'AiGenerationException';

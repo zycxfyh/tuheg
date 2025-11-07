@@ -21,32 +21,19 @@ module.exports = {
   moduleNameMapper: baseModuleNameMapper,
   // 覆盖率收集
   collectCoverageFrom: ['**/*.ts', '!**/*.d.ts'],
-  // ts-jest 配置
-  globals: {
-    'ts-jest': {},
-  },
   // 处理ESM和动态导入
   extensionsToTreatAsEsm: ['.ts'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-      tsconfig: {
-        allowSyntheticDefaultImports: true,
-        esModuleInterop: true,
-      },
-    },
-  },
   // 转换器配置
   transform: {
     '^.+\\.ts$': [
       'ts-jest',
       {
         useESM: true,
+        tsconfig: {
+          allowSyntheticDefaultImports: true,
+          esModuleInterop: true,
+        },
       },
     ],
-  },
-  // 模块配置
-  moduleNameMapper: {
-    ...baseModuleNameMapper,
   },
 };
