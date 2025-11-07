@@ -9,7 +9,7 @@ export default {
     title: '創世星環 - AI創作平台',
     description: '讓每一個創意都有無限可能，讓AI成為你的故事伙伴',
     version: '版本',
-    loading: '載入中...'
+    loading: '載入中...',
   },
 
   // 導航和選單
@@ -21,7 +21,7 @@ export default {
     profile: '個人資料',
     settings: '設定',
     help: '幫助',
-    logout: '登出'
+    logout: '登出',
   },
 
   // 通用按鈕和操作
@@ -54,7 +54,7 @@ export default {
     reset: '重設',
     clear: '清除',
     selectAll: '全選',
-    deselectAll: '取消全選'
+    deselectAll: '取消全選',
   },
 
   // 狀態和訊息
@@ -69,7 +69,7 @@ export default {
     empty: '暫無資料',
     noResults: '未找到結果',
     offline: '離線模式',
-    online: '線上模式'
+    online: '線上模式',
   },
 
   // 錯誤訊息
@@ -85,7 +85,7 @@ export default {
     conflict: '資源衝突，請稍後再試',
     tooManyRequests: '請求過於頻繁，請稍後再試',
     maintenance: '系統維護中，請稍後再試',
-    unknown: '未知錯誤，請聯絡技術支援'
+    unknown: '未知錯誤，請聯絡技術支援',
   },
 
   // 創作相關
@@ -111,7 +111,7 @@ export default {
     customize: '自訂',
     templates: '範本',
     recent: '最近',
-    favorites: '收藏'
+    favorites: '收藏',
   },
 
   // 遊戲介面
@@ -134,7 +134,7 @@ export default {
     pause: '暫停',
     resume: '繼續',
     autoSave: '自動儲存',
-    manualSave: '手動儲存'
+    manualSave: '手動儲存',
   },
 
   // AI配置
@@ -157,7 +157,7 @@ export default {
     usage: '使用統計',
     limits: '使用限制',
     reset: '重設配置',
-    advanced: '進階設定'
+    advanced: '進階設定',
   },
 
   // 佈景主題設定
@@ -175,7 +175,7 @@ export default {
     background: '背景色',
     text: '文字色',
     preview: '主題預覽',
-    reset: '重設為預設'
+    reset: '重設為預設',
   },
 
   // 設定頁面
@@ -197,7 +197,7 @@ export default {
     backup: '備份',
     restore: '還原',
     clearCache: '清除快取',
-    resetSettings: '重設設定'
+    resetSettings: '重設設定',
   },
 
   // 用戶認證
@@ -220,7 +220,7 @@ export default {
     welcomeBack: '歡迎回來',
     getStarted: '開始使用',
     verifyEmail: '驗證電子郵件',
-    resendVerification: '重新傳送驗證郵件'
+    resendVerification: '重新傳送驗證郵件',
   },
 
   // 外掛系統
@@ -246,7 +246,7 @@ export default {
     dependencies: '相依性',
     changelog: '更新日誌',
     documentation: '文件',
-    support: '支援'
+    support: '支援',
   },
 
   // 效能和監控
@@ -261,7 +261,7 @@ export default {
     logs: '系統日誌',
     metrics: '效能指標',
     alerts: '效能警報',
-    reports: '效能報告'
+    reports: '效能報告',
   },
 
   // 無障礙性
@@ -277,7 +277,7 @@ export default {
     skipLinks: '跳過連結',
     altText: '替代文字',
     captions: '字幕',
-    audioDesc: '音訊描述'
+    audioDesc: '音訊描述',
   },
 
   // 幫助和支援
@@ -293,7 +293,7 @@ export default {
     reportBug: '回報問題',
     featureRequest: '功能請求',
     liveChat: '線上客服',
-    knowledgeBase: '知識庫'
+    knowledgeBase: '知識庫',
   },
 
   // 通知訊息
@@ -310,7 +310,7 @@ export default {
     push: '推播通知',
     inApp: '應用程式內通知',
     frequency: '通知頻率',
-    types: '通知類型'
+    types: '通知類型',
   },
 
   // 時間相關
@@ -328,7 +328,7 @@ export default {
     tomorrow: '明天',
     dateFormat: 'YYYY年MM月DD日',
     timeFormat: 'HH:mm:ss',
-    datetimeFormat: 'YYYY年MM月DD日 HH:mm'
+    datetimeFormat: 'YYYY年MM月DD日 HH:mm',
   },
 
   // 檔案和媒體
@@ -349,7 +349,7 @@ export default {
     crop: '裁剪',
     rotate: '旋轉',
     resize: '調整大小',
-    compress: '壓縮'
+    compress: '壓縮',
   },
 
   // 確認對話框
@@ -362,7 +362,7 @@ export default {
     clear: '確定要清除所有資料嗎？此操作無法復原。',
     install: '確定要安裝此外掛嗎？',
     uninstall: '確定要解除安裝此外掛嗎？相關配置將被清除。',
-    update: '確定要更新嗎？應用程式將重新啟動。'
+    update: '確定要更新嗎？應用程式將重新啟動。',
   },
 
   // 提示資訊
@@ -375,6 +375,6 @@ export default {
     collaborationTip: '邀請朋友一起創作，可以獲得更多靈感。',
     shortcutTip: '使用快捷鍵可以大幅提升創作效率。',
     updateTip: '新版本已發布，建議及時更新以獲得最佳體驗。',
-    feedbackTip: '你的回饋對我們非常重要，請隨時告訴我們你的想法。'
-  }
-}
+    feedbackTip: '你的回饋對我們非常重要，請隨時告訴我們你的想法。',
+  },
+};

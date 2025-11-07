@@ -3,6 +3,7 @@
 // 遇到 401 时触发 window 事件 'api:unauthorized'，由上层（auth.store / app）处理登出。
 
 import axios from 'axios';
+import { getApiResponse, cacheApiResponse } from './cache.service';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
@@ -21,6 +22,13 @@ apiClient.interceptors.request.use(
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${token}`;
       }
+
+      // 添加请求时间戳用于缓存控制
+      config.metadata = {
+        startTime: Date.now(),
+        url: config.url,
+        method: config.method,
+      };
     } catch (e) {
       // 如果 localStorage 不可用（SSR/隐私模式），忽略
       // console.warn('Could not read localStorage token', e);
@@ -30,10 +38,38 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor: 返回 response.data，统一错误包装。
+// Response interceptor: 返回 response.data，统一错误包装，添加缓存支持。
 // 401 => 触发全局事件 'api:unauthorized'（不直接调用 store）
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    // 缓存成功的GET请求响应
+    if (response.config.method?.toLowerCase() === 'get' && response.status === 200) {
+      try {
+        const fullUrl = `${response.config.baseURL}${response.config.url}`;
+        cacheApiResponse(fullUrl, response.data, {
+          ttl: 10 * 60 * 1000, // 10分钟缓存
+        });
+      } catch (cacheError) {
+        // 缓存失败不影响正常响应
+        console.warn('API response cache failed:', cacheError);
+      }
+    }
+
+    // 添加响应时间信息
+    if (response.config.metadata) {
+      const duration = Date.now() - response.config.metadata.startTime;
+      response.duration = duration;
+
+      // 记录慢请求
+      if (duration > 2000) {
+        console.warn(
+          `Slow API request: ${response.config.metadata.method?.toUpperCase()} ${response.config.metadata.url} took ${duration}ms`,
+        );
+      }
+    }
+
+    return response.data;
+  },
   (error) => {
     const status = error?.response?.status;
     if (status === 401) {
@@ -67,8 +103,48 @@ const authService = {
 };
 
 const gamesService = {
-  getAll: () => apiClient.get('/games'),
-  getById: (id) => apiClient.get(`/games/${id}`),
+  getAll: async () => {
+    const url = `${apiClient.defaults.baseURL}/games`;
+    const cached = getApiResponse(url);
+
+    if (cached) {
+      // 后台刷新缓存
+      apiClient
+        .get('/games')
+        .then((freshData) => {
+          cacheApiResponse(url, freshData, { ttl: 10 * 60 * 1000 });
+        })
+        .catch(() => {
+          // 静默失败，使用缓存数据
+        });
+
+      return cached;
+    }
+
+    return apiClient.get('/games');
+  },
+
+  getById: async (id) => {
+    const url = `${apiClient.defaults.baseURL}/games/${id}`;
+    const cached = getApiResponse(url);
+
+    if (cached) {
+      // 后台刷新缓存
+      apiClient
+        .get(`/games/${id}`)
+        .then((freshData) => {
+          cacheApiResponse(url, freshData, { ttl: 10 * 60 * 1000 });
+        })
+        .catch(() => {
+          // 静默失败，使用缓存数据
+        });
+
+      return cached;
+    }
+
+    return apiClient.get(`/games/${id}`);
+  },
+
   createNarrative: (concept) => apiClient.post('/games/narrative-driven', concept),
   submitAction: (id, action) => apiClient.post(`/games/${id}/actions`, action),
   delete: (id) => apiClient.delete(`/games/${id}`),

@@ -9,7 +9,7 @@ export default {
     title: '창세반지 - AI 창작 플랫폼',
     description: '모든 아이디어에 무한한 가능성을, AI를 당신의 이야기 파트너로',
     version: '버전',
-    loading: '로딩 중...'
+    loading: '로딩 중...',
   },
 
   // 네비게이션과 메뉴
@@ -21,7 +21,7 @@ export default {
     profile: '프로필',
     settings: '설정',
     help: '도움말',
-    logout: '로그아웃'
+    logout: '로그아웃',
   },
 
   // 공통 버튼과 액션
@@ -54,7 +54,7 @@ export default {
     reset: '초기화',
     clear: '지우기',
     selectAll: '전체 선택',
-    deselectAll: '전체 선택 해제'
+    deselectAll: '전체 선택 해제',
   },
 
   // 상태와 메시지
@@ -69,7 +69,7 @@ export default {
     empty: '데이터가 없습니다',
     noResults: '결과를 찾을 수 없습니다',
     offline: '오프라인 모드',
-    online: '온라인 모드'
+    online: '온라인 모드',
   },
 
   // 오류 메시지
@@ -85,7 +85,7 @@ export default {
     conflict: '리소스 충돌입니다. 나중에 다시 시도하세요',
     tooManyRequests: '요청이 너무 많습니다. 나중에 다시 시도하세요',
     maintenance: '시스템 유지보수 중입니다. 나중에 다시 시도하세요',
-    unknown: '알 수 없는 오류입니다. 기술 지원에 문의하세요'
+    unknown: '알 수 없는 오류입니다. 기술 지원에 문의하세요',
   },
 
   // 창작 관련
@@ -111,7 +111,7 @@ export default {
     customize: '사용자 정의',
     templates: '템플릿',
     recent: '최근',
-    favorites: '즐겨찾기'
+    favorites: '즐겨찾기',
   },
 
   // 게임 인터페이스
@@ -134,7 +134,7 @@ export default {
     pause: '일시 정지',
     resume: '계속',
     autoSave: '자동 저장',
-    manualSave: '수동 저장'
+    manualSave: '수동 저장',
   },
 
   // AI 설정
@@ -157,7 +157,7 @@ export default {
     usage: '사용 통계',
     limits: '사용 제한',
     reset: '설정 초기화',
-    advanced: '고급 설정'
+    advanced: '고급 설정',
   },
 
   // 테마 설정
@@ -175,7 +175,7 @@ export default {
     background: '배경색',
     text: '텍스트 색상',
     preview: '테마 미리보기',
-    reset: '기본값으로 초기화'
+    reset: '기본값으로 초기화',
   },
 
   // 설정 페이지
@@ -197,7 +197,7 @@ export default {
     backup: '백업',
     restore: '복원',
     clearCache: '캐시 지우기',
-    resetSettings: '설정 초기화'
+    resetSettings: '설정 초기화',
   },
 
   // 사용자 인증
@@ -220,7 +220,7 @@ export default {
     welcomeBack: '다시 오신 것을 환영합니다',
     getStarted: '시작하기',
     verifyEmail: '이메일 인증',
-    resendVerification: '인증 이메일 재전송'
+    resendVerification: '인증 이메일 재전송',
   },
 
   // 플러그인 시스템
@@ -246,7 +246,7 @@ export default {
     dependencies: '종속성',
     changelog: '변경 로그',
     documentation: '문서',
-    support: '지원'
+    support: '지원',
   },
 
   // 성능과 모니터링
@@ -261,7 +261,7 @@ export default {
     logs: '시스템 로그',
     metrics: '성능 메트릭',
     alerts: '성능 알림',
-    reports: '성능 보고서'
+    reports: '성능 보고서',
   },
 
   // 접근성
@@ -277,7 +277,7 @@ export default {
     skipLinks: '건너뛰기 링크',
     altText: '대체 텍스트',
     captions: '자막',
-    audioDesc: '오디오 설명'
+    audioDesc: '오디오 설명',
   },
 
   // 도움말과 지원
@@ -293,7 +293,7 @@ export default {
     reportBug: '버그 신고',
     featureRequest: '기능 요청',
     liveChat: '실시간 채팅',
-    knowledgeBase: '지식 베이스'
+    knowledgeBase: '지식 베이스',
   },
 
   // 알림
@@ -310,7 +310,7 @@ export default {
     push: '푸시 알림',
     inApp: '앱 내 알림',
     frequency: '알림 빈도',
-    types: '알림 유형'
+    types: '알림 유형',
   },
 
   // 시간 관련
@@ -328,7 +328,7 @@ export default {
     tomorrow: '내일',
     dateFormat: 'YYYY년 MM월 DD일',
     timeFormat: 'HH:mm:ss',
-    datetimeFormat: 'YYYY년 MM월 DD일 HH:mm'
+    datetimeFormat: 'YYYY년 MM월 DD일 HH:mm',
   },
 
   // 파일과 미디어
@@ -349,7 +349,7 @@ export default {
     crop: '자르기',
     rotate: '회전',
     resize: '크기 조정',
-    compress: '압축'
+    compress: '압축',
   },
 
   // 확인 대화상자
@@ -362,7 +362,7 @@ export default {
     clear: '모든 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.',
     install: '이 플러그인을 설치하시겠습니까?',
     uninstall: '이 플러그인을 제거하시겠습니까? 관련 설정이 지워집니다.',
-    update: '업데이트하시겠습니까? 애플리케이션이 다시 시작됩니다.'
+    update: '업데이트하시겠습니까? 애플리케이션이 다시 시작됩니다.',
   },
 
   // 팁
@@ -375,6 +375,6 @@ export default {
     collaborationTip: '친구들을 초대하여 함께 창작하면 더 많은 영감을 얻을 수 있습니다.',
     shortcutTip: '키보드 단축키를 사용하면 창작 효율이 크게 향상됩니다.',
     updateTip: '새 버전이 출시되었습니다. 최상의 경험을 위해 업데이트하는 것을 추천합니다.',
-    feedbackTip: '귀하의 피드백은 저희에게 매우 중요합니다. 언제든 의견을 말씀해주세요.'
-  }
-}
+    feedbackTip: '귀하의 피드백은 저희에게 매우 중요합니다. 언제든 의견을 말씀해주세요.',
+  },
+};

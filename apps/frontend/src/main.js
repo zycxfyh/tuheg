@@ -13,6 +13,10 @@ import { useAuthStore } from './stores/auth.store';
 import { useRealtimeStore } from './stores/realtime.store';
 import { useUIStore } from './stores/ui.store';
 
+// 性能监控和预加载服务
+import './services/performance.service'; // 性能监控服务自动初始化
+import { preloadCriticalComponents } from './services/preload.service';
+
 const app = createApp(App);
 
 Sentry.init({
@@ -41,6 +45,23 @@ const uiStore = useUIStore();
 uiStore.setRouter(router);
 
 app.mount('#app');
+
+// --- 性能优化初始化 ---
+// 性能监控服务已在导入时自动初始化
+if (import.meta.env.DEV) {
+  console.log('[main.js] Performance monitoring initialized');
+}
+
+// 预加载关键组件
+preloadCriticalComponents()
+  .then(() => {
+    if (import.meta.env.DEV) {
+      console.log('[main.js] Critical components preloaded');
+    }
+  })
+  .catch((error) => {
+    console.warn('[main.js] Critical components preload failed:', error);
+  });
 
 // --- [核心架构] WebSocket 生命周期与用户认证状态绑定 ---
 // 重要设计决策：WebSocket 连接不与特定组件生命周期绑定，

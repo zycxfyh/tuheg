@@ -9,7 +9,7 @@ export default {
     title: 'Creation Ring - AI Creation Platform',
     description: 'Make every idea infinite possibilities, let AI be your story partner',
     version: 'Version',
-    loading: 'Loading...'
+    loading: 'Loading...',
   },
 
   // Navigation and menus
@@ -21,7 +21,7 @@ export default {
     profile: 'Profile',
     settings: 'Settings',
     help: 'Help',
-    logout: 'Logout'
+    logout: 'Logout',
   },
 
   // Common buttons and actions
@@ -54,7 +54,7 @@ export default {
     reset: 'Reset',
     clear: 'Clear',
     selectAll: 'Select All',
-    deselectAll: 'Deselect All'
+    deselectAll: 'Deselect All',
   },
 
   // Status and messages
@@ -69,7 +69,7 @@ export default {
     empty: 'No data available',
     noResults: 'No results found',
     offline: 'Offline mode',
-    online: 'Online mode'
+    online: 'Online mode',
   },
 
   // Error messages
@@ -85,7 +85,7 @@ export default {
     conflict: 'Resource conflict, please try again later',
     tooManyRequests: 'Too many requests, please try again later',
     maintenance: 'System under maintenance, please try again later',
-    unknown: 'Unknown error, please contact technical support'
+    unknown: 'Unknown error, please contact technical support',
   },
 
   // Creation related
@@ -111,7 +111,7 @@ export default {
     customize: 'Customize',
     templates: 'Templates',
     recent: 'Recent',
-    favorites: 'Favorites'
+    favorites: 'Favorites',
   },
 
   // Game interface
@@ -134,7 +134,7 @@ export default {
     pause: 'Pause',
     resume: 'Resume',
     autoSave: 'Auto Save',
-    manualSave: 'Manual Save'
+    manualSave: 'Manual Save',
   },
 
   // AI configuration
@@ -157,7 +157,7 @@ export default {
     usage: 'Usage Statistics',
     limits: 'Usage Limits',
     reset: 'Reset Configuration',
-    advanced: 'Advanced Settings'
+    advanced: 'Advanced Settings',
   },
 
   // Theme settings
@@ -175,7 +175,7 @@ export default {
     background: 'Background Color',
     text: 'Text Color',
     preview: 'Theme Preview',
-    reset: 'Reset to Default'
+    reset: 'Reset to Default',
   },
 
   // Settings page
@@ -197,7 +197,7 @@ export default {
     backup: 'Backup',
     restore: 'Restore',
     clearCache: 'Clear Cache',
-    resetSettings: 'Reset Settings'
+    resetSettings: 'Reset Settings',
   },
 
   // User authentication
@@ -220,7 +220,7 @@ export default {
     welcomeBack: 'Welcome Back',
     getStarted: 'Get Started',
     verifyEmail: 'Verify Email',
-    resendVerification: 'Resend Verification Email'
+    resendVerification: 'Resend Verification Email',
   },
 
   // Plugin system
@@ -246,7 +246,7 @@ export default {
     dependencies: 'Dependencies',
     changelog: 'Changelog',
     documentation: 'Documentation',
-    support: 'Support'
+    support: 'Support',
   },
 
   // Performance and monitoring
@@ -261,7 +261,7 @@ export default {
     logs: 'System Logs',
     metrics: 'Performance Metrics',
     alerts: 'Performance Alerts',
-    reports: 'Performance Reports'
+    reports: 'Performance Reports',
   },
 
   // Accessibility
@@ -277,7 +277,7 @@ export default {
     skipLinks: 'Skip Links',
     altText: 'Alt Text',
     captions: 'Captions',
-    audioDesc: 'Audio Description'
+    audioDesc: 'Audio Description',
   },
 
   // Help and support
@@ -293,7 +293,7 @@ export default {
     reportBug: 'Report Bug',
     featureRequest: 'Feature Request',
     liveChat: 'Live Chat',
-    knowledgeBase: 'Knowledge Base'
+    knowledgeBase: 'Knowledge Base',
   },
 
   // Notifications
@@ -310,7 +310,7 @@ export default {
     push: 'Push Notifications',
     inApp: 'In-App Notifications',
     frequency: 'Notification Frequency',
-    types: 'Notification Types'
+    types: 'Notification Types',
   },
 
   // Time related
@@ -328,7 +328,7 @@ export default {
     tomorrow: 'Tomorrow',
     dateFormat: 'MM/DD/YYYY',
     timeFormat: 'HH:mm:ss',
-    datetimeFormat: 'MM/DD/YYYY HH:mm'
+    datetimeFormat: 'MM/DD/YYYY HH:mm',
   },
 
   // Files and media
@@ -349,7 +349,7 @@ export default {
     crop: 'Crop',
     rotate: 'Rotate',
     resize: 'Resize',
-    compress: 'Compress'
+    compress: 'Compress',
   },
 
   // Confirmation dialogs
@@ -361,20 +361,21 @@ export default {
     reset: 'Are you sure you want to reset all settings? This action cannot be undone.',
     clear: 'Are you sure you want to clear all data? This action cannot be undone.',
     install: 'Are you sure you want to install this plugin?',
-    uninstall: 'Are you sure you want to uninstall this plugin? Related configurations will be cleared.',
-    update: 'Are you sure you want to update? The application will restart.'
+    uninstall:
+      'Are you sure you want to uninstall this plugin? Related configurations will be cleared.',
+    update: 'Are you sure you want to update? The application will restart.',
   },
 
   // Tips
   tips: {
-    welcome: 'Welcome to Creation Ring! Let\'s create amazing stories together.',
+    welcome: "Welcome to Creation Ring! Let's create amazing stories together.",
     saveReminder: 'Remember to save your progress regularly.',
-    backupReminder: 'It\'s recommended to backup your important data regularly.',
+    backupReminder: "It's recommended to backup your important data regularly.",
     performanceTip: 'Turning off unnecessary effects can improve performance.',
-    securityTip: 'Please keep your API keys secure and don\'t expose them in public.',
+    securityTip: "Please keep your API keys secure and don't expose them in public.",
     collaborationTip: 'Invite friends to create together for more inspiration.',
     shortcutTip: 'Using keyboard shortcuts can greatly improve creation efficiency.',
     updateTip: 'New version released, update to get the best experience.',
-    feedbackTip: 'Your feedback is very important to us, please share your thoughts anytime.'
-  }
-}
+    feedbackTip: 'Your feedback is very important to us, please share your thoughts anytime.',
+  },
+};

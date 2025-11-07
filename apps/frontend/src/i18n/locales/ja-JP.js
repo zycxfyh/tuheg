@@ -9,7 +9,7 @@ export default {
     title: '創世星環 - AI創作プラットフォーム',
     description: 'すべてのアイデアに無限の可能性を、AIをあなたの物語のパートナーに',
     version: 'バージョン',
-    loading: '読み込み中...'
+    loading: '読み込み中...',
   },
 
   // ナビゲーションとメニュー
@@ -21,7 +21,7 @@ export default {
     profile: 'プロフィール',
     settings: '設定',
     help: 'ヘルプ',
-    logout: 'ログアウト'
+    logout: 'ログアウト',
   },
 
   // 共通ボタンとアクション
@@ -54,7 +54,7 @@ export default {
     reset: 'リセット',
     clear: 'クリア',
     selectAll: 'すべて選択',
-    deselectAll: 'すべて選択解除'
+    deselectAll: 'すべて選択解除',
   },
 
   // ステータスとメッセージ
@@ -69,7 +69,7 @@ export default {
     empty: 'データがありません',
     noResults: '結果が見つかりません',
     offline: 'オフラインモード',
-    online: 'オンラインモード'
+    online: 'オンラインモード',
   },
 
   // エラーメッセージ
@@ -85,7 +85,7 @@ export default {
     conflict: 'リソース競合です。後でもう一度お試しください',
     tooManyRequests: 'リクエストが多すぎます。後でもう一度お試しください',
     maintenance: 'システムメンテナンス中です。後でもう一度お試しください',
-    unknown: '不明なエラーです。テクニカルサポートにお問い合わせください'
+    unknown: '不明なエラーです。テクニカルサポートにお問い合わせください',
   },
 
   // 作成関連
@@ -111,7 +111,7 @@ export default {
     customize: 'カスタマイズ',
     templates: 'テンプレート',
     recent: '最近',
-    favorites: 'お気に入り'
+    favorites: 'お気に入り',
   },
 
   // ゲームインターフェース
@@ -134,7 +134,7 @@ export default {
     pause: '一時停止',
     resume: '再開',
     autoSave: '自動保存',
-    manualSave: '手動保存'
+    manualSave: '手動保存',
   },
 
   // AI設定
@@ -157,7 +157,7 @@ export default {
     usage: '使用統計',
     limits: '使用制限',
     reset: '設定リセット',
-    advanced: '詳細設定'
+    advanced: '詳細設定',
   },
 
   // テーマ設定
@@ -175,7 +175,7 @@ export default {
     background: '背景色',
     text: 'テキスト色',
     preview: 'テーマプレビュー',
-    reset: 'デフォルトにリセット'
+    reset: 'デフォルトにリセット',
   },
 
   // 設定ページ
@@ -197,7 +197,7 @@ export default {
     backup: 'バックアップ',
     restore: '復元',
     clearCache: 'キャッシュクリア',
-    resetSettings: '設定リセット'
+    resetSettings: '設定リセット',
   },
 
   // ユーザー認証
@@ -220,7 +220,7 @@ export default {
     welcomeBack: 'おかえりなさい',
     getStarted: '始める',
     verifyEmail: 'メール検証',
-    resendVerification: '検証メール再送'
+    resendVerification: '検証メール再送',
   },
 
   // プラグインシステム
@@ -246,7 +246,7 @@ export default {
     dependencies: '依存関係',
     changelog: '変更履歴',
     documentation: 'ドキュメント',
-    support: 'サポート'
+    support: 'サポート',
   },
 
   // パフォーマンスと監視
@@ -261,7 +261,7 @@ export default {
     logs: 'システムログ',
     metrics: 'パフォーマンスメトリクス',
     alerts: 'パフォーマンスアラート',
-    reports: 'パフォーマンスレポート'
+    reports: 'パフォーマンスレポート',
   },
 
   // アクセシビリティ
@@ -277,7 +277,7 @@ export default {
     skipLinks: 'スキップリンク',
     altText: '代替テキスト',
     captions: 'キャプション',
-    audioDesc: 'オーディオ説明'
+    audioDesc: 'オーディオ説明',
   },
 
   // ヘルプとサポート
@@ -293,7 +293,7 @@ export default {
     reportBug: 'バグ報告',
     featureRequest: '機能リクエスト',
     liveChat: 'ライブチャット',
-    knowledgeBase: 'ナレッジベース'
+    knowledgeBase: 'ナレッジベース',
   },
 
   // 通知
@@ -310,7 +310,7 @@ export default {
     push: 'プッシュ通知',
     inApp: 'アプリ内通知',
     frequency: '通知頻度',
-    types: '通知タイプ'
+    types: '通知タイプ',
   },
 
   // 時間関連
@@ -328,7 +328,7 @@ export default {
     tomorrow: '明日',
     dateFormat: 'YYYY年MM月DD日',
     timeFormat: 'HH:mm:ss',
-    datetimeFormat: 'YYYY年MM月DD日 HH:mm'
+    datetimeFormat: 'YYYY年MM月DD日 HH:mm',
   },
 
   // ファイルとメディア
@@ -349,7 +349,7 @@ export default {
     crop: 'クロップ',
     rotate: '回転',
     resize: 'リサイズ',
-    compress: '圧縮'
+    compress: '圧縮',
   },
 
   // 確認ダイアログ
@@ -362,7 +362,7 @@ export default {
     clear: 'すべてのデータをクリアしてもよろしいですか？この操作は元に戻せません。',
     install: 'このプラグインをインストールしてもよろしいですか？',
     uninstall: 'このプラグインをアンインストールしてもよろしいですか？関連設定はクリアされます。',
-    update: '更新してもよろしいですか？アプリケーションが再起動します。'
+    update: '更新してもよろしいですか？アプリケーションが再起動します。',
   },
 
   // ヒント
@@ -372,9 +372,11 @@ export default {
     backupReminder: '重要なデータを定期的にバックアップすることをおすすめします。',
     performanceTip: '不要なエフェクトをオフにするとパフォーマンスが向上します。',
     securityTip: 'APIキーを安全に保管し、公の場で公開しないでください。',
-    collaborationTip: '友人たちを招待して一緒に創作すると、より多くのインスピレーションが得られます。',
+    collaborationTip:
+      '友人たちを招待して一緒に創作すると、より多くのインスピレーションが得られます。',
     shortcutTip: 'キーボードショートカットを使用すると、創作効率が大幅に向上します。',
     updateTip: '新バージョンがリリースされました。最高の体験を得るために更新をおすすめします。',
-    feedbackTip: 'あなたのフィードバックは私たちにとって非常に重要です。いつでもご意見をお聞かせください。'
-  }
-}
+    feedbackTip:
+      'あなたのフィードバックは私たちにとって非常に重要です。いつでもご意見をお聞かせください。',
+  },
+};
