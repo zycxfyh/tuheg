@@ -1,150 +1,164 @@
 version: '3.8'
 
+# 测试环境Docker Compose配置
+# 用于集成测试和端到端测试
+
 services:
-  # --- 测试基础服务 ---
+  # PostgreSQL数据库
   postgres-test:
-    image: pgvector/pgvector:pg15
-    container_name: tuheg_postgres_test
-    restart: no
+    image: postgres:15-alpine
+    container_name: tuheg-postgres-test
     environment:
-      - POSTGRES_DB=tuheg_test_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=test_password
+      POSTGRES_DB: tuheg_test
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
     ports:
-      - "5434:5432"  # 测试专用端口
+      - "5433:5432"  # 避免与本地PostgreSQL冲突
     volumes:
       - postgres_test_data:/var/lib/postgresql/data
-      - ./deployment/database/migrations:/docker-entrypoint-initdb.d
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d tuheg_test_db"]
+      test: ["CMD-SHELL", "pg_isready -U testuser -d tuheg_test"]
       interval: 5s
-      timeout: 3s
-      retries: 10
-    tmpfs:
-      - /tmp
-      - /var/run/postgresql
+      timeout: 5s
+      retries: 5
 
+  # Redis缓存
   redis-test:
-    image: redis:alpine
-    container_name: tuheg_redis_test
-    restart: no
+    image: redis:7-alpine
+    container_name: tuheg-redis-test
     ports:
-      - "6381:6379"  # 测试专用端口
+      - "6380:6379"  # 避免与本地Redis冲突
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_test_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 3s
-      timeout: 1s
+      interval: 5s
+      timeout: 5s
       retries: 5
-    tmpfs:
-      - /data
 
-  # --- 测试应用服务 ---
+  # RabbitMQ消息队列
+  rabbitmq-test:
+    image: rabbitmq:3-management-alpine
+    container_name: tuheg-rabbitmq-test
+    environment:
+      RABBITMQ_DEFAULT_USER: testuser
+      RABBITMQ_DEFAULT_PASS: testpass
+    ports:
+      - "5673:5672"   # AMQP端口
+      - "15673:15672" # 管理界面端口
+    volumes:
+      - rabbitmq_test_data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway测试服务
   backend-gateway-test:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: backend-gateway-test
-    container_name: tuheg_backend_gateway_test
-    restart: no
+      target: backend-gateway-prod
+    container_name: tuheg-backend-gateway-test
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://testuser:testpass@postgres-test:5432/tuheg_test
+      REDIS_URL: redis://redis-test:6379
+      RABBITMQ_URL: amqp://testuser:testpass@rabbitmq-test:5672
+    ports:
+      - "3001:3000"  # 避免与本地服务冲突
     depends_on:
       postgres-test:
         condition: service_healthy
       redis-test:
         condition: service_healthy
-    ports:
-      - "3002:3000"  # 测试专用端口
-    environment:
-      - DATABASE_URL=postgresql://postgres:test_password@postgres-test:5432/tuheg_test_db?schema=public
-      - REDIS_URL=redis://redis-test:6379
-      - JWT_SECRET=test-jwt-secret-key-for-integration-tests
-      - JWT_EXPIRATION_SECONDS=3600
-      - NODE_ENV=test
-      - LOG_LEVEL=debug
-    volumes:
-      - .turbo:/app/.turbo
+      rabbitmq-test:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
 
+  # Creation Agent测试服务
   creation-agent-test:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: creation-agent-test
-    container_name: tuheg_creation_agent_test
-    restart: no
-    depends_on:
-      backend-gateway-test:
-        condition: service_healthy
+      target: creation-agent-prod
+    container_name: tuheg-creation-agent-test
     environment:
-      - DATABASE_URL=postgresql://postgres:test_password@postgres-test:5432/tuheg_test_db?schema=public
-      - GATEWAY_URL=http://backend-gateway-test:3000/gateway/send-to-user
-      - NODE_ENV=test
-      - LOG_LEVEL=debug
-    volumes:
-      - .turbo:/app/.turbo
+      NODE_ENV: test
+      DATABASE_URL: postgresql://testuser:testpass@postgres-test:5432/tuheg_test
+      REDIS_URL: redis://redis-test:6379
+      RABBITMQ_URL: amqp://testuser:testpass@rabbitmq-test:5672
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      rabbitmq-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
+  # Logic Agent测试服务
   logic-agent-test:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: logic-agent-test
-    container_name: tuheg_logic_agent_test
-    restart: no
+      target: logic-agent-prod
+    container_name: tuheg-logic-agent-test
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://testuser:testpass@postgres-test:5432/tuheg_test
+      REDIS_URL: redis://redis-test:6379
+      RABBITMQ_URL: amqp://testuser:testpass@rabbitmq-test:5672
     depends_on:
       postgres-test:
         condition: service_healthy
-    environment:
-      - DATABASE_URL=postgresql://postgres:test_password@postgres-test:5432/tuheg_test_db?schema=public
-      - NODE_ENV=test
-      - LOG_LEVEL=debug
-    volumes:
-      - .turbo:/app/.turbo
+      redis-test:
+        condition: service_healthy
+      rabbitmq-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
+  # Narrative Agent测试服务
   narrative-agent-test:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: narrative-agent-test
-    container_name: tuheg_narrative_agent_test
-    restart: no
+      target: narrative-agent-prod
+    container_name: tuheg-narrative-agent-test
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://testuser:testpass@postgres-test:5432/tuheg_test
+      REDIS_URL: redis://redis-test:6379
+      RABBITMQ_URL: amqp://testuser:testpass@rabbitmq-test:5672
     depends_on:
       postgres-test:
         condition: service_healthy
-    environment:
-      - DATABASE_URL=postgresql://postgres:test_password@postgres-test:5432/tuheg_test_db?schema=public
-      - GATEWAY_URL=http://backend-gateway-test:3000/gateway/send-to-user
-      - NODE_ENV=test
-      - LOG_LEVEL=debug
-    volumes:
-      - .turbo:/app/.turbo
-
-  # --- 测试工具 ---
-  test-runner:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: test-runner
-    container_name: tuheg_test_runner
-    restart: no
-    depends_on:
-      - backend-gateway-test
-      - creation-agent-test
-      - logic-agent-test
-      - narrative-agent-test
-    environment:
-      - DATABASE_URL=postgresql://postgres:test_password@postgres-test:5432/tuheg_test_db?schema=public
-      - BACKEND_GATEWAY_URL=http://backend-gateway-test:3000
-      - NODE_ENV=test
-    volumes:
-      - .:/app
-      - .turbo:/app/.turbo
-      - /app/node_modules
-    working_dir: /app
-    command: ["npm", "run", "test:integration"]
+      redis-test:
+        condition: service_healthy
+      rabbitmq-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres_test_data:
-    driver: local
+  redis_test_data:
+  rabbitmq_test_data:
+
+networks:
+  default:
+    name: tuheg-test-network

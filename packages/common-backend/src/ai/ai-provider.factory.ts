@@ -11,21 +11,22 @@ export class AiProviderFactory {
     // [注释] 我们将所有兼容OpenAI API的供应商，都导向同一条“生产线”
     switch (config.provider) {
       case 'OpenAI':
+      case 'Anthropic':
+      case 'Google':
+      case 'xAI':
+      case 'Mistral':
+      case 'TogetherAI':
+      case 'OpenRouter':
+      case 'NVIDIA':
       case 'DeepSeek':
       case 'Groq':
-      case 'Google':
+      case 'Zhipu':
+      case 'Baichuan':
       case 'Moonshot':
       case 'SiliconFlow':
-      case 'Baichuan':
-      case 'Zhipu':
-      case 'Aliyun':
-      case 'Tencent':
       case 'Volcengine':
-      case 'xAI Grok':
-      case 'TogetherAI':
-      case 'NVIDIA':
-      case 'Mistral':
-      case 'OpenRouter':
+      case 'Tencent':
+      case 'Aliyun':
       case 'Ollama':
       case 'CustomOpenAICompatible':
         return new CustomOpenAICompatibleProvider(
