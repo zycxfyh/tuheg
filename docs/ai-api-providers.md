@@ -7,6 +7,7 @@
 ### 🌟 国际主流供应商
 
 #### OpenAI (ChatGPT)
+
 - **供应商**: OpenAI
 - **Base URL**: `https://api.openai.com/v1`
 - **支持模型**:
@@ -17,8 +18,10 @@
   - `gpt-4o-mini`
 - **特点**: 最稳定的GPT模型，推理能力强
 - **官网**: https://platform.openai.com
+- **价格**: https://openai.com/api/pricing/
 
 #### Anthropic (Claude)
+
 - **供应商**: Anthropic
 - **Base URL**: `https://api.anthropic.com`
 - **支持模型**:
@@ -28,8 +31,10 @@
   - `claude-3-opus-20240229`
 - **特点**: 推理能力优秀，安全系数高
 - **官网**: https://console.anthropic.com
+- **价格**: https://console.anthropic.com/settings/billing
 
 #### Google (Gemini)
+
 - **供应商**: Google
 - **Base URL**: `https://generativelanguage.googleapis.com`
 - **支持模型**:
@@ -38,8 +43,10 @@
   - `gemini-pro`
 - **特点**: 多模态能力强，性价比高
 - **官网**: https://ai.google.dev
+- **价格**: https://ai.google.dev/pricing
 
 #### xAI (Grok)
+
 - **供应商**: xAI
 - **Base URL**: `https://api.x.ai/v1`
 - **支持模型**:
@@ -47,8 +54,10 @@
   - `grok-vision-beta`
 - **特点**: 实时信息获取，幽默风趣
 - **官网**: https://x.ai
+- **价格**: https://x.ai/api
 
 #### Mistral AI
+
 - **供应商**: Mistral
 - **Base URL**: `https://api.mistral.ai/v1`
 - **支持模型**:
@@ -57,8 +66,10 @@
   - `mistral-small`
 - **特点**: 开源模型，性能均衡
 - **官网**: https://mistral.ai
+- **价格**: https://mistral.ai/pricing/
 
 #### Together AI
+
 - **供应商**: TogetherAI
 - **Base URL**: `https://api.together.xyz/v1`
 - **支持模型**: 支持200+种开源模型
@@ -67,8 +78,10 @@
   - `codellama/CodeLlama-34b-Instruct-hf`
 - **特点**: 模型选择丰富，价格实惠
 - **官网**: https://together.ai
+- **价格**: https://www.together.ai/pricing
 
 #### OpenRouter
+
 - **供应商**: OpenRouter
 - **Base URL**: `https://openrouter.ai/api/v1`
 - **支持模型**: 支持100+种模型
@@ -77,8 +90,10 @@
   - 开源模型
 - **特点**: 一站式模型聚合平台
 - **官网**: https://openrouter.ai
+- **价格**: https://openrouter.ai/models
 
 #### NVIDIA
+
 - **供应商**: NVIDIA
 - **Base URL**: `https://integrate.api.nvidia.com/v1`
 - **支持模型**:
@@ -87,10 +102,12 @@
   - `microsoft/wizardlm-8x22b`
 - **特点**: GPU加速，推理速度快
 - **官网**: https://build.nvidia.com
+- **价格**: https://build.nvidia.com/explore/pricing
 
 ### 🇨🇳 国内供应商
 
 #### 智谱AI (ChatGLM)
+
 - **供应商**: Zhipu
 - **Base URL**: `https://open.bigmodel.cn/api/paas/v4`
 - **支持模型**:
@@ -99,8 +116,10 @@
   - `chatglm_turbo`
 - **特点**: 国内合规，中文优化
 - **官网**: https://open.bigmodel.cn
+- **价格**: https://open.bigmodel.cn/pricing
 
 #### 百度文心一言
+
 - **供应商**: Baichuan
 - **Base URL**: `https://api.baichuan-ai.com/v1`
 - **支持模型**:
@@ -109,8 +128,10 @@
   - `Baichuan2-53B`
 - **特点**: 轻量化模型，推理速度快
 - **官网**: https://platform.baichuan-ai.com
+- **价格**: https://platform.baichuan-ai.com/price
 
 #### 月之暗面 (Kimi)
+
 - **供应商**: Moonshot
 - **Base URL**: `https://api.moonshot.cn/v1`
 - **支持模型**:
@@ -119,8 +140,10 @@
   - `moonshot-v1-128k`
 - **特点**: 长文本处理能力强
 - **官网**: https://platform.moonshot.cn
+- **价格**: https://platform.moonshot.cn/pricing
 
 #### 硅基流动
+
 - **供应商**: SiliconFlow
 - **Base URL**: `https://api.siliconflow.cn/v1`
 - **支持模型**:
@@ -129,8 +152,10 @@
   - `01-ai/Yi-1.5-34B-Chat-16K`
 - **特点**: 模型丰富，价格实惠
 - **官网**: https://siliconflow.cn
+- **价格**: https://siliconflow.cn/zh-cn/pricing
 
 #### 火山引擎
+
 - **供应商**: Volcengine
 - **Base URL**: `https://ark.cn-beijing.volces.com/api/v3`
 - **支持模型**:
@@ -139,8 +164,10 @@
   - `doubao-pro-32k`
 - **特点**: 字节跳动出品，性能稳定
 - **官网**: https://www.volcengine.com
+- **价格**: https://www.volcengine.com/product/ark
 
 #### 腾讯混元
+
 - **供应商**: Tencent
 - **Base URL**: `https://api.hunyuan.cloud.tencent.com/v1`
 - **支持模型**:
@@ -149,8 +176,10 @@
   - `hunyuan-pro`
 - **特点**: 腾讯云生态集成
 - **官网**: https://cloud.tencent.com
+- **价格**: https://cloud.tencent.com/product/hunyuan
 
 #### 阿里云通义千问
+
 - **供应商**: Aliyun
 - **Base URL**: `https://dashscope.aliyuncs.com/api/v1`
 - **支持模型**:
@@ -159,8 +188,10 @@
   - `qwen-max`
 - **特点**: 阿里云生态，安全合规
 - **官网**: https://dashscope.aliyuncs.com
+- **价格**: https://dashscope.aliyuncs.com/pricing
 
 #### DeepSeek
+
 - **供应商**: DeepSeek
 - **Base URL**: `https://api.deepseek.com/v1`
 - **支持模型**:
@@ -168,6 +199,7 @@
   - `deepseek-coder`
 - **特点**: 开源模型，性价比极高
 - **官网**: https://platform.deepseek.com
+- **价格**: https://platform.deepseek.com/pricing
 
 ### 🔧 配置使用方法
 
@@ -217,21 +249,19 @@ INSERT INTO "AiConfiguration" (
 ```typescript
 // 代码中的使用方式
 const aiResponse = await dynamicAiScheduler.getProviderForRole(user, 'narrative_synthesis');
-const result = await aiResponse.model.invoke([
-  new HumanMessage("创建一个奇幻故事...")
-]);
+const result = await aiResponse.model.invoke([new HumanMessage('创建一个奇幻故事...')]);
 ```
 
 ### 📊 供应商对比
 
-| 供应商 | 模型质量 | 价格 | 速度 | 中文支持 | 合规性 |
-|--------|----------|------|------|----------|--------|
-| OpenAI | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Anthropic | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Google | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| DeepSeek | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| 智谱AI | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| 月之暗面 | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| 供应商    | 模型质量   | 价格       | 速度       | 中文支持   | 合规性     |
+| --------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+| OpenAI    | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ |
+| Anthropic | ⭐⭐⭐⭐⭐ | ⭐⭐       | ⭐⭐⭐⭐   | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ |
+| Google    | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| DeepSeek  | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| 智谱AI    | ⭐⭐⭐⭐   | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| 月之暗面  | ⭐⭐⭐⭐   | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
 
 ### ⚠️ 注意事项
 
@@ -247,5 +277,5 @@ const result = await aiResponse.model.invoke([
 
 ---
 
-*最后更新: 2025-11-07*
-*维护者: 创世星环开发团队*
+_最后更新: 2025-11-07_
+_维护者: 创世星环开发团队_
