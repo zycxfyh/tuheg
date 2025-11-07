@@ -30,7 +30,9 @@
       </div>
       <div class="info-item">
         <span class="info-label">{{ $t('common.direction') }}:</span>
-        <span class="info-value">{{ isRTL(currentLanguage) ? $t('common.rtl') : $t('common.ltr') }}</span>
+        <span class="info-value">{{
+          isRTL(currentLanguage) ? $t('common.rtl') : $t('common.ltr')
+        }}</span>
       </div>
     </div>
 
@@ -42,8 +44,12 @@
         </div>
         <div class="preview-content">
           <div class="preview-text">
-            <p><strong>{{ $t('common.welcome') }}:</strong> {{ $t('tips.welcome') }}</p>
-            <p><em>{{ $t('common.note') }}:</em> {{ $t('tips.saveReminder') }}</p>
+            <p>
+              <strong>{{ $t('common.welcome') }}:</strong> {{ $t('tips.welcome') }}
+            </p>
+            <p>
+              <em>{{ $t('common.note') }}:</em> {{ $t('tips.saveReminder') }}
+            </p>
           </div>
           <div class="preview-buttons">
             <button class="preview-btn primary">{{ $t('common.save') }}</button>
@@ -56,26 +62,29 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { SUPPORTED_LANGUAGES, setLanguage, isRTL } from '@/i18n'
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { SUPPORTED_LANGUAGES, setLanguage, isRTL } from '@/i18n';
 
 // Vue i18n composable
-const { t, locale } = useI18n()
+const { t, locale } = useI18n();
 
 // 计算属性
-const currentLanguage = computed(() => locale.value)
-const supportedLanguages = computed(() => SUPPORTED_LANGUAGES)
+const currentLanguage = computed(() => locale.value);
+const supportedLanguages = computed(() => SUPPORTED_LANGUAGES);
 const currentLanguageInfo = computed(() => {
-  return SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage.value) || SUPPORTED_LANGUAGES[0]
-})
+  return (
+    SUPPORTED_LANGUAGES.find((lang) => lang.code === currentLanguage.value) ||
+    SUPPORTED_LANGUAGES[0]
+  );
+});
 
 // 方法
 const setLanguageHandler = (langCode) => {
-  setLanguage(langCode)
+  setLanguage(langCode);
   // 更新本地状态
-  locale.value = langCode
-}
+  locale.value = langCode;
+};
 
 const getLanguageRegion = (langCode) => {
   const regions = {
@@ -83,17 +92,17 @@ const getLanguageRegion = (langCode) => {
     'zh-TW': '台灣',
     'en-US': 'United States',
     'ja-JP': '日本',
-    'ko-KR': '대한민국'
-  }
-  return regions[langCode] || 'Unknown'
-}
+    'ko-KR': '대한민국',
+  };
+  return regions[langCode] || 'Unknown';
+};
 
 // 暴露方法供父组件使用
 defineExpose({
   setLanguage: setLanguageHandler,
   getCurrentLanguage: () => currentLanguage.value,
-  getSupportedLanguages: () => supportedLanguages.value
-})
+  getSupportedLanguages: () => supportedLanguages.value,
+});
 </script>
 
 <style scoped>
@@ -304,12 +313,12 @@ defineExpose({
 }
 
 /* RTL 支持 */
-[dir="rtl"] .language-button {
+[dir='rtl'] .language-button {
   text-align: right;
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .info-item {
+[dir='rtl'] .info-item {
   flex-direction: row-reverse;
 }
 </style>

@@ -88,28 +88,31 @@ export class MemoryHierarchyService {
     let averageSimilarity: number | undefined;
 
     switch (mode) {
-      case MemoryRecallMode.FULL_TEXT:
+      case MemoryRecallMode.FULL_TEXT: {
         // {{角色日记本}} - 无条件全文注入
         memories = allMemories.slice(0, limit).map((m) => m.content);
         break;
+      }
 
       case MemoryRecallMode.RAG_FRAGMENT:
-        // [[角色日记本]] - RAG片段检索
-        if (!contextText) {
-          throw new Error('RAG模式需要提供上下文文本');
+        {
+          // [[角色日记本]] - RAG片段检索
+          if (!contextText) {
+            throw new Error('RAG模式需要提供上下文文本');
+          }
+          const ragResults = await this.vectorSearch.searchSimilarMemories(
+            contextText,
+            gameId,
+            { id: 'system' } as any, // 简化用户对象
+            { limit, minSimilarity: 0 },
+          );
+          memories = ragResults.map((r) => r.content);
+          averageSimilarity =
+            ragResults.reduce((sum, r) => sum + r.similarity, 0) / ragResults.length || 0;
         }
-        const ragResults = await this.vectorSearch.searchSimilarMemories(
-          contextText,
-          gameId,
-          { id: 'system' } as any, // 简化用户对象
-          { limit, minSimilarity: 0 },
-        );
-        memories = ragResults.map((r) => r.content);
-        averageSimilarity =
-          ragResults.reduce((sum, r) => sum + r.similarity, 0) / ragResults.length || 0;
         break;
 
-      case MemoryRecallMode.THRESHOLD_FULL:
+      case MemoryRecallMode.THRESHOLD_FULL: {
         // <<角色日记本>> - 阈值全文注入
         if (!contextText) {
           throw new Error('阈值模式需要提供上下文文本');
@@ -129,22 +132,25 @@ export class MemoryHierarchyService {
         }
         averageSimilarity = thresholdResults[0]?.similarity;
         break;
+      }
 
       case MemoryRecallMode.THRESHOLD_RAG:
-        // 《《角色日记本》》 - 阈值RAG片段检索
-        if (!contextText) {
-          throw new Error('阈值RAG模式需要提供上下文文本');
+        {
+          // 《《角色日记本》》 - 阈值RAG片段检索
+          if (!contextText) {
+            throw new Error('阈值RAG模式需要提供上下文文本');
+          }
+          const thresholdRagResults = await this.vectorSearch.searchSimilarMemories(
+            contextText,
+            gameId,
+            { id: 'system' } as any,
+            { limit, minSimilarity: similarityThreshold },
+          );
+          memories = thresholdRagResults.map((r) => r.content);
+          averageSimilarity =
+            thresholdRagResults.reduce((sum, r) => sum + r.similarity, 0) /
+              thresholdRagResults.length || 0;
         }
-        const thresholdRagResults = await this.vectorSearch.searchSimilarMemories(
-          contextText,
-          gameId,
-          { id: 'system' } as any,
-          { limit, minSimilarity: similarityThreshold },
-        );
-        memories = thresholdRagResults.map((r) => r.content);
-        averageSimilarity =
-          thresholdRagResults.reduce((sum, r) => sum + r.similarity, 0) /
-            thresholdRagResults.length || 0;
         break;
 
       default:

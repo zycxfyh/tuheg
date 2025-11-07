@@ -364,17 +364,20 @@ export class AsyncToolCallExamples {
     if (!result) return '暂无结果';
 
     switch (toolName) {
-      case 'web_search':
+      case 'web_search': {
         const searchResults = result as any;
         return `搜索到 ${searchResults.results?.length || 0} 个结果，包括 "${searchResults.results?.[0]?.title || '无标题'}" 等`;
+      }
 
-      case 'data_analysis':
+      case 'data_analysis': {
         const analysisResults = result as any;
         return `分析完成，发现 ${analysisResults.analysis?.insights?.length || 0} 个关键洞察`;
+      }
 
-      case 'file_operation':
+      case 'file_operation': {
         const fileResults = result as any;
         return `文件操作完成，读取了 ${fileResults.size || 0} 字节的内容`;
+      }
 
       default:
         return JSON.stringify(result).slice(0, 200) + '...';

@@ -174,18 +174,21 @@ export class TimeAwareVectorSearchService {
     const normalizedTime = Math.min(hoursSinceCreation / config.timeWindowHours, 1);
 
     switch (config.decayFunction) {
-      case 'linear':
+      case 'linear': {
         // 线性衰减：越新权重越高
         return 1 - normalizedTime;
+      }
 
-      case 'exponential':
+      case 'exponential': {
         // 指数衰减：快速衰减旧内容
         return Math.exp(-2 * normalizedTime);
+      }
 
-      case 'gaussian':
+      case 'gaussian': {
         // 高斯衰减：中间时间权重最高
         const sigma = 0.3;
         return Math.exp(-Math.pow(normalizedTime - 0.3, 2) / (2 * sigma * sigma));
+      }
 
       default:
         return 1 - normalizedTime;

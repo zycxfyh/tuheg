@@ -9,7 +9,7 @@ export default {
     title: '创世星环 - AI创作平台',
     description: '让每一个创意都有无限可能，让AI成为你的故事伙伴',
     version: '版本',
-    loading: '加载中...'
+    loading: '加载中...',
   },
 
   // 导航和菜单
@@ -21,7 +21,7 @@ export default {
     profile: '个人资料',
     settings: '设置',
     help: '帮助',
-    logout: '退出登录'
+    logout: '退出登录',
   },
 
   // 通用按钮和操作
@@ -54,7 +54,7 @@ export default {
     reset: '重置',
     clear: '清除',
     selectAll: '全选',
-    deselectAll: '取消全选'
+    deselectAll: '取消全选',
   },
 
   // 状态和消息
@@ -69,7 +69,7 @@ export default {
     empty: '暂无数据',
     noResults: '未找到结果',
     offline: '离线模式',
-    online: '在线模式'
+    online: '在线模式',
   },
 
   // 错误消息
@@ -85,7 +85,7 @@ export default {
     conflict: '资源冲突，请稍后再试',
     tooManyRequests: '请求过于频繁，请稍后再试',
     maintenance: '系统维护中，请稍后再试',
-    unknown: '未知错误，请联系技术支持'
+    unknown: '未知错误，请联系技术支持',
   },
 
   // 创作相关
@@ -111,7 +111,7 @@ export default {
     customize: '自定义',
     templates: '模板',
     recent: '最近',
-    favorites: '收藏'
+    favorites: '收藏',
   },
 
   // 游戏界面
@@ -134,7 +134,7 @@ export default {
     pause: '暂停',
     resume: '继续',
     autoSave: '自动保存',
-    manualSave: '手动保存'
+    manualSave: '手动保存',
   },
 
   // AI配置
@@ -157,7 +157,7 @@ export default {
     usage: '使用统计',
     limits: '使用限制',
     reset: '重置配置',
-    advanced: '高级设置'
+    advanced: '高级设置',
   },
 
   // 主题设置
@@ -175,7 +175,7 @@ export default {
     background: '背景色',
     text: '文字色',
     preview: '主题预览',
-    reset: '重置为默认'
+    reset: '重置为默认',
   },
 
   // 设置页面
@@ -197,7 +197,7 @@ export default {
     backup: '备份',
     restore: '恢复',
     clearCache: '清除缓存',
-    resetSettings: '重置设置'
+    resetSettings: '重置设置',
   },
 
   // 用户认证
@@ -220,7 +220,7 @@ export default {
     welcomeBack: '欢迎回来',
     getStarted: '开始使用',
     verifyEmail: '验证邮箱',
-    resendVerification: '重新发送验证邮件'
+    resendVerification: '重新发送验证邮件',
   },
 
   // 插件系统
@@ -246,7 +246,7 @@ export default {
     dependencies: '依赖项',
     changelog: '更新日志',
     documentation: '文档',
-    support: '支持'
+    support: '支持',
   },
 
   // 性能和监控
@@ -261,7 +261,7 @@ export default {
     logs: '系统日志',
     metrics: '性能指标',
     alerts: '性能告警',
-    reports: '性能报告'
+    reports: '性能报告',
   },
 
   // 无障碍性
@@ -277,7 +277,7 @@ export default {
     skipLinks: '跳过链接',
     altText: '替代文本',
     captions: '字幕',
-    audioDesc: '音频描述'
+    audioDesc: '音频描述',
   },
 
   // 帮助和支持
@@ -293,7 +293,7 @@ export default {
     reportBug: '报告问题',
     featureRequest: '功能请求',
     liveChat: '在线客服',
-    knowledgeBase: '知识库'
+    knowledgeBase: '知识库',
   },
 
   // 通知消息
@@ -310,7 +310,7 @@ export default {
     push: '推送通知',
     inApp: '应用内通知',
     frequency: '通知频率',
-    types: '通知类型'
+    types: '通知类型',
   },
 
   // 时间相关
@@ -328,7 +328,7 @@ export default {
     tomorrow: '明天',
     dateFormat: 'YYYY年MM月DD日',
     timeFormat: 'HH:mm:ss',
-    datetimeFormat: 'YYYY年MM月DD日 HH:mm'
+    datetimeFormat: 'YYYY年MM月DD日 HH:mm',
   },
 
   // 文件和媒体
@@ -349,7 +349,7 @@ export default {
     crop: '裁剪',
     rotate: '旋转',
     resize: '调整大小',
-    compress: '压缩'
+    compress: '压缩',
   },
 
   // 确认对话框
@@ -362,7 +362,7 @@ export default {
     clear: '确定要清除所有数据吗？此操作无法撤销。',
     install: '确定要安装此插件吗？',
     uninstall: '确定要卸载此插件吗？相关配置将被清除。',
-    update: '确定要更新吗？应用将重新启动。'
+    update: '确定要更新吗？应用将重新启动。',
   },
 
   // 提示信息
@@ -375,6 +375,6 @@ export default {
     collaborationTip: '邀请朋友一起创作，可以获得更多灵感。',
     shortcutTip: '使用快捷键可以大大提升创作效率。',
     updateTip: '新版本已发布，建议及时更新以获得最佳体验。',
-    feedbackTip: '你的反馈对我们非常重要，请随时告诉我们你的想法。'
-  }
-}
+    feedbackTip: '你的反馈对我们非常重要，请随时告诉我们你的想法。',
+  },
+};
