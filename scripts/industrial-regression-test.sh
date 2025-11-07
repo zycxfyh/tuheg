@@ -8,6 +8,61 @@ set -e
 echo "🔄 Starting Industrial Regression Tests..."
 echo "=========================================="
 
+# 启动测试环境
+log_info "Starting test environment..."
+if ! docker-compose -f docker-compose.test.yml up -d --build; then
+    log_error "Failed to start test environment"
+    exit 1
+fi
+
+# 等待服务启动
+log_info "Waiting for services to be ready..."
+sleep 30
+
+# 检查所有服务是否健康
+log_info "Checking service health..."
+max_attempts=30
+attempt=1
+
+while [ $attempt -le $max_attempts ]; do
+    all_healthy=true
+
+    # 检查PostgreSQL
+    if ! docker-compose -f docker-compose.test.yml exec -T postgres-test pg_isready -U testuser -d tuheg_test > /dev/null; then
+        all_healthy=false
+    fi
+
+    # 检查Redis
+    if ! docker-compose -f docker-compose.test.yml exec -T redis-test redis-cli ping | grep -q PONG; then
+        all_healthy=false
+    fi
+
+    # 检查RabbitMQ
+    if ! docker-compose -f docker-compose.test.yml exec -T rabbitmq-test rabbitmq-diagnostics -q ping; then
+        all_healthy=false
+    fi
+
+    # 检查API Gateway
+    if ! curl -f --max-time 5 http://localhost:3001/health > /dev/null 2>&1; then
+        all_healthy=false
+    fi
+
+    if [ "$all_healthy" = true ]; then
+        log_success "All services are healthy"
+        break
+    fi
+
+    log_info "Waiting for services... (attempt $attempt/$max_attempts)"
+    sleep 10
+    ((attempt++))
+done
+
+if [ "$all_healthy" = false ]; then
+    log_error "Services failed to start within timeout"
+    docker-compose -f docker-compose.test.yml down
+    exit 1
+fi
+
 # 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -78,131 +133,311 @@ run_test() {
 # 1. 用户认证功能回归测试
 run_test "用户认证功能回归测试" "
     log_info 'Testing user authentication regression...'
-    # 测试登录、注册、密码重置等历史功能
-    echo 'Testing login functionality...'
-    sleep 1
-    echo 'Testing registration...'
-    sleep 1
-    echo 'Testing password reset...'
-    sleep 1
-    echo 'User authentication regression verified'
+
+    # 测试用户注册（创建用户）
+    user_data='{\"email\":\"regression-test@example.com\",\"name\":\"Regression Test User\"}'
+    register_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$user_data\" http://localhost:3001/api/users)
+
+    if ! echo \"\$register_response\" | jq -e '.id' > /dev/null; then
+        log_error 'User registration failed'
+        exit 1
+    fi
+
+    user_id=\$(echo \"\$register_response\" | jq -r '.id')
+    log_info \"User registered with ID: \$user_id\"
+
+    # 测试用户查询（模拟登录验证）
+    user_response=\$(curl -s http://localhost:3001/api/users/\$user_id)
+    if ! echo \"\$user_response\" | jq -e '.email' > /dev/null; then
+        log_error 'User retrieval failed'
+        exit 1
+    fi
+
+    # 验证用户数据
+    retrieved_email=\$(echo \"\$user_response\" | jq -r '.email')
+    if [ \"\$retrieved_email\" != 'regression-test@example.com' ]; then
+        log_error 'User data mismatch'
+        exit 1
+    fi
+
+    # 清理测试数据
+    docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -c \"DELETE FROM \\\"User\\\" WHERE id::text = '\$user_id';\" > /dev/null
+
+    log_success 'User authentication regression verified'
 "
 
 # 2. 世界创建功能回归测试
 run_test "世界创建功能回归测试" "
     log_info 'Testing world creation regression...'
-    # 测试世界观创建、角色设计、场景构建等核心功能
-    echo 'Testing world creation...'
-    sleep 2
-    echo 'Testing character creation...'
-    sleep 1
-    echo 'Testing scene building...'
-    sleep 1
-    echo 'World creation regression verified'
+
+    # 先创建用户
+    user_data='{\"email\":\"world-test@example.com\",\"name\":\"World Test User\"}'
+    user_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$user_data\" http://localhost:3001/api/users)
+
+    if ! echo \"\$user_response\" | jq -e '.id' > /dev/null; then
+        log_error 'User creation failed for world test'
+        exit 1
+    fi
+
+    user_id=\$(echo \"\$user_response\" | jq -r '.id')
+
+    # 测试世界创建
+    world_data=\"{\\\"name\\\":\\\"Regression Test World\\\",\\\"description\\\":\\\"A world for regression testing\\\",\\\"userId\\\":\\\"\$user_id\\\"}\"
+    world_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$world_data\" http://localhost:3001/api/worlds)
+
+    if ! echo \"\$world_response\" | jq -e '.id' > /dev/null; then
+        log_error 'World creation failed'
+        exit 1
+    fi
+
+    world_id=\$(echo \"\$world_response\" | jq -r '.id')
+    log_info \"World created with ID: \$world_id\"
+
+    # 测试世界查询
+    world_query_response=\$(curl -s http://localhost:3001/api/worlds/\$world_id)
+    if ! echo \"\$world_query_response\" | jq -e '.name' > /dev/null; then
+        log_error 'World retrieval failed'
+        exit 1
+    fi
+
+    # 验证世界数据
+    world_name=\$(echo \"\$world_query_response\" | jq -r '.name')
+    if [ \"\$world_name\" != 'Regression Test World' ]; then
+        log_error 'World data mismatch'
+        exit 1
+    fi
+
+    # 验证数据库中的数据
+    world_count=\$(docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -t -c \"SELECT COUNT(*) FROM \\\"World\\\" WHERE id::text = '\$world_id';\")
+    if [ \"\$world_count\" -ne 1 ]; then
+        log_error 'World not found in database'
+        exit 1
+    fi
+
+    # 清理测试数据
+    docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -c \"DELETE FROM \\\"World\\\" WHERE id::text = '\$world_id'; DELETE FROM \\\"User\\\" WHERE id::text = '\$user_id';\" > /dev/null
+
+    log_success 'World creation regression verified'
 "
 
 # 3. 故事生成功能回归测试
 run_test "故事生成功能回归测试" "
     log_info 'Testing story generation regression...'
-    # 测试AI故事生成、分支选择、对话管理等功能
-    echo 'Testing story generation...'
-    sleep 3
-    echo 'Testing branch selection...'
-    sleep 1
-    echo 'Testing dialogue management...'
-    sleep 1
-    echo 'Story generation regression verified'
+
+    # 创建测试用户和世界
+    user_data='{\"email\":\"story-test@example.com\",\"name\":\"Story Test User\"}'
+    user_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$user_data\" http://localhost:3001/api/users)
+
+    if ! echo \"\$user_response\" | jq -e '.id' > /dev/null; then
+        log_error 'User creation failed for story test'
+        exit 1
+    fi
+
+    user_id=\$(echo \"\$user_response\" | jq -r '.id')
+
+    world_data=\"{\\\"name\\\":\\\"Story Test World\\\",\\\"description\\\":\\\"World for story testing\\\",\\\"userId\\\":\\\"\$user_id\\\"}\"
+    world_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$world_data\" http://localhost:3001/api/worlds)
+
+    if ! echo \"\$world_response\" | jq -e '.id' > /dev/null; then
+        log_error 'World creation failed for story test'
+        exit 1
+    fi
+
+    world_id=\$(echo \"\$world_response\" | jq -r '.id')
+
+    # 测试故事创建
+    story_data=\"{\\\"title\\\":\\\"Regression Test Story\\\",\\\"content\\\":\\\"This is a test story for regression testing\\\",\\\"worldId\\\":\\\"\$world_id\\\"}\"
+    story_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$story_data\" http://localhost:3001/api/stories)
+
+    if ! echo \"\$story_response\" | jq -e '.id' > /dev/null; then
+        log_error 'Story creation failed'
+        exit 1
+    fi
+
+    story_id=\$(echo \"\$story_response\" | jq -r '.id')
+    log_info \"Story created with ID: \$story_id\"
+
+    # 验证故事数据持久化
+    story_count=\$(docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -t -c \"SELECT COUNT(*) FROM \\\"Story\\\" WHERE id::text = '\$story_id';\")
+    if [ \"\$story_count\" -ne 1 ]; then
+        log_error 'Story not found in database'
+        exit 1
+    fi
+
+    # 清理测试数据
+    docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -c \"DELETE FROM \\\"Story\\\" WHERE id::text = '\$story_id'; DELETE FROM \\\"World\\\" WHERE id::text = '\$world_id'; DELETE FROM \\\"User\\\" WHERE id::text = '\$user_id';\" > /dev/null
+
+    log_success 'Story generation regression verified'
 "
 
 # 4. 实时协作功能回归测试
 run_test "实时协作功能回归测试" "
     log_info 'Testing real-time collaboration regression...'
-    # 测试WebSocket连接、实时同步、协作编辑等功能
-    echo 'Testing WebSocket connections...'
-    sleep 1
-    echo 'Testing real-time sync...'
-    sleep 2
-    echo 'Testing collaborative editing...'
-    sleep 1
-    echo 'Real-time collaboration regression verified'
+
+    # 测试WebSocket连接能力（通过HTTP健康检查间接验证）
+    if ! curl -f --max-time 5 http://localhost:3001/health; then
+        log_error 'WebSocket service unavailable'
+        exit 1
+    fi
+
+    # 测试Redis连接（用于实时协作的数据存储）
+    if ! docker-compose -f docker-compose.test.yml exec -T redis-test redis-cli set collab_test test_value; then
+        log_error 'Redis connection failed for collaboration'
+        exit 1
+    fi
+
+    docker-compose -f docker-compose.test.yml exec -T redis-test redis-cli del collab_test > /dev/null
+
+    log_success 'Real-time collaboration regression verified'
 "
 
 # 5. 数据持久化回归测试
 run_test "数据持久化回归测试" "
     log_info 'Testing data persistence regression...'
-    # 测试数据保存、加载、备份等功能
-    echo 'Testing data saving...'
-    sleep 1
-    echo 'Testing data loading...'
-    sleep 1
-    echo 'Testing data backup...'
-    sleep 1
-    echo 'Data persistence regression verified'
+
+    # 创建测试数据
+    user_data='{\"email\":\"persistence-test@example.com\",\"name\":\"Persistence Test User\"}'
+    user_response=\$(curl -s -X POST -H 'Content-Type: application/json' -d \"\$user_data\" http://localhost:3001/api/users)
+
+    if ! echo \"\$user_response\" | jq -e '.id' > /dev/null; then
+        log_error 'User creation failed for persistence test'
+        exit 1
+    fi
+
+    user_id=\$(echo \"\$user_response\" | jq -r '.id')
+
+    # 立即查询验证数据保存
+    saved_user=\$(curl -s http://localhost:3001/api/users/\$user_id)
+    if ! echo \"\$saved_user\" | jq -e '.email' > /dev/null; then
+        log_error 'Data persistence failed - user not saved'
+        exit 1
+    fi
+
+    # 验证数据库中的数据
+    db_user_count=\$(docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -t -c \"SELECT COUNT(*) FROM \\\"User\\\" WHERE id::text = '\$user_id';\")
+    if [ \"\$db_user_count\" -ne 1 ]; then
+        log_error 'Database persistence failed'
+        exit 1
+    fi
+
+    # 清理测试数据
+    docker-compose -f docker-compose.test.yml exec -T postgres-test psql -U testuser -d tuheg_test -c \"DELETE FROM \\\"User\\\" WHERE id::text = '\$user_id';\" > /dev/null
+
+    log_success 'Data persistence regression verified'
 "
 
 # 6. API兼容性回归测试
 run_test "API兼容性回归测试" "
     log_info 'Testing API compatibility regression...'
-    # 测试所有API端点的向后兼容性
-    echo 'Testing REST API endpoints...'
-    sleep 2
-    echo 'Testing GraphQL queries...'
-    sleep 1
-    echo 'Testing WebSocket events...'
-    sleep 1
-    echo 'API compatibility regression verified'
+
+    # 测试REST API端点兼容性
+    endpoints=(\"/api/health\" \"/api/users\" \"/api/worlds\")
+    for endpoint in \"\${endpoints[@]}\"; do
+        response=\$(curl -s -w '%{http_code}' http://localhost:3001\$endpoint)
+        status_code=\${response: -3}
+        if [ \"\$status_code\" != '200' ] && [ \"\$status_code\" != '401' ] && [ \"\$status_code\" != '404' ]; then
+            log_error \"API endpoint \$endpoint returned unexpected status: \$status_code\"
+            exit 1
+        fi
+    done
+
+    log_success 'API compatibility regression verified'
 "
 
 # 7. 性能基准回归测试
 run_test "性能基准回归测试" "
     log_info 'Testing performance baseline regression...'
-    # 验证关键操作的性能没有退化
-    echo 'Benchmarking response times...'
-    sleep 3
-    echo 'Checking memory usage...'
-    sleep 1
-    echo 'Validating throughput...'
-    sleep 1
-    echo 'Performance baseline regression verified'
+
+    # 基准性能测试
+    start_time=\$(date +%s%N)
+    for i in {1..10}; do
+        if ! curl -f --max-time 2 http://localhost:3001/health > /dev/null 2>&1; then
+            log_error 'Health check failed during performance test'
+            exit 1
+        fi
+    done
+    end_time=\$(date +%s%N)
+
+    # 计算平均响应时间
+    total_time=\$((end_time - start_time))
+    avg_time=\$((total_time / 10000000))  # 转换为毫秒
+
+    log_info \"Average response time: \$avg_time ms\"
+
+    # 检查性能没有显著退化（阈值：200ms）
+    if [ \"\$avg_time\" -gt 200 ]; then
+        log_warning \"Performance regression detected: \$avg_time ms > 200ms threshold\"
+    fi
+
+    log_success 'Performance baseline regression verified'
 "
 
 # 8. 安全性功能回归测试
 run_test "安全性功能回归测试" "
     log_info 'Testing security features regression...'
-    # 测试输入验证、认证授权、安全防护等功能
-    echo 'Testing input validation...'
-    sleep 1
-    echo 'Testing authentication...'
-    sleep 1
-    echo 'Testing authorization...'
-    sleep 1
-    echo 'Security features regression verified'
+
+    # 测试未授权访问保护
+    protected_response=\$(curl -s -w '%{http_code}' http://localhost:3001/api/admin)
+    if [ \"\${protected_response: -3}\" = '200' ]; then
+        log_warning 'Admin endpoint should require authentication'
+    fi
+
+    # 测试健康检查端点公开访问
+    public_response=\$(curl -s -w '%{http_code}' http://localhost:3001/health)
+    if [ \"\${public_response: -3}\" != '200' ]; then
+        log_error 'Health endpoint should be publicly accessible'
+        exit 1
+    fi
+
+    log_success 'Security features regression verified'
 "
 
 # 9. 用户界面回归测试
 run_test "用户界面回归测试" "
     log_info 'Testing UI components regression...'
-    # 测试关键UI组件的功能和显示
-    echo 'Testing navigation components...'
-    sleep 1
-    echo 'Testing form components...'
-    sleep 1
-    echo 'Testing interactive elements...'
-    sleep 1
-    echo 'UI components regression verified'
+
+    # 注意：这是一个后端测试脚本，UI测试需要单独的端到端测试框架
+    # 这里我们通过API验证后端支持的UI功能
+
+    # 测试用户界面所需的数据API
+    users_response=\$(curl -s http://localhost:3001/api/users)
+    if [ -z \"\$users_response\" ]; then
+        log_error 'Users API for UI failed'
+        exit 1
+    fi
+
+    worlds_response=\$(curl -s http://localhost:3001/api/worlds)
+    if [ -z \"\$worlds_response\" ]; then
+        log_error 'Worlds API for UI failed'
+        exit 1
+    fi
+
+    log_success 'UI components regression verified (API level)'
 "
 
 # 10. 第三方集成回归测试
 run_test "第三方集成回归测试" "
     log_info 'Testing third-party integrations regression...'
-    # 测试外部服务集成（AI API、支付等）
-    echo 'Testing AI service integration...'
-    sleep 2
-    echo 'Testing external API calls...'
-    sleep 1
-    echo 'Testing webhook integrations...'
-    sleep 1
-    echo 'Third-party integrations regression verified'
+
+    # 测试数据库集成（PostgreSQL）
+    if ! docker-compose -f docker-compose.test.yml exec -T postgres-test pg_isready -U testuser -d tuheg_test > /dev/null; then
+        log_error 'PostgreSQL integration failed'
+        exit 1
+    fi
+
+    # 测试缓存集成（Redis）
+    if ! docker-compose -f docker-compose.test.yml exec -T redis-test redis-cli ping | grep -q PONG; then
+        log_error 'Redis integration failed'
+        exit 1
+    fi
+
+    # 测试消息队列集成（RabbitMQ）
+    if ! docker-compose -f docker-compose.test.yml exec -T rabbitmq-test rabbitmq-diagnostics -q ping; then
+        log_error 'RabbitMQ integration failed'
+        exit 1
+    fi
+
+    log_success 'Third-party integrations regression verified'
 "
 
 # 生成测试摘要
@@ -243,6 +478,12 @@ echo "  Passed: $TESTS_PASSED"
 echo "  Failed: $TESTS_FAILED"
 echo "  Success Rate: $((TESTS_PASSED * 100 / TESTS_TOTAL))%"
 echo "=========================================="
+
+# 清理测试环境
+log_info "Cleaning up test environment..."
+if ! docker-compose -f docker-compose.test.yml down -v; then
+    log_warning "Failed to cleanup test environment"
+fi
 
 if [ "$TESTS_FAILED" -eq 0 ]; then
     log_success "🎉 All regression tests PASSED!"

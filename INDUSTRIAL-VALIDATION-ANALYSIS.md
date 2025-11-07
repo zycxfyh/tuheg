@@ -26,12 +26,12 @@ _分析时间: 2025年11月7日 | 分析对象: 集成测试、回归测试、St
 
 ### 📋 失败统计
 
-| 验证阶段 | 状态 | 实际问题 | 根本原因 | 影响程度 |
-|:--------:|:----:|:--------:|:--------:|:--------:|
-| **4️⃣ 集成测试** | ❌ 脚本执行失败 | 缺少实际测试逻辑 | 脚本设计缺陷 | 中等 |
-| **6️⃣ Staging部署** | ❌ Docker构建失败 | 前端依赖缺失 | 容器化配置错误 | 严重 |
-| **7️⃣ 回归测试** | ❌ 脚本执行失败 | 缺少实际测试逻辑 | 脚本设计缺陷 | 中等 |
-| **其他验证** | ✅ 全部通过 | - | - | - |
+|      验证阶段      |       状态        |     实际问题     |    根本原因    | 影响程度 |
+| :----------------: | :---------------: | :--------------: | :------------: | :------: |
+|  **4️⃣ 集成测试**   |  ❌ 脚本执行失败  | 缺少实际测试逻辑 |  脚本设计缺陷  |   中等   |
+| **6️⃣ Staging部署** | ❌ Docker构建失败 |   前端依赖缺失   | 容器化配置错误 |   严重   |
+|  **7️⃣ 回归测试**   |  ❌ 脚本执行失败  | 缺少实际测试逻辑 |  脚本设计缺陷  |   中等   |
+|    **其他验证**    |    ✅ 全部通过    |        -         |       -        |    -     |
 
 ### 🔍 核心问题识别
 
@@ -221,6 +221,7 @@ RUN pnpm install --frozen-lockfile  # 缺少开发依赖
 ##### 问题2: 前端项目依赖不完整
 
 **检查结果：**
+
 - ✅ Vue 3, Vite, TypeScript 等核心依赖存在
 - ❌ 缺少 Tailwind CSS 相关依赖
 - ❌ 缺少部分构建时依赖
@@ -329,9 +330,7 @@ describe('Integration Tests', () => {
       .withUsername('testuser')
       .start();
 
-    redisContainer = await new GenericContainer('redis:7-alpine')
-      .withExposedPorts(6379)
-      .start();
+    redisContainer = await new GenericContainer('redis:7-alpine').withExposedPorts(6379).start();
 
     rabbitContainer = await new GenericContainer('rabbitmq:3-management')
       .withExposedPorts(5672, 15672)
@@ -347,7 +346,7 @@ describe('Integration Tests', () => {
 
     // 验证数据库持久化
     const savedWorld = await prisma.world.findUnique({
-      where: { id: response.body.id }
+      where: { id: response.body.id },
     });
     expect(savedWorld).toBeDefined();
   });
@@ -440,7 +439,7 @@ describe('API Regression Tests', () => {
     it('should create world with valid data', async () => {
       const worldData = {
         name: 'Regression Test World',
-        description: 'Testing world creation regression'
+        description: 'Testing world creation regression',
       };
 
       const response = await request(app.getHttpServer())
@@ -451,12 +450,12 @@ describe('API Regression Tests', () => {
       expect(response.body).toMatchObject({
         id: expect.any(String),
         name: worldData.name,
-        description: worldData.description
+        description: worldData.description,
       });
 
       // 验证数据库持久化
       const savedWorld = await prisma.world.findUnique({
-        where: { id: response.body.id }
+        where: { id: response.body.id },
       });
       expect(savedWorld).toBeDefined();
     });
@@ -482,7 +481,7 @@ describe('Performance Regression Tests', () => {
     // 执行世界创建操作
     await createWorld({
       name: 'Performance Test World',
-      description: 'Testing performance regression'
+      description: 'Testing performance regression',
     });
 
     const endTime = Date.now();
@@ -649,20 +648,20 @@ COPY --from=backend-builder /app/apps/backend-gateway/package.json ./
 
 ### 🎯 修复优先级
 
-| 修复项目 | 优先级 | 复杂度 | 预期收益 | 实施时间 |
-|:--------:|:------:|:------:|:--------:|:--------:|
-| **Staging部署修复** | 🔴 高 | 中等 | 恢复容器化部署能力 | 2-3天 |
-| **集成测试修复** | 🟡 中 | 较高 | 提升集成质量保障 | 3-5天 |
-| **回归测试修复** | 🟢 低 | 中等 | 完善回归验证体系 | 2-4天 |
+|      修复项目       | 优先级 | 复杂度 |      预期收益      | 实施时间 |
+| :-----------------: | :----: | :----: | :----------------: | :------: |
+| **Staging部署修复** | 🔴 高  |  中等  | 恢复容器化部署能力 |  2-3天   |
+|  **集成测试修复**   | 🟡 中  |  较高  |  提升集成质量保障  |  3-5天   |
+|  **回归测试修复**   | 🟢 低  |  中等  |  完善回归验证体系  |  2-4天   |
 
 ### 📊 质量提升预期
 
-| 质量指标 | 当前值 | 修复后预期 | 提升幅度 |
-|:--------:|:------:|:----------:|:--------:|
-| **部署成功率** | 10% | 95% | +85% |
-| **集成缺陷发现率** | 0% | 90% | +90% |
-| **回归缺陷检出率** | 0% | 85% | +85% |
-| **整体验证通过率** | 77.8% | 98% | +20.2% |
+|      质量指标      | 当前值 | 修复后预期 | 提升幅度 |
+| :----------------: | :----: | :--------: | :------: |
+|   **部署成功率**   |  10%   |    95%     |   +85%   |
+| **集成缺陷发现率** |   0%   |    90%     |   +90%   |
+| **回归缺陷检出率** |   0%   |    85%     |   +85%   |
+| **整体验证通过率** | 77.8%  |    98%     |  +20.2%  |
 
 ### 💰 成本效益分析
 
@@ -689,16 +688,19 @@ COPY --from=backend-builder /app/apps/backend-gateway/package.json ./
 ### 📅 分阶段实施计划
 
 #### 第一阶段 (第1-2周): 基础设施修复
+
 1. **修复Docker构建问题**
 2. **完善前端依赖配置**
 3. **验证容器化部署流程**
 
 #### 第二阶段 (第3-4周): 测试体系建设
+
 1. **实现真正的集成测试**
 2. **构建回归测试套件**
 3. **集成CI/CD流水线**
 
 #### 第三阶段 (第5-6周): 优化和监控
+
 1. **性能基准建立**
 2. **监控告警配置**
 3. **文档和培训完善**
@@ -768,8 +770,8 @@ COPY --from=backend-builder /app/apps/backend-gateway/package.json ./
 
 ---
 
-*分析完成时间: 2025年11月7日*  
-*分析人员: AI助手*  
-*文档版本: v1.0*
+_分析完成时间: 2025年11月7日_  
+_分析人员: AI助手_  
+_文档版本: v1.0_
 
 </div>
