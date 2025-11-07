@@ -19,10 +19,15 @@
     "industrial-report:compliance": "./scripts/industrial-report.sh compliance",
     "industrial-recovery": "./scripts/industrial-recovery.sh auto",
     "industrial-status": "./scripts/industrial-integration.sh status",
+    "test:integration": "./scripts/industrial-integration-test.sh",
+    "test:e2e": "./scripts/industrial-e2e-test.sh",
+    "test:regression": "./scripts/industrial-regression-test.sh",
     "format": "prettier --write \"**/*.{ts,js,json,md,vue}\"",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.10.0",
     "eslint": "^8.57.0",
