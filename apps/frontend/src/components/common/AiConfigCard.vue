@@ -3,22 +3,22 @@
   <div class="ai-config-card" :class="{ 'is-new': isNew, 'is-loading': isLoading }">
     <!-- Step Indicator -->
     <div class="step-indicator">
-      <div class="step" :class="{ 'active': currentStep >= 1, 'completed': currentStep > 1 }">
+      <div class="step" :class="{ active: currentStep >= 1, completed: currentStep > 1 }">
         <span class="step-number">1</span>
         <span class="step-label">选择供应商</span>
       </div>
       <div class="step-connector"></div>
-      <div class="step" :class="{ 'active': currentStep >= 2, 'completed': currentStep > 2 }">
+      <div class="step" :class="{ active: currentStep >= 2, completed: currentStep > 2 }">
         <span class="step-number">2</span>
         <span class="step-label">配置密钥</span>
       </div>
       <div class="step-connector"></div>
-      <div class="step" :class="{ 'active': currentStep >= 3, 'completed': currentStep > 3 }">
+      <div class="step" :class="{ active: currentStep >= 3, completed: currentStep > 3 }">
         <span class="step-number">3</span>
         <span class="step-label">选择模型</span>
       </div>
       <div class="step-connector"></div>
-      <div class="step" :class="{ 'active': currentStep >= 4, 'completed': currentStep > 4 }">
+      <div class="step" :class="{ active: currentStep >= 4, completed: currentStep > 4 }">
         <span class="step-number">4</span>
         <span class="step-label">测试连接</span>
       </div>
@@ -35,7 +35,9 @@
       <div class="status-content">
         <div class="status-title">{{ connectionStatus.title }}</div>
         <div class="status-message">{{ connectionStatus.message }}</div>
-        <div v-if="connectionStatus.details" class="status-details">{{ connectionStatus.details }}</div>
+        <div v-if="connectionStatus.details" class="status-details">
+          {{ connectionStatus.details }}
+        </div>
       </div>
     </div>
 
@@ -43,7 +45,12 @@
       <!-- Provider Selection -->
       <div>
         <label>供应商 (Provider) <span class="required">*</span></label>
-        <select v-model="editableConfig.provider" @change="onProviderChange" :disabled="isLoading" :class="{ 'error': errors.provider }">
+        <select
+          v-model="editableConfig.provider"
+          @change="onProviderChange"
+          :disabled="isLoading"
+          :class="{ error: errors.provider }"
+        >
           <option disabled value="">请选择一个供应商</option>
           <optgroup v-for="group in providerGroups" :key="group.label" :label="group.label">
             <option v-for="provider in group.providers" :key="provider.id" :value="provider.id">
@@ -57,7 +64,11 @@
       <!-- Model ID Selection -->
       <div>
         <label>模型ID (Model ID) <span class="required">*</span></label>
-        <select v-model="editableConfig.modelId" :disabled="isLoading || !fetchedModels.length" :class="{ 'error': errors.modelId }">
+        <select
+          v-model="editableConfig.modelId"
+          :disabled="isLoading || !fetchedModels.length"
+          :class="{ error: errors.modelId }"
+        >
           <option v-if="!fetchedModels.length" disabled value="">
             {{ modelSelectPlaceholder }}
           </option>
@@ -84,13 +95,13 @@
             v-model.trim="editableConfig.baseUrl"
             placeholder="选择供应商后将自动填充"
             :disabled="isLoading"
-            :class="{ 'error': errors.baseUrl }"
+            :class="{ error: errors.baseUrl }"
           />
           <button
             class="button small"
             @click="handleTestConnection"
             :disabled="isLoading || !canTestConnection"
-            :class="{ 'primary': canTestConnection, 'disabled': !canTestConnection }"
+            :class="{ primary: canTestConnection, disabled: !canTestConnection }"
           >
             {{ testButtonText }}
           </button>
@@ -106,7 +117,7 @@
           v-model.trim="editableConfig.apiKey"
           placeholder="在此输入您的API密钥"
           :disabled="isLoading"
-          :class="{ 'error': errors.apiKey }"
+          :class="{ error: errors.apiKey }"
         />
         <div v-if="errors.apiKey" class="error-message">{{ errors.apiKey }}</div>
       </div>
@@ -175,7 +186,7 @@ const errors = ref({
   provider: '',
   apiKey: '',
   baseUrl: '',
-  modelId: ''
+  modelId: '',
 });
 
 const connectionStatus = ref(null);
@@ -268,7 +279,7 @@ function clearErrors() {
     provider: '',
     apiKey: '',
     baseUrl: '',
-    modelId: ''
+    modelId: '',
   };
 }
 
@@ -347,7 +358,10 @@ async function handleTestConnection() {
 
     if (response.models && response.models.length > 0) {
       // Auto-select first model if none selected
-      if (!editableConfig.value.modelId || !response.models.includes(editableConfig.value.modelId)) {
+      if (
+        !editableConfig.value.modelId ||
+        !response.models.includes(editableConfig.value.modelId)
+      ) {
         editableConfig.value.modelId = response.models[0];
       }
 
@@ -355,7 +369,7 @@ async function handleTestConnection() {
         type: 'success',
         title: '连接成功',
         message: response.message || `成功获取 ${response.models.length} 个可用模型`,
-        details: null
+        details: null,
       };
 
       showToast(response.message || `成功获取 ${response.models.length} 个模型！`, 'success');
@@ -364,18 +378,18 @@ async function handleTestConnection() {
         type: 'warning',
         title: '连接成功但无模型',
         message: '连接成功，但未找到可用模型',
-        details: '请检查您的API密钥权限或联系供应商支持'
+        details: '请检查您的API密钥权限或联系供应商支持',
       };
       showToast('连接成功，但未找到可用模型。', 'warning');
     }
   } catch (error) {
     console.error('Connection test failed:', error);
 
-    let errorInfo = {
+    const errorInfo = {
       type: 'error',
       title: '连接失败',
       message: '未知错误',
-      details: null
+      details: null,
     };
 
     if (error.response) {
@@ -390,7 +404,10 @@ async function handleTestConnection() {
           errors.value.provider = errorInfo.message;
         } else if (errorData.message.includes('API密钥') || errorData.message.includes('apiKey')) {
           errors.value.apiKey = errorInfo.message;
-        } else if (errorData.message.includes('Base URL') || errorData.message.includes('baseUrl')) {
+        } else if (
+          errorData.message.includes('Base URL') ||
+          errorData.message.includes('baseUrl')
+        ) {
           errors.value.baseUrl = errorInfo.message;
         }
       }
@@ -637,7 +654,8 @@ label {
 }
 
 /* Form Controls */
-select, input {
+select,
+input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
@@ -648,18 +666,21 @@ select, input {
   transition: all 0.2s ease;
 }
 
-select:focus, input:focus {
+select:focus,
+input:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-select.error, input.error {
+select.error,
+input.error {
   border-color: var(--error-color);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-select:disabled, input:disabled {
+select:disabled,
+input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

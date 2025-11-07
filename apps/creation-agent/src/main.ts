@@ -63,10 +63,18 @@ async function bootstrap() {
     },
   });
 
+  // [新增] 配置HTTP服务器
+  const httpPort = configService.get<number>('CREATION_AGENT_HTTP_PORT', 8080);
+  app.setGlobalPrefix('api/v1/creation'); // API前缀
+
   // [Sentry] 使用 try...catch 块包裹启动过程
   try {
     await app.startAllMicroservices();
-    console.log('🚀 Creation Agent is listening for tasks on the event bus...');
+    await app.listen(httpPort);
+
+    console.log('🚀 Creation Agent is running:');
+    console.log(`   📡 Microservices: listening for tasks on the event bus`);
+    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/creation`);
   } catch (err) {
     // [Sentry] 如果启动失败，捕获异常并上报
     Sentry.captureException(err);

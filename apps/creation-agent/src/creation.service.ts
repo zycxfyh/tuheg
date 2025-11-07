@@ -188,6 +188,7 @@ export class CreationService {
           system_prompt: systemPrompt,
         },
         architectResponseSchema,
+        60000, // 60秒超时，创建世界任务较复杂
       );
       return response;
     } catch (error: unknown) {

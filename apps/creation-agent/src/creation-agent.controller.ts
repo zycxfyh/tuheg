@@ -1,8 +1,9 @@
 // 文件路径: apps/creation-agent/src/creation-agent.controller.ts
 
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Logger, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 import { CreationService } from './creation.service';
+import { z } from 'zod';
 
 // [核心] 定义创世任务的数据结构
 interface GameCreationPayload {
@@ -11,13 +12,91 @@ interface GameCreationPayload {
   concept: string;
 }
 
+// [新增] HTTP API 输入验证
+const CreateWorldSchema = z.object({
+  userId: z.string().min(1, '用户ID不能为空'),
+  concept: z
+    .string()
+    .min(10, '世界概念描述至少需要10个字符')
+    .max(1000, '世界概念描述不能超过1000个字符'),
+});
+
+type CreateWorldDto = z.infer<typeof CreateWorldSchema>;
+
 @Controller()
 export class CreationAgentController {
   private readonly logger = new Logger(CreationAgentController.name);
 
   constructor(private readonly creationService: CreationService) {}
 
-  // [核心] 监听由主网关 (nexus-engine) 发出的“请求创建游戏”信号
+  // [新增] HTTP API: 直接创建世界
+  @Post('create-world')
+  async createWorld(@Body() dto: CreateWorldDto) {
+    try {
+      // 验证输入
+      const validationResult = CreateWorldSchema.safeParse(dto);
+      if (!validationResult.success) {
+        throw new HttpException(
+          {
+            message: '输入验证失败',
+            errors: validationResult.error.format(),
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      this.logger.log(`HTTP API: Creating world for user ${dto.userId}`);
+
+      // 执行世界创建
+      const result = await this.creationService.createNewWorld(dto);
+
+      return {
+        success: true,
+        message: '世界创建任务已开始处理',
+        data: result,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      this.logger.error(`HTTP API: Failed to create world for user ${dto.userId}`, error);
+
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      throw new HttpException(
+        {
+          message: '世界创建失败',
+          error: error.message || '未知错误',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // [新增] HTTP API: 获取创建状态
+  @Post('creation-status')
+  async getCreationStatus() {
+    try {
+      // 这里可以实现状态查询逻辑
+      // 目前返回基础状态信息
+      return {
+        success: true,
+        message: 'Creation Agent is running',
+        status: 'ready',
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: '获取状态失败',
+          error: error.message || '未知错误',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // [核心] 监听由主网关 (nexus-engine) 发出的"请求创建游戏"信号
   @MessagePattern('GAME_CREATION_REQUESTED')
   async handleGameCreation(@Payload() data: GameCreationPayload, @Ctx() context: RmqContext) {
     this.logger.log(`Received game creation request for user: ${data.userId}`);

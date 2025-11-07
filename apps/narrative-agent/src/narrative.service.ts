@@ -211,6 +211,7 @@ export class NarrativeService {
         system_prompt: systemPrompt,
       },
       progressionResponseSchema,
+      40000, // 40秒超时，叙事生成任务适中复杂度
     );
   }
 }

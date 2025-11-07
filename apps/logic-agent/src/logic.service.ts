@@ -91,6 +91,7 @@ export class LogicService {
           system_prompt: systemPrompt,
         },
         directiveSetSchema,
+        45000, // 45秒超时，逻辑推理任务适中复杂度
       );
 
       return response;

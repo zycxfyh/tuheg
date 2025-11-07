@@ -65,8 +65,16 @@ async function bootstrap() {
       },
     });
 
+    // [新增] 配置HTTP服务器
+    const httpPort = configService.get<number>('NARRATIVE_AGENT_HTTP_PORT', 8082);
+    app.setGlobalPrefix('api/v1/narrative'); // API前缀
+
     await app.startAllMicroservices();
-    console.log('🚀 Narrative Agent is listening for tasks on the event bus...');
+    await app.listen(httpPort);
+
+    console.log('🚀 Narrative Agent is running:');
+    console.log(`   📡 Microservices: listening for tasks on the event bus`);
+    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/narrative`);
   } catch (err) {
     // [Sentry] 如果启动失败，捕获异常并上报
     Sentry.captureException(err);
