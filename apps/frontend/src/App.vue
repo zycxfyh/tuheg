@@ -19,6 +19,7 @@ import { onMounted } from 'vue';
 import { RouterView } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
 import { useUIStore } from '@/stores/ui.store';
+import { useThemeStore } from '@/stores/theme.store';
 
 // 导入所有模态框和覆盖层组件
 import CharacterSheetModal from '@/components/common/CharacterSheetModal.vue';
@@ -31,8 +32,13 @@ import ToastContainer from '@/components/common/ToastContainer.vue';
 
 const authStore = useAuthStore();
 const uiStore = useUIStore();
+const themeStore = useThemeStore();
 
 onMounted(() => {
+  // 初始化主题系统
+  themeStore.initTheme();
+
+  // 验证用户认证状态
   authStore.verifyAuthOnLoad();
 });
 </script>
