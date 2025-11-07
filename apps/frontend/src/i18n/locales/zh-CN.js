@@ -1,0 +1,380 @@
+/**
+ * 🌐 创世星环 - 中文简体语言包
+ * 包含所有界面的中文翻译
+ */
+
+export default {
+  // 应用基本信息
+  app: {
+    title: '创世星环 - AI创作平台',
+    description: '让每一个创意都有无限可能，让AI成为你的故事伙伴',
+    version: '版本',
+    loading: '加载中...'
+  },
+
+  // 导航和菜单
+  nav: {
+    home: '首页',
+    create: '创建',
+    explore: '探索',
+    library: '库',
+    profile: '个人资料',
+    settings: '设置',
+    help: '帮助',
+    logout: '退出登录'
+  },
+
+  // 通用按钮和操作
+  common: {
+    save: '保存',
+    cancel: '取消',
+    confirm: '确认',
+    delete: '删除',
+    edit: '编辑',
+    add: '添加',
+    remove: '移除',
+    close: '关闭',
+    back: '返回',
+    next: '下一步',
+    previous: '上一步',
+    continue: '继续',
+    finish: '完成',
+    retry: '重试',
+    refresh: '刷新',
+    search: '搜索',
+    filter: '筛选',
+    sort: '排序',
+    export: '导出',
+    import: '导入',
+    share: '分享',
+    copy: '复制',
+    paste: '粘贴',
+    undo: '撤销',
+    redo: '重做',
+    reset: '重置',
+    clear: '清除',
+    selectAll: '全选',
+    deselectAll: '取消全选'
+  },
+
+  // 状态和消息
+  status: {
+    loading: '加载中...',
+    saving: '保存中...',
+    processing: '处理中...',
+    success: '成功',
+    error: '错误',
+    warning: '警告',
+    info: '信息',
+    empty: '暂无数据',
+    noResults: '未找到结果',
+    offline: '离线模式',
+    online: '在线模式'
+  },
+
+  // 错误消息
+  errors: {
+    network: '网络连接错误，请检查网络后重试',
+    timeout: '请求超时，请稍后再试',
+    server: '服务器错误，请联系管理员',
+    validation: '输入验证失败，请检查后重试',
+    permission: '权限不足，无法执行此操作',
+    notFound: '未找到请求的资源',
+    unauthorized: '未授权访问，请先登录',
+    forbidden: '禁止访问此资源',
+    conflict: '资源冲突，请稍后再试',
+    tooManyRequests: '请求过于频繁，请稍后再试',
+    maintenance: '系统维护中，请稍后再试',
+    unknown: '未知错误，请联系技术支持'
+  },
+
+  // 创作相关
+  creation: {
+    title: '创建新世界',
+    subtitle: '让你的创意在AI的帮助下成为现实',
+    worldName: '世界名称',
+    worldNamePlaceholder: '为你的世界起一个名字',
+    worldConcept: '世界概念',
+    worldConceptPlaceholder: '描述你的世界观、设定和故事背景...',
+    genre: '类型',
+    tone: '基调',
+    scale: '规模',
+    complexity: '复杂度',
+    characterName: '角色名称',
+    characterDescription: '角色描述',
+    characterTraits: '角色特征',
+    storyPrompt: '故事提示',
+    storyPromptPlaceholder: '描述你想要的故事走向...',
+    generate: '开始生成',
+    generating: '正在生成世界...',
+    preview: '预览',
+    customize: '自定义',
+    templates: '模板',
+    recent: '最近',
+    favorites: '收藏'
+  },
+
+  // 游戏界面
+  game: {
+    title: '游戏界面',
+    narrative: '故事叙述',
+    options: '选择选项',
+    command: '自定义行动',
+    commandPlaceholder: '输入你的行动指令...',
+    inventory: '物品栏',
+    character: '角色',
+    world: '世界',
+    journal: '日志',
+    map: '地图',
+    settings: '游戏设置',
+    save: '保存游戏',
+    load: '加载游戏',
+    restart: '重新开始',
+    quit: '退出游戏',
+    pause: '暂停',
+    resume: '继续',
+    autoSave: '自动保存',
+    manualSave: '手动保存'
+  },
+
+  // AI配置
+  ai: {
+    title: 'AI配置',
+    provider: 'AI供应商',
+    model: '模型',
+    apiKey: 'API密钥',
+    apiKeyPlaceholder: '输入你的API密钥',
+    baseUrl: 'Base URL',
+    baseUrlPlaceholder: 'https://api.example.com/v1',
+    temperature: '创造性',
+    maxTokens: '最大Token数',
+    test: '测试连接',
+    testing: '测试中...',
+    connected: '连接成功',
+    failed: '连接失败',
+    models: '可用模型',
+    pricing: '价格信息',
+    usage: '使用统计',
+    limits: '使用限制',
+    reset: '重置配置',
+    advanced: '高级设置'
+  },
+
+  // 主题设置
+  theme: {
+    title: '主题设置',
+    mode: '主题模式',
+    light: '浅色主题',
+    dark: '深色主题',
+    auto: '自动跟随系统',
+    custom: '自定义主题',
+    colors: '颜色配置',
+    primary: '主色调',
+    secondary: '次色调',
+    accent: '强调色',
+    background: '背景色',
+    text: '文字色',
+    preview: '主题预览',
+    reset: '重置为默认'
+  },
+
+  // 设置页面
+  settings: {
+    title: '设置',
+    general: '通用',
+    appearance: '外观',
+    language: '语言',
+    notifications: '通知',
+    privacy: '隐私',
+    security: '安全',
+    advanced: '高级',
+    account: '账户',
+    profile: '个人资料',
+    preferences: '偏好设置',
+    data: '数据管理',
+    export: '导出数据',
+    import: '导入数据',
+    backup: '备份',
+    restore: '恢复',
+    clearCache: '清除缓存',
+    resetSettings: '重置设置'
+  },
+
+  // 用户认证
+  auth: {
+    login: '登录',
+    register: '注册',
+    logout: '退出',
+    email: '邮箱',
+    password: '密码',
+    confirmPassword: '确认密码',
+    username: '用户名',
+    fullName: '全名',
+    rememberMe: '记住我',
+    forgotPassword: '忘记密码？',
+    resetPassword: '重置密码',
+    createAccount: '创建账户',
+    haveAccount: '已有账户？',
+    signIn: '登录',
+    signUp: '注册',
+    welcomeBack: '欢迎回来',
+    getStarted: '开始使用',
+    verifyEmail: '验证邮箱',
+    resendVerification: '重新发送验证邮件'
+  },
+
+  // 插件系统
+  plugins: {
+    title: '插件市场',
+    marketplace: '插件市场',
+    installed: '已安装',
+    discover: '发现',
+    categories: '分类',
+    search: '搜索插件',
+    install: '安装',
+    uninstall: '卸载',
+    update: '更新',
+    enable: '启用',
+    disable: '禁用',
+    configure: '配置',
+    developer: '开发者',
+    rating: '评分',
+    reviews: '评价',
+    downloads: '下载量',
+    version: '版本',
+    compatibility: '兼容性',
+    dependencies: '依赖项',
+    changelog: '更新日志',
+    documentation: '文档',
+    support: '支持'
+  },
+
+  // 性能和监控
+  performance: {
+    title: '性能监控',
+    fps: '帧率',
+    memory: '内存使用',
+    network: '网络延迟',
+    loading: '加载时间',
+    optimization: '性能优化',
+    diagnostics: '诊断工具',
+    logs: '系统日志',
+    metrics: '性能指标',
+    alerts: '性能告警',
+    reports: '性能报告'
+  },
+
+  // 无障碍性
+  accessibility: {
+    title: '无障碍设置',
+    screenReader: '屏幕阅读器',
+    highContrast: '高对比度',
+    largeText: '大字体',
+    keyboardNav: '键盘导航',
+    reducedMotion: '减少动画',
+    colorBlind: '色盲模式',
+    focusIndicators: '焦点指示器',
+    skipLinks: '跳过链接',
+    altText: '替代文本',
+    captions: '字幕',
+    audioDesc: '音频描述'
+  },
+
+  // 帮助和支持
+  help: {
+    title: '帮助中心',
+    faq: '常见问题',
+    tutorials: '教程',
+    documentation: '文档',
+    community: '社区',
+    support: '技术支持',
+    feedback: '意见反馈',
+    contact: '联系我们',
+    reportBug: '报告问题',
+    featureRequest: '功能请求',
+    liveChat: '在线客服',
+    knowledgeBase: '知识库'
+  },
+
+  // 通知消息
+  notifications: {
+    title: '通知',
+    all: '全部',
+    unread: '未读',
+    markRead: '标记为已读',
+    markAllRead: '全部标记为已读',
+    delete: '删除',
+    deleteAll: '删除全部',
+    settings: '通知设置',
+    email: '邮件通知',
+    push: '推送通知',
+    inApp: '应用内通知',
+    frequency: '通知频率',
+    types: '通知类型'
+  },
+
+  // 时间相关
+  time: {
+    now: '刚刚',
+    seconds: '秒前',
+    minutes: '分钟前',
+    hours: '小时前',
+    days: '天前',
+    weeks: '周前',
+    months: '月前',
+    years: '年前',
+    today: '今天',
+    yesterday: '昨天',
+    tomorrow: '明天',
+    dateFormat: 'YYYY年MM月DD日',
+    timeFormat: 'HH:mm:ss',
+    datetimeFormat: 'YYYY年MM月DD日 HH:mm'
+  },
+
+  // 文件和媒体
+  media: {
+    upload: '上传文件',
+    dragDrop: '拖拽文件到此处或点击上传',
+    supportedFormats: '支持格式',
+    maxSize: '最大文件大小',
+    image: '图片',
+    video: '视频',
+    audio: '音频',
+    document: '文档',
+    archive: '压缩包',
+    preview: '预览',
+    download: '下载',
+    view: '查看',
+    edit: '编辑',
+    crop: '裁剪',
+    rotate: '旋转',
+    resize: '调整大小',
+    compress: '压缩'
+  },
+
+  // 确认对话框
+  confirm: {
+    delete: '确定要删除吗？此操作无法撤销。',
+    save: '确定要保存更改吗？',
+    discard: '确定要放弃更改吗？未保存的内容将丢失。',
+    logout: '确定要退出登录吗？',
+    reset: '确定要重置所有设置吗？此操作无法撤销。',
+    clear: '确定要清除所有数据吗？此操作无法撤销。',
+    install: '确定要安装此插件吗？',
+    uninstall: '确定要卸载此插件吗？相关配置将被清除。',
+    update: '确定要更新吗？应用将重新启动。'
+  },
+
+  // 提示信息
+  tips: {
+    welcome: '欢迎使用创世星环！让我们一起创造精彩的故事。',
+    saveReminder: '记得定期保存你的创作进度。',
+    backupReminder: '建议定期备份你的重要数据。',
+    performanceTip: '关闭不必要的特效可以提升性能。',
+    securityTip: '请妥善保管你的API密钥，不要在公共场合泄露。',
+    collaborationTip: '邀请朋友一起创作，可以获得更多灵感。',
+    shortcutTip: '使用快捷键可以大大提升创作效率。',
+    updateTip: '新版本已发布，建议及时更新以获得最佳体验。',
+    feedbackTip: '你的反馈对我们非常重要，请随时告诉我们你的想法。'
+  }
+}

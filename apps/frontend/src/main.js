@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/vue';
 
 import App from './App.vue';
 import router from './router';
+import i18n from './i18n';
 import { useAuthStore } from './stores/auth.store';
 import { useRealtimeStore } from './stores/realtime.store';
 import { useUIStore } from './stores/ui.store';
@@ -33,6 +34,7 @@ Sentry.init({
 const pinia = createPinia();
 app.use(pinia);
 app.use(router);
+app.use(i18n);
 
 // [核心重构] 将 router 实例存入 ui.store，以便 store 可以访问
 const uiStore = useUIStore();
