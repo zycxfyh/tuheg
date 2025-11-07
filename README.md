@@ -602,6 +602,17 @@ graph TB
 |     **Langfuse**     |    ^2.0.0     |    AI模型监控和调试    | [Langfuse 文档](https://langfuse.com/)                |
 |     **pgvector**     |     0.5.0     |   PostgreSQL向量扩展   | [pgvector 文档](https://github.com/pgvector/pgvector) |
 
+#### 💰 AI供应商价格透明化
+
+**"创世星环"致力于为用户提供完全透明的AI服务成本信息**
+
+- ✅ **18个主流供应商**: 涵盖OpenAI、Anthropic、Google、DeepSeek等国内外AI服务商
+- ✅ **实时价格链接**: 直接访问官方价格页面，获取最新定价信息
+- ✅ **智能配置工具**: `setup-ai-providers.js`脚本支持价格查询和配置
+- ✅ **成本优化建议**: 基于性能和价格的AI模型智能推荐
+
+**[📋 查看AI供应商价格指南](docs/AI-PROVIDER-PRICING-INTEGRATION.md)** • **[🛠️ 配置AI供应商](scripts/setup-ai-providers.js)**
+
 ### 🏭 DevOps技术栈
 
 |        技术        | 版本  |     用途     | 文档                                                |
@@ -1025,7 +1036,7 @@ graph TD
 
 **1️⃣ 准备环境**
 
-```bash
+   ```bash
 # Fork项目到你的GitHub账户
 # 克隆到本地
 git clone https://github.com/YOUR_USERNAME/tuheg.git
@@ -1035,29 +1046,29 @@ cd tuheg
 pnpm install
 
 # 创建特性分支
-git checkout -b feature/amazing-feature
+   git checkout -b feature/amazing-feature
 # 或修复bug
 git checkout -b fix/bug-description
-```
+   ```
 
 **2️⃣ 本地开发**
 
-```bash
+   ```bash
 # 启动开发环境
 pnpm dev
 
 # 运行测试确保无问题
 pnpm test
-pnpm industrial-test
+   pnpm industrial-test
 
 # 代码质量检查
 pnpm lint
 pnpm type-check
-```
+   ```
 
 **3️⃣ 提交代码**
 
-```bash
+   ```bash
 # 添加更改的文件
 git add .
 
@@ -1348,6 +1359,7 @@ git checkout -b hotfix/critical-bug-fix
 | :-----------------------: | :--------------------------------------------------------------------: | :--------: | :--------- |
 |   **🔬 工业验证流水线**   |          [INDUSTRIAL-VALIDATION.md](INDUSTRIAL-VALIDATION.md)          | ⭐⭐⭐⭐⭐ | 每次发布时 |
 | **🔍 验证流水线分析报告** | [INDUSTRIAL-VALIDATION-ANALYSIS.md](INDUSTRIAL-VALIDATION-ANALYSIS.md) | ⭐⭐⭐⭐⭐ | 问题发生时 |
+| **🤖 AI供应商价格指南**   |   [AI-PROVIDER-PRICING-INTEGRATION.md](docs/AI-PROVIDER-PRICING-INTEGRATION.md)   | ⭐⭐⭐⭐⭐ | 供应商更新时 |
 |     **📄 MIT许可证**      |                           [LICENSE](LICENSE)                           | ⭐⭐⭐⭐⭐ | 项目更新时 |
 |      **🛡️ 安全指南**      |                       [SECURITY.md](SECURITY.md)                       | ⭐⭐⭐⭐⭐ | 安全事件时 |
 |      **🔒 隐私政策**      |                 [PRIVACY-POLICY.md](PRIVACY-POLICY.md)                 |  ⭐⭐⭐⭐  | 功能变更时 |
