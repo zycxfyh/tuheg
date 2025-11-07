@@ -1,17 +1,33 @@
 /* --- 全局样式与字体定义 --- */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap');
 
+/* CSS变量将在JavaScript中动态设置 */
 :root {
+    /* 默认深色主题变量（会被JavaScript覆盖） */
     --primary-bg: #121212;
     --secondary-bg: #1e1e1e;
+    --tertiary-bg: #2a2a2a;
     --primary-text: #e0e0e0;
+    --secondary-text: #b0b0b0;
+    --tertiary-text: #888888;
     --accent-color: #00aaff;
     --accent-hover: #0077cc;
-    --border-color: #333;
+    --accent-light: #4da6ff;
+    --border-color: #333333;
+    --border-light: #444444;
+    --border-dark: #222222;
     --success-color: #4CAF50;
     --error-color: #F44336;
+    --warning-color: #FF9800;
+    --info-color: #2196F3;
     --health-color: #d9534f;
     --mana-color: #5bc0de;
+    --experience-color: #9c27b0;
+    --shadow-color: rgba(0, 170, 255, 0.1);
+    --glow-color: rgba(0, 170, 255, 0.3);
+    --disabled-color: #555555;
+    --focus-color: #0066aa;
+    --hover-bg: #2a2a2a;
 }
 
 body {
