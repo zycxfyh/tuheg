@@ -1,0 +1,380 @@
+/**
+ * 🌐 創世星環 - 日本語言語パック
+ * すべてのインターフェースの日本語翻訳を含む
+ */
+
+export default {
+  // アプリ基本情報
+  app: {
+    title: '創世星環 - AI創作プラットフォーム',
+    description: 'すべてのアイデアに無限の可能性を、AIをあなたの物語のパートナーに',
+    version: 'バージョン',
+    loading: '読み込み中...'
+  },
+
+  // ナビゲーションとメニュー
+  nav: {
+    home: 'ホーム',
+    create: '作成',
+    explore: '探索',
+    library: 'ライブラリ',
+    profile: 'プロフィール',
+    settings: '設定',
+    help: 'ヘルプ',
+    logout: 'ログアウト'
+  },
+
+  // 共通ボタンとアクション
+  common: {
+    save: '保存',
+    cancel: 'キャンセル',
+    confirm: '確認',
+    delete: '削除',
+    edit: '編集',
+    add: '追加',
+    remove: '削除',
+    close: '閉じる',
+    back: '戻る',
+    next: '次へ',
+    previous: '前へ',
+    continue: '続ける',
+    finish: '完了',
+    retry: '再試行',
+    refresh: '更新',
+    search: '検索',
+    filter: 'フィルター',
+    sort: '並べ替え',
+    export: 'エクスポート',
+    import: 'インポート',
+    share: '共有',
+    copy: 'コピー',
+    paste: '貼り付け',
+    undo: '元に戻す',
+    redo: 'やり直し',
+    reset: 'リセット',
+    clear: 'クリア',
+    selectAll: 'すべて選択',
+    deselectAll: 'すべて選択解除'
+  },
+
+  // ステータスとメッセージ
+  status: {
+    loading: '読み込み中...',
+    saving: '保存中...',
+    processing: '処理中...',
+    success: '成功',
+    error: 'エラー',
+    warning: '警告',
+    info: '情報',
+    empty: 'データがありません',
+    noResults: '結果が見つかりません',
+    offline: 'オフラインモード',
+    online: 'オンラインモード'
+  },
+
+  // エラーメッセージ
+  errors: {
+    network: 'ネットワーク接続エラーです。接続を確認して再試行してください',
+    timeout: 'リクエストがタイムアウトしました。後でもう一度お試しください',
+    server: 'サーバーエラーです。管理者にお問い合わせください',
+    validation: '入力検証に失敗しました。確認して再試行してください',
+    permission: '権限が不足しています。この操作を実行できません',
+    notFound: '要求されたリソースが見つかりません',
+    unauthorized: '未承認アクセスです。先にログインしてください',
+    forbidden: 'このリソースへのアクセスは禁止されています',
+    conflict: 'リソース競合です。後でもう一度お試しください',
+    tooManyRequests: 'リクエストが多すぎます。後でもう一度お試しください',
+    maintenance: 'システムメンテナンス中です。後でもう一度お試しください',
+    unknown: '不明なエラーです。テクニカルサポートにお問い合わせください'
+  },
+
+  // 作成関連
+  creation: {
+    title: '新しい世界を作成',
+    subtitle: 'あなたの創造性をAIの助けを借りて現実にしましょう',
+    worldName: 'ワールド名',
+    worldNamePlaceholder: 'ワールドに名前をつけてください',
+    worldConcept: 'ワールドコンセプト',
+    worldConceptPlaceholder: 'あなたのワールドビュー、設定、ストーリーの背景を説明してください...',
+    genre: 'ジャンル',
+    tone: 'トーン',
+    scale: 'スケール',
+    complexity: '複雑さ',
+    characterName: 'キャラクター名',
+    characterDescription: 'キャラクター説明',
+    characterTraits: 'キャラクター特性',
+    storyPrompt: 'ストーリープロンプト',
+    storyPromptPlaceholder: '希望するストーリーの方向性を説明してください...',
+    generate: '生成開始',
+    generating: 'ワールドを生成中...',
+    preview: 'プレビュー',
+    customize: 'カスタマイズ',
+    templates: 'テンプレート',
+    recent: '最近',
+    favorites: 'お気に入り'
+  },
+
+  // ゲームインターフェース
+  game: {
+    title: 'ゲームインターフェース',
+    narrative: 'ストーリー叙述',
+    options: '選択オプション',
+    command: 'カスタムアクション',
+    commandPlaceholder: 'アクションコマンドを入力してください...',
+    inventory: 'インベントリ',
+    character: 'キャラクター',
+    world: 'ワールド',
+    journal: 'ジャーナル',
+    map: 'マップ',
+    settings: 'ゲーム設定',
+    save: 'ゲーム保存',
+    load: 'ゲーム読み込み',
+    restart: '再開',
+    quit: 'ゲーム終了',
+    pause: '一時停止',
+    resume: '再開',
+    autoSave: '自動保存',
+    manualSave: '手動保存'
+  },
+
+  // AI設定
+  ai: {
+    title: 'AI設定',
+    provider: 'AIプロバイダー',
+    model: 'モデル',
+    apiKey: 'APIキー',
+    apiKeyPlaceholder: 'APIキーを入力してください',
+    baseUrl: 'Base URL',
+    baseUrlPlaceholder: 'https://api.example.com/v1',
+    temperature: '創造性',
+    maxTokens: '最大トークン数',
+    test: '接続テスト',
+    testing: 'テスト中...',
+    connected: '接続成功',
+    failed: '接続失敗',
+    models: '利用可能なモデル',
+    pricing: '価格情報',
+    usage: '使用統計',
+    limits: '使用制限',
+    reset: '設定リセット',
+    advanced: '詳細設定'
+  },
+
+  // テーマ設定
+  theme: {
+    title: 'テーマ設定',
+    mode: 'テーマモード',
+    light: 'ライトテーマ',
+    dark: 'ダークテーマ',
+    auto: '自動（システムに追従）',
+    custom: 'カスタムテーマ',
+    colors: '色設定',
+    primary: 'プライマリカラー',
+    secondary: 'セカンダリカラー',
+    accent: 'アクセントカラー',
+    background: '背景色',
+    text: 'テキスト色',
+    preview: 'テーマプレビュー',
+    reset: 'デフォルトにリセット'
+  },
+
+  // 設定ページ
+  settings: {
+    title: '設定',
+    general: '一般',
+    appearance: '外観',
+    language: '言語',
+    notifications: '通知',
+    privacy: 'プライバシー',
+    security: 'セキュリティ',
+    advanced: '詳細',
+    account: 'アカウント',
+    profile: 'プロフィール',
+    preferences: '環境設定',
+    data: 'データ管理',
+    export: 'データエクスポート',
+    import: 'データインポート',
+    backup: 'バックアップ',
+    restore: '復元',
+    clearCache: 'キャッシュクリア',
+    resetSettings: '設定リセット'
+  },
+
+  // ユーザー認証
+  auth: {
+    login: 'ログイン',
+    register: '登録',
+    logout: 'ログアウト',
+    email: 'メール',
+    password: 'パスワード',
+    confirmPassword: 'パスワード確認',
+    username: 'ユーザー名',
+    fullName: 'フルネーム',
+    rememberMe: 'ログイン状態を保持',
+    forgotPassword: 'パスワードを忘れた場合',
+    resetPassword: 'パスワードリセット',
+    createAccount: 'アカウント作成',
+    haveAccount: 'アカウントをお持ちですか？',
+    signIn: 'サインイン',
+    signUp: 'サインアップ',
+    welcomeBack: 'おかえりなさい',
+    getStarted: '始める',
+    verifyEmail: 'メール検証',
+    resendVerification: '検証メール再送'
+  },
+
+  // プラグインシステム
+  plugins: {
+    title: 'プラグインマーケットプレイス',
+    marketplace: 'マーケットプレイス',
+    installed: 'インストール済み',
+    discover: '発見',
+    categories: 'カテゴリ',
+    search: 'プラグイン検索',
+    install: 'インストール',
+    uninstall: 'アンインストール',
+    update: '更新',
+    enable: '有効化',
+    disable: '無効化',
+    configure: '設定',
+    developer: '開発者',
+    rating: '評価',
+    reviews: 'レビュー',
+    downloads: 'ダウンロード数',
+    version: 'バージョン',
+    compatibility: '互換性',
+    dependencies: '依存関係',
+    changelog: '変更履歴',
+    documentation: 'ドキュメント',
+    support: 'サポート'
+  },
+
+  // パフォーマンスと監視
+  performance: {
+    title: 'パフォーマンス監視',
+    fps: 'FPS',
+    memory: 'メモリ使用量',
+    network: 'ネットワーク遅延',
+    loading: '読み込み時間',
+    optimization: 'パフォーマンス最適化',
+    diagnostics: '診断ツール',
+    logs: 'システムログ',
+    metrics: 'パフォーマンスメトリクス',
+    alerts: 'パフォーマンスアラート',
+    reports: 'パフォーマンスレポート'
+  },
+
+  // アクセシビリティ
+  accessibility: {
+    title: 'アクセシビリティ設定',
+    screenReader: 'スクリーンリーダー',
+    highContrast: 'ハイコントラスト',
+    largeText: '大きいテキスト',
+    keyboardNav: 'キーボードナビゲーション',
+    reducedMotion: 'モーション削減',
+    colorBlind: '色覚異常モード',
+    focusIndicators: 'フォーカスインジケーター',
+    skipLinks: 'スキップリンク',
+    altText: '代替テキスト',
+    captions: 'キャプション',
+    audioDesc: 'オーディオ説明'
+  },
+
+  // ヘルプとサポート
+  help: {
+    title: 'ヘルプセンター',
+    faq: 'FAQ',
+    tutorials: 'チュートリアル',
+    documentation: 'ドキュメント',
+    community: 'コミュニティ',
+    support: 'テクニカルサポート',
+    feedback: 'フィードバック',
+    contact: 'お問い合わせ',
+    reportBug: 'バグ報告',
+    featureRequest: '機能リクエスト',
+    liveChat: 'ライブチャット',
+    knowledgeBase: 'ナレッジベース'
+  },
+
+  // 通知
+  notifications: {
+    title: '通知',
+    all: 'すべて',
+    unread: '未読',
+    markRead: '既読にする',
+    markAllRead: 'すべて既読にする',
+    delete: '削除',
+    deleteAll: 'すべて削除',
+    settings: '通知設定',
+    email: 'メール通知',
+    push: 'プッシュ通知',
+    inApp: 'アプリ内通知',
+    frequency: '通知頻度',
+    types: '通知タイプ'
+  },
+
+  // 時間関連
+  time: {
+    now: 'たった今',
+    seconds: '秒前',
+    minutes: '分前',
+    hours: '時間前',
+    days: '日前',
+    weeks: '週間前',
+    months: 'ヶ月前',
+    years: '年前',
+    today: '今日',
+    yesterday: '昨日',
+    tomorrow: '明日',
+    dateFormat: 'YYYY年MM月DD日',
+    timeFormat: 'HH:mm:ss',
+    datetimeFormat: 'YYYY年MM月DD日 HH:mm'
+  },
+
+  // ファイルとメディア
+  media: {
+    upload: 'ファイルアップロード',
+    dragDrop: 'ファイルをここにドラッグ＆ドロップするかクリックしてアップロード',
+    supportedFormats: 'サポートされるフォーマット',
+    maxSize: '最大ファイルサイズ',
+    image: '画像',
+    video: '動画',
+    audio: '音声',
+    document: 'ドキュメント',
+    archive: 'アーカイブ',
+    preview: 'プレビュー',
+    download: 'ダウンロード',
+    view: '表示',
+    edit: '編集',
+    crop: 'クロップ',
+    rotate: '回転',
+    resize: 'リサイズ',
+    compress: '圧縮'
+  },
+
+  // 確認ダイアログ
+  confirm: {
+    delete: '削除してもよろしいですか？この操作は元に戻せません。',
+    save: '変更を保存してもよろしいですか？',
+    discard: '変更を破棄してもよろしいですか？保存されていない内容は失われます。',
+    logout: 'ログアウトしてもよろしいですか？',
+    reset: 'すべての設定をリセットしてもよろしいですか？この操作は元に戻せません。',
+    clear: 'すべてのデータをクリアしてもよろしいですか？この操作は元に戻せません。',
+    install: 'このプラグインをインストールしてもよろしいですか？',
+    uninstall: 'このプラグインをアンインストールしてもよろしいですか？関連設定はクリアされます。',
+    update: '更新してもよろしいですか？アプリケーションが再起動します。'
+  },
+
+  // ヒント
+  tips: {
+    welcome: '創世星環へようこそ！一緒に素晴らしいストーリーを作成しましょう。',
+    saveReminder: '創作の進捗を定期的に保存することを忘れないでください。',
+    backupReminder: '重要なデータを定期的にバックアップすることをおすすめします。',
+    performanceTip: '不要なエフェクトをオフにするとパフォーマンスが向上します。',
+    securityTip: 'APIキーを安全に保管し、公の場で公開しないでください。',
+    collaborationTip: '友人たちを招待して一緒に創作すると、より多くのインスピレーションが得られます。',
+    shortcutTip: 'キーボードショートカットを使用すると、創作効率が大幅に向上します。',
+    updateTip: '新バージョンがリリースされました。最高の体験を得るために更新をおすすめします。',
+    feedbackTip: 'あなたのフィードバックは私たちにとって非常に重要です。いつでもご意見をお聞かせください。'
+  }
+}
