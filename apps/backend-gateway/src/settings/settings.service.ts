@@ -170,77 +170,410 @@ export class SettingsService {
   }
 
   /**
-   * Test AI connection and try to fetch available models.
-   * This supports 'openai' provider as first-class example.
-   * For other providers we attempt a GET on baseUrl (if provided) and return JSON keys if possible.
+   * Test AI connection and fetch available models for different providers.
+   * Supports multiple AI providers with specific model fetching logic.
    */
-  public async testAndFetchModels(dto: TestAiConnectionDto): Promise<{ models: string[] }> {
+  public async testAndFetchModels(
+    dto: TestAiConnectionDto,
+  ): Promise<{ models: string[]; connectionStatus: string; message?: string }> {
     const provider = dto.provider?.toLowerCase?.() ?? '';
     const apiKey = dto.apiKey;
     const baseUrl = dto.baseUrl ?? null;
 
+    // Input validation
+    if (!provider) {
+      throw new BadRequestException('供应商 (provider) 是必填项');
+    }
     if (!apiKey) {
-      throw new BadRequestException('apiKey is required');
+      throw new BadRequestException('API密钥 (apiKey) 是必填项');
     }
 
     try {
-      if (provider.includes('openai')) {
-        // call OpenAI list models endpoint
-        const url = (baseUrl || 'https://api.openai.com').replace(/\/+$/, '') + '/v1/models';
+      let models: string[] = [];
+      const connectionStatus = 'success';
+      const message = '连接成功';
+
+      switch (provider) {
+        case 'openai':
+        case 'groq':
+          models = await this.fetchOpenAICompatibleModels(
+            baseUrl || this.getDefaultBaseUrl(provider),
+            apiKey,
+          );
+          break;
+
+        case 'anthropic':
+          models = await this.fetchAnthropicModels(apiKey);
+          break;
+
+        case 'google':
+          models = await this.fetchGoogleModels(apiKey);
+          break;
+
+        case 'deepseek':
+          models = await this.fetchDeepSeekModels(apiKey);
+          break;
+
+        case 'moonshot':
+          models = await this.fetchMoonshotModels(apiKey);
+          break;
+
+        case 'zhipu':
+          models = await this.fetchZhipuModels(apiKey);
+          break;
+
+        case 'baichuan':
+          models = await this.fetchBaichuanModels(apiKey);
+          break;
+
+        case 'ollama':
+          models = await this.fetchOllamaModels(baseUrl);
+          break;
+
+        default:
+          // Generic fallback for custom providers
+          models = await this.fetchGenericModels(baseUrl, apiKey);
+          break;
+      }
+
+      return {
+        models,
+        connectionStatus,
+        message: `${message}，获取到 ${models.length} 个可用模型`,
+      };
+    } catch (err) {
+      const error = this.parseConnectionError(err);
+      this.logger.warn(`testAndFetchModels failed for provider ${provider}`, {
+        error: error.message,
+        statusCode: error.statusCode,
+        details: error.details,
+      });
+
+      throw new BadRequestException({
+        message: error.message,
+        details: error.details,
+        statusCode: error.statusCode,
+        provider,
+      });
+    }
+  }
+
+  /**
+   * Fetch models from OpenAI-compatible APIs
+   */
+  private async fetchOpenAICompatibleModels(baseUrl: string, apiKey: string): Promise<string[]> {
+    const url = baseUrl.replace(/\/+$/, '') + '/v1/models';
+    const resp$ = this.httpService.get(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000, // 10 second timeout
+    });
+
+    const resp = await lastValueFrom(resp$);
+    return Array.isArray(resp.data?.data)
+      ? resp.data.data
+          .map((m: Record<string, unknown>) => String(m.id || m.model || m))
+          .filter(Boolean)
+      : [];
+  }
+
+  /**
+   * Fetch models from Anthropic API
+   */
+  private async fetchAnthropicModels(apiKey: string): Promise<string[]> {
+    // Anthropic doesn't have a models endpoint, return known models
+    const knownModels = [
+      'claude-3-5-sonnet-20241022',
+      'claude-3-haiku-20240307',
+      'claude-3-sonnet-20240229',
+      'claude-3-opus-20240229',
+    ];
+
+    // Test connection with a simple request
+    const testUrl = 'https://api.anthropic.com/v1/messages';
+    const resp$ = this.httpService.post(
+      testUrl,
+      {
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 1,
+        messages: [{ role: 'user', content: 'test' }],
+      },
+      {
+        headers: {
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'Content-Type': 'application/json',
+        },
+        timeout: 5000,
+      },
+    );
+
+    await lastValueFrom(resp$);
+    return knownModels;
+  }
+
+  /**
+   * Fetch models from Google AI API
+   */
+  private async fetchGoogleModels(apiKey: string): Promise<string[]> {
+    // Google AI Studio API doesn't have a models endpoint, return known models
+    const knownModels = ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro', 'gemini-pro-vision'];
+
+    // Test connection
+    const testUrl =
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+    const resp$ = this.httpService.post(
+      testUrl,
+      {
+        contents: [{ parts: [{ text: 'test' }] }],
+      },
+      {
+        params: { key: apiKey },
+        timeout: 5000,
+      },
+    );
+
+    await lastValueFrom(resp$);
+    return knownModels;
+  }
+
+  /**
+   * Fetch models from DeepSeek API
+   */
+  private async fetchDeepSeekModels(apiKey: string): Promise<string[]> {
+    const url = 'https://api.deepseek.com/v1/models';
+    const resp$ = this.httpService.get(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000,
+    });
+
+    const resp = await lastValueFrom(resp$);
+    return Array.isArray(resp.data?.data)
+      ? resp.data.data.map((m: Record<string, unknown>) => String(m.id || m)).filter(Boolean)
+      : ['deepseek-chat', 'deepseek-coder'];
+  }
+
+  /**
+   * Fetch models from Moonshot API
+   */
+  private async fetchMoonshotModels(apiKey: string): Promise<string[]> {
+    const url = 'https://api.moonshot.cn/v1/models';
+    const resp$ = this.httpService.get(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000,
+    });
+
+    const resp = await lastValueFrom(resp$);
+    return Array.isArray(resp.data?.data)
+      ? resp.data.data.map((m: Record<string, unknown>) => String(m.id || m)).filter(Boolean)
+      : ['moonshot-v1-8k', 'moonshot-v1-32k', 'moonshot-v1-128k'];
+  }
+
+  /**
+   * Fetch models from Zhipu AI API
+   */
+  private async fetchZhipuModels(apiKey: string): Promise<string[]> {
+    const url = 'https://open.bigmodel.cn/api/paas/v4/models';
+    const resp$ = this.httpService.get(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000,
+    });
+
+    const resp = await lastValueFrom(resp$);
+    return Array.isArray(resp.data?.data)
+      ? resp.data.data.map((m: Record<string, unknown>) => String(m.id || m)).filter(Boolean)
+      : ['glm-4', 'glm-3-turbo', 'chatglm_turbo'];
+  }
+
+  /**
+   * Fetch models from Baichuan AI API
+   */
+  private async fetchBaichuanModels(apiKey: string): Promise<string[]> {
+    const url = 'https://api.baichuan-ai.com/v1/models';
+    const resp$ = this.httpService.get(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000,
+    });
+
+    const resp = await lastValueFrom(resp$);
+    return Array.isArray(resp.data?.data)
+      ? resp.data.data.map((m: Record<string, unknown>) => String(m.id || m)).filter(Boolean)
+      : ['Baichuan4', 'Baichuan3-Turbo', 'Baichuan2-53B'];
+  }
+
+  /**
+   * Fetch models from Ollama API
+   */
+  private async fetchOllamaModels(baseUrl: string | null): Promise<string[]> {
+    const url = (baseUrl || 'http://localhost:11434').replace(/\/+$/, '') + '/api/tags';
+    const resp$ = this.httpService.get(url, {
+      timeout: 5000,
+    });
+
+    const resp = await lastValueFrom(resp$);
+    return Array.isArray(resp.data?.models)
+      ? resp.data.models.map((m: Record<string, unknown>) => String(m.name || m)).filter(Boolean)
+      : [];
+  }
+
+  /**
+   * Generic model fetching for custom providers
+   */
+  private async fetchGenericModels(baseUrl: string | null, apiKey: string): Promise<string[]> {
+    if (!baseUrl) {
+      return [];
+    }
+
+    // Try common model endpoints
+    const endpoints = ['/v1/models', '/models', '/api/models', '/v1/engines'];
+
+    for (const endpoint of endpoints) {
+      try {
+        const url = baseUrl.replace(/\/+$/, '') + endpoint;
         const resp$ = this.httpService.get(url, {
           headers: {
             Authorization: `Bearer ${apiKey}`,
-            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
+          timeout: 5000,
         });
 
         const resp = await lastValueFrom(resp$);
-        const models = Array.isArray(resp.data?.data)
-          ? resp.data.data.map((m: Record<string, unknown>) => m.id).filter(Boolean)
-          : [];
 
-        return { models };
-      } else {
-        // Generic probe: if baseUrl provided, call it and try extract model list from common shapes
-        if (!baseUrl) {
-          return { models: [] };
+        // Try different response formats
+        if (Array.isArray(resp.data?.data)) {
+          return resp.data.data
+            .map((m: Record<string, unknown>) => String(m.id || m.name || m))
+            .filter(Boolean);
         }
-        const url = baseUrl;
-        const resp$ = this.httpService.get(url, {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            Accept: 'application/json',
-          },
-        });
-
-        const resp = await lastValueFrom(resp$);
-        // Try a few heuristics
         if (Array.isArray(resp.data?.models)) {
-          return {
-            models: resp.data.models
-              .map((m: unknown) => (typeof m === 'string' ? m : (m as Record<string, unknown>).id))
-              .filter(Boolean),
-          };
+          return resp.data.models
+            .map((m: Record<string, unknown>) => String(m.id || m.name || m))
+            .filter(Boolean);
         }
         if (Array.isArray(resp.data)) {
-          return {
-            models: resp.data
-              .map((m: unknown) => (typeof m === 'string' ? m : (m as Record<string, unknown>).id))
-              .filter(Boolean) as string[],
-          };
+          return resp.data
+            .map((m: Record<string, unknown>) => String(m.id || m.name || m))
+            .filter(Boolean);
         }
-        // fallback: return keys if object with keys looks like model map
-        if (resp.data && typeof resp.data === 'object') {
-          const keys = Object.keys(resp.data).slice(0, 50);
-          return { models: keys };
-        }
-        return { models: [] };
+      } catch {
+        // Continue to next endpoint
+        continue;
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      this.logger.warn('testAndFetchModels failed', errorMessage);
-      // Bubble up user-friendly error
-      throw new BadRequestException(`Failed to connect to provider: ${errorMessage}`);
     }
+
+    return [];
+  }
+
+  /**
+   * Get default base URL for known providers
+   */
+  private getDefaultBaseUrl(provider: string): string {
+    const defaults: Record<string, string> = {
+      openai: 'https://api.openai.com',
+      groq: 'https://api.groq.com/openai',
+      anthropic: 'https://api.anthropic.com',
+      google: 'https://generativelanguage.googleapis.com',
+      deepseek: 'https://api.deepseek.com',
+      moonshot: 'https://api.moonshot.cn',
+      zhipu: 'https://open.bigmodel.cn/api/paas',
+      baichuan: 'https://api.baichuan-ai.com',
+      ollama: 'http://localhost:11434',
+    };
+    return defaults[provider as keyof typeof defaults] || '';
+  }
+
+  /**
+   * Parse connection errors into user-friendly format
+   */
+  private parseConnectionError(err: unknown): {
+    message: string;
+    statusCode?: number;
+    details?: string;
+  } {
+    if (err instanceof Error) {
+      // Handle Axios errors
+      if ('response' in err && err.response) {
+        const response = err.response as { status?: number; data?: unknown };
+        const statusCode = response.status;
+        const data = response.data;
+
+        switch (statusCode) {
+          case 401:
+            return {
+              message: 'API密钥无效或已过期',
+              statusCode: 401,
+              details: '请检查您的API密钥是否正确，或联系供应商确认密钥状态',
+            };
+          case 403:
+            return {
+              message: 'API密钥权限不足',
+              statusCode: 403,
+              details: '您的API密钥可能没有访问此功能的权限',
+            };
+          case 429:
+            return {
+              message: '请求频率过高，请稍后再试',
+              statusCode: 429,
+              details: '已达到API速率限制，请等待一段时间后重试',
+            };
+          case 500:
+          case 502:
+          case 503:
+          case 504:
+            return {
+              message: '供应商服务暂时不可用',
+              statusCode: statusCode,
+              details: '供应商服务器出现问题，请稍后重试或联系供应商支持',
+            };
+          default:
+            return {
+              message: data?.error?.message || data?.message || '连接失败',
+              statusCode: statusCode,
+              details: `HTTP ${statusCode}: ${err.message}`,
+            };
+        }
+      }
+
+      // Handle network errors
+      if (err.message.includes('timeout') || err.message.includes('ETIMEDOUT')) {
+        return {
+          message: '连接超时',
+          details: '网络连接超时，请检查网络连接或稍后重试',
+        };
+      }
+
+      if (err.message.includes('ECONNREFUSED') || err.message.includes('ENOTFOUND')) {
+        return {
+          message: '无法连接到供应商服务器',
+          details: '请检查网络连接和Base URL是否正确',
+        };
+      }
+
+      // Generic error
+      return {
+        message: '连接失败',
+        details: err.message,
+      };
+    }
+
+    return {
+      message: '未知连接错误',
+      details: String(err),
+    };
   }
 }
