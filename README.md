@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![CI](https://img.shields.io/github/actions/workflow/status/your-org/creation-ring/ci.yml?branch=main)](https://github.com/your-org/creation-ring/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/zycxfyh/tuheg/ci.yml?branch=main)](https://github.com/zycxfyh/tuheg/actions)
 [![Coverage](https://img.shields.io/badge/coverage-87.3%25-brightgreen.svg)](industrial-test-results/)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -39,24 +39,28 @@
 ## 🚀 核心特性
 
 ### 🤖 多Agent协作系统
+
 - **Creation Agent**: 从用户概念生成完整的游戏世界
 - **Logic Agent**: 解析玩家行动，计算游戏状态变更
 - **Narrative Agent**: 将状态变更转换为生动叙事内容
 - **Backend Gateway**: API网关和实时通信管理
 
 ### 🏗️ 工业级架构
+
 - **微服务架构**: 完全解耦的服务模块
 - **消息队列**: RabbitMQ事件驱动通信
 - **缓存策略**: Redis多层缓存
 - **监控体系**: Prometheus + Grafana
 
 ### 🎨 用户体验
+
 - **响应式设计**: 完美适配移动端、平板、桌面
 - **主题系统**: 暗色/亮色/自动主题切换
 - **国际化**: 中英日韩等多语言支持
 - **实时通信**: WebSocket集群 + 流式AI响应
 
 ### 🔌 插件生态
+
 - **VCPToolBox**: 完整的插件开发工具链
 - **插件市场**: 上传、下载、评分系统
 - **多模态支持**: Base64直通 + 文件API
@@ -64,6 +68,7 @@
 ## 🏗️ 系统架构
 
 ### 技术栈
+
 - **前端**: Vue 3 + TypeScript + Vite + Tailwind CSS
 - **后端**: NestJS + TypeScript + PostgreSQL + Redis
 - **消息队列**: RabbitMQ
@@ -116,12 +121,12 @@ creation-ring/
 
 ### 📋 系统要求
 
-| 组件 | 版本要求 | 说明 |
-|------|----------|------|
-| Node.js | ≥18.0.0 | 运行时环境 |
-| pnpm | ≥8.0.0 | 包管理器 |
-| Docker | ≥20.10 | 容器化 |
-| Docker Compose | ≥2.0 | 编排工具 |
+| 组件           | 版本要求 | 说明       |
+| -------------- | -------- | ---------- |
+| Node.js        | ≥18.0.0  | 运行时环境 |
+| pnpm           | ≥8.0.0   | 包管理器   |
+| Docker         | ≥20.10   | 容器化     |
+| Docker Compose | ≥2.0     | 编排工具   |
 
 ### 🚀 一键启动
 
@@ -129,8 +134,8 @@ creation-ring/
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-org/creation-ring.git
-cd creation-ring
+git clone https://github.com/zycxfyh/tuheg.git
+cd tuheg
 
 # 安装依赖
 pnpm install
@@ -145,6 +150,7 @@ pnpm run dev
 ### 🔧 手动安装
 
 #### 1. 环境准备
+
 ```bash
 # 安装 Node.js (使用 nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -156,6 +162,7 @@ npm install -g pnpm@8
 ```
 
 #### 2. 数据库设置
+
 ```bash
 # 启动 PostgreSQL + Redis + RabbitMQ
 docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:15
@@ -164,6 +171,7 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
 
 #### 3. 安装和配置
+
 ```bash
 # 安装依赖
 pnpm install
@@ -176,6 +184,7 @@ nano .env
 ```
 
 #### 4. 启动服务
+
 ```bash
 # 启动后端服务
 pnpm run dev:backend
@@ -223,6 +232,7 @@ pnpm test:e2e
 ### 🔧 配置选项
 
 #### 环境变量
+
 ```bash
 # 数据库配置
 DATABASE_URL=postgresql://user:password@localhost:5432/creation_ring
@@ -240,7 +250,9 @@ PORT=3000
 ```
 
 #### 主题配置
+
 系统支持三种主题模式：
+
 - **亮色主题**: 默认现代化界面
 - **暗色主题**: 适合长时间使用
 - **自动主题**: 根据系统设置切换
@@ -369,19 +381,20 @@ pnpm test:coverage
 
 如果你发现了bug或有功能建议，请：
 
-1. 查看[现有问题](https://github.com/your-org/creation-ring/issues)确保没有重复
-2. 使用[问题模板](.github/ISSUE_TEMPLATE/bug-report.md)创建新问题
+1. 查看[现有问题](https://github.com/zycxfyh/tuheg/issues)确保没有重复
+2. 使用[问题模板](https://github.com/zycxfyh/tuheg/issues/new/choose)创建新问题
 3. 提供详细的复现步骤和环境信息
 
 ### 💬 获取帮助
 
 - 📖 [文档中心](docs/README.md) - 完整的使用和开发文档
-- 💬 [讨论区](https://github.com/your-org/creation-ring/discussions) - 社区讨论和问答
-- 🏷️ [问题标签](https://github.com/your-org/creation-ring/labels) - 按类别查找问题
+- 💬 [讨论区](https://github.com/zycxfyh/tuheg/discussions) - 社区讨论和问答
+- 🏷️ [问题标签](https://github.com/zycxfyh/tuheg/labels) - 按类别查找问题
 
 ### 🤝 商业支持
 
 如需商业支持或定制开发，请联系：
+
 - 📧 Email: support@creation-ring.dev
 - 💼 [企业服务页面](https://creation-ring.dev/enterprise)
 
@@ -435,7 +448,7 @@ pnpm run pre-commit
 
 ### 🏆 贡献者墙
 
-[![Contributors](https://contrib.rocks/image?repo=your-org/creation-ring)](https://github.com/your-org/creation-ring/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=zycxfyh/tuheg)](https://github.com/zycxfyh/tuheg/graphs/contributors)
 
 ## 📄 许可证
 
@@ -500,8 +513,8 @@ SOFTWARE.
 
 **🎨 创世星环 (Creation Ring)**
 
-*"让AI成为每一位创作者的得力助手，共同开创创作的新纪元！"*
+_"让AI成为每一位创作者的得力助手，共同开创创作的新纪元！"_
 
-[![Star History](https://api.star-history.com/svg?repos=your-org/creation-ring&type=Date)](https://star-history.com/#your-org/creation-ring&Date)
+[![Star History](https://api.star-history.com/svg?repos=zycxfyh/tuheg&type=Date)](https://star-history.com/#zycxfyh/tuheg&Date)
 
 </div>
