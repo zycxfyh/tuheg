@@ -1,4 +1,4 @@
-// 文件路径: apps/backend/libs/common/src/health/health.controller.ts
+// 文件路径: packages/common-backend/src/health/health.controller.ts
 
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common'
 

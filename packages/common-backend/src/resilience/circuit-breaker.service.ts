@@ -188,7 +188,7 @@ export class CircuitBreakerService {
 
         if (Object.keys(data).length > 0) {
           const circuit = {
-            state: data.state as CircuitState || CircuitState.CLOSED,
+            state: (data.state as CircuitState) || CircuitState.CLOSED,
             failures: parseInt(data.failures) || 0,
             successes: parseInt(data.successes) || 0,
             lastFailureTime: parseInt(data.lastFailureTime) || 0,
@@ -198,7 +198,7 @@ export class CircuitBreakerService {
               successfulRequests: parseInt(data.successfulRequests) || 0,
               failedRequests: parseInt(data.failedRequests) || 0,
               failureRate: parseFloat(data.failureRate) || 0,
-              state: data.state as CircuitState || CircuitState.CLOSED,
+              state: (data.state as CircuitState) || CircuitState.CLOSED,
               lastStateChange: parseInt(data.lastStateChange) || Date.now(),
             },
           }
@@ -235,7 +235,10 @@ export class CircuitBreakerService {
    * @method saveCircuitToRedis
    * @description 保存熔断器状态到 Redis
    */
-  private async saveCircuitToRedis(name: string, circuit: ReturnType<typeof this.getOrCreateCircuit>): Promise<void> {
+  private async saveCircuitToRedis(
+    name: string,
+    circuit: ReturnType<typeof this.getOrCreateCircuit>
+  ): Promise<void> {
     if (!this.redisClient) return
 
     try {

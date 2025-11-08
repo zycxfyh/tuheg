@@ -14,15 +14,19 @@ The configuration system consists of:
 ## Features
 
 ### Type Safety
+
 All environment variables are validated at startup using Zod schemas, preventing runtime errors from misconfigurations.
 
 ### Centralized Management
+
 All apps use the same configuration system, eliminating inconsistencies between services.
 
 ### Environment Variable Expansion
+
 Supports variable interpolation like `${DATABASE_HOST}:${DATABASE_PORT}` in .env files.
 
 ### Multiple Environment Support
+
 Supports `.env`, `.env.local`, `.env.{environment}`, and `.env.{environment}.local` files.
 
 ## Usage
@@ -53,53 +57,64 @@ export class MyService {
 ### Available Configuration Properties
 
 #### Database
+
 - `databaseUrl`: Database connection URL
 - `dbConnectionLimit`: Connection pool limit
 - `dbPoolTimeout`: Pool timeout in seconds
 - `dbIdleTimeout`: Idle timeout in seconds
 
 #### Redis
+
 - `redisUrl`: Redis connection URL (optional)
 - `redisHost`: Redis host (default: localhost)
 - `redisPort`: Redis port (default: 6379)
 
 #### Encryption
+
 - `encryptionKey`: Encryption key (32+ chars)
 - `encryptionUseSalt`: Whether to use salt
 - `encryptionAlgorithm`: Algorithm (default: aes-256-gcm)
 
 #### Monitoring
+
 - `sentryDsn`: Sentry DSN (optional)
 - `sentryEnvironment`: Environment name
 - `sentryTracesSampleRate`: Tracing sample rate
 
 #### AI Providers
+
 - `fallbackApiKey`: Fallback API key
 - `fallbackModelId`: Fallback model ID
 - `fallbackBaseUrl`: Fallback base URL
 
 #### Application
+
 - `nodeEnv`: Environment (development/production/test)
 - `port`: Application port (deprecated, use service-specific ports)
 - `corsOrigin`: CORS origin
 
 #### Vector Database
+
 - `qdrantUrl`: Qdrant URL
 - `qdrantApiKey`: Qdrant API key
 
 #### Authentication
+
 - `clerkSecretKey`: Clerk secret key
 - `clerkPublishableKey`: Clerk publishable key
 - `clerkWebhookSecretKey`: Clerk webhook secret key
 
 #### Message Queue
+
 - `rabbitmqUrl`: RabbitMQ connection URL
 
 #### JWT (Legacy)
+
 - `jwtSecret`: JWT signing secret
 - `jwtExpirationSeconds`: Token expiration time
 
 #### Service Ports
+
 - `backendGatewayPort`: Backend gateway port
 - `creationAgentHttpPort`: Creation agent port
 - `logicAgentHttpPort`: Logic agent port
