@@ -1,0 +1,73 @@
+import { Plugin, PluginContext, AiToolContribution } from '@tuheg/common-backend';
+
+/**
+ * {{name}} - {{description}}
+ *
+ * This is a VCPToolBox plugin that provides {{description}}
+ */
+export class {{className}}Plugin implements Plugin {
+  manifest = {
+    id: '{{name}}',
+    name: '{{name}}',
+    version: '1.0.0',
+    description: '{{description}}',
+    author: '{{author}}',
+    activationEvents: ['onStartup'],
+    contributes: {
+      aiTools: [
+        {
+          id: '{{kebabName}}',
+          name: '{{name}} Tool',
+          description: '{{description}}',
+          execute: this.execute{{className}}Tool.bind(this),
+          inputSchema: {
+            type: 'object',
+            properties: {
+              input: {
+                type: 'string',
+                description: 'Input for the {{name}} tool'
+              }
+            },
+            required: ['input']
+          }
+        }
+      ] as AiToolContribution[]
+    }
+  };
+
+  async activate(context: PluginContext): Promise<void> {
+    context.logger.info('{{name}} plugin activated');
+
+    // Plugin activation logic
+    // Register event listeners, initialize resources, etc.
+  }
+
+  async deactivate(): Promise<void> {
+    // Plugin deactivation logic
+    // Clean up resources, close connections, etc.
+  }
+
+  /**
+   * Execute the {{name}} tool
+   */
+  private async execute{{className}}Tool(input: { input: string }): Promise<{ result: string }> {
+    try {
+      // Tool execution logic here
+      const { input: userInput } = input;
+
+      // Example implementation - replace with actual logic
+      const result = `Processed input: ${userInput}`;
+
+      return {
+        result
+      };
+    } catch (error) {
+      throw new Error(`{{name}} tool execution failed: ${error.message}`);
+    }
+  }
+}
+
+// Export factory function for the plugin system
+export default function create{{className}}Plugin(context: PluginContext): Plugin {
+  return new {{className}}Plugin();
+}

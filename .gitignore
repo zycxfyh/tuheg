@@ -17,6 +17,16 @@ logs/
 coverage/
 playwright-report/
 
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Compiled JavaScript
+*.js
+*.d.ts
+*.d.ts.map
+*.js.map
+
 # Local Env
 .env
 .env.*
