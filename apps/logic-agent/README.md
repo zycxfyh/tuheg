@@ -17,7 +17,7 @@ Logic Agent是创世星环系统中负责游戏逻辑推理的核心AI代理。�
 
 ### 目录结构
 
-```
+```text
 apps/logic-agent/
 ├── src/
 │   ├── logic.service.ts         # 核心逻辑服务

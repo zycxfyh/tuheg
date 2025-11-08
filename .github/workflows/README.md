@@ -90,7 +90,7 @@ IMAGE_NAME=your-repo-name
 
 ### Git Flow 工作流
 
-```
+```text
 main (生产分支)
 ├── develop (开发主分支)
 │   ├── feature/* (特性分支)

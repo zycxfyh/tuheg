@@ -26,27 +26,27 @@
 
 | 供应商名称     | Base URL                                    | 价格页面                                       | 集成状态 |
 | :------------- | :------------------------------------------ | :--------------------------------------------- | :------- |
-| **OpenAI**     | `https://api.openai.com/v1`                 | https://openai.com/api/pricing/                | ✅ 完成  |
-| **Anthropic**  | `https://api.anthropic.com`                 | https://console.anthropic.com/settings/billing | ✅ 完成  |
-| **Google**     | `https://generativelanguage.googleapis.com` | https://ai.google.dev/pricing                  | ✅ 完成  |
-| **xAI**        | `https://api.x.ai/v1`                       | https://x.ai/api                               | ✅ 完成  |
-| **Mistral**    | `https://api.mistral.ai/v1`                 | https://mistral.ai/pricing/                    | ✅ 完成  |
-| **TogetherAI** | `https://api.together.xyz/v1`               | https://www.together.ai/pricing                | ✅ 完成  |
-| **OpenRouter** | `https://openrouter.ai/api/v1`              | https://openrouter.ai/models                   | ✅ 完成  |
-| **NVIDIA**     | `https://integrate.api.nvidia.com/v1`       | https://build.nvidia.com/explore/pricing       | ✅ 完成  |
+| **OpenAI**     | `https://api.openai.com/v1`                 | <https://openai.com/api/pricing/>                | ✅ 完成  |
+| **Anthropic**  | `https://api.anthropic.com`                 | <https://console.anthropic.com/settings/billing> | ✅ 完成  |
+| **Google**     | `https://generativelanguage.googleapis.com` | <https://ai.google.dev/pricing>                  | ✅ 完成  |
+| **xAI**        | `https://api.x.ai/v1`                       | <https://x.ai/api>                               | ✅ 完成  |
+| **Mistral**    | `https://api.mistral.ai/v1`                 | <https://mistral.ai/pricing/>                    | ✅ 完成  |
+| **TogetherAI** | `https://api.together.xyz/v1`               | <https://www.together.ai/pricing>                | ✅ 完成  |
+| **OpenRouter** | `https://openrouter.ai/api/v1`              | <https://openrouter.ai/models>                   | ✅ 完成  |
+| **NVIDIA**     | `https://integrate.api.nvidia.com/v1`       | <https://build.nvidia.com/explore/pricing>       | ✅ 完成  |
 
 ### 🇨🇳 国内供应商 (10个)
 
 | 供应商名称         | Base URL                                   | 价格页面                                  | 集成状态 |
 | :----------------- | :----------------------------------------- | :---------------------------------------- | :------- |
-| **DeepSeek**       | `https://api.deepseek.com/v1`              | https://platform.deepseek.com/pricing     | ✅ 完成  |
-| **智谱AI**         | `https://open.bigmodel.cn/api/paas/v4`     | https://open.bigmodel.cn/pricing          | ✅ 完成  |
-| **百川智能**       | `https://api.baichuan-ai.com/v1`           | https://platform.baichuan-ai.com/price    | ✅ 完成  |
-| **月之暗面**       | `https://api.moonshot.cn/v1`               | https://platform.moonshot.cn/pricing      | ✅ 完成  |
-| **硅基流动**       | `https://api.siliconflow.cn/v1`            | https://siliconflow.cn/zh-cn/pricing      | ✅ 完成  |
-| **火山引擎**       | `https://ark.cn-beijing.volces.com/api/v3` | https://www.volcengine.com/product/ark    | ✅ 完成  |
-| **腾讯混元**       | `https://api.hunyuan.cloud.tencent.com/v1` | https://cloud.tencent.com/product/hunyuan | ✅ 完成  |
-| **阿里云通义千问** | `https://dashscope.aliyuncs.com/api/v1`    | https://dashscope.aliyuncs.com/pricing    | ✅ 完成  |
+| **DeepSeek**       | `https://api.deepseek.com/v1`              | <https://platform.deepseek.com/pricing>     | ✅ 完成  |
+| **智谱AI**         | `https://open.bigmodel.cn/api/paas/v4`     | <https://open.bigmodel.cn/pricing>          | ✅ 完成  |
+| **百川智能**       | `https://api.baichuan-ai.com/v1`           | <https://platform.baichuan-ai.com/price>    | ✅ 完成  |
+| **月之暗面**       | `https://api.moonshot.cn/v1`               | <https://platform.moonshot.cn/pricing>      | ✅ 完成  |
+| **硅基流动**       | `https://api.siliconflow.cn/v1`            | <https://siliconflow.cn/zh-cn/pricing>      | ✅ 完成  |
+| **火山引擎**       | `https://ark.cn-beijing.volces.com/api/v3` | <https://www.volcengine.com/product/ark>    | ✅ 完成  |
+| **腾讯混元**       | `https://api.hunyuan.cloud.tencent.com/v1` | <https://cloud.tencent.com/product/hunyuan> | ✅ 完成  |
+| **阿里云通义千问** | `https://dashscope.aliyuncs.com/api/v1`    | <https://dashscope.aliyuncs.com/pricing>    | ✅ 完成  |
 
 ## 🛠️ 技术实现
 

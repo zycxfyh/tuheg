@@ -202,16 +202,16 @@
 
 ### 客服支持
 
-- 邮箱：1666384464@qq.com
+- 邮箱：<1666384464@qq.com>
 - 工作时间：周一至周五 9:00-18:00
 
 ### 技术支持
 
-- GitHub Issues：https://github.com/zycxfyh/sira/issues
+- GitHub Issues：<https://github.com/zycxfyh/sira/issues>
 
 ### 商务合作
 
-- 邮箱：1666384464@qq.com
+- 邮箱：<1666384464@qq.com>
 
 ## 📜 协议更新
 

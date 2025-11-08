@@ -30,7 +30,7 @@
 
 ## 系统架构
 
-```
+```text
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   GitHub Actions │───▶│ Industrial      │───▶│ Production      │
 │   CI/CD Pipeline │    │ Scripts Suite   │    │ Deployment      │

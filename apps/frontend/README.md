@@ -37,7 +37,7 @@
 
 ### 目录结构
 
-```
+```text
 apps/frontend/
 ├── src/
 │   ├── assets/           # 静态资源 (CSS, 图片等)
@@ -565,7 +565,7 @@ curl http://localhost:8080/health
 
 #### Helm Chart结构
 
-```
+```text
 charts/frontend/
 ├── Chart.yaml
 ├── values.yaml
@@ -785,7 +785,7 @@ Sentry.init({
 
 #### 提交规范
 
-```
+```text
 feat: 新功能
 fix: 修复bug
 docs: 文档更新

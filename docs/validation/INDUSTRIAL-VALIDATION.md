@@ -867,7 +867,7 @@ docker-compose restart app
 
 ### 📞 获取帮助
 
-- 📧 **邮箱**: 1666384464@qq.com
+- 📧 **邮箱**: <1666384464@qq.com>
 - 🐛 **Issues**: [GitHub Issues](https://github.com/zycxfyh/tuheg/issues)
 - 📚 **文档**: [完整文档](docs/)
 
