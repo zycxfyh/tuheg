@@ -1,4 +1,4 @@
-# 🎨 创世星环 (Creation Ring)
+# 🤖 创世星环 (Creation Ring)
 
 <div align="center">
 
@@ -9,18 +9,29 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-[![Phase 1 Complete](https://img.shields.io/badge/phase_1-✅_complete-brightgreen.svg)](docs/project/PROJECT-COMPLETION-SUMMARY.md)
-[![Industrial Ready](https://img.shields.io/badge/industrial-ready-brightgreen.svg)](docs/System-Technical-Specification.md)
-[![Architecture](https://img.shields.io/badge/architecture-microservices-blue.svg)](docs/System-Technical-Specification.md)
+[![Multi-Agent](https://img.shields.io/badge/multi--agent-architecture-blue.svg)]()
+[![AI Narrative](https://img.shields.io/badge/AI-narrative-generation-orange.svg)]()
+[![Vue 3](https://img.shields.io/badge/Vue-3-green.svg)](https://vuejs.org/)
+[![Nx Monorepo](https://img.shields.io/badge/Nx-monorepo-purple.svg)](https://nx.dev/)
 
 </div>
 
 ---
 
-> **AI创作操作系统的操作系统** - 让AI成为创作的得力助手，开启创作的新纪元
+> **AI创作操作系统的操作系统** - 多Agent协作的AI叙事创作平台 🚀
 
 创世星环是一个全功能的**AI驱动交互式叙事游戏生成系统**，采用先进的微服务架构和多Agent协作技术，为用户提供沉浸式的创作体验。
 通过四个专门的AI代理（Creation/Logic/Narrative/Backend Gateway）的智能协作，系统能够从简单的概念生成完整的游戏世界。
+
+## 🔥 为什么选择创世星环？
+
+- 🚀 **技术领先**: 首个多Agent协作的AI叙事平台
+- 🧠 **智能协作**: 4个专用AI代理无缝协作
+- 🎮 **沉浸体验**: 从概念到完整游戏世界的AI创作
+- 🛠️ **开发者友好**: 完整的API和插件生态
+- 📈 **开源驱动**: 社区共建，持续创新
+
+> 💡 **加入我们**: 成为AI创作革命的一部分！
 
 ## 📋 目录
 
@@ -392,9 +403,31 @@ pnpm test:coverage
 - 📧 Email: <support@creation-ring.dev>
 - 💼 [企业服务页面](https://creation-ring.dev/enterprise)
 
+## 🌟 加入创世星环社区
+
+### 💬 社区讨论
+- [**GitHub Discussions**](https://github.com/zycxfyh/tuheg/discussions) - 功能请求和一般讨论
+- [**Discord Server**](https://discord.gg/creation-ring) - 实时聊天和社区支持
+- [**Reddit Community**](https://reddit.com/r/CreationRing) - 社区分享和问答
+
+### 📊 项目状态
+- ⭐ **Stars**: 帮助我们增长影响力
+- 🍴 **Forks**: 创建你的自定义版本
+- 🐛 **Issues**: 报告问题或建议功能
+- 🔄 **PRs**: 贡献代码和改进
+
+---
+
 ## 🤝 贡献
 
-我们欢迎各种形式的贡献！无论是代码、文档、设计还是想法，都能帮助我们改进项目。
+我们欢迎各种形式的贡献！创世星环是一个开源项目，您的参与对我们至关重要。
+
+🎯 **特别欢迎**:
+- AI和机器学习开发者
+- 前端/全栈开发者
+- 游戏设计师和叙事专家
+- 技术文档写作者
+- UI/UX设计师
 
 ### 🚀 快速开始贡献
 

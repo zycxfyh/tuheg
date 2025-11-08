@@ -1,9 +1,25 @@
 # GitHub Labels Configuration
-# This file defines the labels used in this repository
-# Use with https://github.com/marketplace/actions/github-labeler or manual setup
+# This file defines the labels used in the repository
 
 labels:
-  # Issue Types
+  # Priority labels
+  - name: "priority: critical"
+    color: "b60205"
+    description: "Critical priority - needs immediate attention"
+
+  - name: "priority: high"
+    color: "d73a49"
+    description: "High priority - should be addressed soon"
+
+  - name: "priority: medium"
+    color: "f9d0c4"
+    description: "Medium priority - nice to have"
+
+  - name: "priority: low"
+    color: "bfdadc"
+    description: "Low priority - future consideration"
+
+  # Type labels
   - name: "bug"
     color: "d73a49"
     description: "Something isn't working"
@@ -20,89 +36,128 @@ labels:
     color: "d876e3"
     description: "Further information is requested"
 
-  - name: "help wanted"
-    color: "008672"
-    description: "Extra attention is needed"
-
   - name: "good first issue"
     color: "7057ff"
     description: "Good for newcomers"
 
-  # Priority Levels
-  - name: "priority: critical"
-    color: "b60205"
-    description: "Critical priority - needs immediate attention"
+  - name: "help wanted"
+    color: "008672"
+    description: "Extra attention is needed"
 
-  - name: "priority: high"
-    color: "d93f0b"
-    description: "High priority"
+  # AI-specific labels
+  - name: "ai-bug"
+    color: "ff6b6b"
+    description: "Issues with AI agent behavior or responses"
 
-  - name: "priority: medium"
+  - name: "ai-feature"
+    color: "4ecdc4"
+    description: "New AI capabilities or agent improvements"
+
+  - name: "agent-behavior"
+    color: "45b7d1"
+    description: "AI agent behavior and personality"
+
+  - name: "narrative-quality"
+    color: "f9ca24"
+    description: "Storytelling and narrative generation quality"
+
+  # Component labels
+  - name: "frontend"
+    color: "1abc9c"
+    description: "Frontend/UI related issues"
+
+  - name: "backend"
+    color: "e67e22"
+    description: "Backend/API related issues"
+
+  - name: "creation-agent"
+    color: "3498db"
+    description: "World creation agent"
+
+  - name: "logic-agent"
+    color: "9b59b6"
+    description: "Logic reasoning agent"
+
+  - name: "narrative-agent"
+    color: "e74c3c"
+    description: "Story generation agent"
+
+  - name: "backend-gateway"
+    color: "95a5a6"
+    description: "API gateway and coordination"
+
+  # Status labels
+  - name: "triage"
     color: "fbca04"
-    description: "Medium priority"
+    description: "Needs triage"
 
-  - name: "priority: low"
-    color: "0e8a16"
-    description: "Low priority"
+  - name: "investigating"
+    color: "fbca04"
+    description: "Under investigation"
 
-  # Status
+  - name: "confirmed"
+    color: "fbca04"
+    description: "Issue confirmed"
+
   - name: "in progress"
-    color: "ffa500"
+    color: "fbca04"
     description: "Work in progress"
 
   - name: "blocked"
-    color: "b60205"
-    description: "Blocked by another issue"
-
-  - name: "wontfix"
-    color: "ffffff"
-    description: "This will not be worked on"
-
-  - name: "duplicate"
-    color: "cfd3d7"
-    description: "This issue or pull request already exists"
-
-  # Components
-  - name: "frontend"
-    color: "1d76db"
-    description: "Frontend related"
-
-  - name: "backend"
-    color: "0052cc"
-    description: "Backend related"
-
-  - name: "ai-agent"
     color: "fbca04"
-    description: "AI Agent related"
+    description: "Blocked by dependencies"
 
-  - name: "infrastructure"
-    color: "006b75"
-    description: "Infrastructure related"
+  - name: "ready for review"
+    color: "fbca04"
+    description: "Ready for code review"
+
+  # Testing labels
+  - name: "testing"
+    color: "0e8a16"
+    description: "Needs testing"
+
+  - name: "needs tests"
+    color: "b60205"
+    description: "Missing test coverage"
+
+  # Platform labels
+  - name: "windows"
+    color: "0366d6"
+    description: "Windows specific"
+
+  - name: "macos"
+    color: "0366d6"
+    description: "macOS specific"
+
+  - name: "linux"
+    color: "0366d6"
+    description: "Linux specific"
+
+  - name: "mobile"
+    color: "0366d6"
+    description: "Mobile platforms"
+
+  - name: "web"
+    color: "0366d6"
+    description: "Web platform"
+
+  # Special labels
+  - name: "breaking change"
+    color: "b60205"
+    description: "Introduces breaking changes"
 
   - name: "security"
     color: "b60205"
     description: "Security related"
 
   - name: "performance"
-    color: "d4c5f9"
+    color: "fbca04"
     description: "Performance related"
 
-  # Dependencies
+  - name: "accessibility"
+    color: "006b75"
+    description: "Accessibility related"
+
   - name: "dependencies"
     color: "0366d6"
     description: "Pull requests that update a dependency file"
-
-  # CI/CD
-  - name: "ci"
-    color: "0075ca"
-    description: "CI/CD related"
-
-  # Testing
-  - name: "testing"
-    color: "fbca04"
-    description: "Testing related"
-
-  # Breaking Changes
-  - name: "breaking change"
-    color: "b60205"
-    description: "Breaking changes"

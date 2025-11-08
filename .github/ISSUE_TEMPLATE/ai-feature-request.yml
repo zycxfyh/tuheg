@@ -1,179 +1,143 @@
-name: ✨ AI功能改进建议
-description: 提出AI对话系统的功能改进或新特性建议
-title: "[AI功能] 简短描述建议"
-labels: ["ai-agent", "enhancement", "dialogue-system"]
+name: 🚀 AI Feature Request
+description: Suggest new AI capabilities or agent improvements
+title: "[AI Feature]: "
+labels: ["ai-feature", "enhancement", "agent-improvement"]
 assignees: []
-
 body:
   - type: markdown
     attributes:
       value: |
-        ## ✨ AI功能改进建议
+        Thanks for suggesting an AI feature!
 
-        欢迎您提出AI对话系统的改进建议！您的想法将帮助我们不断优化用户体验。
-
-  - type: textarea
-    id: problem-statement
-    attributes:
-      label: 问题陈述
-      description: 描述当前存在的问题或可以改进的地方
-      placeholder: |
-        例如：
-        - AI响应缺乏进度反馈，用户不知道处理到哪个阶段
-        - 错误处理过于简单，无法区分不同类型的错误
-        - 缺乏实时协作功能
-        - 缓存策略不够智能
-    validations:
-      required: true
+        ## 🚀 AI Feature Request
 
   - type: textarea
-    id: proposed-solution
+    id: summary
     attributes:
-      label: 建议解决方案
-      description: 详细描述您建议的改进方案
-      placeholder: |
-        例如：
-        - 添加实时进度指示器，显示AI处理阶段
-        - 实现智能错误分类和差异化处理策略
-        - 集成WebSocket实现实时协作
-        - 添加多层缓存和智能预加载
-      value: |
-        **核心改进点：**
-
-        **技术实现方案：**
-
-        **预期收益：**
+      label: Feature Summary
+      description: What new AI capability would you like to see?
+      placeholder: "E.g., Voice synthesis for characters, Image generation, Multi-language support..."
     validations:
       required: true
 
   - type: dropdown
-    id: improvement-area
+    id: agent
     attributes:
-      label: 改进领域
-      description: 选择这个建议主要涉及的领域
-      multiple: true
+      label: Target Agent
+      description: Which AI agent should this feature enhance?
       options:
-        - 用户体验 (UX/UI)
-        - 响应性能 (Performance)
-        - 可靠性 (Reliability)
-        - 安全性 (Security)
-        - 可观测性 (Observability)
-        - 可扩展性 (Scalability)
-        - 智能化 (AI/ML)
-        - 开发体验 (DX)
+        - Creation Agent (World building)
+        - Logic Agent (Rule validation)
+        - Narrative Agent (Story generation)
+        - Backend Gateway (System coordination)
+        - New Agent (Propose a new agent type)
+        - Cross-agent feature
     validations:
       required: true
 
-  - type: dropdown
-    id: affected-component
+  - type: textarea
+    id: problem
     attributes:
-      label: 涉及组件
-      description: 选择受影响或需要修改的组件
-      multiple: true
-      options:
-        - Frontend (Vue 3应用)
-        - Backend Gateway (API网关)
-        - Creation Agent (创建代理)
-        - Logic Agent (逻辑代理)
-        - Narrative Agent (叙事代理)
-        - Shared Packages (共享包)
-        - Infrastructure (基础设施)
+      label: Current Limitation
+      description: What can't the AI do now that this feature would enable?
+      placeholder: |
+        Describe what's currently missing:
+        - Creative limitations
+        - Technical constraints
+        - User experience gaps
     validations:
       required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed AI Enhancement
+      description: How should this feature work from a user perspective?
+      placeholder: |
+        Describe the user experience:
+        - How users would interact with this feature
+        - Example use cases
+        - Expected outcomes
+
+  - type: textarea
+    id: technical
+    attributes:
+      label: Technical Implementation
+      description: Any technical details or requirements you know about?
+      placeholder: |
+        Technical considerations:
+        - AI model requirements
+        - API integrations needed
+        - Data processing requirements
+        - Performance implications
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Implementation Complexity
+      description: How complex do you think this would be?
+      options:
+        - Low (Model fine-tuning, prompt engineering)
+        - Medium (New AI integrations, data pipelines)
+        - High (New agent architecture, major AI research)
+        - Very High (Fundamental AI paradigm shift)
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example Scenarios
+      description: Provide specific examples of how this feature would be used.
+      placeholder: |
+        Example 1: [Scenario description]
+        Example 2: [Another scenario]
+        Example 3: [Edge case]
 
   - type: dropdown
     id: priority
     attributes:
-      label: 优先级建议
-      description: 您认为这个改进的紧急程度
+      label: Business Impact
+      description: How important is this for user adoption?
       options:
-        - 🔴 高 - 严重影响用户体验，急需解决
-        - 🟠 中 - 有明显改进空间，应该优先考虑
-        - 🟡 低 - 锦上添花，长期规划
-        - 🟢 建议 - 好的想法，但不紧急
-    validations:
-      required: true
+        - Nice to have (Quality of life improvement)
+        - Important (Competitive advantage)
+        - Critical (Differentiator vs competitors)
+        - Game-changer (Opens new use cases)
 
   - type: textarea
-    id: user-impact
+    id: alternatives
     attributes:
-      label: 用户影响评估
-      description: 描述这个改进对用户的影响
+      label: Alternative Approaches
+      description: Have you considered other ways to achieve this?
       placeholder: |
-        **正面影响：**
-        - 提升用户满意度
-        - 减少用户困惑
-        - 提高使用效率
-
-        **量化指标：**
-        - 响应时间减少50%
-        - 用户投诉减少30%
-        - 功能完成率提升25%
-      value: |
-        **正面影响：**
-
-        **量化指标：**
+        Alternative solutions:
+        - Third-party integrations
+        - Manual user workflows
+        - Simplified implementations
 
   - type: textarea
-    id: implementation-complexity
+    id: additional
     attributes:
-      label: 实现复杂度评估
-      description: 评估实现这个改进的技术难度
+      label: Additional Context
+      description: Any other information or research you've done.
       placeholder: |
-        **技术难度：** 高/中/低
-
-        **所需技能：** 前端/后端/AI/DevOps
-
-        **预估工时：** X天/X周
-
-        **依赖关系：** 需要先完成哪些任务
-
-        **风险点：** 潜在的技术挑战
-      value: |
-        **技术难度：**
-
-        **所需技能：**
-
-        **预估工时：**
-
-        **依赖关系：**
-
-        **风险点：**
-
-  - type: textarea
-    id: alternative-solutions
-    attributes:
-      label: 替代方案
-      description: 如果有其他可能的解决方案，请描述
-      placeholder: |
-        **方案A：** 描述...
-        **优点：**
-        **缺点：**
-
-        **方案B：** 描述...
-        **优点：**
-        **缺点：**
-
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: 补充信息
-      description: 任何其他相关的上下文信息
-      placeholder: |
-        - 相关文档链接
-        - 类似产品的实现方式
-        - 用户反馈引用
-        - 技术调研结果
+        - Research papers or articles
+        - Similar features in other AI systems
+        - Technical feasibility analysis
+        - Market research
 
   - type: checkboxes
     id: checklist
     attributes:
-      label: 检查清单
-      description: 请确认您已完成以下检查
+      label: Checklist
+      description: Please check all that apply.
       options:
-        - label: 我已在[现有建议](https://github.com/zycxfyh/tuheg/issues)中搜索过，确认这不是重复建议
+        - label: I have searched for similar AI feature requests
           required: true
-        - label: 这个建议与AI对话系统的核心功能相关
-          required: true
-        - label: 我已考虑了实现的复杂度和用户收益比
-          required: true
+        - label: This feature would significantly improve AI capabilities
+          required: false
+        - label: I have considered the technical feasibility
+          required: false
+        - label: I am willing to contribute to the implementation
+          required: false
