@@ -33,6 +33,7 @@ export * from './cache/cache.decorator'
 
 // Config exports
 export * from './config/config.module'
+export * from './config/configuration.service'
 export * from './config/env-loader'
 export * from './config/env.schema'
 

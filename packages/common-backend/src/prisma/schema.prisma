@@ -665,6 +665,62 @@ enum QueueStatus {
   RETRY         // 重试
 }
 
+// ==================== 死信队列系统 ====================
+
+model DeadLetterMessage {
+  id            String            @id @default(cuid())
+  originalQueue String            @db.Text
+  userId        String?           @db.Text
+  gameId        String?           @db.Text
+  sagaId        String?           @db.Text
+
+  // 消息内容
+  messageBody   Json              @default("{}")
+  headers       Json              @default("{}")
+
+  // 错误信息
+  error         String?           @db.Text
+  errorDetails  Json              @default("{}")
+
+  // 重试信息
+  retryCount    Int               @default(0)
+  maxRetries    Int               @default(3)
+  lastAttemptAt DateTime?
+
+  // 处理状态
+  status        DLQMessageStatus  @default(PENDING_REVIEW)
+  priority      Int               @default(1)
+
+  // 处理信息
+  reviewedBy    String?           @db.Text
+  reviewedAt    DateTime?
+  reviewNotes   String?           @db.Text
+  reprocessedAt DateTime?
+  resolution    String?           @db.Text
+
+  // 时间戳
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // 索引
+  @@index([originalQueue, createdAt])
+  @@index([userId, createdAt])
+  @@index([gameId, createdAt])
+  @@index([sagaId])
+  @@index([status, priority, createdAt])
+  @@map("dead_letter_messages")
+}
+
+enum DLQMessageStatus {
+  PENDING_REVIEW  // 待审核
+  UNDER_REVIEW    // 审核中
+  APPROVED        // 已批准重新处理
+  REJECTED        // 已拒绝
+  REPROCESSED     // 已重新处理
+  ARCHIVED        // 已归档
+  EXPIRED         // 已过期
+}
+
 // ==================== Phase 4: 企业级功能 ====================
 
 model Tenant {
