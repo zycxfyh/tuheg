@@ -80,12 +80,12 @@
 
 ```mermaid
 graph TD
-    A[Frontend (Vue 3)] --> B[Backend Gateway (NestJS)]
-    B --> C[(Database PostgreSQL)]
-    B --> D[Creation Agent]
-    B --> E[Logic Agent]
-    B --> F[Narrative Agent]
-    D --> G[(Message Queue RabbitMQ)]
+    A["Frontend (Vue 3)"] --> B["Backend Gateway (NestJS)"]
+    B --> C[("Database PostgreSQL")]
+    B --> D["Creation Agent"]
+    B --> E["Logic Agent"]
+    B --> F["Narrative Agent"]
+    D --> G[("Message Queue RabbitMQ")]
     E --> G
     F --> G
 ```
