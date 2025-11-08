@@ -12,7 +12,7 @@
 [![Phase 1 Complete](https://img.shields.io/badge/phase_1-✅_complete-brightgreen.svg)](PROJECT-COMPLETION-SUMMARY.md)
 [![Industrial Ready](https://img.shields.io/badge/industrial-ready-brightgreen.svg)](docs/System-Technical-Specification.md)
 [![Architecture](https://img.shields.io/badge/architecture-microservices-blue.svg)](docs/System-Technical-Specification.md)
-[![VCPToolBox](https://img.shields.io/badge/vcp-toolbox-✅_integrated-purple.svg)](packages/common-backend/src/ai/)
+
 
 </div>
 
