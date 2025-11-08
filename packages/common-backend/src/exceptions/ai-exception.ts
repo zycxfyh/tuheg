@@ -1,4 +1,4 @@
-// 文件路径: apps/backend/libs/common/src/exceptions/ai-exception.ts
+// 文件路径: packages/common-backend/src/exceptions/ai-exception.ts
 
 export class AiGenerationException extends Error {
   constructor(

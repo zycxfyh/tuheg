@@ -1,4 +1,4 @@
-// 文件路径: apps/backend/libs/common/src/health/health.module.ts
+// 文件路径: packages/common-backend/src/health/health.module.ts
 
 import { Module } from '@nestjs/common'
 import { HealthController } from './health.controller'
