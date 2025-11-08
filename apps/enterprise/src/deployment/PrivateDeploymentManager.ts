@@ -69,7 +69,7 @@ class PrivateDeploymentManager extends EventEmitter {
 
     const deployment: DeploymentConfig = {
       id: deploymentId,
-      ...config
+      ...config,
     }
 
     this.deployments.set(deploymentId, deployment)
@@ -85,13 +85,13 @@ class PrivateDeploymentManager extends EventEmitter {
         cpu: 0,
         memory: 0,
         storage: 0,
-        bandwidth: 0
+        bandwidth: 0,
       },
       activeUsers: 0,
       activeProjects: 0,
       incidents: [],
       lastBackup: new Date(),
-      nextMaintenance: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+      nextMaintenance: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
     }
 
     this.deploymentStatuses.set(deploymentId, initialStatus)
@@ -134,7 +134,6 @@ class PrivateDeploymentManager extends EventEmitter {
         status.healthScore = 95
         this.emit('deploymentReady', { config, status })
       }
-
     } catch (error) {
       console.error(`Failed to provision deployment ${config.id}:`, error)
 
@@ -149,7 +148,7 @@ class PrivateDeploymentManager extends EventEmitter {
           description: `部署 ${config.id} 失败: ${error.message}`,
           timestamp: new Date(),
           resolved: false,
-          impact: '部署无法启动'
+          impact: '部署无法启动',
         })
       }
 
@@ -285,15 +284,18 @@ class PrivateDeploymentManager extends EventEmitter {
 
   // 健康监控
   private startHealthMonitoring(): void {
-    this.healthCheckInterval = setInterval(async () => {
-      for (const [deploymentId, status] of this.deploymentStatuses) {
-        try {
-          await this.performHealthCheck(deploymentId)
-        } catch (error) {
-          console.error(`Health check failed for deployment ${deploymentId}:`, error)
+    this.healthCheckInterval = setInterval(
+      async () => {
+        for (const [deploymentId, status] of this.deploymentStatuses) {
+          try {
+            await this.performHealthCheck(deploymentId)
+          } catch (error) {
+            console.error(`Health check failed for deployment ${deploymentId}:`, error)
+          }
         }
-      }
-    }, 5 * 60 * 1000) // 每5分钟检查一次
+      },
+      5 * 60 * 1000
+    ) // 每5分钟检查一次
   }
 
   private async performHealthCheck(deploymentId: string): Promise<void> {
@@ -315,7 +317,6 @@ class PrivateDeploymentManager extends EventEmitter {
       if (status.healthScore < 80) {
         this.handleHealthAlert(deploymentId, status)
       }
-
     } catch (error) {
       console.error(`Health check failed for ${deploymentId}:`, error)
       status.incidents.push({
@@ -326,7 +327,7 @@ class PrivateDeploymentManager extends EventEmitter {
         description: `部署 ${deploymentId} 健康检查失败`,
         timestamp: new Date(),
         resolved: false,
-        impact: '无法监控系统状态'
+        impact: '无法监控系统状态',
       })
     }
   }
@@ -341,10 +342,10 @@ class PrivateDeploymentManager extends EventEmitter {
         cpu: Math.floor(Math.random() * 80) + 10,
         memory: Math.floor(Math.random() * 70) + 20,
         storage: Math.floor(Math.random() * 500) + 100,
-        bandwidth: Math.floor(Math.random() * 1000) + 100
+        bandwidth: Math.floor(Math.random() * 1000) + 100,
       },
       activeUsers: Math.floor(Math.random() * 100) + 10,
-      activeProjects: Math.floor(Math.random() * 50) + 5
+      activeProjects: Math.floor(Math.random() * 50) + 5,
     }
   }
 
@@ -353,7 +354,7 @@ class PrivateDeploymentManager extends EventEmitter {
       deploymentId,
       severity: status.healthScore < 60 ? 'critical' : status.healthScore < 80 ? 'high' : 'medium',
       message: `部署健康分数降低: ${status.healthScore}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     this.emit('healthAlert', alert)
@@ -374,7 +375,7 @@ class PrivateDeploymentManager extends EventEmitter {
 
   // 获取客户的所有部署
   getCustomerDeployments(customerId: string): DeploymentConfig[] {
-    return this.getAllDeployments().filter(dep => dep.customerId === customerId)
+    return this.getAllDeployments().filter((dep) => dep.customerId === customerId)
   }
 
   // 更新部署配置
@@ -418,7 +419,10 @@ class PrivateDeploymentManager extends EventEmitter {
   }
 
   // 扩展部署容量
-  async scaleDeployment(deploymentId: string, newSize: DeploymentConfig['instanceSize']): Promise<void> {
+  async scaleDeployment(
+    deploymentId: string,
+    newSize: DeploymentConfig['instanceSize']
+  ): Promise<void> {
     const deployment = this.deployments.get(deploymentId)
     if (!deployment) {
       throw new Error(`Deployment ${deploymentId} not found`)
