@@ -779,10 +779,10 @@ _"创世星环，连接无限创意；AI赋能，引领创作未来！"_
 
 ## 📞 联系我们
 
-- **🌐 官方网站**: https://creationring.dev
-- **🐙 GitHub**: https://github.com/zycxfyh/tuheg
+- **🌐 官方网站**: <https://creationring.dev>
+- **🐙 GitHub**: <https://github.com/zycxfyh/tuheg>
 - **💬 Discord**: 加入我们的创作社区
-- **📧 邮箱**: team@creationring.dev
+- **📧 邮箱**: <team@creationring.dev>
 - **📱 微信**: 扫码加入技术交流群
 
 ---

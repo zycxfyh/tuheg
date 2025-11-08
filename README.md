@@ -19,7 +19,8 @@
 
 > **AI创作操作系统的操作系统** - 让AI成为创作的得力助手，开启创作的新纪元
 
-创世星环是一个全功能的**AI驱动交互式叙事游戏生成系统**，采用先进的微服务架构和多Agent协作技术，为用户提供沉浸式的创作体验。通过四个专门的AI代理（Creation/Logic/Narrative/Backend Gateway）的智能协作，系统能够从简单的概念生成完整的游戏世界。
+创世星环是一个全功能的**AI驱动交互式叙事游戏生成系统**，采用先进的微服务架构和多Agent协作技术，为用户提供沉浸式的创作体验。
+通过四个专门的AI代理（Creation/Logic/Narrative/Backend Gateway）的智能协作，系统能够从简单的概念生成完整的游戏世界。
 
 ## 📋 目录
 
@@ -91,7 +92,7 @@ graph TD
 
 ### 项目结构
 
-```
+```text
 tuheg/
 ├── 📁 apps/                    # 应用程序
 │   ├── backend-gateway/       # API网关服务
@@ -279,7 +280,7 @@ curl -X POST http://localhost:3000/api/games/{gameId}/action \
 
 ### 🏗️ 项目结构详解
 
-```
+```text
 tuheg/
 ├── apps/                          # 应用服务
 │   ├── frontend/                  # Vue 3 前端应用
@@ -394,7 +395,7 @@ pnpm test:coverage
 
 如需商业支持或定制开发，请联系：
 
-- 📧 Email: support@creation-ring.dev
+- 📧 Email: <support@creation-ring.dev>
 - 💼 [企业服务页面](https://creation-ring.dev/enterprise)
 
 ## 🤝 贡献

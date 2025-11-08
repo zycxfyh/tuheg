@@ -412,7 +412,7 @@ kubectl rollout restart deployment/backend-gateway
 ### 备用联系方式
 
 - **应急电话**: 400-888-8888
-- **邮箱**: emergency@tuheg.com
+- **邮箱**: <emergency@tuheg.com>
 - **Slack**: #emergency-channel
 - **PagerDuty**: 集成告警系统
 

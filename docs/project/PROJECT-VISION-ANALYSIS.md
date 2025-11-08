@@ -525,7 +525,7 @@ const enterprisePlatform = new VCPEenterprisePlatform({
 
 **📊 数据支持**: 本分析基于当前技术栈评估和行业趋势研究
 **🔄 更新频率**: 每季度更新战略分析报告
-**📞 联系我们**: team@creationring.dev
+**📞 联系我们**: <team@creationring.dev>
 
 **🏭 创世星环项目团队**  
 **2025年11月7日**

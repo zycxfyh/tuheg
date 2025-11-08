@@ -128,9 +128,9 @@
 
 ### 联系信息
 
-- **安全团队**: security@company.com
+- **安全团队**: <security@company.com>
 - **紧急联系**: +1-XXX-XXX-XXXX
-- **法律顾问**: legal@company.com
+- **法律顾问**: <legal@company.com>
 
 ## 安全审计排期
 

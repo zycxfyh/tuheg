@@ -285,5 +285,5 @@ VCPToolBox为我们提供了AI工具系统的未来蓝图，其创新的技术�
 
 _分析时间: 2025年11月7日_
 _分析人员: 创世星环开发团队_
-_借鉴项目: VCPToolBox (https://github.com/lioensky/VCPToolBox)_
+_借鉴项目: VCPToolBox (<https://github.com/lioensky/VCPToolBox>)_
 _技术价值评级: ⭐⭐⭐⭐⭐ (极具借鉴意义)_

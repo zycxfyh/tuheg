@@ -23,7 +23,7 @@
 
 ### 目录结构
 
-```
+```text
 apps/backend-gateway/
 ├── src/
 │   ├── auth/              # 认证模块

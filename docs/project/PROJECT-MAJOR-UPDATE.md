@@ -330,10 +330,10 @@ export function renderWithProviders(Component, options = {}) {
 
 ## 📞 联系我们
 
-- **项目主页**: https://github.com/zycxfyh/tuheg
-- **文档中心**: https://tuheg.dev/docs
-- **社区论坛**: https://community.tuheg.dev
-- **技术支持**: support@tuheg.dev
+- **项目主页**: <https://github.com/zycxfyh/tuheg>
+- **文档中心**: <https://tuheg.dev/docs>
+- **社区论坛**: <https://community.tuheg.dev>
+- **技术支持**: <support@tuheg.dev>
 
 ---
 

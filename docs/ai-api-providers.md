@@ -17,8 +17,8 @@
   - `gpt-4o`
   - `gpt-4o-mini`
 - **特点**: 最稳定的GPT模型，推理能力强
-- **官网**: https://platform.openai.com
-- **价格**: https://openai.com/api/pricing/
+- **官网**: <https://platform.openai.com>
+- **价格**: <https://openai.com/api/pricing/>
 
 #### Anthropic (Claude)
 
@@ -30,8 +30,8 @@
   - `claude-3-sonnet-20240229`
   - `claude-3-opus-20240229`
 - **特点**: 推理能力优秀，安全系数高
-- **官网**: https://console.anthropic.com
-- **价格**: https://console.anthropic.com/settings/billing
+- **官网**: <https://console.anthropic.com>
+- **价格**: <https://console.anthropic.com/settings/billing>
 
 #### Google (Gemini)
 
@@ -42,8 +42,8 @@
   - `gemini-1.5-flash`
   - `gemini-pro`
 - **特点**: 多模态能力强，性价比高
-- **官网**: https://ai.google.dev
-- **价格**: https://ai.google.dev/pricing
+- **官网**: <https://ai.google.dev>
+- **价格**: <https://ai.google.dev/pricing>
 
 #### xAI (Grok)
 
@@ -53,8 +53,8 @@
   - `grok-beta`
   - `grok-vision-beta`
 - **特点**: 实时信息获取，幽默风趣
-- **官网**: https://x.ai
-- **价格**: https://x.ai/api
+- **官网**: <https://x.ai>
+- **价格**: <https://x.ai/api>
 
 #### Mistral AI
 
@@ -65,8 +65,8 @@
   - `mistral-medium`
   - `mistral-small`
 - **特点**: 开源模型，性能均衡
-- **官网**: https://mistral.ai
-- **价格**: https://mistral.ai/pricing/
+- **官网**: <https://mistral.ai>
+- **价格**: <https://mistral.ai/pricing/>
 
 #### Together AI
 
@@ -77,8 +77,8 @@
   - `mistralai/Mistral-7B-Instruct-v0.1`
   - `codellama/CodeLlama-34b-Instruct-hf`
 - **特点**: 模型选择丰富，价格实惠
-- **官网**: https://together.ai
-- **价格**: https://www.together.ai/pricing
+- **官网**: <https://together.ai>
+- **价格**: <https://www.together.ai/pricing>
 
 #### OpenRouter
 
@@ -89,8 +89,8 @@
   - Claude系列
   - 开源模型
 - **特点**: 一站式模型聚合平台
-- **官网**: https://openrouter.ai
-- **价格**: https://openrouter.ai/models
+- **官网**: <https://openrouter.ai>
+- **价格**: <https://openrouter.ai/models>
 
 #### NVIDIA
 
@@ -101,8 +101,8 @@
   - `meta/llama3-8b-instruct`
   - `microsoft/wizardlm-8x22b`
 - **特点**: GPU加速，推理速度快
-- **官网**: https://build.nvidia.com
-- **价格**: https://build.nvidia.com/explore/pricing
+- **官网**: <https://build.nvidia.com>
+- **价格**: <https://build.nvidia.com/explore/pricing>
 
 ### 🇨🇳 国内供应商
 
@@ -115,8 +115,8 @@
   - `glm-3-turbo`
   - `chatglm_turbo`
 - **特点**: 国内合规，中文优化
-- **官网**: https://open.bigmodel.cn
-- **价格**: https://open.bigmodel.cn/pricing
+- **官网**: <https://open.bigmodel.cn>
+- **价格**: <https://open.bigmodel.cn/pricing>
 
 #### 百度文心一言
 
@@ -127,8 +127,8 @@
   - `Baichuan3-Turbo`
   - `Baichuan2-53B`
 - **特点**: 轻量化模型，推理速度快
-- **官网**: https://platform.baichuan-ai.com
-- **价格**: https://platform.baichuan-ai.com/price
+- **官网**: <https://platform.baichuan-ai.com>
+- **价格**: <https://platform.baichuan-ai.com/price>
 
 #### 月之暗面 (Kimi)
 
@@ -139,8 +139,8 @@
   - `moonshot-v1-32k`
   - `moonshot-v1-128k`
 - **特点**: 长文本处理能力强
-- **官网**: https://platform.moonshot.cn
-- **价格**: https://platform.moonshot.cn/pricing
+- **官网**: <https://platform.moonshot.cn>
+- **价格**: <https://platform.moonshot.cn/pricing>
 
 #### 硅基流动
 
@@ -151,8 +151,8 @@
   - `meta-llama/Meta-Llama-3.1-70B-Instruct`
   - `01-ai/Yi-1.5-34B-Chat-16K`
 - **特点**: 模型丰富，价格实惠
-- **官网**: https://siliconflow.cn
-- **价格**: https://siliconflow.cn/zh-cn/pricing
+- **官网**: <https://siliconflow.cn>
+- **价格**: <https://siliconflow.cn/zh-cn/pricing>
 
 #### 火山引擎
 
@@ -163,8 +163,8 @@
   - `doubao-lite-4k`
   - `doubao-pro-32k`
 - **特点**: 字节跳动出品，性能稳定
-- **官网**: https://www.volcengine.com
-- **价格**: https://www.volcengine.com/product/ark
+- **官网**: <https://www.volcengine.com>
+- **价格**: <https://www.volcengine.com/product/ark>
 
 #### 腾讯混元
 
@@ -175,8 +175,8 @@
   - `hunyuan-standard`
   - `hunyuan-pro`
 - **特点**: 腾讯云生态集成
-- **官网**: https://cloud.tencent.com
-- **价格**: https://cloud.tencent.com/product/hunyuan
+- **官网**: <https://cloud.tencent.com>
+- **价格**: <https://cloud.tencent.com/product/hunyuan>
 
 #### 阿里云通义千问
 
@@ -187,8 +187,8 @@
   - `qwen-plus`
   - `qwen-max`
 - **特点**: 阿里云生态，安全合规
-- **官网**: https://dashscope.aliyuncs.com
-- **价格**: https://dashscope.aliyuncs.com/pricing
+- **官网**: <https://dashscope.aliyuncs.com>
+- **价格**: <https://dashscope.aliyuncs.com/pricing>
 
 #### DeepSeek
 
@@ -198,8 +198,8 @@
   - `deepseek-chat`
   - `deepseek-coder`
 - **特点**: 开源模型，性价比极高
-- **官网**: https://platform.deepseek.com
-- **价格**: https://platform.deepseek.com/pricing
+- **官网**: <https://platform.deepseek.com>
+- **价格**: <https://platform.deepseek.com/pricing>
 
 ### 🔧 配置使用方法
 

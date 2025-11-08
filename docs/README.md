@@ -37,6 +37,24 @@
 - **[AI-DIALOGUE-PAIN-POINTS-ANALYSIS.md](./ai/AI-DIALOGUE-PAIN-POINTS-ANALYSIS.md)** - AI对话痛点分析
 - **[VCPTOOLBOX-ANALYSIS-REPORT.md](./ai/VCPTOOLBOX-ANALYSIS-REPORT.md)** - VCPToolBox分析报告
 
+### 🏛️ 系统架构 (architecture/)
+
+- **[README.md](./architecture/README.md)** - 架构文档中心
+- **[SYSTEM-ARCHITECTURE.md](./architecture/SYSTEM-ARCHITECTURE.md)** - 系统整体架构设计
+- **[MICROSERVICES-ARCHITECTURE.md](./architecture/MICROSERVICES-ARCHITECTURE.md)** - 微服务架构详解
+- **[DATA-ARCHITECTURE.md](./architecture/DATA-ARCHITECTURE.md)** - 数据架构设计
+- **[EVENT-DRIVEN-ARCHITECTURE.md](./architecture/EVENT-DRIVEN-ARCHITECTURE.md)** - 事件驱动架构
+- **[TECHNOLOGY-STACK.md](./architecture/TECHNOLOGY-STACK.md)** - 技术栈选择和架构
+- **[API-ARCHITECTURE.md](./architecture/API-ARCHITECTURE.md)** - API架构设计
+- **[SECURITY-ARCHITECTURE.md](./architecture/SECURITY-ARCHITECTURE.md)** - 安全架构
+- **[PERFORMANCE-ARCHITECTURE.md](./architecture/PERFORMANCE-ARCHITECTURE.md)** - 性能架构
+- **[DEPLOYMENT-ARCHITECTURE.md](./architecture/DEPLOYMENT-ARCHITECTURE.md)** - 部署架构设计
+- **[SCALING-ARCHITECTURE.md](./architecture/SCALING-ARCHITECTURE.md)** - 扩展架构
+- **[MONITORING-ARCHITECTURE.md](./architecture/MONITORING-ARCHITECTURE.md)** - 监控架构
+- **[ADRs/](./architecture/ADRs/)** - 架构决策记录目录
+  - [ADR-001: 微服务架构选择](./architecture/ADRs/ADR-001-microservices-choice.md)
+  - [ADR-002: 事件驱动设计](./architecture/ADRs/ADR-002-event-driven-design.md)
+
 ### ⚖️ 法律与合规 (legal/)
 
 - **[PRIVACY-POLICY.md](./legal/PRIVACY-POLICY.md)** - 隐私政策
@@ -55,15 +73,17 @@
 ## 📖 快速开始
 
 1. **新手入门**: 从 [项目总结](./project/PROJECT-COMPLETION-SUMMARY.md) 开始了解项目概况
-2. **技术架构**: 阅读 [ARCHITECTURE.md](./development/ARCHITECTURE.md) 了解系统设计
-3. **开发指南**: 查看根目录的 [CONTRIBUTING.md](../CONTRIBUTING.md) 了解如何贡献代码
-4. **API集成**: 参考 [API文档](./api/) 进行接口调用
+2. **系统架构**: 阅读 [系统架构设计](./architecture/SYSTEM-ARCHITECTURE.md) 了解整体架构
+3. **技术架构**: 阅读 [ARCHITECTURE.md](./development/ARCHITECTURE.md) 了解系统设计
+4. **开发指南**: 查看根目录的 [CONTRIBUTING.md](../CONTRIBUTING.md) 了解如何贡献代码
+5. **API集成**: 参考 [API文档](./api/) 进行接口调用
 
 ## 🔍 文档导航
 
 | 文档类型 | 位置                           | 描述                       |
 | -------- | ------------------------------ | -------------------------- |
 | 项目概览 | [project/](./project/)         | 项目愿景、状态、路线图     |
+| 系统架构 | [architecture/](./architecture/) | 系统架构设计、决策记录   |
 | 技术架构 | [development/](./development/) | 系统设计、开发指南         |
 | 质量保证 | [validation/](./validation/)   | 测试、验证、审计报告       |
 | AI技术   | [ai/](./ai/)                   | AI集成、对话优化、工具分析 |

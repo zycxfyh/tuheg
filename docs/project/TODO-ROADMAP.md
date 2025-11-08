@@ -567,7 +567,7 @@
 
 ## 📞 联系我们
 
-- **📧 Email**: team@creationring.dev
+- **📧 Email**: <team@creationring.dev>
 - **💬 Discord**: [加入社区](https://discord.gg/creationring)
 - **🐙 GitHub**: [Issues & Discussions](https://github.com/your-org/creation-ring)
 - **📱 微信群**: 扫码加入技术交流群

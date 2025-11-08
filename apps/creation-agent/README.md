@@ -18,7 +18,7 @@ Creation Agent是创世星环系统中负责从用户概念生成完整游戏世
 
 ### 目录结构
 
-```
+```text
 apps/creation-agent/
 ├── src/
 │   ├── creation.service.ts          # 核心创世服务
@@ -320,7 +320,7 @@ try {
 
 ### 2. 消息流
 
-```
+```text
 前端请求 → Gateway → RabbitMQ(GAME_CREATION_REQUESTED) → Creation Agent → RabbitMQ(GAME_CREATION_COMPLETED/FAILED) → Gateway → WebSocket推送
 ```
 

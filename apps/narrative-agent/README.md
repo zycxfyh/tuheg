@@ -18,7 +18,7 @@ Narrative Agent是创世星环系统中负责将冷冰冰的游戏状态变更�
 
 ### 目录结构
 
-```
+```text
 apps/narrative-agent/
 ├── src/
 │   ├── narrative.service.ts        # 核心叙事服务
@@ -178,7 +178,7 @@ const response = await callAiWithGuard(
 
 ### 1. 当前优化流程 (单Agent模式)
 
-```
+```text
 Logic Agent完成 → Narrative Agent接收 → Synthesizer直接生成 → 推送结果
 ```
 
@@ -190,7 +190,7 @@ Logic Agent完成 → Narrative Agent接收 → Synthesizer直接生成 → 推�
 
 ### 2. 完整双Agent流程 (预留)
 
-```
+```text
 Logic Agent完成 → Narrative Agent接收 → Synthesizer初稿 → Critic审查 → 推送结果
 ```
 
@@ -290,7 +290,7 @@ try {
 
 ### 2. 消息流
 
-```
+```text
 Logic Agent → RabbitMQ(LOGIC_PROCESSING_COMPLETE) → Narrative Agent → RabbitMQ(NARRATIVE_GENERATION_COMPLETED/FAILED) → Gateway → WebSocket推送
 ```
 
