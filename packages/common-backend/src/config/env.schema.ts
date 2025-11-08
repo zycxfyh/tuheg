@@ -22,6 +22,7 @@ export const envSchema = z.object({
 
   // 加密配置
   ENCRYPTION_KEY: z.string().min(32, 'ENCRYPTION_KEY 至少需要 32 个字符'),
+  ENCRYPTION_SALT: z.string().min(16, 'ENCRYPTION_SALT 至少需要 16 个字符'),
   ENCRYPTION_USE_SALT: z
     .string()
     .transform((val) => ['true', '1', 'yes'].includes(val.toLowerCase()))
@@ -55,6 +56,20 @@ export const envSchema = z.object({
   // Clerk 配置
   CLERK_SECRET_KEY: z.string().optional(),
   CLERK_PUBLISHABLE_KEY: z.string().optional(),
+  CLERK_WEBHOOK_SECRET_KEY: z.string().optional(),
+
+  // RabbitMQ 配置
+  RABBITMQ_URL: z.string().url().default('amqp://localhost:5672'),
+
+  // JWT 配置 (用于传统认证)
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET 至少需要 32 个字符'),
+  JWT_EXPIRATION_SECONDS: z.coerce.number().int().positive().default(3600),
+
+  // 服务端口配置
+  BACKEND_GATEWAY_PORT: z.coerce.number().int().positive().default(3000),
+  CREATION_AGENT_HTTP_PORT: z.coerce.number().int().positive().default(8080),
+  LOGIC_AGENT_HTTP_PORT: z.coerce.number().int().positive().default(8081),
+  NARRATIVE_AGENT_HTTP_PORT: z.coerce.number().int().positive().default(8082),
 })
 
 /**

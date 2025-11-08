@@ -5,11 +5,12 @@ import { Module, OnModuleInit } from '@nestjs/common'
 import { ConfigModule as NestConfigModule } from '@nestjs/config'
 import { validateEnv } from './env.schema'
 import { EnvLoader } from './env-loader'
+import { ConfigurationService } from './configuration.service'
 
 /**
  * @module ConfigModule
  * @description 类型安全的环境配置模块
- * 提供环境变量验证和加载功能
+ * 提供环境变量验证、加载和类型安全访问功能
  */
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { EnvLoader } from './env-loader'
       },
     }),
   ],
-  exports: [NestConfigModule],
+  providers: [ConfigurationService],
+  exports: [NestConfigModule, ConfigurationService],
 })
 export class ConfigModule implements OnModuleInit {
   onModuleInit() {

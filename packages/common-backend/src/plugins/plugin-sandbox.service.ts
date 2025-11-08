@@ -47,6 +47,9 @@ export class PluginSandboxService {
       // 读取插件代码
       const pluginCode = await fs.promises.readFile(pluginPath, 'utf-8')
 
+      // 验证插件代码安全性
+      this.validatePluginCode(pluginCode)
+
       // 在沙盒中执行插件代码
       const script = new vm.Script(pluginCode, {
         filename: path.basename(pluginPath),
@@ -131,6 +134,10 @@ export class PluginSandboxService {
 
       // 读取并执行插件代码
       const pluginCode = await fs.promises.readFile(pluginPath, 'utf-8')
+
+      // 验证插件代码安全性
+      this.validatePluginCode(pluginCode)
+
       const script = new vm.Script(pluginCode, {
         filename: path.basename(pluginPath),
         timeout: options.timeout || 10000,
@@ -202,15 +209,26 @@ export class PluginSandboxService {
         warn: (...args: any[]) => this.logger.warn(`[Sandbox:${sandboxId}]`, ...args),
         error: (...args: any[]) => this.logger.error(`[Sandbox:${sandboxId}]`, ...args),
       },
-      setTimeout: (callback: Function, delay: number) => {
-        if (delay > (options.timeout || 5000)) {
-          throw new Error('Timeout exceeded')
-        }
-        return setTimeout(callback, delay)
-      },
-      clearTimeout,
-      Buffer,
-      // 限制访问全局对象
+      // REMOVER: Acesso perigoso ao Buffer - pode ser usado para RCE
+      // Buffer,
+
+      // REMOVER: setTimeout personalizado - pode ser bypassado
+      // setTimeout: (callback: Function, delay: number) => {
+      //   if (delay > (options.timeout || 5000)) {
+      //     throw new Error('Timeout exceeded')
+      //   }
+      //   return setTimeout(callback, delay)
+      // },
+      // clearTimeout,
+
+      // Bloquear acesso a construtores e funções perigosas
+      Buffer: undefined,
+      Function: undefined,
+      eval: undefined,
+      setTimeout: undefined,
+      setInterval: undefined,
+      clearTimeout: undefined,
+      clearInterval: undefined,
       global: undefined,
       process: undefined,
       __dirname: undefined,
@@ -239,6 +257,52 @@ export class PluginSandboxService {
         return require(moduleId)
       } catch (error) {
         throw new Error(`Failed to load module '${moduleId}': ${error.message}`)
+      }
+    }
+  }
+
+  /**
+   * 验证插件代码安全性
+   */
+  private validatePluginCode(code: string): void {
+    const dangerousPatterns = [
+      // Acesso direto ao global
+      /\bglobal\b/,
+      /\bprocess\b/,
+      /\b__dirname\b/,
+      /\b__filename\b/,
+      /\brequire\b/,
+      /\bmodule\b/,
+      /\bexports\b/,
+
+      // Funções perigosas
+      /\beval\b/,
+      /\bFunction\b/,
+      /\bsetTimeout\b/,
+      /\bsetInterval\b/,
+      /\bclearTimeout\b/,
+      /\bclearInterval\b/,
+
+      // Acesso ao sistema de arquivos
+      /\bfs\b/,
+      /\bpath\b/,
+
+      // Acesso à rede
+      /\bhttp\b/,
+      /\bhttps\b/,
+      /\bnet\b/,
+      /\bdns\b/,
+
+      // Acesso ao sistema
+      /\bchild_process\b/,
+      /\bos\b/,
+      /\bcrypto\b/,
+      /\bBuffer\b/,
+    ]
+
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(code)) {
+        throw new Error(`Plugin code contains dangerous pattern: ${pattern}`)
       }
     }
   }

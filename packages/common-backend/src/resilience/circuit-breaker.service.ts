@@ -2,6 +2,7 @@
 // 核心理念: 熔断器模式，防止级联故障
 
 import { Injectable, Logger } from '@nestjs/common'
+import { Redis } from 'ioredis'
 
 /**
  * @enum CircuitState
@@ -56,12 +57,16 @@ export interface CircuitBreakerMetrics {
  * @class CircuitBreakerService
  * @description 熔断器服务
  * 实现熔断器模式，防止级联故障
+ * 支持 Redis 存储以实现集群一致性
  */
 @Injectable()
 export class CircuitBreakerService {
   private readonly logger = new Logger(CircuitBreakerService.name)
 
-  // 每个服务的熔断器状态
+  // Redis 客户端（用于分布式存储）
+  private redisClient?: Redis
+
+  // 内存存储（fallback when Redis is unavailable）
   private readonly circuits = new Map<
     string,
     {
@@ -73,6 +78,39 @@ export class CircuitBreakerService {
       metrics: CircuitBreakerMetrics
     }
   >()
+
+  constructor() {
+    this.initRedis()
+  }
+
+  /**
+   * 初始化 Redis 客户端
+   */
+  private initRedis(): void {
+    const redisUrl = process.env.REDIS_URL
+    if (redisUrl) {
+      try {
+        this.redisClient = new Redis(redisUrl, {
+          maxRetriesPerRequest: 3,
+          retryStrategy: (times) => {
+            const delay = Math.min(times * 50, 2000)
+            return delay
+          },
+        })
+
+        this.redisClient.on('error', (error) => {
+          this.logger.warn('Redis connection error, falling back to memory store:', error)
+          this.redisClient = undefined
+        })
+
+        this.logger.log('Circuit breaker using Redis storage')
+      } catch (error) {
+        this.logger.warn('Failed to initialize Redis, using memory store:', error)
+      }
+    } else {
+      this.logger.log('Circuit breaker using memory store (REDIS_URL not configured)')
+    }
+  }
 
   /**
    * @method execute
@@ -100,7 +138,7 @@ export class CircuitBreakerService {
       successThreshold = 2,
     } = options
 
-    const circuit = this.getOrCreateCircuit(name)
+    const circuit = await this.getOrCreateCircuit(name)
 
     // 检查熔断器状态
     if (circuit.state === CircuitState.OPEN) {
@@ -128,11 +166,11 @@ export class CircuitBreakerService {
       const result = await operation()
 
       // 成功
-      this.recordSuccess(name, circuit, successThreshold)
+      await this.recordSuccess(name, circuit, successThreshold)
       return result
     } catch (error) {
       // 失败
-      this.recordFailure(name, circuit, failureThreshold, failureRateThreshold)
+      await this.recordFailure(name, circuit, failureThreshold, failureRateThreshold)
       throw error
     }
   }
@@ -141,7 +179,38 @@ export class CircuitBreakerService {
    * @method getOrCreateCircuit
    * @description 获取或创建熔断器
    */
-  private getOrCreateCircuit(name: string) {
+  private async getOrCreateCircuit(name: string) {
+    // Primeiro tenta carregar do Redis
+    if (this.redisClient) {
+      try {
+        const redisKey = `circuit_breaker:${name}`
+        const data = await this.redisClient.hgetall(redisKey)
+
+        if (Object.keys(data).length > 0) {
+          const circuit = {
+            state: data.state as CircuitState || CircuitState.CLOSED,
+            failures: parseInt(data.failures) || 0,
+            successes: parseInt(data.successes) || 0,
+            lastFailureTime: parseInt(data.lastFailureTime) || 0,
+            halfOpenRequests: parseInt(data.halfOpenRequests) || 0,
+            metrics: {
+              totalRequests: parseInt(data.totalRequests) || 0,
+              successfulRequests: parseInt(data.successfulRequests) || 0,
+              failedRequests: parseInt(data.failedRequests) || 0,
+              failureRate: parseFloat(data.failureRate) || 0,
+              state: data.state as CircuitState || CircuitState.CLOSED,
+              lastStateChange: parseInt(data.lastStateChange) || Date.now(),
+            },
+          }
+          this.circuits.set(name, circuit)
+          return circuit
+        }
+      } catch (error) {
+        this.logger.warn(`Failed to load circuit breaker ${name} from Redis, using memory:`, error)
+      }
+    }
+
+    // Fallback para memória
     if (!this.circuits.has(name)) {
       this.circuits.set(name, {
         state: CircuitState.CLOSED,
@@ -163,14 +232,44 @@ export class CircuitBreakerService {
   }
 
   /**
+   * @method saveCircuitToRedis
+   * @description 保存熔断器状态到 Redis
+   */
+  private async saveCircuitToRedis(name: string, circuit: ReturnType<typeof this.getOrCreateCircuit>): Promise<void> {
+    if (!this.redisClient) return
+
+    try {
+      const redisKey = `circuit_breaker:${name}`
+      const data = {
+        state: circuit.state,
+        failures: circuit.failures.toString(),
+        successes: circuit.successes.toString(),
+        lastFailureTime: circuit.lastFailureTime.toString(),
+        halfOpenRequests: circuit.halfOpenRequests.toString(),
+        totalRequests: circuit.metrics.totalRequests.toString(),
+        successfulRequests: circuit.metrics.successfulRequests.toString(),
+        failedRequests: circuit.metrics.failedRequests.toString(),
+        failureRate: circuit.metrics.failureRate.toString(),
+        lastStateChange: circuit.metrics.lastStateChange.toString(),
+      }
+
+      await this.redisClient.hmset(redisKey, data)
+      // Definir TTL de 24 horas para evitar acúmulo de dados antigos
+      await this.redisClient.expire(redisKey, 86400)
+    } catch (error) {
+      this.logger.warn(`Failed to save circuit breaker ${name} to Redis:`, error)
+    }
+  }
+
+  /**
    * @method recordSuccess
    * @description 记录成功
    */
-  private recordSuccess(
+  private async recordSuccess(
     name: string,
     circuit: ReturnType<typeof this.getOrCreateCircuit>,
     successThreshold: number
-  ): void {
+  ): Promise<void> {
     circuit.metrics.totalRequests++
     circuit.metrics.successfulRequests++
     circuit.successes++
@@ -192,18 +291,21 @@ export class CircuitBreakerService {
       circuit.metrics.totalRequests > 0
         ? circuit.metrics.failedRequests / circuit.metrics.totalRequests
         : 0
+
+    // 保存到 Redis
+    await this.saveCircuitToRedis(name, circuit)
   }
 
   /**
    * @method recordFailure
    * @description 记录失败
    */
-  private recordFailure(
+  private async recordFailure(
     name: string,
     circuit: ReturnType<typeof this.getOrCreateCircuit>,
     failureThreshold: number,
     failureRateThreshold: number
-  ): void {
+  ): Promise<void> {
     circuit.metrics.totalRequests++
     circuit.metrics.failedRequests++
     circuit.failures++
@@ -235,6 +337,9 @@ export class CircuitBreakerService {
       circuit.metrics.lastStateChange = Date.now()
       this.logger.warn(`Circuit breaker "${name}" opened after failure in HALF_OPEN state`)
     }
+
+    // 保存到 Redis
+    await this.saveCircuitToRedis(name, circuit)
   }
 
   /**

@@ -509,7 +509,23 @@ export class EnterpriseSecurityService {
       throw new Error('ENCRYPTION_KEY environment variable is required')
     }
 
-    this.encryptionKey = scryptSync(key, 'salt', this.keyLength)
+    // 安全检查：确保密钥长度足够
+    if (key.length < 32) {
+      throw new Error('ENCRYPTION_KEY must be at least 32 characters long')
+    }
+
+    // 使用环境变量中的盐值，如果未设置则抛出错误要求明确配置
+    const saltString = process.env.ENCRYPTION_SALT
+    if (!saltString) {
+      throw new Error('ENCRYPTION_SALT environment variable is required for secure key derivation')
+    }
+
+    if (saltString.length < 16) {
+      throw new Error('ENCRYPTION_SALT must be at least 16 characters long')
+    }
+
+    const salt = Buffer.from(saltString, 'utf8')
+    this.encryptionKey = scryptSync(key, salt, this.keyLength)
   }
 
   /**
