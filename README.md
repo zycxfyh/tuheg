@@ -3,16 +3,15 @@
 <div align="center">
 
 [![CI](https://img.shields.io/github/actions/workflow/status/zycxfyh/tuheg/ci.yml?branch=main)](https://github.com/zycxfyh/tuheg/actions)
-[![Coverage](https://img.shields.io/badge/coverage-87.3%25-brightgreen.svg)](industrial-test-results/)
+[![Coverage](https://img.shields.io/badge/coverage-87.3%25-brightgreen.svg)](docs/validation/)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-[![Phase 1 Complete](https://img.shields.io/badge/phase_1-✅_complete-brightgreen.svg)](PROJECT-COMPLETION-SUMMARY.md)
+[![Phase 1 Complete](https://img.shields.io/badge/phase_1-✅_complete-brightgreen.svg)](docs/project/PROJECT-COMPLETION-SUMMARY.md)
 [![Industrial Ready](https://img.shields.io/badge/industrial-ready-brightgreen.svg)](docs/System-Technical-Specification.md)
 [![Architecture](https://img.shields.io/badge/architecture-microservices-blue.svg)](docs/System-Technical-Specification.md)
-
 
 </div>
 
@@ -24,17 +23,17 @@
 
 ## 📋 目录
 
-- [🚀 核心特性](#-核心特性)
-- [🏗️ 系统架构](#️-系统架构)
-- [🛠️ 快速开始](#️-快速开始)
-- [📖 使用指南](#-使用指南)
-- [🔧 开发](#-开发)
-- [📚 文档](#-文档)
-- [🏆 里程碑](#-里程碑)
-- [📞 支持](#-支持)
-- [🤝 贡献](#-贡献)
-- [📄 许可证](#-许可证)
-- [🙏 致谢](#-致谢)
+- [🚀 核心特性](#核心特性)
+- [🏗️ 系统架构](#系统架构)
+- [🛠️ 快速开始](#快速开始)
+- [📖 使用指南](#使用指南)
+- [🔧 开发](#开发)
+- [📚 文档](#文档)
+- [🏆 里程碑](#里程碑)
+- [📞 支持](#支持)
+- [🤝 贡献](#贡献)
+- [📄 许可证](#许可证)
+- [🙏 致谢](#致谢)
 
 ## 🚀 核心特性
 
@@ -93,7 +92,7 @@ graph TD
 ### 项目结构
 
 ```
-creation-ring/
+tuheg/
 ├── 📁 apps/                    # 应用程序
 │   ├── backend-gateway/       # API网关服务
 │   ├── creation-agent/        # 世界创建代理
@@ -281,7 +280,7 @@ curl -X POST http://localhost:3000/api/games/{gameId}/action \
 ### 🏗️ 项目结构详解
 
 ```
-creation-ring/
+tuheg/
 ├── apps/                          # 应用服务
 │   ├── frontend/                  # Vue 3 前端应用
 │   │   ├── src/
