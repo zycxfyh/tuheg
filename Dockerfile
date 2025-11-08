@@ -1,5 +1,5 @@
 # Multi-stage build for Creation Ring
-FROM node:18-alpine AS base
+FROM node:25-alpine AS base
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm run build
 
 # Stage 3: Production image
-FROM node:18-alpine AS runner
+FROM node:25-alpine AS runner
 
 # Install pnpm in production image
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
