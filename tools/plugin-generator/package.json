@@ -1,0 +1,42 @@
+{
+  "name": "@tuheg/plugin-generator",
+  "version": "1.0.0",
+  "description": "VCPToolBox Plugin Development Generator",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "bin": {
+    "create-vcp-plugin": "./bin/create-plugin.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint . --ext .ts,.js"
+  },
+  "keywords": [
+    "vcp",
+    "plugin",
+    "generator",
+    "scaffold",
+    "development",
+    "toolchain"
+  ],
+  "author": "创世星环团队",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "handlebars": "^4.7.8",
+    "inquirer": "^9.2.12",
+    "ora": "^7.0.1",
+    "validate-npm-package-name": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.0",
+    "@types/validate-npm-package-name": "^4.0.2",
+    "typescript": "^5.3.0"
+  }
+}

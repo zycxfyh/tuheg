@@ -1,0 +1,73 @@
+import { {{className}}Plugin, create{{className}}Plugin } from './index';
+
+describe('{{className}}Plugin', () => {
+  let plugin: {{className}}Plugin;
+  let mockContext: any;
+
+  beforeEach(() => {
+    mockContext = {
+      pluginId: '{{name}}',
+      config: {},
+      logger: {
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        debug: jest.fn()
+      }
+    };
+
+    plugin = new {{className}}Plugin();
+  });
+
+  describe('manifest', () => {
+    it('should have correct plugin metadata', () => {
+      expect(plugin.manifest.id).toBe('{{name}}');
+      expect(plugin.manifest.name).toBe('{{name}}');
+      expect(plugin.manifest.version).toBe('1.0.0');
+      expect(plugin.manifest.description).toBe('{{description}}');
+      expect(plugin.manifest.author).toBe('{{author}}');
+    });
+
+    it('should contribute AI tools', () => {
+      expect(plugin.manifest.contributes?.aiTools).toHaveLength(1);
+      expect(plugin.manifest.contributes?.aiTools?.[0].id).toBe('{{kebabName}}');
+      expect(plugin.manifest.contributes?.aiTools?.[0].name).toBe('{{name}} Tool');
+    });
+  });
+
+  describe('activate', () => {
+    it('should activate successfully', async () => {
+      await plugin.activate(mockContext);
+      expect(mockContext.logger.info).toHaveBeenCalledWith('{{name}} plugin activated');
+    });
+  });
+
+  describe('deactivate', () => {
+    it('should deactivate successfully', async () => {
+      await plugin.deactivate();
+      // Add assertions for cleanup logic if any
+    });
+  });
+
+  describe('tool execution', () => {
+    it('should execute {{name}} tool successfully', async () => {
+      const input = { input: 'test input' };
+      const result = await (plugin.manifest.contributes?.aiTools?.[0].execute as any)(input);
+
+      expect(result).toHaveProperty('result');
+      expect(result.result).toContain('Processed input: test input');
+    });
+
+    it('should handle tool execution errors', async () => {
+      // Test error handling by mocking internal functions or providing invalid input
+      // This depends on the actual implementation logic
+    });
+  });
+
+  describe('factory function', () => {
+    it('should create plugin instance', () => {
+      const instance = create{{className}}Plugin(mockContext);
+      expect(instance).toBeInstanceOf({{className}}Plugin);
+    });
+  });
+});
