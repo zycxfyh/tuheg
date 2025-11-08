@@ -1,13 +1,12 @@
-// 文件路径: apps/nexus-engine/src/auth/strategies/jwt.strategy.ts
+// 文件路径: apps/backend-gateway/src/auth/strategies/jwt.strategy.ts
 
 import { Injectable, UnauthorizedException } from '@nestjs/common'
+import type { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { ExtractJwt, Strategy } from 'passport-jwt'
-import { ConfigService } from '@nestjs/config'
-import { User } from '@prisma/client'
-
+import type { User } from '@prisma/client'
 // [核心修正] 放弃旧的 '@/' 别名，从 @tuheg/common-backend 导入共享的 PrismaService
-import { PrismaService } from '@tuheg/common-backend'
+import type { PrismaService } from '@tuheg/common-backend'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

@@ -1,4 +1,4 @@
-import { VCPToolBoxClient } from '@tuheg/vcptoolbox-sdk'
+import type { VCPToolBoxClient } from '@tuheg/vcptoolbox-sdk'
 
 class PluginMarketplaceApi {
   constructor(private client: VCPToolBoxClient) {}

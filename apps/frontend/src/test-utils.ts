@@ -1,7 +1,7 @@
 // 文件路径: apps/frontend/src/test-utils.ts
 // 核心理念: 用户中心的测试，优先使用可访问的查询方式
 
-import { render, mount, type RenderOptions, VueWrapper } from '@vue/test-utils'
+import { mount, type RenderOptions, render, type VueWrapper } from '@vue/test-utils'
 
 // Mock import.meta.env for Vitest
 global.importMetaEnv = {
@@ -14,11 +14,12 @@ if (!global.import) {
 } else if (!global.import.meta) {
   global.import.meta = { env: global.importMetaEnv }
 }
+
 import { createPinia, setActivePinia } from 'pinia'
-import { createRouter, createWebHistory } from 'vue-router'
-import { createI18n } from 'vue-i18n'
-import { routes } from './router'
 import type { Component } from 'vue'
+import { createI18n } from 'vue-i18n'
+import { createRouter, createWebHistory } from 'vue-router'
+import { routes } from './router'
 
 /**
  * @interface TestUtilsOptions

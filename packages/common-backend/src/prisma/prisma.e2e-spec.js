@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 const testing_1 = require('@nestjs/testing')
 const prisma_service_1 = require('./prisma.service')

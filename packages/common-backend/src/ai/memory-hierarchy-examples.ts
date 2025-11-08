@@ -2,7 +2,7 @@
 // 职责: VCPToolBox 4种记忆召回模式的使用示例
 // 展示如何在AI对话中使用智能记忆系统
 
-import { MemoryHierarchyService, MemoryRecallMode } from './memory-hierarchy.service'
+import { type MemoryHierarchyService, MemoryRecallMode } from './memory-hierarchy.service'
 
 /**
  * VCPToolBox 记忆召回模式使用示例

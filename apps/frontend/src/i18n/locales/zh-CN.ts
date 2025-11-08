@@ -1,0 +1,41 @@
+export const zhCn = {
+  common: {
+    loading: '加载中...',
+    error: '错误',
+    success: '成功',
+    cancel: '取消',
+    confirm: '确认',
+    save: '保存',
+    delete: '删除',
+    edit: '编辑',
+    create: '创建',
+    close: '关闭',
+  },
+  navigation: {
+    home: '首页',
+    creation: '创作中心',
+    game: '游戏',
+    plugins: '插件市场',
+    settings: '设置',
+  },
+  auth: {
+    login: '登录',
+    logout: '登出',
+    signup: '注册',
+    username: '用户名',
+    password: '密码',
+    email: '邮箱',
+  },
+  creation: {
+    title: '创作中心',
+    description: '开始你的AI创作之旅',
+    newProject: '新项目',
+    loadProject: '加载项目',
+  },
+  game: {
+    title: '游戏世界',
+    start: '开始冒险',
+    pause: '暂停',
+    resume: '继续',
+  },
+}

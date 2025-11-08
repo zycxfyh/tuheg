@@ -1,8 +1,8 @@
 // 文件路径: libs/common/src/event-bus/event-bus.module.ts (自包含最终版)
 
 import { Module } from '@nestjs/common'
-import { ClientsModule, Transport } from '@nestjs/microservices'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ClientsModule, Transport } from '@nestjs/microservices'
 import { EventBusService } from './event-bus.service'
 
 export const NEXUS_EVENT_BUS = 'NEXUS_EVENT_BUS'

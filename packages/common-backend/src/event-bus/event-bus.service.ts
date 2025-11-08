@@ -1,7 +1,7 @@
 // 文件路径: libs/common/src/event-bus/event-bus.service.ts
 
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { ClientProxy } from '@nestjs/microservices'
+import { Inject, Injectable, Logger, type OnModuleInit } from '@nestjs/common'
+import type { ClientProxy } from '@nestjs/microservices'
 import { NEXUS_EVENT_BUS } from './event-bus.module'
 
 @Injectable()

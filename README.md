@@ -24,17 +24,17 @@
 
 ## 📋 目录
 
-- [🚀 核心特性](#核心特性)
-- [🏗️ 系统架构](#系统架构)
-- [🛠️ 快速开始](#快速开始)
-- [📖 使用指南](#使用指南)
-- [🔧 开发](#开发)
-- [📚 文档](#文档)
-- [🏆 里程碑](#里程碑)
-- [📞 支持](#支持)
-- [🤝 贡献](#贡献)
-- [📄 许可证](#许可证)
-- [🙏 致谢](#致谢)
+- [🚀 核心特性](#🚀-核心特性)
+- [🏗️ 系统架构](#🏗️-系统架构)
+- [🛠️ 快速开始](#🛠️-快速开始)
+- [📖 使用指南](#📖-使用指南)
+- [🔧 开发](#🔧-开发)
+- [📚 文档](#📚-文档)
+- [🏆 里程碑](#🏆-里程碑)
+- [📞 支持](#📞-支持)
+- [🤝 贡献](#🤝-贡献)
+- [📄 许可证](#📄-许可证)
+- [🙏 致谢](#🙏-致谢)
 
 ## 🚀 核心特性
 
@@ -45,12 +45,12 @@
 - **Narrative Agent**: 将状态变更转换为生动叙事内容
 - **Backend Gateway**: API网关和实时通信管理
 
-### 🏗️ 工业级架构
+### 🤖 AI驱动架构
 
-- **微服务架构**: 完全解耦的服务模块
-- **消息队列**: RabbitMQ事件驱动通信
-- **缓存策略**: Redis多层缓存
-- **监控体系**: Prometheus + Grafana
+- **多Agent协作**: 四个专用AI代理协同工作
+- **实时交互**: WebSocket流式AI响应
+- **智能缓存**: Redis优化响应速度
+- **插件生态**: VCPToolBox扩展平台
 
 ### 🎨 用户体验
 
@@ -71,10 +71,10 @@
 
 - **前端**: Vue 3 + TypeScript + Vite + Tailwind CSS
 - **后端**: NestJS + TypeScript + PostgreSQL + Redis
-- **消息队列**: RabbitMQ
-- **监控**: Prometheus + Grafana
-- **容器化**: Docker + Kubernetes
-- **测试**: Vitest + Playwright + Jest
+- **AI集成**: OpenAI + Anthropic API
+- **消息队列**: RabbitMQ (轻量级)
+- **容器化**: Docker
+- **测试**: Vitest + Jest
 
 ### 服务架构
 
@@ -111,10 +111,9 @@ tuheg/
 │   ├── development/           # 开发文档
 │   ├── ai/                    # AI技术文档
 │   └── legal/                 # 法律合规
-├── 📁 deployment/             # 部署配置
 ├── 📁 scripts/                # 构建脚本
 ├── 📁 tools/                  # 开发工具
-└── 📁 .github/                # GitHub配置
+└── 📁 docker/                 # Docker配置
 ```
 
 ## 🛠️ 快速开始
@@ -313,7 +312,7 @@ tuheg/
 # 安装依赖
 pnpm install
 
-# 启动开发服务器
+# 启动开发环境
 pnpm run dev
 
 # 构建生产版本
@@ -322,14 +321,9 @@ pnpm run build
 # 运行测试
 pnpm run test
 
-# 代码检查
+# 代码检查和格式化
 pnpm run lint
-
-# 格式化代码
 pnpm run format
-
-# 类型检查
-pnpm run type-check
 ```
 
 ### 🧪 测试策略
@@ -368,12 +362,12 @@ pnpm test:coverage
 
 ## 🏆 里程碑
 
-- [x] **现代化架构重构**: Vue 3 + NestJS + TypeScript ✅
-- [x] **多Agent协作系统**: 4个专用AI代理服务 ✅
-- [x] **企业级基础设施**: Docker + K8s + 监控体系 ✅
-- [x] **插件生态系统**: VCPToolBox + SDK + API平台 ✅
-- [ ] **生产环境部署**: 云原生部署和扩展 🚀
-- [ ] **社区生态建设**: 插件市场和开发者社区 🚀
+- [x] **核心架构完成**: Vue 3 + NestJS + AI多Agent系统 ✅
+- [x] **基础功能实现**: 交互式叙事游戏生成 ✅
+- [x] **插件系统搭建**: VCPToolBox SDK和基础架构 ✅
+- [ ] **用户体验优化**: 界面流畅性和响应速度 🚀
+- [ ] **AI质量提升**: 叙事生成质量和一致性 🚀
+- [ ] **插件生态建设**: 开发者工具和社区 🚀
 
 ## 📞 支持
 
@@ -487,25 +481,20 @@ SOFTWARE.
 - **Creation Ring Team** - 项目发起和核心开发
 - **开源社区** - 提供了优秀的工具和库
 
-### 🛠️ 技术栈致谢
+### 🛠️ 核心技术栈
 
-感谢以下开源项目和工具：
-
-- **Vue.js** - 渐进式前端框架
-- **NestJS** - Node.js 企业级框架
-- **TypeScript** - 类型安全的JavaScript
-- **PostgreSQL** - 强大的开源数据库
-- **Redis** - 高性能键值存储
-- **RabbitMQ** - 可靠的消息队列
-- **Docker** - 容器化平台
+- **Vue.js** - 现代前端框架
+- **NestJS** - 企业级后端框架
+- **TypeScript** - 类型安全
+- **OpenAI/Anthropic** - AI服务提供商
 
 ### 📚 灵感来源
 
-这个项目受到以下项目的启发：
+这个项目受到以下优秀项目的启发：
 
-- AI驱动的创作工具生态
-- 微服务架构最佳实践
-- 开源游戏开发社区
+- **AI Dungeon** - 交互式AI故事生成
+- **NovelAI** - AI小说创作平台
+- **Character.AI** - AI角色对话系统
 
 ---
 

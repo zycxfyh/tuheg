@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/ai/langfuse.service.ts
 // 职责: Langfuse AI观测和监控服务
 
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common'
+import type { ConfigService } from '@nestjs/config'
 import { Langfuse } from 'langfuse'
 
 export interface LangfuseTrace {

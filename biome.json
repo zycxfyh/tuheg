@@ -1,12 +1,41 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+  "files": {
+    "includes": [
+      "**/apps/**/*.ts",
+      "**/apps/**/*.js",
+      "**/apps/**/*.vue",
+      "**/packages/**/*.ts",
+      "**/packages/**/*.js",
+      "**/tools/**/*.ts",
+      "**/tools/**/*.js",
+      "**/*.ts",
+      "**/*.js",
+      "**/*.json",
+      "**/*.md",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/*.d.ts",
+      "!**/*.config.js",
+      "!**/*.config.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn"
+      },
       "correctness": {
         "noUnusedVariables": "error",
         "useExhaustiveDependencies": "warn"
@@ -17,32 +46,20 @@
         "useImportType": "error"
       },
       "suspicious": {
-        "noExplicitAny": "warn",
-        "noArrayIndexKey": "warn"
+        "noExplicitAny": "warn"
       }
     }
-  },
-  "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineEnding": "lf",
-    "lineWidth": 100,
-    "attributePosition": "auto"
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "jsxQuoteStyle": "double",
+      "jsxQuoteStyle": "single",
       "quoteProperties": "asNeeded",
-      "trailingComma": "es5",
+      "trailingCommas": "es5",
       "semicolons": "asNeeded",
-      "arrowParentheses": "always",
-      "bracketSpacing": true,
-      "bracketSameLine": false,
-      "attributePosition": "auto"
-    }
+      "arrowParentheses": "always"
+    },
+    "globals": ["console", "process", "Buffer", "__dirname", "__filename"]
   },
   "json": {
     "formatter": {
@@ -53,9 +70,5 @@
     "formatter": {
       "enabled": true
     }
-  },
-  "files": {
-    "include": ["**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx", "**/*.vue", "**/*.json", "**/*.css", "**/*.scss", "**/*.md"],
-    "ignore": ["node_modules/**", "dist/**", "build/**", ".next/**", ".nuxt/**", ".vuepress/**", ".cache/**", ".turbo/**", "coverage/**", "**/*.d.ts", "generated/**"]
   }
 }

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
-import { TenantService } from './tenant.service'
-import { EnterpriseSecurityService } from './enterprise-security.service'
 import { AuditService } from './audit.service'
-import { EnterpriseIntegrationService } from './enterprise-integration.service'
 import { ComplianceService } from './compliance.service'
 import { EnterpriseController } from './enterprise.controller'
+import { EnterpriseIntegrationService } from './enterprise-integration.service'
+import { EnterpriseSecurityService } from './enterprise-security.service'
 import { MultiTenantMiddleware } from './multi-tenant.middleware'
+import { TenantService } from './tenant.service'
 
 @Module({
   providers: [

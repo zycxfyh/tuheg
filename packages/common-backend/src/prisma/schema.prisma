@@ -12,19 +12,29 @@ datasource db {
 
 model User {
   id        String    @id @default(cuid())
-  email     String    @unique @db.Text
-  password  String    @db.Text
+  email     String    @unique
+  password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  // 关联关系
   games     Game[]
   aiConfigs AiConfiguration[]
+  plugins   PluginMarketplace[]
+  reviews   PluginReview[]
+  downloads PluginDownload[]
+  usages    ModelUsage[]
+  tenantUsers TenantUser[]
+  workspaceMembers WorkspaceMember[]
+  projectMembers ProjectMember[]
+  auditLogs AuditLog[]
 
   @@map("users")
 }
 
 model Game {
   id        String   @id @default(cuid())
-  name      String   @db.Text
+  name      String   
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   String
   createdAt DateTime @default(now())
@@ -32,6 +42,7 @@ model Game {
   character Character?
   worldBook WorldBookEntry[]
   memories  Memory[]
+  tasks     Task[]
 
   @@map("games")
 }
@@ -40,12 +51,12 @@ model Character {
   id     String @id @default(cuid())
   game   Game   @relation(fields: [gameId], references: [id])
   gameId String @unique
-  name   String @db.Text
+  name   String 
   hp     Int    @default(100)
   maxHp  Int    @default(100)
   mp     Int    @default(50)
   maxMp  Int    @default(50)
-  status String @default("Normal") @db.Text
+  status String @default("Normal") 
   card   Json   @default("{}")
 
   @@map("characters")
@@ -55,7 +66,7 @@ model WorldBookEntry {
   id      String @id @default(cuid())
   game    Game   @relation(fields: [gameId], references: [id])
   gameId  String
-  key     String @db.Text
+  key     String 
   content Json
 
   @@map("world_book_entries")
@@ -66,23 +77,24 @@ model AiConfiguration {
   id        String   @id @default(cuid())
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   String
-  provider  String   @db.Text
-  apiKey    String   @db.Text
-  modelId   String   @db.Text
-  baseUrl   String?  @db.Text
+  provider  String   
+  apiKey    String   
+  modelId   String   
+  baseUrl   String?  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // [!] 桥梁的第一端：一个配置可以有多个角色
   roles     Role[]
+  model     AiModel         @relation(fields: [modelId], references: [id])
 
   @@map("ai_configurations")
 }
 
 model Role {
   id             String            @id @default(cuid())
-  name           String            @unique @db.Text // e.g., "logic_parsing", "critic"
-  description    String?           @db.Text
+  name           String            @unique  // e.g., "logic_parsing", "critic"
+  description    String?           
 
   // [!] 桥梁的第二端：一个角色可以被多个配置使用
   configurations AiConfiguration[]
@@ -94,7 +106,7 @@ model Memory {
   id        String    @id @default(cuid())
   game      Game      @relation(fields: [gameId], references: [id])
   gameId    String
-  content   String    @db.Text
+  content   String    
   embedding Unsupported("vector(1536)")?
   createdAt DateTime  @default(now())
 
@@ -105,9 +117,9 @@ model Memory {
 
 model PluginMarketplace {
   id            String             @id @default(cuid())
-  name          String             @unique @db.Text
-  displayName   String             @db.Text
-  description   String             @db.Text
+  name          String             @unique 
+  displayName   String             
+  description   String             
   authorId      String
   author        User               @relation(fields: [authorId], references: [id])
   categoryId    String
@@ -115,9 +127,9 @@ model PluginMarketplace {
   status        PluginStatus       @default(PENDING_REVIEW)
   isPublic      Boolean            @default(false)
   isFeatured    Boolean            @default(false)
-  homepage      String?            @db.Text
-  repository    String?            @db.Text
-  license       String?            @db.Text
+  homepage      String?            
+  repository    String?            
+  license       String?            
   totalDownloads Int               @default(0)
   averageRating Decimal?           @db.Decimal(3, 2)
   reviewCount   Int                @default(0)
@@ -139,16 +151,19 @@ model PluginVersion {
   id            String            @id @default(cuid())
   pluginId      String
   plugin        PluginMarketplace @relation(fields: [pluginId], references: [id], onDelete: Cascade)
-  version       String            @db.Text
-  changelog     String?           @db.Text
-  downloadUrl   String            @db.Text
+  version       String            
+  changelog     String?           
+  downloadUrl   String            
   fileSize      Int               @default(0)
-  checksum      String?           @db.Text // SHA256
-  minVersion    String?           @db.Text // 最低VCPToolBox版本要求
-  maxVersion    String?           @db.Text // 最高支持版本
+  checksum      String?            // SHA256
+  minVersion    String?            // 最低VCPToolBox版本要求
+  maxVersion    String?            // 最高支持版本
   isStable      Boolean           @default(true)
   downloads     Int               @default(0)
   createdAt     DateTime          @default(now())
+
+  // 关联
+  downloadRecords PluginDownload[]
 
   @@unique([pluginId, version])
   @@map("plugin_versions")
@@ -156,11 +171,11 @@ model PluginVersion {
 
 model PluginCategory {
   id          String             @id @default(cuid())
-  name        String             @unique @db.Text
-  displayName String             @db.Text
-  description String?            @db.Text
-  icon        String?            @db.Text
-  color       String?            @db.Text // Hex color
+  name        String             @unique 
+  displayName String             
+  description String?            
+  icon        String?            
+  color       String?             // Hex color
   sortOrder   Int                @default(0)
   isActive    Boolean            @default(true)
   createdAt   DateTime           @default(now())
@@ -178,8 +193,8 @@ model PluginReview {
   userId    String
   user      User               @relation(fields: [userId], references: [id])
   rating    Int                @db.SmallInt // 1-5 stars
-  title     String?            @db.Text
-  content   String             @db.Text
+  title     String?            
+  content   String             
   isVerifiedPurchase Boolean   @default(false) // 是否下载过该插件
   helpful   Int                @default(0) // 有帮助的投票数
   createdAt DateTime           @default(now())
@@ -198,7 +213,7 @@ model PluginDownload {
   versionId String
   version   PluginVersion      @relation(fields: [versionId], references: [id])
   ipAddress String?            @db.Inet
-  userAgent String?            @db.Text
+  userAgent String?            
   downloadedAt DateTime        @default(now())
 
   @@map("plugin_downloads")
@@ -206,9 +221,9 @@ model PluginDownload {
 
 model PluginTag {
   id        String             @id @default(cuid())
-  name      String             @unique @db.Text
-  displayName String           @db.Text
-  color     String?            @db.Text
+  name      String             @unique 
+  displayName String           
+  color     String?            
   usageCount Int              @default(0)
   isActive  Boolean           @default(true)
   createdAt DateTime          @default(now())
@@ -225,8 +240,8 @@ model PluginDependency {
   plugin        PluginMarketplace  @relation("PluginDependencies", fields: [pluginId], references: [id])
   dependencyId  String
   dependency    PluginMarketplace  @relation("DependentPlugins", fields: [dependencyId], references: [id])
-  minVersion    String?            @db.Text
-  maxVersion    String?            @db.Text
+  minVersion    String?            
+  maxVersion    String?            
   isRequired    Boolean            @default(true)
   createdAt     DateTime           @default(now())
 
@@ -248,9 +263,9 @@ enum PluginStatus {
 
 model Agent {
   id            String            @id @default(cuid())
-  name          String            @unique @db.Text
-  displayName   String            @db.Text
-  description   String?           @db.Text
+  name          String            @unique 
+  displayName   String            
+  description   String?           
   type          AgentType         @default(GENERIC)
   status        AgentStatus       @default(OFFLINE)
   capabilities  Json              @default("[]") // Agent能力列表
@@ -262,8 +277,12 @@ model Agent {
 
   // 关联
   tasks         AgentTask[]
-  collaborations AgentCollaboration[]
-  conversations  AgentConversation[]
+  collaborations AgentCollaboration[] @relation("CollaborationParticipants")
+  conversations  AgentConversation[]  @relation("sender")
+  learning      AgentLearning[]
+  assignedTasks TaskCollaboration[]    @relation("TaskAgent")
+  ledCollaborations AgentCollaboration[] @relation("CollaborationLeader")
+  receivedConversations AgentConversation[] @relation("receiver")
 
   @@map("agents")
 }
@@ -289,8 +308,8 @@ model AgentTask {
 
 model Task {
   id            String            @id @default(cuid())
-  title         String            @db.Text
-  description   String?           @db.Text
+  title         String            
+  description   String?           
   type          TaskType          @default(GENERIC)
   status        TaskStatus        @default(PENDING)
   priority      Int               @default(1)
@@ -321,12 +340,12 @@ model Task {
 
 model AgentCollaboration {
   id            String                @id @default(cuid())
-  name          String                @db.Text
-  description   String?               @db.Text
+  name          String                
+  description   String?               
   type          CollaborationType     @default(TASK_BASED)
   status        CollaborationStatus   @default(ACTIVE)
-  goal          String                @db.Text
-  strategy      String?               @db.Text // 协作策略
+  goal          String                
+  strategy      String?                // 协作策略
   config        Json                  @default("{}")
 
   // 参与者
@@ -352,9 +371,9 @@ model TaskCollaboration {
   taskId            String
   task              Task              @relation(fields: [taskId], references: [id])
   assignedAgentId   String
-  assignedAgent     Agent             @relation(fields: [assignedAgentId], references: [id])
+  assignedAgent     Agent             @relation("TaskAgent", fields: [assignedAgentId], references: [id])
   status            TaskStatus        @default(PENDING)
-  contribution      String?           @db.Text // Agent的贡献描述
+  contribution      String?            // Agent的贡献描述
   assignedAt        DateTime          @default(now())
   completedAt       DateTime?
 
@@ -367,10 +386,10 @@ model AgentConversation {
   collaborationId String?
   collaboration AgentCollaboration? @relation(fields: [collaborationId], references: [id])
   senderId      String
-  sender        Agent             @relation(fields: [senderId], references: [id])
+  sender        Agent             @relation("sender", fields: [senderId], references: [id])
   receiverId    String?
-  receiver      Agent?            @relation(fields: [receiverId], references: [id])
-  message       String            @db.Text
+  receiver      Agent?            @relation("receiver", fields: [receiverId], references: [id])
+  message       String            
   messageType   MessageType       @default(TEXT)
   metadata      Json              @default("{}") // 消息元数据
   createdAt     DateTime          @default(now())
@@ -382,7 +401,7 @@ model AgentLearning {
   id            String            @id @default(cuid())
   agentId       String
   agent         Agent             @relation(fields: [agentId], references: [id])
-  pattern       String            @db.Text // 学习模式
+  pattern       String             // 学习模式
   data          Json              // 学习数据
   performance   Float             @default(0) // 性能评分
   appliedAt     DateTime          @default(now())
@@ -458,11 +477,11 @@ enum MessageType {
 
 model AiProvider {
   id            String            @id @default(cuid())
-  name          String            @unique @db.Text
-  displayName   String            @db.Text
-  description   String?           @db.Text
-  baseUrl       String            @db.Text
-  apiVersion    String            @db.Text
+  name          String            @unique 
+  displayName   String            
+  description   String?           
+  baseUrl       String            
+  apiVersion    String            
   status        ProviderStatus    @default(ACTIVE)
   rateLimit     Int               @default(60) // 请求/分钟
   priority      Int               @default(1)
@@ -482,9 +501,9 @@ model AiModel {
   id            String            @id @default(cuid())
   providerId    String
   provider      AiProvider        @relation(fields: [providerId], references: [id])
-  name          String            @db.Text
-  displayName   String            @db.Text
-  version       String            @db.Text
+  name          String            
+  displayName   String            
+  version       String            
   modelType     ModelType         @default(TEXT)
   capabilities  Json              @default("[]") // 模型能力列表
   contextWindow Int               @default(4096)
@@ -501,6 +520,7 @@ model AiModel {
   configurations AiConfiguration[]
   usages        ModelUsage[]
   metrics       ModelMetrics[]
+  tasks         AiTaskQueue[]
 
   @@unique([providerId, name, version])
   @@map("ai_models")
@@ -510,10 +530,10 @@ model ApiEndpoint {
   id            String            @id @default(cuid())
   providerId    String
   provider      AiProvider        @relation(fields: [providerId], references: [id])
-  name          String            @db.Text
-  path          String            @db.Text
+  name          String            
+  path          String            
   method        HttpMethod        @default(POST)
-  description   String?           @db.Text
+  description   String?           
   parameters    Json              @default("{}")
   headers       Json              @default("{}")
   rateLimit     Int               @default(60)
@@ -537,7 +557,7 @@ model ModelUsage {
   cost          Decimal?          @db.Decimal(10, 6)
   latency       Int               @default(0) // ms
   status        UsageStatus       @default(SUCCESS)
-  errorMessage  String?           @db.Text
+  errorMessage  String?           
   metadata      Json              @default("{}")
   createdAt     DateTime          @default(now())
 
@@ -574,13 +594,13 @@ model ModelMetrics {
 
 model ModelRouter {
   id            String            @id @default(cuid())
-  name          String            @unique @db.Text
-  description   String?           @db.Text
+  name          String            @unique 
+  description   String?           
   strategy      RoutingStrategy   @default(ROUND_ROBIN)
   conditions    Json              @default("{}") // 路由条件
   targets       Json              @default("[]") // 目标模型列表
   weights       Json              @default("{}") // 权重配置
-  fallbackModel String?           @db.Text
+  fallbackModel String?           
   isActive      Boolean           @default(true)
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
@@ -599,7 +619,7 @@ model AiTaskQueue {
   attempts      Int               @default(0)
   maxAttempts   Int               @default(3)
   result        Json?             @default("{}")
-  error         String?           @db.Text
+  error         String?           
   scheduledAt   DateTime?
   startedAt     DateTime?
   completedAt   DateTime?
@@ -669,17 +689,17 @@ enum QueueStatus {
 
 model DeadLetterMessage {
   id            String            @id @default(cuid())
-  originalQueue String            @db.Text
-  userId        String?           @db.Text
-  gameId        String?           @db.Text
-  sagaId        String?           @db.Text
+  originalQueue String            
+  userId        String?           
+  gameId        String?           
+  sagaId        String?           
 
   // 消息内容
   messageBody   Json              @default("{}")
   headers       Json              @default("{}")
 
   // 错误信息
-  error         String?           @db.Text
+  error         String?           
   errorDetails  Json              @default("{}")
 
   // 重试信息
@@ -692,11 +712,11 @@ model DeadLetterMessage {
   priority      Int               @default(1)
 
   // 处理信息
-  reviewedBy    String?           @db.Text
+  reviewedBy    String?           
   reviewedAt    DateTime?
-  reviewNotes   String?           @db.Text
+  reviewNotes   String?           
   reprocessedAt DateTime?
-  resolution    String?           @db.Text
+  resolution    String?           
 
   // 时间戳
   createdAt     DateTime          @default(now())
@@ -725,10 +745,10 @@ enum DLQMessageStatus {
 
 model Tenant {
   id          String        @id @default(cuid())
-  name        String        @unique @db.Text
-  displayName String        @db.Text
-  domain      String?       @unique @db.Text
-  description String?       @db.Text
+  name        String        @unique 
+  displayName String        
+  domain      String?       @unique 
+  description String?       
   status      TenantStatus  @default(ACTIVE)
   plan        TenantPlan    @default(STANDARD)
 
@@ -738,7 +758,7 @@ model Tenant {
   features    Json          @default("[]") // 启用的功能
 
   // 计费信息
-  billingEmail String?      @db.Text
+  billingEmail String?      
   billingAddress Json?      @default("{}")
 
   // 时间戳
@@ -753,6 +773,8 @@ model Tenant {
   auditLogs   AuditLog[]
   integrations TenantIntegration[]
   apiKeys     TenantApiKey[]
+  reports     ComplianceReport[]
+  policies    DataRetentionPolicy[]
 
   @@map("tenants")
 }
@@ -787,8 +809,8 @@ model Workspace {
   id          String            @id @default(cuid())
   tenantId    String
   tenant      Tenant            @relation(fields: [tenantId], references: [id])
-  name        String            @db.Text
-  description String?           @db.Text
+  name        String            
+  description String?           
   type        WorkspaceType     @default(PRIVATE)
 
   // 配置
@@ -839,8 +861,8 @@ model Project {
   id            String            @id @default(cuid())
   workspaceId   String
   workspace     Workspace         @relation(fields: [workspaceId], references: [id])
-  name          String            @db.Text
-  description   String?           @db.Text
+  name          String            
+  description   String?           
   type          ProjectType       @default(GENERIC)
 
   // 配置
@@ -885,11 +907,11 @@ model ProjectAsset {
   id          String            @id @default(cuid())
   projectId   String
   project     Project           @relation(fields: [projectId], references: [id])
-  name        String            @db.Text
+  name        String            
   type        AssetType         @default(FILE)
-  path        String            @db.Text
+  path        String            
   size        Int               @default(0)
-  mimeType    String?           @db.Text
+  mimeType    String?           
 
   // 元数据
   metadata    Json              @default("{}")
@@ -916,9 +938,9 @@ model AuditLog {
   tenant        Tenant            @relation(fields: [tenantId], references: [id])
 
   // 操作信息
-  action        String            @db.Text
-  resourceType  String            @db.Text
-  resourceId    String?           @db.Text
+  action        String            
+  resourceType  String            
+  resourceId    String?           
   userId        String?
   user          User?             @relation(fields: [userId], references: [id])
 
@@ -928,9 +950,9 @@ model AuditLog {
   newValues     Json?             @default("{}")
 
   // 上下文信息
-  ipAddress     String?           @db.Text
-  userAgent     String?           @db.Text
-  sessionId     String?           @db.Text
+  ipAddress     String?           
+  userAgent     String?           
+  sessionId     String?           
 
   // 合规信息
   riskLevel     AuditRiskLevel    @default(LOW)
@@ -951,9 +973,9 @@ model TenantIntegration {
   tenant        Tenant                @relation(fields: [tenantId], references: [id])
 
   // 集成信息
-  type          IntegrationType       @db.Text
-  name          String                @db.Text
-  description   String?               @db.Text
+  type          IntegrationType       
+  name          String                
+  description   String?               
 
   // 配置
   config        Json                  @default("{}")
@@ -962,7 +984,7 @@ model TenantIntegration {
   // 状态
   status        IntegrationStatus     @default(INACTIVE)
   lastSyncAt    DateTime?
-  lastError     String?               @db.Text
+  lastError     String?               
 
   // 时间戳
   createdAt     DateTime              @default(now())
@@ -979,9 +1001,9 @@ model TenantApiKey {
   tenant        Tenant            @relation(fields: [tenantId], references: [id])
 
   // API密钥信息
-  name          String            @db.Text
-  description   String?           @db.Text
-  keyHash       String            @unique @db.Text
+  name          String            
+  description   String?           
+  keyHash       String            @unique 
   permissions   Json              @default("[]")
 
   // 使用限制
@@ -1008,8 +1030,8 @@ model ComplianceReport {
   tenant        Tenant              @relation(fields: [tenantId], references: [id])
 
   // 报告信息
-  type          ComplianceType      @db.Text
-  period        String              @db.Text // YYYY-MM 或 YYYY-Q1
+  type          ComplianceType      
+  period        String               // YYYY-MM 或 YYYY-Q1
   status        ComplianceStatus    @default(PENDING)
 
   // 报告内容
@@ -1020,7 +1042,7 @@ model ComplianceReport {
   // 审核信息
   reviewedBy    String?
   reviewedAt    DateTime?
-  reviewNotes   String?             @db.Text
+  reviewNotes   String?             
 
   // 时间戳
   createdAt     DateTime            @default(now())
@@ -1037,9 +1059,9 @@ model DataRetentionPolicy {
   tenant        Tenant              @relation(fields: [tenantId], references: [id])
 
   // 策略信息
-  name          String              @db.Text
-  description   String?             @db.Text
-  dataType      String              @db.Text
+  name          String              
+  description   String?             
+  dataType      String              
 
   // 保留规则
   retentionPeriod Int               // 天数

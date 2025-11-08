@@ -193,7 +193,7 @@ node bin/generate-docs.js all "src" \
 
 ### 项目结构
 
-```
+```text
 tools/api-doc-generator/
 ├── bin/
 │   └── generate-docs.js    # CLI 入口

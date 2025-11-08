@@ -1,5 +1,10 @@
 import { EventEmitter } from 'eventemitter3'
-import { WebSocketConfig, WebSocketEvent, WebSocketEventHandler, VCPToolBoxError } from './types.js'
+import {
+  VCPToolBoxError,
+  type WebSocketConfig,
+  type WebSocketEvent,
+  type WebSocketEventHandler,
+} from './types.js'
 
 /**
  * WebSocket Connection Manager

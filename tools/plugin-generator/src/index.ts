@@ -1,11 +1,11 @@
+import chalk from 'chalk'
 import * as fs from 'fs-extra'
+import Handlebars from 'handlebars'
+import inquirer from 'inquirer'
+import ora from 'ora'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
-import chalk from 'chalk'
-import ora from 'ora'
-import inquirer from 'inquirer'
 import validatePackageName from 'validate-npm-package-name'
-import Handlebars from 'handlebars'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

@@ -1,15 +1,15 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
 import {
-  AiProvider,
-  AiModel,
-  ApiEndpoint,
-  ProviderStatus,
+  type AiModel,
+  type AiProvider,
+  type ApiEndpoint,
+  type HttpMethod,
   ModelStatus,
-  HttpMethod,
-  Prisma,
+  type Prisma,
+  type ProviderStatus,
 } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface ProviderConfig {
   name: string

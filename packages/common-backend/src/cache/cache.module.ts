@@ -1,10 +1,10 @@
 // 文件路径: packages/common-backend/src/cache/cache.module.ts
 // 核心理念: 统一使用Redis缓存，确保分布式一致性
 
-import { Module } from '@nestjs/common'
 import { CacheModule as NestCacheModule } from '@nestjs/cache-manager'
-import { redisStore } from 'cache-manager-redis-store'
+import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { redisStore } from 'cache-manager-redis-store'
 import { CacheService } from './cache.service'
 
 /**

@@ -1,4 +1,4 @@
-// 文件路径: apps/logic-agent/src/rule-engine.service.spec.ts
+// 文件路径: apps/logic-agent/src/__tests__/rule-engine.service.spec.ts
 
 import { BadRequestException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'

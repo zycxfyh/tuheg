@@ -1,11 +1,11 @@
 import {
-  Injectable,
-  NotFoundException,
   BadRequestException,
   ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { CreatePluginReviewDto, UpdatePluginReviewDto } from '../dto/plugin-marketplace.dto'
+import type { CreatePluginReviewDto, UpdatePluginReviewDto } from '../dto/plugin-marketplace.dto'
+import type { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PluginReviewService {

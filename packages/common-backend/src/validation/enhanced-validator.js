@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.EnhancedValidator = void 0
 const zod_1 = require('zod')
@@ -14,7 +13,7 @@ class EnhancedValidator {
       if (error instanceof zod_1.z.ZodError) {
         return {
           success: false,
-          errors: this.formatZodErrors(error),
+          errors: EnhancedValidator.formatZodErrors(error),
         }
       }
       return {
@@ -40,7 +39,7 @@ class EnhancedValidator {
       if (error instanceof zod_1.z.ZodError) {
         return {
           success: false,
-          errors: this.formatZodErrors(error),
+          errors: EnhancedValidator.formatZodErrors(error),
         }
       }
       return {
@@ -65,14 +64,14 @@ class EnhancedValidator {
     }
     return {
       success: false,
-      errors: this.formatZodErrors(result.error),
+      errors: EnhancedValidator.formatZodErrors(result.error),
     }
   }
   static formatZodErrors(error) {
     return error.errors.map((err) => {
       const validationError = {
         path: err.path,
-        message: this.formatErrorMessage(err),
+        message: EnhancedValidator.formatErrorMessage(err),
         code: err.code,
       }
       if (err.code === 'invalid_type') {

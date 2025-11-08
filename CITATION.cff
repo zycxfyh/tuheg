@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "创世星环 (Creation Ring)"
+abstract: "AI创作操作系统的操作系统 - 让AI成为创作的得力助手，开启创作的新纪元"
+authors:
+  - family-names: "Creation Ring Team"
+    given-names: ""
+    orcid: ""
+repository-code: "https://github.com/zycxfyh/tuheg"
+url: "https://github.com/zycxfyh/tuheg"
+license: MIT
+preferred-citation:
+  type: software
+  title: "创世星环 (Creation Ring)"
+  abstract: "一个全功能的AI驱动交互式叙事游戏生成系统，采用先进的微服务架构和多Agent协作技术，为用户提供沉浸式的创作体验。"
+  authors:
+    - family-names: "Creation Ring Team"
+      given-names: ""
+  repository-code: "https://github.com/zycxfyh/tuheg"
+  url: "https://github.com/zycxfyh/tuheg"
+  license: MIT
+  year: 2024

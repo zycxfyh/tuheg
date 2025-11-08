@@ -1,11 +1,11 @@
 // 文件路径: packages/common-backend/src/ai/dynamic-ai-scheduler.service.ts
 
-import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { User, AiConfiguration } from '@prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
-import { AiProviderFactory } from './ai-provider.factory'
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
+import type { ConfigService } from '@nestjs/config'
+import type { AiConfiguration, User } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 import type { AiProvider, AiRole } from '../types/ai-providers.types'
+import type { AiProviderFactory } from './ai-provider.factory'
 
 @Injectable()
 export class DynamicAiSchedulerService {

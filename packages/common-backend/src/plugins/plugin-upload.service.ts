@@ -1,9 +1,9 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { CreatePluginVersionDto } from '../dto/plugin-marketplace.dto'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
+import { CreatePluginVersionDto } from '../dto/plugin-marketplace.dto'
+import type { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PluginUploadService {

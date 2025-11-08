@@ -1,14 +1,14 @@
 import {
-  Controller,
-  Post,
+  BadRequestException,
   Body,
+  Controller,
+  Logger,
+  Post,
   UploadedFile,
   UseInterceptors,
-  BadRequestException,
-  Logger,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { PluginSandboxService, SandboxOptions, SandboxResult } from '@tuheg/common-backend'
+import type { PluginSandboxService, SandboxOptions, SandboxResult } from '@tuheg/common-backend'
 
 interface TestActivationDto {
   options?: SandboxOptions

@@ -1,9 +1,9 @@
-// 文件路径: apps/narrative-agent/src/narrative.service.spec.ts
+// 文件路径: apps/narrative-agent/src/__tests__/narrative.service.spec.ts
 // 描述: NarrativeService 的单元测试套件，涵盖叙事生成逻辑和错误处理
 
-import { NotFoundException } from '@nestjs/common'
-import { HttpService } from '@nestjs/axios'
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
+import { HttpService } from '@nestjs/axios'
+import { NotFoundException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import type { PrismaClient } from '@prisma/client'
 import {

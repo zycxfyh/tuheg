@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.ProcessingErrorType = void 0
 exports.classifyProcessingError = classifyProcessingError
@@ -8,7 +7,7 @@ const zod_1 = require('zod')
 const ai_exception_1 = require('../exceptions/ai-exception')
 const prompt_injection_detected_exception_1 = require('./prompt-injection-detected.exception')
 var ProcessingErrorType
-;(function (ProcessingErrorType) {
+;((ProcessingErrorType) => {
   ProcessingErrorType['VALIDATION_ERROR'] = 'VALIDATION_ERROR'
   ProcessingErrorType['AI_GENERATION_ERROR'] = 'AI_GENERATION_ERROR'
   ProcessingErrorType['BUSINESS_LOGIC_ERROR'] = 'BUSINESS_LOGIC_ERROR'

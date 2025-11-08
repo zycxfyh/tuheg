@@ -1,11 +1,11 @@
 // 文件路径: packages/common-backend/src/ai/ai-guard.ts
 
-import { Injectable } from '@nestjs/common'
-import { z } from 'zod'
-import { AiGenerationException } from '../exceptions/ai-exception'
-import { PromptInjectionDetectedException } from '../errors/prompt-injection-detected.exception'
 // [核心修正] 从 runnables 导入通用的 Runnable 类型
 import type { Runnable } from '@langchain/core/runnables'
+import { Injectable } from '@nestjs/common'
+import type { z } from 'zod'
+import { PromptInjectionDetectedException } from '../errors/prompt-injection-detected.exception'
+import { AiGenerationException } from '../exceptions/ai-exception'
 
 /**
  * 提示注入检查结果类型

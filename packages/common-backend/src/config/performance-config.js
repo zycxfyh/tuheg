@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.PERFORMANCE_CONFIG = void 0
 exports.getSLATarget = getSLATarget

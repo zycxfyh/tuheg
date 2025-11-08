@@ -1,26 +1,26 @@
 import {
-  Injectable,
-  NotFoundException,
   BadRequestException,
   ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
 import {
-  PluginMarketplace,
-  PluginVersion,
-  PluginCategory,
+  type PluginCategory,
+  type PluginMarketplace,
   PluginStatus,
-  Prisma,
+  PluginVersion,
+  type Prisma,
 } from '@prisma/client'
-import {
+import type {
+  CreatePluginCategoryDto,
   CreatePluginDto,
-  UpdatePluginDto,
+  CreatePluginTagDto,
   ReviewPluginDto,
   SearchPluginsDto,
-  CreatePluginCategoryDto,
   UpdatePluginCategoryDto,
-  CreatePluginTagDto,
+  UpdatePluginDto,
 } from '../dto/plugin-marketplace.dto'
+import type { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PluginMarketplaceService {

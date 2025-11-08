@@ -1,0 +1,41 @@
+export const koKr = {
+  common: {
+    loading: '로딩 중...',
+    error: '오류',
+    success: '성공',
+    cancel: '취소',
+    confirm: '확인',
+    save: '저장',
+    delete: '삭제',
+    edit: '편집',
+    create: '생성',
+    close: '닫기',
+  },
+  navigation: {
+    home: '홈',
+    creation: '창작 센터',
+    game: '게임',
+    plugins: '플러그인 마켓',
+    settings: '설정',
+  },
+  auth: {
+    login: '로그인',
+    logout: '로그아웃',
+    signup: '회원가입',
+    username: '사용자명',
+    password: '비밀번호',
+    email: '이메일',
+  },
+  creation: {
+    title: '창작 센터',
+    description: 'AI 창작 여행을 시작하세요',
+    newProject: '새 프로젝트',
+    loadProject: '프로젝트 불러오기',
+  },
+  game: {
+    title: '게임 세계',
+    start: '모험 시작',
+    pause: '일시정지',
+    resume: '재개',
+  },
+}

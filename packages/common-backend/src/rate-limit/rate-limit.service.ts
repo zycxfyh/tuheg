@@ -1,7 +1,7 @@
 // 文件路径: packages/common-backend/src/rate-limit/rate-limit.service.ts
 // 核心理念: 滑动窗口限流算法，支持内存和 Redis 存储
 
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
+import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common'
 // import type { RedisClientType } from "redis"; // 暂时不需要
 import { Redis } from 'ioredis'
 

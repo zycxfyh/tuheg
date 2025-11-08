@@ -1,15 +1,15 @@
-// 文件路径: apps/nexus-engine/src/games/games.service.ts
+// 文件路径: apps/backend-gateway/src/games/games.service.ts
 
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common'
-import { Game, Character, WorldBookEntry } from '@prisma/client'
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import type { Character, Game, WorldBookEntry } from '@prisma/client'
 
 // [核心修正] 从 @tuheg/common-backend 导入所有需要的共享模块
-import {
-  PrismaService,
-  EventBusService,
+import type {
   CacheService,
-  SubmitActionDto,
   CreateNarrativeGameDto,
+  EventBusService,
+  PrismaService,
+  SubmitActionDto,
   UpdateCharacterDto,
 } from '@tuheg/common-backend'
 

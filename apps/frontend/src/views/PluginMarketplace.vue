@@ -236,10 +236,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
-import { useDebounce } from '../composables/useDebounce'
+import { computed, onMounted, ref, watch } from 'vue'
 import PluginCard from '../components/plugins/PluginCard.vue'
 import PluginDetailsModal from '../components/plugins/PluginDetailsModal.vue'
+import { useDebounce } from '../composables/useDebounce'
 import { pluginMarketplaceApi } from '../services/pluginMarketplaceApi'
 
 // 响应式数据

@@ -2,8 +2,8 @@
 // 核心理念: 任务定义，描述需要完成的工作和预期输出
 
 import { Injectable, Logger } from '@nestjs/common'
-import type { TaskConfig, TaskContext, TaskResult } from './task.types'
 import type { Agent } from './agent'
+import type { TaskConfig, TaskContext, TaskResult } from './task.types'
 
 /**
  * @class Task

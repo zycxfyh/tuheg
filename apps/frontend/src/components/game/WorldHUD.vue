@@ -25,9 +25,10 @@
 
 <script setup>
 // [核心修正] 导入正确的 store 和函数名
-import { useUIStore } from '@/stores/ui.store'
-import { useGameStore } from '@/stores/game.store'
+
 import { useRouter } from 'vue-router'
+import { useGameStore } from '@/stores/game.store'
+import { useUIStore } from '@/stores/ui.store'
 
 // [核心修正] 获取正确的 store 实例
 const uiStore = useUIStore()

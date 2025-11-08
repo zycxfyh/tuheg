@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.VcpMetaThinkingExamples = void 0
 class VcpMetaThinkingExamples {

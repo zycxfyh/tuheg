@@ -22,7 +22,7 @@ Game Core是创世星环系统的游戏逻辑核心包，采用领域驱动设�
 
 Game Core严格遵循DDD经典分层架构：
 
-```
+```text
 ┌─────────────────────────────────────┐
 │         Interfaces Layer            │  ← API适配器
 │   Controllers, DTOs, Presenters     │
@@ -40,7 +40,7 @@ Game Core严格遵循DDD经典分层架构：
 
 ### 目录结构
 
-```
+```text
 packages/game-core/
 ├── src/
 │   ├── domain/                    # 领域层
@@ -126,9 +126,9 @@ export class Game extends AggregateRoot<GameId> {
     private world: World,
     private characters: Character[],
     private state: GameState,
-    private rules: GameRules,
+    private rules: GameRules
   ) {
-    super(id);
+    super(id)
   }
 
   // 工厂方法
@@ -143,7 +143,7 @@ export class Game extends AggregateRoot<GameId> {
 
   // 只读属性
   get currentState(): GameState {
-    return this.state;
+    return this.state
   }
 }
 ```
@@ -157,9 +157,9 @@ export class Character extends Entity<CharacterId> {
     private name: CharacterName,
     private attributes: CharacterAttributes,
     private position: Position,
-    private status: CharacterStatus,
+    private status: CharacterStatus
   ) {
-    super(id);
+    super(id)
   }
 
   // 领域行为
@@ -182,7 +182,7 @@ export class Action extends ValueObject {
   constructor(
     private readonly type: ActionType,
     private readonly target: ActionTarget,
-    private readonly parameters: ActionParameters,
+    private readonly parameters: ActionParameters
   ) {}
 
   // 值对象比较
@@ -191,7 +191,7 @@ export class Action extends ValueObject {
       this.type === other.type &&
       this.target.equals(other.target) &&
       deepEqual(this.parameters, other.parameters)
-    );
+    )
   }
 }
 ```
@@ -204,16 +204,18 @@ export class Attribute extends ValueObject {
     private readonly name: string,
     private readonly value: number,
     private readonly minValue: number = 0,
-    private readonly maxValue: number = 100,
+    private readonly maxValue: number = 100
   ) {}
 
   // 业务方法
   increase(amount: number): Result<Attribute, AttributeError> {
-    const newValue = this.value + amount;
+    const newValue = this.value + amount
     if (newValue > this.maxValue) {
-      return Result.fail(new AttributeError('Value exceeds maximum'));
+      return Result.fail(new AttributeError('Value exceeds maximum'))
     }
-    return Result.ok(new Attribute(this.name, newValue, this.minValue, this.maxValue));
+    return Result.ok(
+      new Attribute(this.name, newValue, this.minValue, this.maxValue)
+    )
   }
 }
 ```
@@ -225,7 +227,10 @@ export class Attribute extends ValueObject {
 ```typescript
 @Injectable()
 export class GameRulesService {
-  validateAction(action: Action, gameState: GameState): Result<void, ValidationError> {
+  validateAction(
+    action: Action,
+    gameState: GameState
+  ): Result<void, ValidationError> {
     // 行动规则验证
   }
 
@@ -269,26 +274,31 @@ export class ExecuteActionUseCase {
   constructor(
     private gameRepository: IGameRepository,
     private gameRulesService: GameRulesService,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {}
 
-  async execute(request: ExecuteActionRequest): Promise<Result<ExecuteActionResponse, UseCaseError>> {
+  async execute(
+    request: ExecuteActionRequest
+  ): Promise<Result<ExecuteActionResponse, UseCaseError>> {
     // 1. 获取游戏
-    const game = await this.gameRepository.findById(request.gameId);
+    const game = await this.gameRepository.findById(request.gameId)
 
     // 2. 验证行动
-    const validation = await this.gameRulesService.validateAction(request.action, game.state);
+    const validation = await this.gameRulesService.validateAction(
+      request.action,
+      game.state
+    )
 
     // 3. 执行行动
-    const result = game.executeAction(request.action);
+    const result = game.executeAction(request.action)
 
     // 4. 保存状态
-    await this.gameRepository.save(game);
+    await this.gameRepository.save(game)
 
     // 5. 发布事件
-    await this.eventBus.publish(result.events);
+    await this.eventBus.publish(result.events)
 
-    return Result.ok({ gameState: game.state, events: result.events });
+    return Result.ok({ gameState: game.state, events: result.events })
   }
 }
 ```
@@ -306,18 +316,18 @@ export class PrismaGameRepository implements IGameRepository {
     const data = await this.prisma.game.findUnique({
       where: { id: id.value },
       include: { characters: true, world: true },
-    });
+    })
 
-    return data ? this.toDomain(data) : null;
+    return data ? this.toDomain(data) : null
   }
 
   async save(game: Game): Promise<void> {
-    const data = this.toPersistence(game);
+    const data = this.toPersistence(game)
     await this.prisma.game.upsert({
       where: { id: game.id.value },
       update: data,
       create: data,
-    });
+    })
   }
 
   private toDomain(data: any): Game {
@@ -340,9 +350,9 @@ export class AiServiceAdapter implements IAiService {
   constructor(private aiOrchestrator: AiOrchestratorService) {}
 
   async generateNarrative(context: GameContext): Promise<Narrative> {
-    const request = this.buildAiRequest(context);
-    const response = await this.aiOrchestrator.executeChat(request);
-    return this.parseAiResponse(response);
+    const request = this.buildAiRequest(context)
+    const response = await this.aiOrchestrator.executeChat(request)
+    return this.parseAiResponse(response)
   }
 }
 ```
@@ -356,9 +366,9 @@ export class GameCreatedEvent extends DomainEvent {
   constructor(
     public readonly gameId: GameId,
     public readonly ownerId: UserId,
-    public readonly gameName: string,
+    public readonly gameName: string
   ) {
-    super();
+    super()
   }
 }
 
@@ -366,9 +376,9 @@ export class ActionExecutedEvent extends DomainEvent {
   constructor(
     public readonly gameId: GameId,
     public readonly action: Action,
-    public readonly result: ActionResult,
+    public readonly result: ActionResult
   ) {
-    super();
+    super()
   }
 }
 ```
@@ -381,14 +391,14 @@ export class GameEventHandler {
   @EventHandler(GameCreatedEvent)
   async handleGameCreated(event: GameCreatedEvent): Promise<void> {
     // 处理游戏创建事件
-    await this.notificationService.notifyGameCreated(event);
-    await this.analyticsService.trackGameCreation(event);
+    await this.notificationService.notifyGameCreated(event)
+    await this.analyticsService.trackGameCreation(event)
   }
 
   @EventHandler(ActionExecutedEvent)
   async handleActionExecuted(event: ActionExecutedEvent): Promise<void> {
     // 处理行动执行事件
-    await this.stateProjectionService.updateProjection(event);
+    await this.stateProjectionService.updateProjection(event)
   }
 }
 ```
@@ -400,47 +410,51 @@ export class GameEventHandler {
 ```typescript
 describe('Game Aggregate', () => {
   it('should create valid game', () => {
-    const props = createValidGameProps();
-    const result = Game.create(props);
+    const props = createValidGameProps()
+    const result = Game.create(props)
 
-    expect(result.isSuccess()).toBe(true);
-    expect(result.value.name).toBe(props.name);
-  });
+    expect(result.isSuccess()).toBe(true)
+    expect(result.value.name).toBe(props.name)
+  })
 
   it('should reject invalid action', () => {
-    const game = createValidGame();
-    const invalidAction = createInvalidAction();
+    const game = createValidGame()
+    const invalidAction = createInvalidAction()
 
-    const result = game.executeAction(invalidAction);
+    const result = game.executeAction(invalidAction)
 
-    expect(result.isFailure()).toBe(true);
-    expect(result.error).toBeInstanceOf(ValidationError);
-  });
-});
+    expect(result.isFailure()).toBe(true)
+    expect(result.error).toBeInstanceOf(ValidationError)
+  })
+})
 ```
 
 ### 2. 应用层测试
 
 ```typescript
 describe('ExecuteActionUseCase', () => {
-  let useCase: ExecuteActionUseCase;
-  let mockGameRepository: MockGameRepository;
+  let useCase: ExecuteActionUseCase
+  let mockGameRepository: MockGameRepository
 
   beforeEach(() => {
-    mockGameRepository = new MockGameRepository();
-    useCase = new ExecuteActionUseCase(mockGameRepository, mockRulesService, mockEventBus);
-  });
+    mockGameRepository = new MockGameRepository()
+    useCase = new ExecuteActionUseCase(
+      mockGameRepository,
+      mockRulesService,
+      mockEventBus
+    )
+  })
 
   it('should execute valid action', async () => {
-    const request = createValidActionRequest();
-    mockGameRepository.game = createValidGame();
+    const request = createValidActionRequest()
+    mockGameRepository.game = createValidGame()
 
-    const result = await useCase.execute(request);
+    const result = await useCase.execute(request)
 
-    expect(result.isSuccess()).toBe(true);
-    expect(mockEventBus.publishedEvents).toHaveLength(1);
-  });
-});
+    expect(result.isSuccess()).toBe(true)
+    expect(mockEventBus.publishedEvents).toHaveLength(1)
+  })
+})
 ```
 
 ### 3. 集成测试
@@ -449,13 +463,13 @@ describe('ExecuteActionUseCase', () => {
 describe('Game Creation Integration', () => {
   it('should create game end-to-end', async () => {
     // 完整的端到端测试
-    const gameData = await gameService.createGame(createGameRequest);
-    const savedGame = await gameRepository.findById(gameData.id);
+    const gameData = await gameService.createGame(createGameRequest)
+    const savedGame = await gameRepository.findById(gameData.id)
 
-    expect(savedGame).toBeDefined();
-    expect(savedGame.name).toBe(createGameRequest.name);
-  });
-});
+    expect(savedGame).toBeDefined()
+    expect(savedGame.name).toBe(createGameRequest.name)
+  })
+})
 ```
 
 ## 性能优化
@@ -505,14 +519,14 @@ export const GameCoreModule = {
   application: ApplicationModule,
   infrastructure: InfrastructureModule,
   interfaces: InterfacesModule,
-};
+}
 
 // 按需导入
 const lightweightGameCore = {
   domain: DomainModule,
   application: ApplicationModule,
   // 排除重型基础设施依赖
-};
+}
 ```
 
 ### 水平扩展
@@ -526,7 +540,7 @@ const lightweightGameCore = {
 
 ### 用户创建游戏的故事
 
-```
+```text
 作为一个游戏玩家，
 我想要创建新游戏，
 以便开始我的冒险之旅。
@@ -544,7 +558,7 @@ const lightweightGameCore = {
 
 ### 玩家执行行动的故事
 
-```
+```text
 作为一个游戏玩家，
 我想要执行游戏行动，
 以便推进游戏剧情。

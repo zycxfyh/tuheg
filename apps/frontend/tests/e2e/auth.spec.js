@@ -1,6 +1,6 @@
 // 文件路径: apps/frontend/tests/e2e/auth.spec.js (侦察模式)
 
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('Authentication Flow', () => {
   test.beforeEach(async ({ page }) => {

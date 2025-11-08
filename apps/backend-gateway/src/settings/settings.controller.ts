@@ -1,37 +1,33 @@
-// 文件路径: apps/nexus-engine/src/settings/settings.controller.ts
+// 文件路径: apps/backend-gateway/src/settings/settings.controller.ts
 
 import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
   Body,
-  Param,
-  UseGuards,
-  Req,
+  Controller,
+  Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common'
-import type { Request } from 'express'
-import { User, AiConfiguration } from '@prisma/client'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
-import { SettingsService } from './settings.service'
-
-// [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
-import { ZodValidationPipe } from '@tuheg/common-backend'
-
-// 导入DTO类型和Zod schema
-import {
-  createAiSettingsSchema,
-  updateAiSettingsSchema,
-  testAiConnectionSchema,
-} from '@tuheg/common-backend'
+import type { AiConfiguration, User } from '@prisma/client'
 import type {
   CreateAiSettingsDto,
-  UpdateAiSettingsDto,
   TestAiConnectionDto,
+  UpdateAiSettingsDto,
 } from '@tuheg/common-backend'
+// [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
+// 导入DTO类型和Zod schema
+import { 
+  createAiSettingsSchema,
+  testAiConnectionSchema,
+  updateAiSettingsSchema,ZodValidationPipe, } from '@tuheg/common-backend'
+import type { Request } from 'express'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import type { SettingsService } from './settings.service'
 
 @Controller('settings/ai-configurations')
 @UseGuards(JwtAuthGuard)

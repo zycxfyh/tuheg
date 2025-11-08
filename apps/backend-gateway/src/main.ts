@@ -1,13 +1,13 @@
-// 文件路径: apps/nexus-engine/src/main.ts (已集成 Redis Adapter)
+// 文件路径: apps/backend-gateway/src/main.ts (已集成 Redis Adapter)
 
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
-import * as Sentry from '@sentry/node'
-import helmet from 'helmet'
 import { ConfigService } from '@nestjs/config' // [!] 核心改造：导入 ConfigService
+import { NestFactory } from '@nestjs/core'
 import { IoAdapter } from '@nestjs/platform-socket.io'
+import * as Sentry from '@sentry/node'
 import { createAdapter } from '@socket.io/redis-adapter' // [!] 核心改造：导入 Redis 适配器
+import helmet from 'helmet'
 import { createClient } from 'redis' // [!] 核心改造：导入 Redis 客户端
+import { AppModule } from './app.module'
 
 // [!] 核心改造：创建一个自定义的 Socket.IO 适配器类
 export class RedisIoAdapter extends IoAdapter {

@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.MemoryRecallExamples = void 0
 const memory_hierarchy_service_1 = require('./memory-hierarchy.service')

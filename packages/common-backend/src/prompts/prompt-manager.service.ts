@@ -1,6 +1,6 @@
 // 文件路徑: libs/common/src/prompts/prompt-manager.service.ts
 
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common'
+import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 

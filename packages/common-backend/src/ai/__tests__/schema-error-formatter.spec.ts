@@ -12,7 +12,7 @@ describe('formatZodError', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      const formatted = formatZodError(result.error)
+      const formatted = formatZodError(result.error as any)
       expect(formatted.summary).toContain('Validation failed')
       expect(formatted.fieldErrors.length).toBeGreaterThan(0)
       expect(formatted.fieldErrors.some((e) => e.path.includes('age'))).toBe(true)
@@ -29,7 +29,7 @@ describe('formatZodError', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      const formatted = formatZodError(result.error)
+      const formatted = formatZodError(result.error as any)
       expect(formatted.fieldErrors.length).toBeGreaterThan(0)
       const countError = formatted.fieldErrors.find((e) => e.path === 'count')
       expect(countError).toBeDefined()
@@ -48,7 +48,7 @@ describe('formatZodError', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      const formatted = formatZodError(result.error)
+      const formatted = formatZodError(result.error as any)
       const statusError = formatted.fieldErrors.find((e) => e.path === 'status')
       expect(statusError).toBeDefined()
       expect(statusError?.expected).toContain('active')
@@ -65,7 +65,7 @@ describe('formatZodError', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      const formatted = formatZodError(result.error)
+      const formatted = formatZodError(result.error as any)
       const itemsError = formatted.fieldErrors.find((e) => e.path === 'items')
       expect(itemsError).toBeDefined()
       expect(itemsError?.expected).toContain('at least')
@@ -85,7 +85,7 @@ describe('formatZodError', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      const formatted = formatZodError(result.error)
+      const formatted = formatZodError(result.error as any)
       expect(formatted.aiFeedback).toContain('Validation Errors Detected')
       expect(formatted.aiFeedback).toContain('Action Required')
       expect(formatted.aiFeedback).toContain('name')
@@ -107,7 +107,7 @@ describe('formatZodError', () => {
     expect(result.success).toBe(false)
 
     if (!result.success) {
-      const formatted = formatZodError(result.error)
+      const formatted = formatZodError(result.error as any)
       const userAgeError = formatted.fieldErrors.find((e) => e.path.includes('age'))
       expect(userAgeError).toBeDefined()
       expect(formatted.aiFeedback).toContain('user')

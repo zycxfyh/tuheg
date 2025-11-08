@@ -33,13 +33,12 @@ export default {
     },
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@apps/(.*)$': '<rootDir>/apps/$1',
     '^@packages/(.*)$': '<rootDir>/packages/$1',
     '^@tools/(.*)$': '<rootDir>/tools/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
   testTimeout: 10000,
   maxWorkers: '50%',
   detectOpenHandles: true,

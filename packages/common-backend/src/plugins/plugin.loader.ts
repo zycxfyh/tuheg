@@ -2,8 +2,8 @@
 // 核心理念: 动态加载插件，支持按需激活
 
 import { Injectable, Logger } from '@nestjs/common'
+import type { PluginRegistry } from './plugin.registry'
 import type { PluginFactory, PluginManifest } from './plugin.types'
-import { PluginRegistry } from './plugin.registry'
 
 /**
  * @class PluginLoader

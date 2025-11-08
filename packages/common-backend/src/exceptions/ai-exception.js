@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.AiGenerationException = void 0
 class AiGenerationException extends Error {

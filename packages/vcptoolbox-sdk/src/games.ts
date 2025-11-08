@@ -1,12 +1,12 @@
-import {
-  Game,
-  CreateGameRequest,
-  UpdateGameRequest,
-  SubmitActionRequest,
+import type { VCPToolBoxClient } from './client.js'
+import type {
   ActionResponse,
   ApiResponse,
+  CreateGameRequest,
+  Game,
+  SubmitActionRequest,
+  UpdateGameRequest,
 } from './types.js'
-import { VCPToolBoxClient } from './client.js'
 
 /**
  * Game Management Module

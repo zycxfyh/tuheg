@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.envSchema = void 0
 exports.validateEnv = validateEnv

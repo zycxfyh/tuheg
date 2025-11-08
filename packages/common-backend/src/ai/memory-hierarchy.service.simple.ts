@@ -2,8 +2,8 @@
 // 职责: 记忆管理服务，管理游戏记忆的基本操作（简化版）
 
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { Memory } from '@prisma/client'
+import type { Memory } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 /**
  * 记忆管理服务

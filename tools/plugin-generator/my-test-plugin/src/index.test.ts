@@ -1,4 +1,4 @@
-import { MyTestPluginPlugin, createMyTestPluginPlugin } from './index'
+import { createMyTestPluginPlugin, MyTestPluginPlugin } from './index'
 
 describe('MyTestPluginPlugin', () => {
   let plugin: MyTestPluginPlugin

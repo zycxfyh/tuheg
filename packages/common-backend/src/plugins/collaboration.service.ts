@@ -1,17 +1,17 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
 import {
-  AgentCollaboration,
-  CollaborationType,
+  type AgentCollaboration,
+  type AgentConversation,
   CollaborationStatus,
-  TaskCollaboration,
-  AgentConversation,
+  CollaborationType,
   MessageType,
   Prisma,
+  type TaskCollaboration,
 } from '@prisma/client'
-import { AgentService } from './agent.service'
-import { TaskService } from './task.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { AgentService } from './agent.service'
+import type { TaskService } from './task.service'
 
 export interface CollaborationConfig {
   goal: string

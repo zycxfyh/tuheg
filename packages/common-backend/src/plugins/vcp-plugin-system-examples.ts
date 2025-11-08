@@ -2,8 +2,12 @@
 // 职责: VCPToolBox 插件协议系统的使用示例
 // 展示如何注册、使用和管理插件
 
-import { VcpPluginSystemService, PluginContext, VcpPluginType } from './vcp-plugin-system.service'
 import { VcpExamplePluginFactory } from './vcp-example-plugins'
+import {
+  type PluginContext,
+  type VcpPluginSystemService,
+  VcpPluginType,
+} from './vcp-plugin-system.service'
 
 /**
  * VCPToolBox 插件系统使用示例

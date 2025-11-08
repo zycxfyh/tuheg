@@ -2,7 +2,7 @@
 // 职责: VCPToolBox 异步工具调用的使用示例
 // 展示非阻塞工具调用和上下文感知的结果处理
 
-import { AsyncToolCallService, AsyncToolCallStatus } from './async-tool-call.service'
+import { type AsyncToolCallService, AsyncToolCallStatus } from './async-tool-call.service'
 
 /**
  * VCPToolBox 异步工具调用使用示例

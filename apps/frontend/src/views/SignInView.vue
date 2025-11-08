@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import { SignIn } from '@clerk/vue'
+// TODO: 实现自定义登录组件
 </script>

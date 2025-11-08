@@ -1,27 +1,26 @@
-// 文件路径: apps/backend/apps/logic-agent/src/logic.service.ts (已重构)
+// 文件路径: apps/logic-agent/src/logic.service.ts (已重构)
 
+import { StructuredOutputParser } from '@langchain/core/output_parsers'
+import { PromptTemplate } from '@langchain/core/prompts'
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
-  BadRequestException,
 } from '@nestjs/common'
-import { PromptTemplate } from '@langchain/core/prompts'
-import { StructuredOutputParser } from '@langchain/core/output_parsers'
-import { User } from '@prisma/client'
-import { RuleEngineService } from './rule-engine.service'
-
+import type { User } from '@prisma/client'
 import {
-  DynamicAiSchedulerService,
-  EventBusService,
-  GameActionJobData,
-  DirectiveSet,
-  directiveSetSchema,
-  PromptManagerService,
-  callAiWithGuard, // <-- 导入护栏函数
   AiGenerationException, // <-- 导入自定义异常
-  PromptInjectionGuard, // <-- 导入提示注入防护
+  callAiWithGuard, // <-- 导入护栏函数
+  type DirectiveSet,
+  type DynamicAiSchedulerService,
+  directiveSetSchema,
+  type EventBusService,
+  type GameActionJobData,
+  type PromptInjectionGuard, // <-- 导入提示注入防护
+  type PromptManagerService,
 } from '@tuheg/common-backend'
+import type { RuleEngineService } from './rule-engine.service'
 
 @Injectable()
 export class LogicService {

@@ -2,7 +2,7 @@
 // 核心理念: 类型安全的配置服务，提供便捷的配置访问接口
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import type { ConfigService } from '@nestjs/config'
 import type { Env } from './env.schema'
 
 /**

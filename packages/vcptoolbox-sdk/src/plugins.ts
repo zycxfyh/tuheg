@@ -1,5 +1,5 @@
-import { Plugin, ApiResponse } from './types.js'
-import { VCPToolBoxClient } from './client.js'
+import type { VCPToolBoxClient } from './client.js'
+import type { ApiResponse, Plugin } from './types.js'
 
 /**
  * Plugin Management Module

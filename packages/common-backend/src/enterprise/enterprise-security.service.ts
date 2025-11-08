@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AuditService } from './audit.service'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
 import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { AuditService } from './audit.service'
 
 export interface EncryptionOptions {
   algorithm?: string

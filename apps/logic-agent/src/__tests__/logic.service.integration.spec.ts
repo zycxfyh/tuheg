@@ -1,14 +1,15 @@
-// 文件路径: apps/logic-agent/src/logic.service.integration.spec.ts (真正完整版)
+// 文件路径: apps/logic-agent/src/__tests__/logic.service.integration.spec.ts (真正完整版)
 
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import type { User } from '@prisma/client'
 import {
   AiGenerationException,
   callAiWithGuard,
   type DirectiveSet,
   DynamicAiSchedulerService,
+  EventBusService,
   type GameActionJobData,
   LangfuseService,
   type PromptInjectionCheckResult,
@@ -18,7 +19,6 @@ import {
 import { type MockProxy, mock } from 'jest-mock-extended'
 import { LogicService } from './logic.service'
 import { RuleEngineService } from './rule-engine.service'
-import { EventBusService } from '@tuheg/common-backend'
 
 // 测试子类，用于访问protected方法
 class TestLogicService extends LogicService {

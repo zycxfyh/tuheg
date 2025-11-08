@@ -3,7 +3,30 @@
 
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { PrismaService } from '../../prisma/prisma.service'
+import type { PrismaService } from '../../prisma/prisma.service'
+
+/**
+ * 装饰器：为清理任务添加统一的日志记录
+ */
+function withCleanupLogging(operationName: string) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value
+    const logger = new Logger(target.constructor.name)
+
+    descriptor.value = async function (...args: any[]) {
+      logger.log(`Starting cleanup of ${operationName}...`)
+
+      try {
+        const result = await originalMethod.apply(this, args)
+        logger.log(`Cleanup of ${operationName} completed`)
+        return result
+      } catch (error) {
+        logger.error(`Failed to cleanup ${operationName}:`, error)
+        throw error
+      }
+    }
+  }
+}
 
 /**
  * @service CleanupTask
@@ -21,21 +44,14 @@ export class CleanupTask {
    * @description 清理过期的会话（每天凌晨 2 点执行）
    */
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  @withCleanupLogging('expired sessions')
   async cleanupExpiredSessions(): Promise<void> {
-    this.logger.log('Starting cleanup of expired sessions...')
-
-    try {
-      // TODO: 实现会话清理逻辑
-      // const deleted = await this.prisma.session.deleteMany({
-      //   where: {
-      //     expiresAt: { lt: new Date() },
-      //   },
-      // });
-
-      this.logger.log('Cleanup of expired sessions completed')
-    } catch (error) {
-      this.logger.error('Failed to cleanup expired sessions:', error)
-    }
+    // TODO: 实现会话清理逻辑
+    // const deleted = await this.prisma.session.deleteMany({
+    //   where: {
+    //     expiresAt: { lt: new Date() },
+    //   },
+    // });
   }
 
   /**
@@ -43,24 +59,17 @@ export class CleanupTask {
    * @description 清理旧日志（每周日凌晨 3 点执行）
    */
   @Cron(CronExpression.EVERY_WEEK)
+  @withCleanupLogging('old logs')
   async cleanupOldLogs(): Promise<void> {
-    this.logger.log('Starting cleanup of old logs...')
-
-    try {
-      // TODO: 实现日志清理逻辑
-      // 删除 30 天前的日志
-      // const cutoffDate = new Date();
-      // cutoffDate.setDate(cutoffDate.getDate() - 30);
-      // await this.prisma.log.deleteMany({
-      //   where: {
-      //     createdAt: { lt: cutoffDate },
-      //   },
-      // });
-
-      this.logger.log('Cleanup of old logs completed')
-    } catch (error) {
-      this.logger.error('Failed to cleanup old logs:', error)
-    }
+    // TODO: 实现日志清理逻辑
+    // 删除 30 天前的日志
+    // const cutoffDate = new Date();
+    // cutoffDate.setDate(cutoffDate.getDate() - 30);
+    // await this.prisma.log.deleteMany({
+    //   where: {
+    //     createdAt: { lt: cutoffDate },
+    //   },
+    // });
   }
 
   /**
@@ -68,17 +77,10 @@ export class CleanupTask {
    * @description 清理临时文件（每小时执行）
    */
   @Cron(CronExpression.EVERY_HOUR)
+  @withCleanupLogging('temporary files')
   async cleanupTempFiles(): Promise<void> {
-    this.logger.log('Starting cleanup of temporary files...')
-
-    try {
-      // TODO: 实现临时文件清理逻辑
-      // 删除超过 24 小时的临时文件
-
-      this.logger.log('Cleanup of temporary files completed')
-    } catch (error) {
-      this.logger.error('Failed to cleanup temporary files:', error)
-    }
+    // TODO: 实现临时文件清理逻辑
+    // 删除超过 24 小时的临时文件
   }
 
   /**

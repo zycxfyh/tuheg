@@ -36,9 +36,10 @@
 
 <script setup>
 // [核心修正] 导入正确的 store 和函数名
-import { useUIStore } from '@/stores/ui.store'
-import { useGameStore } from '@/stores/game.store'
+
 import { useAssets } from '@/composables/useAssets'
+import { useGameStore } from '@/stores/game.store'
+import { useUIStore } from '@/stores/ui.store'
 
 const uiStore = useUIStore()
 const gameStore = useGameStore()

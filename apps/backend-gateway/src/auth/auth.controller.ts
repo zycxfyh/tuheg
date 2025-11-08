@@ -1,19 +1,17 @@
-// 文件路径: apps/nexus-engine/src/auth/auth.controller.ts
+// 文件路径: apps/backend-gateway/src/auth/auth.controller.ts
 
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Get, Req } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common'
 import { Throttle } from '@nestjs/throttler'
-import type { Request } from 'express'
-import { AuthService } from './auth.service'
-import { JwtAuthGuard } from './guards/jwt-auth.guard'
-
 // [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
 import { ZodValidationPipe } from '@tuheg/common-backend'
-
+import type { Request } from 'express'
+import type { AuthService } from './auth.service'
+import type { LoginDto } from './dto/login.dto'
+import { loginSchema } from './dto/login.dto'
 // 导入DTO类型和Zod schema
 import type { RegisterDto } from './dto/register.dto'
-import type { LoginDto } from './dto/login.dto'
 import { registerSchema } from './dto/register.dto'
-import { loginSchema } from './dto/login.dto'
+import { JwtAuthGuard } from './guards/jwt-auth.guard'
 
 @Controller('auth')
 export class AuthController {

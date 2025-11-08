@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { Task, TaskStatus, TaskType, TaskComplexity, Agent, Prisma } from '@prisma/client'
-import { AgentService } from './agent.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  type Agent,
+  type Prisma,
+  type Task,
+  TaskComplexity,
+  TaskStatus,
+  TaskType,
+} from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { AgentService } from './agent.service'
 
 export interface TaskAssignment {
   taskId: string

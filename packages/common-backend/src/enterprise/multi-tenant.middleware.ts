@@ -1,11 +1,11 @@
 import {
-  Injectable,
-  NestMiddleware,
-  UnauthorizedException,
   BadRequestException,
+  Injectable,
+  type NestMiddleware,
+  UnauthorizedException,
 } from '@nestjs/common'
-import { Request, Response, NextFunction } from 'express'
-import { PrismaService } from '../prisma/prisma.service'
+import type { NextFunction, Request, Response } from 'express'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface TenantRequest extends Request {
   tenantId?: string

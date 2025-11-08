@@ -1,10 +1,10 @@
-// 文件路径: apps/frontend/src/composables/useGameQuery.js
+// 文件路径: apps/frontend/src/composables/useGameQuery.ts
 // 职责: 使用 TanStack Query 管理游戏相关的数据获取
 // 策略: 渐进式迁移，与现有 Pinia store 并行运行
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
-import { apiService } from '@/services/api.service'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '@/composables/useToast'
+import { apiService } from '@/services/api.service'
 
 /**
  * 查询键工厂 - 统一管理所有查询键

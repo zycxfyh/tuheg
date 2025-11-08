@@ -1,7 +1,7 @@
 // 文件路径: packages/common-backend/src/plugins/plugin.registry.ts
 // 核心理念: 插件注册表，管理所有已安装和激活的插件
 
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
 import type { Plugin, PluginContext } from './plugin.types'
 
 /**

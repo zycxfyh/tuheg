@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AgentConversation, MessageType, Prisma } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AgentConversation, MessageType, Prisma } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface MessagePayload {
   type: MessageType
@@ -552,8 +552,7 @@ export class AgentCommunicationService {
 
     const variance =
       responseTimes.length > 0
-        ? responseTimes.reduce((sum, time) => sum + Math.pow(time - average, 2), 0) /
-          responseTimes.length
+        ? responseTimes.reduce((sum, time) => sum + (time - average) ** 2, 0) / responseTimes.length
         : 0
 
     return {

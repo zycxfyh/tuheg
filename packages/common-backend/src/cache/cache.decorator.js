@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.Cache = exports.CACHE_TTL = exports.CACHE_KEY = void 0
 const common_1 = require('@nestjs/common')

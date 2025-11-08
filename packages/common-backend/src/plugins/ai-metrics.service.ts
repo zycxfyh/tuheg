@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { ModelUsage, ProviderMetrics, ModelMetrics, UsageStatus } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import { ModelMetrics, type ModelUsage, ProviderMetrics, type UsageStatus } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface UsageRecord {
   modelId: string
@@ -280,11 +280,7 @@ export class AiMetricsService {
    * 生成性能洞察报告
    */
   async getPerformanceInsights(
-    options: {
-      period?: 'day' | 'week' | 'month'
-      modelIds?: string[]
-      userId?: string
-    } = {}
+    options: { period?: 'day' | 'week' | 'month'; modelIds?: string[]; userId?: string } = {}
   ): Promise<PerformanceInsights> {
     const { period = 'month', modelIds, userId } = options
 

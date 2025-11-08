@@ -1,24 +1,24 @@
 import {
-  Injectable,
-  NotFoundException,
   BadRequestException,
   ConflictException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
 import {
-  Tenant,
-  TenantStatus,
+  type Prisma,
+  type Project,
+  ProjectType,
+  type Tenant,
   TenantPlan,
   TenantRole,
+  TenantStatus,
   UserTenantStatus,
-  Workspace,
-  WorkspaceType,
+  type Workspace,
   WorkspaceRole,
-  Project,
-  ProjectType,
-  Prisma,
+  WorkspaceType,
 } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface CreateTenantData {
   name: string

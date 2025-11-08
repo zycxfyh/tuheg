@@ -1,11 +1,11 @@
+import type { VCPToolBoxClient } from './client.js'
 import {
-  LoginCredentials,
-  TokenResponse,
-  ApiResponse,
+  type ApiResponse,
   AuthenticationError,
+  type LoginCredentials,
+  type TokenResponse,
   VCPToolBoxError,
 } from './types.js'
-import { VCPToolBoxClient } from './client.js'
 
 /**
  * Authentication Manager

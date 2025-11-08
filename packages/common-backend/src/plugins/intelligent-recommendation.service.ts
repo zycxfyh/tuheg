@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AiModelService, ModelRecommendation } from './ai-model.service'
-import { AgentService } from './agent.service'
-import { TaskService } from './task.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { AgentService } from './agent.service'
+import type { AiModelService, ModelRecommendation } from './ai-model.service'
+import type { TaskService } from './task.service'
 
 export interface RecommendationContext {
   userId?: string

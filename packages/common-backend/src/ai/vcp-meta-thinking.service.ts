@@ -3,9 +3,9 @@
 // 借鉴思想: 超动态递归思维链、词元组捕网系统、元逻辑模块库
 
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { CallAiWithGuard } from './ai-guard'
+import type { ConfigService } from '@nestjs/config'
 import type { AiProvider } from '../../types/ai-providers.types'
+import { CallAiWithGuard } from './ai-guard'
 
 /**
  * 思维节点接口

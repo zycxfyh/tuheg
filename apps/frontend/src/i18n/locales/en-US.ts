@@ -1,0 +1,41 @@
+export const enUs = {
+  common: {
+    loading: 'Loading...',
+    error: 'Error',
+    success: 'Success',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    save: 'Save',
+    delete: 'Delete',
+    edit: 'Edit',
+    create: 'Create',
+    close: 'Close',
+  },
+  navigation: {
+    home: 'Home',
+    creation: 'Creation Hub',
+    game: 'Game',
+    plugins: 'Plugin Market',
+    settings: 'Settings',
+  },
+  auth: {
+    login: 'Login',
+    logout: 'Logout',
+    signup: 'Sign Up',
+    username: 'Username',
+    password: 'Password',
+    email: 'Email',
+  },
+  creation: {
+    title: 'Creation Hub',
+    description: 'Start your AI creation journey',
+    newProject: 'New Project',
+    loadProject: 'Load Project',
+  },
+  game: {
+    title: 'Game World',
+    start: 'Start Adventure',
+    pause: 'Pause',
+    resume: 'Resume',
+  },
+}

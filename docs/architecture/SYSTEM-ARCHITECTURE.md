@@ -252,14 +252,14 @@ const token = await this.jwtService.signAsync({
   sub: user.id,
   email: user.email,
   role: user.role,
-});
+})
 
 // 令牌验证中间件
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const token = this.extractTokenFromHeader(request);
-    return await this.jwtService.verifyAsync(token);
+    const token = this.extractTokenFromHeader(request)
+    return await this.jwtService.verifyAsync(token)
   }
 }
 ```
@@ -288,12 +288,12 @@ export class JwtAuthGuard implements CanActivate {
 
 ### 性能指标目标
 
-| 指标 | 目标值 | 说明 |
-|------|--------|------|
-| API响应时间 | <200ms | 90%请求 |
-| 游戏创建时间 | <30s | AI生成耗时 |
-| 并发用户数 | 1000+ | 同时在线 |
-| WebSocket延迟 | <100ms | 实时通信 |
+| 指标          | 目标值 | 说明       |
+| ------------- | ------ | ---------- |
+| API响应时间   | <200ms | 90%请求    |
+| 游戏创建时间  | <30s   | AI生成耗时 |
+| 并发用户数    | 1000+  | 同时在线   |
+| WebSocket延迟 | <100ms | 实时通信   |
 
 ### 性能优化策略
 
@@ -304,7 +304,7 @@ export class JwtAuthGuard implements CanActivate {
 export class CacheService {
   @Cache('game:state', 300) // 5分钟TTL
   async getGameState(gameId: string): Promise<GameState> {
-    return await this.prisma.game.findUnique({ where: { id: gameId } });
+    return await this.prisma.game.findUnique({ where: { id: gameId } })
   }
 }
 ```
@@ -358,20 +358,20 @@ spec:
         app: backend-gateway
     spec:
       containers:
-      - name: backend-gateway
-        image: creation-ring/backend-gateway:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          value: "production"
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: backend-gateway
+          image: creation-ring/backend-gateway:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: 'production'
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '200m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
 ```
 
 ### 服务网格架构
@@ -421,10 +421,10 @@ export class LoggerService {
       message,
       context,
       service: this.serviceName,
-    };
+    }
 
     // 结构化日志输出
-    console.log(JSON.stringify(logEntry));
+    console.log(JSON.stringify(logEntry))
   }
 }
 ```
@@ -464,12 +464,12 @@ spec:
   minReplicas: 2
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 ```
 
 #### 队列驱动扩展

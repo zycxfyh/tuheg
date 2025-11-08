@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.DEFAULT_RETRY_CONFIG = exports.ErrorCategory = void 0
 exports.classifyError = classifyError
@@ -6,7 +5,7 @@ exports.calculateRetryDelay = calculateRetryDelay
 exports.getRecommendedDelay = getRecommendedDelay
 exports.delay = delay
 var ErrorCategory
-;(function (ErrorCategory) {
+;((ErrorCategory) => {
   ErrorCategory['NETWORK'] = 'network'
   ErrorCategory['TEMPORARY_API_ERROR'] = 'temporary_api_error'
   ErrorCategory['JSON_PARSE_ERROR'] = 'json_parse_error'

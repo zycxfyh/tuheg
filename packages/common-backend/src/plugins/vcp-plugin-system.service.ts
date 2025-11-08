@@ -3,7 +3,7 @@
 // 借鉴思想: 静态/消息预处理器/同步/异步/服务/混合服务插件
 
 import { Injectable, Logger } from '@nestjs/common'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
 
 /**
  * 插件类型枚举 - VCPToolBox 6大插件类型

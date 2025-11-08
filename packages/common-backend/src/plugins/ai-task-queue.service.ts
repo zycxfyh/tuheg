@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AiTaskQueue, QueueStatus, TaskType } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AiTaskQueue, QueueStatus, TaskType } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface QueueTask {
   modelId: string

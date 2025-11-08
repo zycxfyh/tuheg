@@ -57,10 +57,10 @@ AI推理任务具有以下特性：
 
 ```typescript
 interface GameCreationRequestedEvent {
-  eventId: string;
-  userId: string;
-  concept: string;
-  timestamp: Date;
+  eventId: string
+  userId: string
+  concept: string
+  timestamp: Date
 }
 ```
 
@@ -70,11 +70,11 @@ interface GameCreationRequestedEvent {
 
 ```typescript
 interface GameCreatedEvent {
-  eventId: string;
-  gameId: string;
-  userId: string;
-  gameData: Game;
-  timestamp: Date;
+  eventId: string
+  gameId: string
+  userId: string
+  gameData: Game
+  timestamp: Date
 }
 ```
 
@@ -84,11 +84,11 @@ interface GameCreatedEvent {
 
 ```typescript
 interface LogicProcessingCompletedEvent {
-  eventId: string;
-  gameId: string;
-  userId: string;
-  directives: StateChangeDirective[];
-  timestamp: Date;
+  eventId: string
+  gameId: string
+  userId: string
+  directives: StateChangeDirective[]
+  timestamp: Date
 }
 ```
 
@@ -124,12 +124,12 @@ const queueOptions = {
   deadLetterExchange: 'dlx',
   deadLetterRoutingKey: 'dlq',
   messageTtl: 24 * 60 * 60 * 1000, // 24小时TTL
-};
+}
 
 const dlqOptions = {
   durable: true,
   messageTtl: 7 * 24 * 60 * 60 * 1000, // 7天TTL
-};
+}
 ```
 
 ### 3. 事件流设计
@@ -179,7 +179,7 @@ sequenceDiagram
 @Injectable()
 export class EventBusService {
   async publish(event: string, data: any): Promise<void> {
-    await this.redisClient.publish(event, JSON.stringify(data));
+    await this.redisClient.publish(event, JSON.stringify(data))
   }
 
   async subscribe(event: string, handler: Function): Promise<void> {
@@ -194,17 +194,22 @@ export class EventBusService {
 @Injectable()
 export class MessageService {
   async sendRequest(queue: string, message: any): Promise<any> {
-    const correlationId = uuidv4();
-    const replyQueue = await this.createReplyQueue();
+    const correlationId = uuidv4()
+    const replyQueue = await this.createReplyQueue()
 
     return new Promise((resolve) => {
-      this.replyHandlers.set(correlationId, resolve);
-      this.channel.sendToQueue(queue, Buffer.from(JSON.stringify({
-        ...message,
-        correlationId,
-        replyTo: replyQueue,
-      })));
-    });
+      this.replyHandlers.set(correlationId, resolve)
+      this.channel.sendToQueue(
+        queue,
+        Buffer.from(
+          JSON.stringify({
+            ...message,
+            correlationId,
+            replyTo: replyQueue,
+          })
+        )
+      )
+    })
   }
 }
 ```
@@ -215,22 +220,22 @@ export class MessageService {
 @Injectable()
 export class TaskQueueService {
   async enqueueTask(queue: string, task: any): Promise<void> {
-    await this.channel.assertQueue(queue, { durable: true });
+    await this.channel.assertQueue(queue, { durable: true })
     this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(task)), {
       persistent: true,
-    });
+    })
   }
 
   async processTasks(queue: string, handler: Function): Promise<void> {
     await this.channel.consume(queue, async (msg) => {
       try {
-        const task = JSON.parse(msg.content.toString());
-        await handler(task);
-        this.channel.ack(msg);
+        const task = JSON.parse(msg.content.toString())
+        await handler(task)
+        this.channel.ack(msg)
       } catch (error) {
-        this.channel.nack(msg, false, false); // 发送到DLQ
+        this.channel.nack(msg, false, false) // 发送到DLQ
       }
-    });
+    })
   }
 }
 ```
@@ -242,24 +247,28 @@ export class TaskQueueService {
 ```typescript
 @Injectable()
 export class RetryService {
-  async handleRetry(channel: Channel, msg: Message, error: Error): Promise<void> {
-    const retryCount = (msg.properties.headers?.['x-retry-count'] || 0) + 1;
+  async handleRetry(
+    channel: Channel,
+    msg: Message,
+    error: Error
+  ): Promise<void> {
+    const retryCount = (msg.properties.headers?.['x-retry-count'] || 0) + 1
 
     if (retryCount < this.maxRetries) {
       // 指数退避重试
-      const delay = Math.pow(2, retryCount) * 1000;
+      const delay = Math.pow(2, retryCount) * 1000
       setTimeout(() => {
         channel.sendToQueue(msg.fields.routingKey, msg.content, {
           headers: { 'x-retry-count': retryCount },
           persistent: true,
-        });
-      }, delay);
+        })
+      }, delay)
     } else {
       // 发送到死信队列
-      channel.sendToQueue('dlq', msg.content, { persistent: true });
+      channel.sendToQueue('dlq', msg.content, { persistent: true })
     }
 
-    channel.ack(msg);
+    channel.ack(msg)
   }
 }
 ```
@@ -270,11 +279,11 @@ export class RetryService {
 @Injectable()
 export class IdempotencyService {
   async checkIdempotency(key: string, ttl: number = 3600): Promise<boolean> {
-    const exists = await this.redisClient.exists(`idempotency:${key}`);
-    if (exists) return false;
+    const exists = await this.redisClient.exists(`idempotency:${key}`)
+    if (exists) return false
 
-    await this.redisClient.setex(`idempotency:${key}`, ttl, '1');
-    return true;
+    await this.redisClient.setex(`idempotency:${key}`, ttl, '1')
+    return true
   }
 }
 ```
@@ -285,10 +294,10 @@ export class IdempotencyService {
 @Injectable()
 export class CompensationService {
   async compensate(eventId: string): Promise<void> {
-    const event = await this.getEvent(eventId);
-    const compensationEvent = this.createCompensationEvent(event);
+    const event = await this.getEvent(eventId)
+    const compensationEvent = this.createCompensationEvent(event)
 
-    await this.eventBus.publish(compensationEvent.type, compensationEvent.data);
+    await this.eventBus.publish(compensationEvent.type, compensationEvent.data)
   }
 }
 ```
@@ -308,7 +317,7 @@ export class CompensationService {
 @Injectable()
 export class EventTracingService {
   async traceEvent(event: DomainEvent): Promise<void> {
-    const traceId = event.traceId || uuidv4();
+    const traceId = event.traceId || uuidv4()
 
     await this.logger.log('event_published', {
       eventId: event.eventId,
@@ -316,7 +325,7 @@ export class EventTracingService {
       traceId,
       timestamp: event.timestamp,
       data: event,
-    });
+    })
   }
 }
 ```

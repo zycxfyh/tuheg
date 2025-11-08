@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![Contributing](https://img.shields.io/badge/PRs-Welcome-%238257E6)](https://github.com/your-org/creation-ring/pulls)
-[![Good First Issue](https://img.shields.io/github/labels/your-org/creation-ring/good%20first%20issue)](https://github.com/your-org/creation-ring/labels/good%20first%20issue)
-[![Help Wanted](https://img.shields.io/github/labels/your-org/creation-ring/help%20wanted)](https://github.com/your-org/creation-ring/labels/help%20wanted)
+[![Contributing](https://img.shields.io/badge/PRs-Welcome-%238257E6)](https://github.com/zycxfyh/tuheg/pulls)
+[![Good First Issue](https://img.shields.io/github/labels/your-org/creation-ring/good%20first%20issue)](https://github.com/zycxfyh/tuheg/labels/good%20first%20issue)
+[![Help Wanted](https://img.shields.io/github/labels/your-org/creation-ring/help%20wanted)](https://github.com/zycxfyh/tuheg/labels/help%20wanted)
 
 </div>
 

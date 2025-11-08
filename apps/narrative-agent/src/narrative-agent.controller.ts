@@ -1,9 +1,9 @@
-import { Controller, Logger, Post, Body, HttpException, HttpStatus } from '@nestjs/common'
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices'
-import { NarrativeService } from './narrative.service'
+import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
+import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
+import * as Sentry from '@sentry/node'
 import type { LogicCompletePayload } from '@tuheg/common-backend'
 import { z } from 'zod'
-import * as Sentry from '@sentry/node'
+import type { NarrativeService } from './narrative.service'
 
 // [新增] HTTP API 输入验证
 const GenerateNarrativeSchema = z.object({

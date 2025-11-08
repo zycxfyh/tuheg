@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { ModelRouter, RoutingStrategy, AiModel, Prisma } from '@prisma/client'
-import { AiProviderService } from './ai-provider.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AiModel, ModelRouter, Prisma, RoutingStrategy } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { AiProviderService } from './ai-provider.service'
 
 export interface RoutingRule {
   id: string
@@ -435,9 +435,7 @@ export class ModelRouterService {
         if (model && model.status === 'ACTIVE' && model.provider.status === 'ACTIVE') {
           return model
         }
-      } catch (error) {
-        continue
-      }
+      } catch (error) {}
     }
 
     return null
@@ -671,19 +669,21 @@ export class ModelRouterService {
    */
   private calculateModelWeight(model: AiModel, routerType: string): number {
     switch (routerType) {
-      case 'cost-optimized':
+      case 'cost-optimized': {
         const cost = this.calculateModelCost(model)
         return Math.max(1, 100 - cost * 10000) // 成本越低权重越高
+      }
 
       case 'performance-max':
         return Math.max(1, model.performance * 100) // 性能越高权重越高
 
       case 'general-purpose':
-      default:
+      default: {
         // 平衡性能和成本
         const performance = model.performance
         const cost = this.calculateModelCost(model)
         return Math.max(1, performance * 60 - cost * 40)
+      }
     }
   }
 }

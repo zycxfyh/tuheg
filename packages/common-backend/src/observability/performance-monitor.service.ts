@@ -5,9 +5,9 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import * as os from 'os'
 import {
-  PERFORMANCE_CONFIG,
   getSLATarget,
   isPerformanceHealthy,
+  PERFORMANCE_CONFIG,
   type ServiceSLAs,
 } from '../config/performance-config'
 

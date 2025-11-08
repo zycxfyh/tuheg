@@ -8,36 +8,18 @@ import {
   type RawBodyRequest,
   Req,
 } from '@nestjs/common'
-import type { ConfigService } from '@nestjs/config'
 import type { Request } from 'express'
-import { Webhook } from 'svix'
-
-// 定义Clerk Webhook事件的预期载荷类型
-type ClerkEvent = {
-  type: 'user.created' | 'user.updated' | 'user.deleted'
-  data: {
-    id: string
-    email_addresses?: { email_address: string }[]
-    // ... 其他可能的字段
-  }
-}
+import type { WebhookService } from './webhook.service'
 
 @Controller('webhooks')
 export class WebhooksController {
   private readonly logger = new Logger(WebhooksController.name)
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly webhookService: WebhookService) {}
 
   @Post('clerk')
   async handleClerkWebhook(@Req() req: RawBodyRequest<Request>) {
-    const WEBHOOK_SECRET = this.configService.get<string>('CLERK_WEBHOOK_SECRET_KEY')
-    if (!WEBHOOK_SECRET) {
-      this.logger.error('CLERK_WEBHOOK_SECRET_KEY is not configured.')
-      throw new Error('Server configuration error: Clerk webhook secret is missing.')
-    }
-
     // --- 验证 Webhook 签名 ---
-    const headers = req.headers
     // [核心] NestJS默认会解析JSON body，但svix需要原始的、未经解析的body来进行验证。
     // 我们需要在main.ts中配置json body parser来保留这个原始body。
     const payload = req.rawBody
@@ -45,22 +27,9 @@ export class WebhooksController {
       throw new BadRequestException('Raw body is required for webhook verification.')
     }
 
-    const svix_id = headers['svix-id'] as string
-    const svix_timestamp = headers['svix-timestamp'] as string
-    const svix_signature = headers['svix-signature'] as string
-
-    if (!svix_id || !svix_timestamp || !svix_signature) {
-      throw new BadRequestException('Missing Svix headers for webhook verification.')
-    }
-
-    const wh = new Webhook(WEBHOOK_SECRET)
-    let evt: ClerkEvent
+    let evt: import('./webhook.service').ClerkEvent
     try {
-      evt = wh.verify(payload, {
-        'svix-id': svix_id,
-        'svix-timestamp': svix_timestamp,
-        'svix-signature': svix_signature,
-      }) as ClerkEvent
+      evt = this.webhookService.verifyWebhook(payload, req.headers as Record<string, string>)
     } catch (err) {
       this.logger.error('Clerk webhook verification failed:', err)
       throw new BadRequestException('Webhook verification failed')

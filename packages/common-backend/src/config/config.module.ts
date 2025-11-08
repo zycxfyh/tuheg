@@ -1,11 +1,11 @@
 // 文件路径: packages/common-backend/src/config/config.module.ts
 // 核心理念: 类型安全的环境配置模块
 
-import { Module, OnModuleInit } from '@nestjs/common'
+import { Module, type OnModuleInit } from '@nestjs/common'
 import { ConfigModule as NestConfigModule } from '@nestjs/config'
+import { ConfigurationService } from './configuration.service'
 import { validateEnv } from './env.schema'
 import { EnvLoader } from './env-loader'
-import { ConfigurationService } from './configuration.service'
 
 /**
  * @module ConfigModule

@@ -1,11 +1,11 @@
-// 文件路径: apps/backend/apps/logic-agent/src/main.ts (已修复类型)
+// 文件路径: apps/logic-agent/src/main.ts (已修复类型)
 
-import { NestFactory } from '@nestjs/core'
-import { LogicAgentModule } from './logic-agent.module'
-import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 import { ConfigService } from '@nestjs/config'
+import { NestFactory } from '@nestjs/core'
+import { type MicroserviceOptions, Transport } from '@nestjs/microservices'
 import * as Sentry from '@sentry/node'
-import { Channel } from 'amqplib' // <-- [核心修正] 导入 Channel 类型
+import type { Channel } from 'amqplib' // <-- [核心修正] 导入 Channel 类型
+import { LogicAgentModule } from './logic-agent.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(LogicAgentModule)

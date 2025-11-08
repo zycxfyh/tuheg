@@ -84,16 +84,16 @@ async handleFailedMessage(message: FailedMessage): Promise<void> {
 
 ```typescript
 enum AlertType {
-  DLQ_ALERT = 'dlq_alert',           // 死信队列告警
-  SYSTEM_ALERT = 'system_alert',     // 系统告警
-  PERFORMANCE_ALERT = 'performance_alert' // 性能告警
+  DLQ_ALERT = 'dlq_alert', // 死信队列告警
+  SYSTEM_ALERT = 'system_alert', // 系统告警
+  PERFORMANCE_ALERT = 'performance_alert', // 性能告警
 }
 
 enum AlertSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 ```
 
@@ -101,11 +101,11 @@ enum AlertSeverity {
 
 ### 代理死信队列
 
-| 队列名称 | 描述 | 失败原因示例 |
-| -------- | ---- | ------------ |
-| `creation_queue_dead` | 创建代理失败请求 | AI生成超时、数据库约束冲突 |
-| `logic_agent_dlq` | 逻辑代理处理失败任务 | AI推理错误、规则引擎异常 |
-| `narrative_agent_dlq` | 叙事代理生成失败任务 | AI生成失败、格式验证错误 |
+| 队列名称              | 描述                 | 失败原因示例               |
+| --------------------- | -------------------- | -------------------------- |
+| `creation_queue_dead` | 创建代理失败请求     | AI生成超时、数据库约束冲突 |
+| `logic_agent_dlq`     | 逻辑代理处理失败任务 | AI推理错误、规则引擎异常   |
+| `narrative_agent_dlq` | 叙事代理生成失败任务 | AI生成失败、格式验证错误   |
 
 ### 消息处理流程
 
@@ -132,16 +132,16 @@ graph TD
 
 ```typescript
 interface DlqAlert {
-  type: 'dlq_alert';
-  severity: 'high';
+  type: 'dlq_alert'
+  severity: 'high'
   data: {
-    queueName: string;
-    originalMessage: any;
-    failureReason: string;
-    userId?: string;
-    gameId?: string;
-    timestamp: Date;
-  };
+    queueName: string
+    originalMessage: any
+    failureReason: string
+    userId?: string
+    gameId?: string
+    timestamp: Date
+  }
 }
 ```
 
@@ -241,19 +241,19 @@ const dlqConsumers = [
   {
     queue: 'creation_queue_dead',
     exchange: 'creation_agent_dlx',
-    routingKey: 'creation_queue_dlq'
+    routingKey: 'creation_queue_dlq',
   },
   {
     queue: 'logic_agent_dlq',
     exchange: 'logic_agent_dlx',
-    routingKey: 'logic_agent_dlq'
+    routingKey: 'logic_agent_dlq',
   },
   {
     queue: 'narrative_agent_dlq',
     exchange: 'narrative_agent_dlx',
-    routingKey: 'narrative_agent_dlq'
-  }
-];
+    routingKey: 'narrative_agent_dlq',
+  },
+]
 ```
 
 ## 性能优化
@@ -269,17 +269,15 @@ const dlqConsumers = [
 ```typescript
 @Injectable()
 export class DlqConsumerService {
-  private readonly messageBatchSize = 10;
-  private readonly processingTimeout = 30000; // 30秒超时
+  private readonly messageBatchSize = 10
+  private readonly processingTimeout = 30000 // 30秒超时
 
   // 批量处理优化
   async processBatch(messages: FailedMessage[]): Promise<void> {
-    const batches = chunk(messages, this.messageBatchSize);
+    const batches = chunk(messages, this.messageBatchSize)
 
     for (const batch of batches) {
-      await Promise.all(
-        batch.map(msg => this.processMessageWithTimeout(msg))
-      );
+      await Promise.all(batch.map((msg) => this.processMessageWithTimeout(msg)))
     }
   }
 }
@@ -314,24 +312,24 @@ export class DlqHealthIndicator implements HealthIndicator {
 
 ```typescript
 describe('DlqConsumerService', () => {
-  let service: DlqConsumerService;
+  let service: DlqConsumerService
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [DlqConsumerService],
-    }).compile();
+    }).compile()
 
-    service = module.get<DlqConsumerService>(DlqConsumerService);
-  });
+    service = module.get<DlqConsumerService>(DlqConsumerService)
+  })
 
   it('should parse failure message correctly', () => {
-    const rawMessage = createMockFailedMessage();
-    const parsed = service.parseFailureMessage(rawMessage);
+    const rawMessage = createMockFailedMessage()
+    const parsed = service.parseFailureMessage(rawMessage)
 
-    expect(parsed.userId).toBeDefined();
-    expect(parsed.failureReason).toBeDefined();
-  });
-});
+    expect(parsed.userId).toBeDefined()
+    expect(parsed.failureReason).toBeDefined()
+  })
+})
 ```
 
 ### 集成测试
@@ -372,7 +370,7 @@ kind: Deployment
 metadata:
   name: dlq-consumer
 spec:
-  replicas: 1  # 通常单实例
+  replicas: 1 # 通常单实例
   template:
     spec:
       containers:
@@ -409,12 +407,12 @@ spec:
 
 ```typescript
 // 启用详细日志
-const logger = new Logger('DlqConsumer');
-logger.debug('Processing message:', message);
-logger.debug('Parsed failure info:', failureInfo);
+const logger = new Logger('DlqConsumer')
+logger.debug('Processing message:', message)
+logger.debug('Parsed failure info:', failureInfo)
 
 // 手动触发告警测试
-await alertService.sendTestAlert();
+await alertService.sendTestAlert()
 ```
 
 ## 扩展规划

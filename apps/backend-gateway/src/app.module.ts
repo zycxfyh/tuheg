@@ -1,21 +1,20 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { ThrottlerModule } from '@nestjs/throttler'
-// 1. 明确导入所有需要的“联邦服务”
-import { PrismaModule, HealthModule } from '@tuheg/common-backend'
-
-// 2. 明确导入所有本应用的“内部模块”
-import { AuthModule } from './auth/auth.module'
-import { GamesModule } from './games/games.module'
-import { SettingsModule } from './settings/settings.module'
-import { GatewayModule } from './gateway/gateway.module'
+// 1. 明确导入所有需要的"联邦服务"
+import { ConfigModule, HealthModule, PrismaModule } from '@tuheg/common-backend'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+// 2. 明确导入所有本应用的"内部模块"
+import { AuthModule } from './auth/auth.module'
+import { GamesModule } from './games/games.module'
+import { GatewayModule } from './gateway/gateway.module'
+import { SettingsModule } from './settings/settings.module'
+import { WebhooksModule } from './webhooks/webhooks.module'
 
 @Module({
   imports: [
     // 3. 在 imports 数组中，清晰地列出所有依赖
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule, // 使用共享的类型安全配置模块
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
@@ -28,6 +27,7 @@ import { AppService } from './app.service'
     GamesModule,
     SettingsModule,
     GatewayModule,
+    WebhooksModule,
   ],
   controllers: [AppController], // 确保 AppController 还在
   providers: [AppService], // 确保 AppService 还在

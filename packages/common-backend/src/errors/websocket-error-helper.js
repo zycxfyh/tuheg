@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.formatErrorForWebSocket = formatErrorForWebSocket
 const error_classification_1 = require('./error-classification')

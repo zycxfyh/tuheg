@@ -2,7 +2,7 @@
 // 职责: VCPToolBox 多模态数据链的使用示例
 // 展示Base64直通车、全局文件API、跨模态智能转译
 
-import { MultimodalService, MultimodalDataType } from './multimodal.service'
+import { MultimodalDataType, type MultimodalService } from './multimodal.service'
 
 /**
  * VCPToolBox 多模态数据链使用示例

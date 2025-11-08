@@ -1,11 +1,11 @@
 // 文件路径: apps/narrative-agent/src/main.ts (已集成Sentry)
 
-import { NestFactory } from '@nestjs/core'
-import { NarrativeAgentModule } from './narrative-agent.module'
-import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 import { ConfigService } from '@nestjs/config'
-import { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
+import { NestFactory } from '@nestjs/core'
+import { type MicroserviceOptions, Transport } from '@nestjs/microservices'
 import * as Sentry from '@sentry/node' // [Sentry] 导入 Sentry
+import type { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
+import { NarrativeAgentModule } from './narrative-agent.module'
 
 async function bootstrap() {
   // [Sentry] 初始化 Sentry - 先创建临时应用获取配置

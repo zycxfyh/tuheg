@@ -1,11 +1,11 @@
 // 文件路径: apps/creation-agent/src/main.ts (已集成Sentry)
 
-import { NestFactory } from '@nestjs/core'
-import { CreationAgentModule } from './creation-agent.module'
-import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 import { ConfigService } from '@nestjs/config'
-import { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
+import { NestFactory } from '@nestjs/core'
+import { type MicroserviceOptions, Transport } from '@nestjs/microservices'
 import * as Sentry from '@sentry/node' // [Sentry] 导入 Sentry
+import type { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
+import { CreationAgentModule } from './creation-agent.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(CreationAgentModule)

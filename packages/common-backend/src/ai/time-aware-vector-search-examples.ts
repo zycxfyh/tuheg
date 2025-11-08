@@ -2,9 +2,9 @@
 // 职责: VCPToolBox 时间感知向量检索的使用示例
 // 展示Time-Aware RAG、动态K值、时间衰减等功能
 
-import {
-  TimeAwareVectorSearchService,
+import type {
   TimeAwareSearchConfig,
+  TimeAwareVectorSearchService,
 } from './time-aware-vector-search.service'
 
 /**

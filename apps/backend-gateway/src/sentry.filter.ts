@@ -1,6 +1,6 @@
-// 文件路径: apps/nexus-engine/src/sentry.filter.ts
+// 文件路径: apps/backend-gateway/src/sentry.filter.ts
 
-import { Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
+import { type ArgumentsHost, Catch, HttpException, HttpStatus } from '@nestjs/common'
 import { BaseExceptionFilter } from '@nestjs/core'
 import * as Sentry from '@sentry/node'
 

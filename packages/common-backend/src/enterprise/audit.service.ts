@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AuditLog, AuditRiskLevel, Prisma } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AuditLog, AuditRiskLevel, Prisma } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface AuditLogData {
   action: string
@@ -334,33 +334,37 @@ export class AuditService {
 
     // 根据合规类型执行不同的检查
     switch (complianceType) {
-      case 'GDPR':
+      case 'GDPR': {
         const gdprResults = await this.auditGDPRCompliance(tenantId)
         findings.push(...gdprResults.findings)
         recommendations.push(...gdprResults.recommendations)
         score -= gdprResults.penaltyScore
         break
+      }
 
-      case 'CCPA':
+      case 'CCPA': {
         const ccpaResults = await this.auditCCPACompliance(tenantId)
         findings.push(...ccpaResults.findings)
         recommendations.push(...ccpaResults.recommendations)
         score -= ccpaResults.penaltyScore
         break
+      }
 
-      case 'HIPAA':
+      case 'HIPAA': {
         const hipaaResults = await this.auditHIPAACompliance(tenantId)
         findings.push(...hipaaResults.findings)
         recommendations.push(...hipaaResults.recommendations)
         score -= hipaaResults.penaltyScore
         break
+      }
 
-      case 'SOC2':
+      case 'SOC2': {
         const soc2Results = await this.auditSOC2Compliance(tenantId)
         findings.push(...soc2Results.findings)
         recommendations.push(...soc2Results.recommendations)
         score -= soc2Results.penaltyScore
         break
+      }
     }
 
     return {

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AiModel, ModelStatus, Prisma } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AiModel, ModelStatus, Prisma } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface ModelRecommendation {
   model: AiModel
@@ -361,21 +361,23 @@ export class AiModelService {
     const pricing = model.pricing as any
 
     switch (priority) {
-      case 'cost':
+      case 'cost': {
         // 成本越低评分越高
         const costScore = pricing?.input ? Math.max(0, 1 - pricing.input * 100) : 0.5
         return costScore
+      }
 
       case 'performance':
         // 性能越好评分越高
         return model.performance / 100
 
       case 'balanced':
-      default:
+      default: {
         // 平衡性能和成本
         const performance = model.performance / 100
         const cost = pricing?.input ? Math.max(0, 1 - pricing.input * 50) : 0.5
         return (performance + cost) / 2
+      }
     }
   }
 

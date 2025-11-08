@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/validation/enhanced-validator.ts
 // 核心理念: 类型即文档，运行时验证，友好的错误消息
 
-import { z } from 'zod'
 import type { ZodError, ZodSchema } from 'zod'
+import { z } from 'zod'
 
 /**
  * @interface ValidationResult
@@ -59,7 +59,7 @@ export class EnhancedValidator {
       if (error instanceof z.ZodError) {
         return {
           success: false,
-          errors: this.formatZodErrors(error),
+          errors: EnhancedValidator.formatZodErrors(error),
         }
       }
 
@@ -97,7 +97,7 @@ export class EnhancedValidator {
       if (error instanceof z.ZodError) {
         return {
           success: false,
-          errors: this.formatZodErrors(error),
+          errors: EnhancedValidator.formatZodErrors(error),
         }
       }
 
@@ -133,7 +133,7 @@ export class EnhancedValidator {
 
     return {
       success: false,
-      errors: this.formatZodErrors(result.error),
+      errors: EnhancedValidator.formatZodErrors(result.error),
     }
   }
 
@@ -145,7 +145,7 @@ export class EnhancedValidator {
     return error.errors.map((err) => {
       const validationError: ValidationError = {
         path: err.path,
-        message: this.formatErrorMessage(err),
+        message: EnhancedValidator.formatErrorMessage(err),
         code: err.code,
       }
 

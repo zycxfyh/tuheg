@@ -1,0 +1,141 @@
+name: 🐛 AI对话系统缺陷
+description: 报告AI对话系统的功能缺陷或异常行为
+title: "[AI对话] 简短描述问题"
+labels: ["ai-agent", "bug", "dialogue-system"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 AI对话系统缺陷报告
+
+        感谢您报告AI对话系统的问题！请详细填写以下信息，这将帮助我们更快地定位和解决问题。
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: 问题描述
+      description: 详细描述您遇到的问题，包括期望的行为和实际的行为
+      placeholder: |
+        例如：
+        - AI响应时间过长（超过30秒）
+        - 用户界面在AI思考时被冻结
+        - 错误信息显示技术细节而不是用户友好的提示
+        - 操作确认反馈缺失
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-agent
+    attributes:
+      label: 受影响的AI代理
+      description: 选择出现问题的AI代理服务
+      multiple: true
+      options:
+        - Creation Agent (世界创建)
+        - Logic Agent (逻辑推理)
+        - Narrative Agent (叙事生成)
+        - Backend Gateway (API网关)
+        - Frontend (用户界面)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 严重程度
+      description: 评估这个问题的严重程度
+      options:
+        - 🔴 严重 - 完全无法使用核心功能
+        - 🟠 高 - 主要功能受影响，用户体验差
+        - 🟡 中 - 部分功能异常，但有替代方案
+        - 🟢 低 - 小问题，不影响主要使用
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 重现步骤
+      description: 描述如何重现这个问题
+      placeholder: |
+        1. 打开浏览器访问 http://localhost:3000
+        2. 创建新游戏或加入现有游戏
+        3. 执行特定操作（如发送消息、创建世界等）
+        4. 观察问题出现
+      value: |
+        1.
+        2.
+        3.
+        4.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: 期望行为
+      description: 描述您期望系统应该如何工作
+      placeholder: |
+        例如：
+        - AI响应时间应在10秒以内
+        - 显示实时处理进度
+        - 提供友好的错误提示
+        - 立即显示操作确认
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: 实际行为
+      description: 描述系统实际的表现
+      placeholder: |
+        例如：
+        - AI响应需要60秒以上
+        - 界面冻结，无进度反馈
+        - 显示技术错误信息
+        - 无任何操作确认
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      description: 提供相关的环境和版本信息
+      placeholder: |
+        - 操作系统: Windows 11 / macOS 12.0 / Ubuntu 20.04
+        - 浏览器: Chrome 120 / Firefox 115 / Safari 16
+        - Node.js版本: 20.x
+        - 项目版本: v1.0.0
+        - 部署环境: 本地开发 / Docker / 生产环境
+      value: |
+        - 操作系统:
+        - 浏览器:
+        - Node.js版本:
+        - 项目版本:
+        - 部署环境:
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 补充信息
+      description: 任何其他相关的上下文信息、截图或日志
+      placeholder: |
+        - 浏览器控制台错误信息
+        - 服务器日志片段
+        - 截图或录屏链接
+        - 相关的API请求/响应
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 检查清单
+      description: 请确认您已完成以下检查
+      options:
+        - label: 我已在[现有问题](https://github.com/zycxfyh/tuheg/issues)中搜索过，确认这不是重复报告
+          required: true
+        - label: 我已尝试重启服务和清除缓存
+          required: false
+        - label: 我可以稳定重现这个问题
+          required: true
+        - label: 这个问题的发生有特定的触发条件
+          required: false

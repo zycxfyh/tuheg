@@ -1,16 +1,14 @@
-// 文件路径: apps/nexus-engine/src/auth/auth.service.ts
+// 文件路径: apps/backend-gateway/src/auth/auth.service.ts
 
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common'
-import * as bcryptjs from 'bcryptjs'
-import { JwtService } from '@nestjs/jwt'
-import { User } from '@prisma/client'
-
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
+import type { JwtService } from '@nestjs/jwt'
+import type { User } from '@prisma/client'
 // [核心修正] 放弃旧的 '@/' 别名，从 @tuheg/common-backend 导入共享的 PrismaService
-import { PrismaService } from '@tuheg/common-backend'
-
+import type { PrismaService } from '@tuheg/common-backend'
+import * as bcryptjs from 'bcryptjs'
+import type { LoginDto } from './dto/login.dto'
 // [注释] 导入DTO类型，确保数据结构一致
 import type { RegisterDto } from './dto/register.dto'
-import type { LoginDto } from './dto/login.dto'
 
 @Injectable()
 export class AuthService {

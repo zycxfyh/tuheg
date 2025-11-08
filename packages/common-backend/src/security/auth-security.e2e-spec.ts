@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import {
-  INestApplication,
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
+  type INestApplication,
   UnauthorizedException,
 } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
+import { Test, type TestingModule } from '@nestjs/testing'
 import request from 'supertest'
 import { HealthModule } from '../health/health.module'
 

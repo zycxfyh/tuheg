@@ -20,9 +20,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue' // [核心修正] 移除了 onUnmounted
-import { useGameStore } from '@/stores/game.store'
+import { onMounted, ref } from 'vue' // [核心修正] 移除了 onUnmounted
 import { useToast } from '@/composables/useToast'
+import { useGameStore } from '@/stores/game.store'
 // import { useRouter } from 'vue-router'; // [新增] 导入 useRouter，但暂时未使用
 
 // 导入所有子组件

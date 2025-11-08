@@ -1,7 +1,7 @@
-// 文件路径: apps/nexus-engine/src/app.controller.ts (已植入Sentry测试端点)
+// 文件路径: apps/backend-gateway/src/app.controller.ts (已植入Sentry测试端点)
 
 import { Controller, Get } from '@nestjs/common'
-import { AppService } from './app.service'
+import type { AppService } from './app.service'
 
 @Controller()
 export class AppController {

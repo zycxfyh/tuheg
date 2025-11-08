@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import { SignUp } from '@clerk/vue'
+// TODO: 实现自定义注册组件
 </script>

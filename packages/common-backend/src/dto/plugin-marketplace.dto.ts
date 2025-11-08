@@ -1,6 +1,6 @@
-import { z } from 'zod'
-import { createZodDto } from 'nestjs-zod'
 import { PluginStatus } from '@prisma/client'
+import { createZodDto } from 'nestjs-zod'
+import { z } from 'zod'
 
 // 插件状态枚举
 export const PluginStatusEnum = z.enum([

@@ -1,32 +1,56 @@
-# Global owners
-* @your-org/maintainers
+# Code Owners for AI Dialogue System
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Frontend
-/apps/frontend/ @your-org/frontend-team
-/packages/*/src/components/ @your-org/frontend-team
+# Global owners - 主负责人
+* @zycxfyh
 
-# Backend
-/apps/backend-gateway/ @your-org/backend-team
-/apps/*/ @your-org/backend-team
-/packages/common-backend/ @your-org/backend-team
+# Frontend Application - 前端应用
+/apps/frontend/ @zycxfyh
+/apps/frontend/src/components/ @zycxfyh
+/apps/frontend/src/views/ @zycxfyh
+/apps/frontend/src/stores/ @zycxfyh
 
-# AI Services
-/packages/ai-services/ @your-org/ai-team
-/apps/*-agent/ @your-org/ai-team
+# Backend Gateway - 后端网关
+/apps/backend-gateway/ @zycxfyh
+/apps/backend-gateway/src/ @zycxfyh
 
-# DevOps & Infrastructure
-/deployment/ @your-org/devops-team
-/.github/ @your-org/devops-team
-/scripts/ @your-org/devops-team
+# AI Agents - AI代理服务
+/apps/creation-agent/ @zycxfyh
+/apps/logic-agent/ @zycxfyh
+/apps/narrative-agent/ @zycxfyh
 
-# Documentation
-/docs/ @your-org/docs-team
-*.md @your-org/docs-team
+# Shared Packages - 共享包
+/packages/common-backend/ @zycxfyh
+/packages/ai-services/ @zycxfyh
+/packages/shared-types/ @zycxfyh
+/packages/game-core/ @zycxfyh
+/packages/vcptoolbox-sdk/ @zycxfyh
 
-# SDK & Tools
-/packages/vcptoolbox-sdk/ @your-org/sdk-team
-/tools/ @your-org/tools-team
+# Infrastructure & DevOps - 基础设施
+/.github/ @zycxfyh
+/deployment/ @zycxfyh
+/docker-compose*.yml @zycxfyh
+/Dockerfile @zycxfyh
 
-# Security
-SECURITY.md @your-org/security-team
-.github/workflows/security* @your-org/security-team
+# Documentation - 文档
+/docs/ @zycxfyh
+/*.md @zycxfyh
+/README.md @zycxfyh
+
+# Configuration Files - 配置文件
+/package.json @zycxfyh
+/pnpm-workspace.yaml @zycxfyh
+/tsconfig*.json @zycxfyh
+/jest.config.js @zycxfyh
+/biome.json @zycxfyh
+
+# Security & Compliance - 安全合规
+/SECURITY.md @zycxfyh
+/audit-ci.json @zycxfyh
+
+# Special file patterns - 特殊文件模式
+**/*.config.* @zycxfyh
+**/security/** @zycxfyh
+**/auth/** @zycxfyh
+**/*.test.* @zycxfyh
+**/*.spec.* @zycxfyh

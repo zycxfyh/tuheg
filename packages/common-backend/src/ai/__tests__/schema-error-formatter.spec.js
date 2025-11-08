@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 const zod_1 = require('zod')
 const schema_error_formatter_1 = require('./schema-error-formatter')

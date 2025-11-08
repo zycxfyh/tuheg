@@ -4,17 +4,17 @@
 
 import { Injectable, Logger } from '@nestjs/common'
 import {
-  VcpBasePlugin,
-  VcpStaticPlugin,
-  VcpMessagePreprocessorPlugin,
-  VcpSynchronousPlugin,
-  VcpAsynchronousPlugin,
-  VcpServicePlugin,
-  VcpHybridServicePlugin,
+  type PluginContext,
+  type PluginExecutionResult,
+  type VcpAsynchronousPlugin,
+  type VcpBasePlugin,
+  type VcpHybridServicePlugin,
+  type VcpMessagePreprocessorPlugin,
+  type VcpPluginConfig,
   VcpPluginType,
-  VcpPluginConfig,
-  PluginContext,
-  PluginExecutionResult,
+  type VcpServicePlugin,
+  type VcpStaticPlugin,
+  type VcpSynchronousPlugin,
 } from './vcp-plugin-system.service'
 
 /**

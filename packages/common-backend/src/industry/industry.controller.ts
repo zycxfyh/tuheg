@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../security/jwt-auth.guard'
-import { ContentCreationService } from './content-creation.service'
-import { EducationService } from './education.service'
-import { HealthcareService } from './healthcare.service'
-import { BusinessService } from './business.service'
-import { ManufacturingService } from './manufacturing.service'
+import type { BusinessService } from './business.service'
+import type { ContentCreationService } from './content-creation.service'
+import type { EducationService } from './education.service'
+import type { HealthcareService } from './healthcare.service'
+import type { ManufacturingService } from './manufacturing.service'
 
 @Controller('industry')
 export class IndustryController {

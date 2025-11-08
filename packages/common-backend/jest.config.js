@@ -1,9 +1,22 @@
 // Jest configuration for common-backend package
-const baseConfig = require('../../shared/jest.config.js')
+const baseConfig = require('../../jest.config.js')
 
 module.exports = {
-  ...baseConfig,
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   rootDir: '../..',
+  roots: ['<rootDir>/packages/common-backend'],
+  testMatch: [
+    '**/__tests__/**/*.test.ts',
+    '**/__tests__/**/*.spec.ts',
+    '**/*.test.ts',
+    '**/*.spec.ts',
+  ],
+  transform: {
+    '^.+\\.ts$': ['ts-jest', { useESM: true }],
+    '^.+\\.tsx$': ['ts-jest', { useESM: true }],
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFiles: ['<rootDir>/packages/common-backend/test/env-setup.js'],
   setupFilesAfterEnv: ['<rootDir>/packages/common-backend/test/setup.ts'],
   moduleNameMapper: {

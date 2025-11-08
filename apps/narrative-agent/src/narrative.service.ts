@@ -1,22 +1,21 @@
 // 文件路径: apps/narrative-agent/src/narrative.service.ts (已优化 AI 调用链)
 
-import { Injectable, Logger } from '@nestjs/common'
-import { PromptTemplate } from '@langchain/core/prompts'
 import { StructuredOutputParser } from '@langchain/core/output_parsers'
-import { User } from '@prisma/client'
-import { z } from 'zod'
-
+import { PromptTemplate } from '@langchain/core/prompts'
+import { Injectable, Logger } from '@nestjs/common'
+import type { User } from '@prisma/client'
 import {
-  DynamicAiSchedulerService,
-  PrismaService,
-  LogicCompletePayload,
-  PromptManagerService,
-  callAiWithGuard,
   AiGenerationException,
-  PromptInjectionGuard,
+  callAiWithGuard,
+  type DynamicAiSchedulerService,
+  type EventBusService,
+  type LogicCompletePayload,
+  type PrismaService,
   PromptInjectionDetectedException,
-  EventBusService,
+  type PromptInjectionGuard,
+  type PromptManagerService,
 } from '@tuheg/common-backend'
+import { z } from 'zod'
 
 // --- Zod Schemas for AI I/O ---
 
@@ -103,6 +102,9 @@ export class NarrativeService {
       //   pseudoUser,
       // );
       // this.logger.log(`[Critic] Reviewed and finalized progression for game ${payload.gameId}.`);
+
+      // [安全修复] 验证AI生成的叙事内容
+      this.validateProgressionResponse(finalProgression)
 
       // 发送最终结果的逻辑保持不变
       await this.eventBus.publish('NOTIFY_USER', {
@@ -213,5 +215,68 @@ export class NarrativeService {
       progressionResponseSchema,
       40000 // 40秒超时，叙事生成任务适中复杂度
     )
+  }
+
+  /**
+   * [安全修复] 验证AI生成的叙事响应内容
+   * 防止AI生成过长或包含恶意内容的叙事文本
+   */
+  private validateProgressionResponse(response: ProgressionResponse): void {
+    // 验证叙事文本长度
+    const maxNarrativeLength = 10000 // 10KB上限
+    if (response.narrative.length > maxNarrativeLength) {
+      throw new Error(
+        `Generated narrative is too long: ${response.narrative.length} characters (max: ${maxNarrativeLength})`
+      )
+    }
+
+    // 验证叙事文本是否包含恶意内容
+    this.validateTextContent(response.narrative, 'narrative')
+
+    // 验证选项（如果存在）
+    if (response.options) {
+      const maxOptions = 10 // 最大选项数量
+      if (response.options.length > maxOptions) {
+        throw new Error(
+          `Too many options generated: ${response.options.length} (max: ${maxOptions})`
+        )
+      }
+
+      for (const option of response.options) {
+        // 验证每个选项字段的长度
+        if (option.text.length > 500) {
+          throw new Error(`Option text is too long: ${option.text.length} characters (max: 500)`)
+        }
+
+        // 验证选项文本是否包含恶意内容
+        this.validateTextContent(option.text, 'option text')
+      }
+    }
+  }
+
+  /**
+   * [安全修复] 验证文本内容是否包含潜在的恶意内容
+   */
+  private validateTextContent(text: string, fieldName: string): void {
+    // 检查是否包含潜在的恶意内容
+    const suspiciousPatterns = [
+      /<script/i,
+      /javascript:/i,
+      /on\w+\s*=/i,
+      /<iframe/i,
+      /<object/i,
+      /<embed/i,
+      /<link/i,
+      /<meta/i,
+      /<style/i,
+    ]
+
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(text)) {
+        throw new Error(
+          `${fieldName} contains potentially malicious content: ${text.substring(0, 50)}...`
+        )
+      }
+    }
   }
 }

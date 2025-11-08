@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Plugin, PluginContext, PluginManifest } from './plugin.types'
-import { PluginRegistry } from './plugin.registry'
-import * as vm from 'vm'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as vm from 'vm'
+import type { PluginRegistry } from './plugin.registry'
+import { Plugin, type PluginContext, type PluginManifest } from './plugin.types'
 
 export interface SandboxOptions {
   timeout?: number

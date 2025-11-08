@@ -1,11 +1,10 @@
-// 文件路径: apps/creation-agent/src/creation.service.spec.ts
+// 文件路径: apps/creation-agent/src/__tests__/creation.service.spec.ts
 // 描述: CreationService 的单元测试，专注于世界生成逻辑和数据库交互
 
-import { Test, type TestingModule } from '@nestjs/testing'
-import { InternalServerErrorException } from '@nestjs/common'
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
-import type { Game } from '@prisma/client'
-import type { PrismaClient } from '@prisma/client'
+import { InternalServerErrorException } from '@nestjs/common'
+import { Test, type TestingModule } from '@nestjs/testing'
+import type { Game, PrismaClient } from '@prisma/client'
 import {
   AiGenerationException,
   callAiWithGuard,

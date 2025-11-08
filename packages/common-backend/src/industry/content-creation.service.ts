@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { AiProviderService } from '../plugins/ai-provider.service'
-import { ModelRouterService } from '../plugins/model-router.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AiProviderService } from '../plugins/ai-provider.service'
+import type { ModelRouterService } from '../plugins/model-router.service'
 
 export interface ContentCreationRequest {
   type: 'marketing' | 'social' | 'brand' | 'video' | 'multilingual'

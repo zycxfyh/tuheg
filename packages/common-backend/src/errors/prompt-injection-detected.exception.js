@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.PromptInjectionDetectedException = void 0
 const common_1 = require('@nestjs/common')

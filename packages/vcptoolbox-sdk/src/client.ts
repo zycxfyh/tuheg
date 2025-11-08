@@ -1,15 +1,15 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 import EventEmitter from 'eventemitter3'
 import {
-  ClientConfig,
-  RequestConfig,
-  ApiResponse,
-  AuthConfig,
+  type ApiResponse,
+  type AuthConfig,
+  AuthenticationError,
+  type ClientConfig,
+  NetworkError,
+  type RequestConfig,
+  type SDKEventMap,
   TokenResponse,
   VCPToolBoxError,
-  AuthenticationError,
-  NetworkError,
-  SDKEventMap,
 } from './types.js'
 
 /**

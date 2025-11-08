@@ -1,7 +1,6 @@
-'use strict'
 var __decorate =
   (this && this.__decorate) ||
-  function (decorators, target, key, desc) {
+  ((decorators, target, key, desc) => {
     var c = arguments.length,
       r =
         c < 3
@@ -16,14 +15,14 @@ var __decorate =
       for (var i = decorators.length - 1; i >= 0; i--)
         if ((d = decorators[i]))
           r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r
-    return (c > 3 && r && Object.defineProperty(target, key, r), r)
-  }
+    return c > 3 && r && Object.defineProperty(target, key, r), r
+  })
 var __metadata =
   (this && this.__metadata) ||
-  function (k, v) {
+  ((k, v) => {
     if (typeof Reflect === 'object' && typeof Reflect.metadata === 'function')
       return Reflect.metadata(k, v)
-  }
+  })
 var VcpPluginSystemService_1
 var _a
 Object.defineProperty(exports, '__esModule', { value: true })
@@ -31,7 +30,7 @@ exports.VcpPluginSystemService = exports.PluginStatus = exports.VcpPluginType = 
 const common_1 = require('@nestjs/common')
 const event_emitter_1 = require('@nestjs/event-emitter')
 var VcpPluginType
-;(function (VcpPluginType) {
+;((VcpPluginType) => {
   VcpPluginType['STATIC'] = 'static'
   VcpPluginType['MESSAGE_PREPROCESSOR'] = 'message_preprocessor'
   VcpPluginType['SYNCHRONOUS'] = 'synchronous'
@@ -40,7 +39,7 @@ var VcpPluginType
   VcpPluginType['HYBRID_SERVICE'] = 'hybrid_service'
 })(VcpPluginType || (exports.VcpPluginType = VcpPluginType = {}))
 var PluginStatus
-;(function (PluginStatus) {
+;((PluginStatus) => {
   PluginStatus['DISABLED'] = 'disabled'
   PluginStatus['LOADING'] = 'loading'
   PluginStatus['ACTIVE'] = 'active'

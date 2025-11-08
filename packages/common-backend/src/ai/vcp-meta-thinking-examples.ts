@@ -2,7 +2,7 @@
 // 职责: VCPToolBox 元思考的使用示例
 // 展示超动态递归思维链、词元组捕网系统、元逻辑模块库
 
-import { VcpMetaThinkingService, VcpMetaThinkingConfig } from './vcp-meta-thinking.service'
+import type { VcpMetaThinkingConfig, VcpMetaThinkingService } from './vcp-meta-thinking.service'
 
 /**
  * VCPToolBox 元思考使用示例

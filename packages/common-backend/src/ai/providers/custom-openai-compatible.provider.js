@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.CustomOpenAICompatibleProvider = void 0
 const openai_1 = require('@langchain/openai')

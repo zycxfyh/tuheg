@@ -1,8 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication, HttpStatus, ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common'
+import {
+  type ArgumentsHost,
+  Catch,
+  type ExceptionFilter,
+  HttpStatus,
+  type INestApplication,
+} from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
-import request from 'supertest'
+import { Test, type TestingModule } from '@nestjs/testing'
 import helmet from 'helmet'
+import request from 'supertest'
 import { HealthModule } from '../health/health.module'
 
 // Simple exception filter for testing

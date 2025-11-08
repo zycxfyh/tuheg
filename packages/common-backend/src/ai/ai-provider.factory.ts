@@ -1,6 +1,6 @@
 // 文件路径: libs/common/src/ai/ai-provider.factory.ts
 
-import { AiConfiguration } from '@prisma/client'
+import type { AiConfiguration } from '@prisma/client'
 
 // [核心修正] 放弃所有相对路径，统一使用 @tuheg/common-backend 绝对路径别名
 // 我们从 @tuheg/common-backend 的总出口 (index.ts) 一次性导入所有需要的工具和类型

@@ -1,10 +1,28 @@
 // 文件路径: packages/common-backend/src/cache/cache.service.ts
 // 核心理念: 多级缓存策略，支持内存和 Redis
 
-import { Injectable, Logger } from '@nestjs/common'
-import type { Cache } from 'cache-manager'
-import { Inject } from '@nestjs/common'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Inject, Injectable, Logger } from '@nestjs/common'
+import type { Cache } from 'cache-manager'
+
+/**
+ * 装饰器：为方法添加统一的错误日志记录
+ */
+function withErrorLogging(operation: string, returnValue?: any) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value
+    const logger = new Logger(target.constructor.name)
+
+    descriptor.value = async function (...args: any[]) {
+      try {
+        return await originalMethod.apply(this, args)
+      } catch (error) {
+        logger.error(`Failed to ${operation}:`, error)
+        return returnValue
+      }
+    }
+  }
+}
 
 /**
  * @interface CacheOptions
@@ -37,15 +55,11 @@ export class CacheService {
    * const value = await cacheService.get<string>('user:123');
    * ```
    */
+  @withErrorLogging('get cache key', undefined)
   async get<T>(key: string, options?: CacheOptions): Promise<T | undefined> {
     const fullKey = this.buildKey(key, options?.prefix)
-    try {
-      const value = await this.cacheManager.get<T>(fullKey)
-      return value
-    } catch (error) {
-      this.logger.error(`Failed to get cache key ${fullKey}:`, error)
-      return undefined
-    }
+    const value = await this.cacheManager.get<T>(fullKey)
+    return value
   }
 
   /**
@@ -57,46 +71,36 @@ export class CacheService {
    * await cacheService.set('user:123', userData, { ttl: 3600 });
    * ```
    */
+  @withErrorLogging('set cache key')
   async set<T>(key: string, value: T, options?: CacheOptions): Promise<void> {
     const fullKey = this.buildKey(key, options?.prefix)
     const ttl = options?.ttl ? options.ttl * 1000 : undefined // 转换为毫秒
-
-    try {
-      await this.cacheManager.set(fullKey, value, ttl)
-    } catch (error) {
-      this.logger.error(`Failed to set cache key ${fullKey}:`, error)
-    }
+    await this.cacheManager.set(fullKey, value, ttl)
   }
 
   /**
    * @method delete
    * @description 删除缓存
    */
+  @withErrorLogging('delete cache key')
   async delete(key: string, prefix?: string): Promise<void> {
     const fullKey = this.buildKey(key, prefix)
-    try {
-      await this.cacheManager.del(fullKey)
-    } catch (error) {
-      this.logger.error(`Failed to delete cache key ${fullKey}:`, error)
-    }
+    await this.cacheManager.del(fullKey)
   }
 
   /**
    * @method clear
    * @description 清空所有缓存
    */
+  @withErrorLogging('clear cache')
   async clear(): Promise<void> {
-    try {
-      // 使用cache-manager的store接口来清空缓存
-      const store = (this.cacheManager as any).store
-      if (store && typeof store.reset === 'function') {
-        await store.reset()
-      } else {
-        // 如果没有reset方法，记录警告但不抛出错误
-        this.logger.warn('Cache store does not support reset operation')
-      }
-    } catch (error) {
-      this.logger.error('Failed to clear cache:', error)
+    // 使用cache-manager的store接口来清空缓存
+    const store = (this.cacheManager as any).store
+    if (store && typeof store.reset === 'function') {
+      await store.reset()
+    } else {
+      // 如果没有reset方法，记录警告但不抛出错误
+      this.logger.warn('Cache store does not support reset operation')
     }
   }
 

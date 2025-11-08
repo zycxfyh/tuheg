@@ -64,7 +64,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { SUPPORTED_LANGUAGES, setLanguage, isRTL } from '@/i18n'
+import { isRTL, SUPPORTED_LANGUAGES, setLanguage } from '@/i18n'
 
 // Vue i18n composable
 const { t, locale } = useI18n()

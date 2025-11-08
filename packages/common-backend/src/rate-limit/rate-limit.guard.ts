@@ -2,16 +2,16 @@
 // 核心理念: API 限流保护，防止滥用和过载
 
 import {
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
   HttpException,
   HttpStatus,
   Injectable,
   Logger,
 } from '@nestjs/common'
-import { Reflector } from '@nestjs/core'
+import type { Reflector } from '@nestjs/core'
 import type { Request, Response } from 'express'
-import { RateLimitService } from './rate-limit.service'
+import type { RateLimitService } from './rate-limit.service'
 
 /**
  * @constant RATE_LIMIT_KEY

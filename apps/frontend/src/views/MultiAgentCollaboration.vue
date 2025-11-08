@@ -365,9 +365,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import { agentCollaborationApi } from '../services/agentCollaborationApi'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import DemoCollaborationModal from '../components/collaboration/DemoCollaborationModal.vue'
+import { agentCollaborationApi } from '../services/agentCollaborationApi'
 
 // 响应式数据
 const agents = ref([])

@@ -1,42 +1,42 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
+  Delete,
+  ForbiddenException,
   Get,
+  NotFoundException,
+  Param,
   Post,
   Put,
-  Delete,
-  Body,
-  Param,
   Query,
-  UseGuards,
   Request,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
-  BadRequestException,
-  NotFoundException,
-  ForbiddenException,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { JwtAuthGuard } from '../security/jwt-auth.guard'
-import { RolesGuard } from '../security/roles.guard'
-import { Roles } from '../security/roles.decorator'
-import { PluginMarketplaceService } from './plugin-marketplace.service'
-import { PluginReviewService } from './plugin-review.service'
-import { PluginStatisticsService } from './plugin-statistics.service'
-import { PluginUploadService } from './plugin-upload.service'
-import { PluginSearchService } from './plugin-search.service'
-import {
-  CreatePluginDto,
-  UpdatePluginDto,
-  ReviewPluginDto,
-  SearchPluginsDto,
+import type {
   CreatePluginCategoryDto,
-  UpdatePluginCategoryDto,
-  CreatePluginTagDto,
+  CreatePluginDto,
   CreatePluginReviewDto,
-  UpdatePluginReviewDto,
+  CreatePluginTagDto,
   DownloadPluginDto,
   PluginStatisticsDto,
+  ReviewPluginDto,
+  SearchPluginsDto,
+  UpdatePluginCategoryDto,
+  UpdatePluginDto,
+  UpdatePluginReviewDto,
 } from '../dto/plugin-marketplace.dto'
+import { JwtAuthGuard } from '../security/jwt-auth.guard'
+import { Roles } from '../security/roles.decorator'
+import { RolesGuard } from '../security/roles.guard'
+import type { PluginMarketplaceService } from './plugin-marketplace.service'
+import type { PluginReviewService } from './plugin-review.service'
+import type { PluginSearchService } from './plugin-search.service'
+import type { PluginStatisticsService } from './plugin-statistics.service'
+import type { PluginUploadService } from './plugin-upload.service'
 
 @Controller('plugins/marketplace')
 export class PluginMarketplaceController {

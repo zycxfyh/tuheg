@@ -96,7 +96,7 @@ async function main() {
 
   console.log(`📋 Configuration:`)
   console.log(`   - Using salt: ${useSalt}`)
-  console.log(`   - Encryption key: ${encryptionKey.substring(0, 10)}...`)
+  console.log(`   - Encryption key: [REDACTED]`)
   console.log('')
 
   const prismaInstance = await getPrisma()

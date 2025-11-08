@@ -4,23 +4,35 @@
   "description": "AI创作操作系统的操作系统 - 创世星环",
   "main": "index.js",
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint:fix",
-    "test": "turbo test",
-    "test:watch": "turbo test:watch",
-    "test:coverage": "turbo test:coverage",
+    "build": "nx build",
+    "build:all": "nx run-many --target=build --all",
+    "dev": "nx dev",
+    "dev:all": "nx run-many --target=dev --all --parallel",
+    "lint": "pnpm biome check .",
+    "lint:fix": "pnpm biome check --write .",
+    "lint:legacy": "turbo lint",
+    "lint:fix:legacy": "turbo lint:fix",
+    "format": "pnpm biome format --write .",
+    "format:check": "pnpm biome format .",
+    "format:legacy": "prettier --write .",
+    "format:check:legacy": "prettier --check .",
+    "check": "pnpm biome check . && pnpm biome format .",
+    "fix": "pnpm biome check --write . && pnpm biome format --write .",
+    "test": "nx test",
+    "test:all": "nx run-many --target=test --all",
+    "test:watch": "nx test --watch",
+    "test:coverage": "nx test --coverage",
     "type-check": "turbo type-check",
     "clean": "turbo clean",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
     "prepare": "husky install",
     "release": "turbo release",
     "docker:build": "docker build -t creation-ring .",
     "docker:run": "docker run -p 3000:3000 creation-ring",
     "docs:build": "turbo docs:build",
-    "docs:serve": "turbo docs:serve"
+    "docs:serve": "turbo docs:serve",
+    "tools:migrate-api-keys": "node tools/scripts/migrate-api-keys-to-encrypted.mjs",
+    "tools:generate-env": "node tools/scripts/generate-secure-env.mjs",
+    "protect:check": "node scripts/protect-critical-files.js"
   },
   "keywords": [
     "ai",
@@ -48,12 +60,17 @@
   },
   "packageManager": "pnpm@8.15.0",
   "devDependencies": {
+    "@biomejs/biome": "^2.3.4",
+    "@nx/jest": "^22.0.2",
+    "@nx/vite": "^22.0.2",
+    "@tauri-apps/cli": "^2.9.3",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
     "husky": "^8.0.0",
     "lint-staged": "^15.0.0",
+    "nx": "22.0.2",
     "prettier": "^3.0.0",
     "turbo": "^1.0.0",
     "typescript": "^5.0.0"
@@ -65,11 +82,11 @@
   ],
   "lint-staged": {
     "*.{js,ts,vue}": [
-      "eslint --fix",
-      "prettier --write"
+      "pnpm biome check --write --no-errors-on-unmatched",
+      "pnpm biome format --write --no-errors-on-unmatched"
     ],
     "*.{json,md}": [
-      "prettier --write"
+      "pnpm biome format --write --no-errors-on-unmatched"
     ]
   }
 }

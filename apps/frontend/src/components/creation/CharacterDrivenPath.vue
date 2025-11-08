@@ -42,8 +42,9 @@
 // =================================================================
 // [核心修正] 修正了 useAppStore 的导入路径，这是导致黑屏的根本原因
 // =================================================================
-import { useAppStore } from '@/stores/app.store'
+
 import { useAssets } from '@/composables/useAssets'
+import { useAppStore } from '@/stores/app.store'
 
 const appStore = useAppStore()
 const { handleCharacterCardUpload } = useAssets()

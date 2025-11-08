@@ -1,13 +1,20 @@
 import { Module } from '@nestjs/common'
-import { UpdatesGateway } from './updates.gateway'
+import { ConfigService } from '@nestjs/config'
+import { EventBusModule } from '@tuheg/common-backend'
 import { GatewayController } from './gateway.controller'
 import { GatewayEventsController } from './gateway.events.controller'
-import { EventBusModule } from '@tuheg/common-backend'
+import { UpdatesGateway } from './updates.gateway'
 
 @Module({
   imports: [EventBusModule],
   controllers: [GatewayController, GatewayEventsController],
-  providers: [UpdatesGateway],
+  providers: [
+    UpdatesGateway,
+    {
+      provide: 'ConfigService',
+      useExisting: ConfigService,
+    },
+  ],
   exports: [UpdatesGateway],
 })
 export class GatewayModule {}

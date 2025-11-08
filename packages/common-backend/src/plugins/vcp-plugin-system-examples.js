@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.VcpPluginSystemExamples = void 0
 const vcp_plugin_system_service_1 = require('./vcp-plugin-system.service')

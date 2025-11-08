@@ -4,8 +4,8 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from '../prisma/prisma.module'
-import { VectorSearchModule } from './vector-search.module'
 import { TimeAwareVectorSearchService } from './time-aware-vector-search.service'
+import { VectorSearchModule } from './vector-search.module'
 
 @Module({
   imports: [ConfigModule, PrismaModule, VectorSearchModule],

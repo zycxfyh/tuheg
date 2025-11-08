@@ -36,13 +36,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import SaveList from '@/components/nexus/SaveList.vue'
+import { useToast } from '@/composables/useToast'
+import { apiService } from '@/services/api.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useSettingsStore } from '@/stores/settings.store'
-import { apiService } from '@/services/api.service'
-import { useToast } from '@/composables/useToast'
-import SaveList from '@/components/nexus/SaveList.vue'
 
 const authStore = useAuthStore()
 const settingsStore = useSettingsStore()

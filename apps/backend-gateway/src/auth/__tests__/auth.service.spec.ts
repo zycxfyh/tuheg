@@ -1,10 +1,10 @@
-// 文件路径: apps/nexus-engine/src/auth/auth.service.spec.ts (修正版)
+// 文件路径: apps/backend-gateway/src/auth/__tests__/auth.service.spec.ts (修正版)
 
-import { Test, TestingModule } from '@nestjs/testing'
-import { AuthService } from './auth.service'
-import { PrismaService } from '@tuheg/common-backend'
 import { JwtService } from '@nestjs/jwt'
+import { Test, type TestingModule } from '@nestjs/testing'
+import { PrismaService } from '@tuheg/common-backend'
 import * as bcryptjs from 'bcryptjs' // [核心修正] 导入 bcryptjs
+import { AuthService } from './auth.service'
 
 // [核心修正] 模拟 bcryptjs 而不是 bcrypt
 jest.mock('bcryptjs', () => ({

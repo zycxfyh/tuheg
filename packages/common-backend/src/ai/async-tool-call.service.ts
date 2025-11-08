@@ -3,7 +3,7 @@
 // 借鉴思想: 非阻塞工具调用 + 上下文感知异步结果处理
 
 import { Injectable, Logger } from '@nestjs/common'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
 import { v4 as uuidv4 } from 'uuid'
 
 /**

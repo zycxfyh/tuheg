@@ -8,6 +8,42 @@ import {
 } from '@nestjs/common'
 import type { Response } from 'express'
 
+// Type guard for HttpException response objects
+function isExceptionResponse(value: unknown): value is { message?: string; error?: unknown } {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (typeof (value as any).message === 'string' || typeof (value as any).message === 'undefined') &&
+    ((value as any).error === undefined ||
+      typeof (value as any).error === 'string' ||
+      (typeof (value as any).error === 'object' && (value as any).error !== null))
+  )
+}
+
+// Sanitize error messages to prevent information leakage
+function sanitizeErrorMessage(message: string): string {
+  // Remove potential sensitive information patterns
+  const sensitivePatterns = [
+    // Database connection strings
+    /(postgres|mysql|mongodb):\/\/[^\s'"]+/gi,
+    // API keys and tokens
+    /(sk-|pk-|Bearer\s+)[^\s'"]+/gi,
+    // Passwords
+    /password['"]?\s*[:=]\s*['"][^\s'"]+/gi,
+    // Secret keys
+    /(secret|key)['"]?\s*[:=]\s*['"][^\s'"]+/gi,
+    // File paths that might reveal structure
+    /(\/home\/|\/usr\/|\/var\/|\/etc\/)[^\s'"]+/gi,
+  ]
+
+  let sanitized = message
+  for (const pattern of sensitivePatterns) {
+    sanitized = sanitized.replace(pattern, '[REDACTED]')
+  }
+
+  return sanitized
+}
+
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name)
@@ -25,24 +61,29 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       const exceptionResponse = exception.getResponse()
 
       if (typeof exceptionResponse === 'string') {
-        message = exceptionResponse
-      } else if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
-        // [核心修复] 使用类型守卫代替 any
-        const responseObj = exceptionResponse as {
-          message?: string
-          error?: unknown
-        }
-        message = responseObj.message || message
+        message = sanitizeErrorMessage(exceptionResponse)
+      } else if (isExceptionResponse(exceptionResponse)) {
+        // Safe to access properties with type guard
+        message = sanitizeErrorMessage(exceptionResponse.message || message)
         details =
-          responseObj.error !== undefined
-            ? typeof responseObj.error === 'object' && responseObj.error !== null
-              ? (responseObj.error as Record<string, unknown>)
-              : String(responseObj.error)
+          exceptionResponse.error !== undefined
+            ? typeof exceptionResponse.error === 'object' && exceptionResponse.error !== null
+              ? (exceptionResponse.error as Record<string, unknown>)
+              : sanitizeErrorMessage(String(exceptionResponse.error))
             : null
       }
     } else if (exception instanceof Error) {
-      message = exception.message
-      this.logger.error(exception.stack)
+      message = sanitizeErrorMessage(exception.message)
+      // Log full error details internally but don't expose them
+      this.logger.error('Internal error occurred:', {
+        message: exception.message,
+        stack: exception.stack,
+        name: exception.name,
+      })
+    } else {
+      // For unknown exceptions, provide generic message
+      message = 'An unexpected error occurred'
+      this.logger.error('Unknown exception type:', exception)
     }
 
     const errorResponse = {

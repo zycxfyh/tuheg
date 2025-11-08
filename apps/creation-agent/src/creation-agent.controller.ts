@@ -1,9 +1,9 @@
 // 文件路径: apps/creation-agent/src/creation-agent.controller.ts
 
-import { Controller, Logger, Post, Body, HttpException, HttpStatus } from '@nestjs/common'
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices'
-import { CreationService } from './creation.service'
+import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
+import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
 import { z } from 'zod'
+import type { CreationService } from './creation.service'
 
 // [核心] 定义创世任务的数据结构
 interface GameCreationPayload {

@@ -7,9 +7,9 @@
 // 4. 《《角色日记本》》 - 阈值RAG片段检索
 
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { Memory } from '@prisma/client'
-import { VectorSearchService } from './vector-search.service'
+import type { Memory } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { VectorSearchService } from './vector-search.service'
 
 /**
  * 记忆召回模式枚举

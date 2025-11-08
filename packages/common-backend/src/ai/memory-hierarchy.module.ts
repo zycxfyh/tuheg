@@ -5,8 +5,8 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from '../prisma/prisma.module'
-import { VectorSearchModule } from './vector-search.module'
 import { MemoryHierarchyService } from './memory-hierarchy.service'
+import { VectorSearchModule } from './vector-search.module'
 
 @Module({
   imports: [ConfigModule, PrismaModule, VectorSearchModule],

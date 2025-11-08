@@ -1,7 +1,7 @@
 <!-- 文件路径: src/components/game/MainInteractionPanel.vue (UI优化版) -->
 <script setup>
+import { onUnmounted, ref, watch } from 'vue'
 import { useGameStore } from '@/stores/game.store'
-import { ref, onUnmounted, watch } from 'vue'
 
 const gameStore = useGameStore()
 
@@ -68,7 +68,6 @@ function stopProgressAnimation() {
 }
 
 // [新增] 监听AI思考状态变化
-import { watch } from 'vue'
 watch(
   () => gameStore.isAiThinking,
   (isThinking) => {

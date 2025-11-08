@@ -1,20 +1,20 @@
-// 文件路径: apps/backend/apps/logic-agent/src/rule-engine.service.ts (已修复 unknown 类型)
+// 文件路径: apps/logic-agent/src/rule-engine.service.ts (已修复 unknown 类型)
 
 import {
-  Injectable,
-  Logger,
-  InternalServerErrorException,
   BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
 } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
-import {
-  PrismaService,
-  DirectiveSet,
-  StateChangeDirective,
-  NumericOperation,
-  StringOperation,
+import type {
   CharacterUpdate,
+  DirectiveSet,
+  NumericOperation,
+  PrismaService,
+  StateChangeDirective,
+  StringOperation,
 } from '@tuheg/common-backend'
 
 @Injectable()
@@ -28,6 +28,9 @@ export class RuleEngineService {
       this.logger.warn(`RuleEngine executed with an empty directive set for game ${gameId}.`)
       return
     }
+
+    // [安全修复] 在执行指令前进行业务规则验证
+    this.validateDirectives(directives)
 
     try {
       await this.prisma.$transaction(async (tx) => {
@@ -104,6 +107,91 @@ export class RuleEngineService {
         return currentValue + op.value
       case 'prepend':
         return op.value + currentValue
+    }
+  }
+
+  /**
+   * [安全修复] 验证指令集中的业务规则
+   * 防止AI生成恶意或不合理的状态变更
+   */
+  private validateDirectives(directives: DirectiveSet): void {
+    for (const directive of directives) {
+      if (directive.op === 'update_character') {
+        this.validateCharacterUpdate(directive.payload as CharacterUpdate)
+      }
+      // 可以在这里添加其他操作类型的验证
+    }
+  }
+
+  /**
+   * [安全修复] 验证角色更新指令的业务规则
+   */
+  private validateCharacterUpdate(payload: CharacterUpdate): void {
+    // HP验证：不能为负数，且单次操作不能超过合理范围
+    if (payload.hp) {
+      this.validateNumericOperation(payload.hp, 'HP', -1000, 1000)
+    }
+
+    // MP验证：不能为负数，且单次操作不能超过合理范围
+    if (payload.mp) {
+      this.validateNumericOperation(payload.mp, 'MP', -1000, 1000)
+    }
+
+    // 状态字符串验证：长度限制，防止注入攻击
+    if (payload.status) {
+      this.validateStringOperation(payload.status, 'status', 500)
+    }
+  }
+
+  /**
+   * [安全修复] 验证数值操作的业务规则
+   */
+  private validateNumericOperation(
+    op: NumericOperation,
+    fieldName: string,
+    minValue: number,
+    maxValue: number
+  ): void {
+    // 检查操作值是否在合理范围内
+    if (op.value < minValue || op.value > maxValue) {
+      throw new BadRequestException(
+        `${fieldName} operation value ${op.value} is outside allowed range [${minValue}, ${maxValue}]`
+      )
+    }
+
+    // 对于set操作，检查是否会导致无效状态
+    if (op.op === 'set' && op.value < 0) {
+      throw new BadRequestException(`${fieldName} cannot be set to negative value: ${op.value}`)
+    }
+  }
+
+  /**
+   * [安全修复] 验证字符串操作的业务规则
+   */
+  private validateStringOperation(op: StringOperation, fieldName: string, maxLength: number): void {
+    // 检查字符串长度是否超过限制
+    if (op.value.length > maxLength) {
+      throw new BadRequestException(
+        `${fieldName} value is too long: ${op.value.length} characters (max: ${maxLength})`
+      )
+    }
+
+    // 检查是否包含潜在的恶意内容（基础检查）
+    const suspiciousPatterns = [
+      /<script/i,
+      /javascript:/i,
+      /on\w+\s*=/i,
+      /<iframe/i,
+      /<object/i,
+      /<embed/i,
+    ]
+
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(op.value)) {
+        throw new BadRequestException(
+          `${fieldName} contains potentially malicious content: ${op.value.substring(0, 50)}...`
+        )
+      }
     }
   }
 }

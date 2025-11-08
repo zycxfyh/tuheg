@@ -3,9 +3,9 @@
 // 借鉴思想: Time-Aware RAG，基于时间维度优化检索
 
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { PrismaService } from '../prisma/prisma.service'
-import { VectorSearchService, VectorSearchResult } from './vector-search.service'
+import type { ConfigService } from '@nestjs/config'
+import type { PrismaService } from '../prisma/prisma.service'
+import type { VectorSearchResult, VectorSearchService } from './vector-search.service'
 
 /**
  * 时间感知检索配置
@@ -182,7 +182,7 @@ export class TimeAwareVectorSearchService {
       case 'gaussian': {
         // 高斯衰减：中间时间权重最高
         const sigma = 0.3
-        return Math.exp(-Math.pow(normalizedTime - 0.3, 2) / (2 * sigma * sigma))
+        return Math.exp(-((normalizedTime - 0.3) ** 2) / (2 * sigma * sigma))
       }
 
       default:

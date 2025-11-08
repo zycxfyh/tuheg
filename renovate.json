@@ -1,0 +1,61 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticPrefixFixDepsChoreOthers",
+    ":ignoreUnstable",
+    "group:monorepos",
+    "group:recommended"
+  ],
+  "schedule": ["before 4am on Monday"],
+  "timezone": "Asia/Shanghai",
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "TypeScript type definitions"
+    },
+    {
+      "matchPackagePatterns": ["^eslint"],
+      "groupName": "ESLint packages"
+    },
+    {
+      "matchPackagePatterns": ["^@typescript-eslint/"],
+      "groupName": "TypeScript ESLint packages"
+    },
+    {
+      "matchPackagePatterns": ["^@vitejs/", "^vite"],
+      "groupName": "Vite packages"
+    },
+    {
+      "matchPackagePatterns": ["^vue"],
+      "groupName": "Vue ecosystem"
+    },
+    {
+      "matchPackagePatterns": ["^@nestjs/"],
+      "groupName": "NestJS ecosystem"
+    },
+    {
+      "matchPackagePatterns": ["^@biomejs/"],
+      "groupName": "Biome packages"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchPackagePatterns": ["^@biomejs/biome$"],
+      "schedule": ["at any time"]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "osvVulnerabilityAlerts": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 4am on Monday"]
+  },
+  "ignoreDeps": ["typescript", "node"]
+}

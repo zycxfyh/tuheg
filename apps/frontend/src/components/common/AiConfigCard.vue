@@ -143,17 +143,36 @@
 
     <!-- Action Buttons -->
     <div class="button-group">
-      <button v-if="!isNew" class="button danger" @click="handleDelete" :disabled="isLoading">
+      <button
+        v-if="!isNew"
+        class="button danger"
+        @click="handleDelete"
+        :disabled="isLoading || operationInProgress"
+      >
         删除
       </button>
-      <button v-else class="button danger" @click="handleCancelNew" :disabled="isLoading">
+      <button
+        v-else
+        class="button danger"
+        @click="handleCancelNew"
+        :disabled="isLoading || operationInProgress"
+      >
         取消
       </button>
       <div>
-        <button v-if="!isNew" class="button" @click="resetChanges" :disabled="isLoading">
+        <button
+          v-if="!isNew"
+          class="button"
+          @click="resetChanges"
+          :disabled="isLoading || operationInProgress"
+        >
           重置
         </button>
-        <button class="button primary" @click="handleSave" :disabled="isLoading">
+        <button
+          class="button primary"
+          @click="handleSave"
+          :disabled="isLoading || operationInProgress"
+        >
           {{ isNew ? '创建' : '保存' }}
         </button>
       </div>
@@ -162,10 +181,10 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
-import { useSettingsStore, ALL_AI_ROLES } from '@/stores/settings.store'
-import { apiService } from '@/services/api.service'
+import { computed, ref, watch } from 'vue'
 import { useToast } from '@/composables/useToast'
+import { apiService } from '@/services/api.service'
+import { ALL_AI_ROLES, useSettingsStore } from '@/stores/settings.store'
 
 const props = defineProps({
   config: { type: Object, required: true },
@@ -180,6 +199,9 @@ const editableConfig = ref(JSON.parse(JSON.stringify(props.config)))
 const isLoading = ref(false)
 const isTesting = ref(false)
 const fetchedModels = ref([])
+
+// Operation locking to prevent concurrent operations
+const operationInProgress = ref(false)
 
 // New reactive properties for enhanced UX
 const errors = ref({
@@ -423,7 +445,13 @@ async function handleTestConnection() {
   }
 }
 
-function handleSave() {
+async function handleSave() {
+  // Prevent concurrent operations
+  if (operationInProgress.value) {
+    showToast('操作进行中，请稍后再试。', 'warning')
+    return
+  }
+
   // Validate all fields before saving
   if (!validateFields()) {
     showToast('请填写所有必需字段并解决错误。', 'error')
@@ -436,13 +464,15 @@ function handleSave() {
     dataToSave.assignedRoles = ALL_AI_ROLES.join(',')
   }
 
+  operationInProgress.value = true
+
   try {
     if (isNew.value) {
       const { isNew: _isNew, id: _id, ...creationData } = dataToSave
-      settingsStore.createAiConfiguration(creationData)
+      await settingsStore.createAiConfiguration(creationData)
       showToast('AI配置创建成功！', 'success')
     } else {
-      settingsStore.updateAiConfiguration(props.config.id, dataToSave)
+      await settingsStore.updateAiConfiguration(props.config.id, dataToSave)
       showToast('AI配置更新成功！', 'success')
     }
 
@@ -451,12 +481,30 @@ function handleSave() {
   } catch (error) {
     showToast('保存配置失败，请重试。', 'error')
     console.error('Save configuration failed:', error)
+  } finally {
+    operationInProgress.value = false
   }
 }
 
-function handleDelete() {
+async function handleDelete() {
+  // Prevent concurrent operations
+  if (operationInProgress.value) {
+    showToast('操作进行中，请稍后再试。', 'warning')
+    return
+  }
+
   if (confirm(`确定要删除 "${props.config.provider}" 这个AI配置吗？`)) {
-    settingsStore.deleteAiConfiguration(props.config.id)
+    operationInProgress.value = true
+
+    try {
+      await settingsStore.deleteAiConfiguration(props.config.id)
+      showToast('AI配置删除成功！', 'success')
+    } catch (error) {
+      showToast('删除配置失败，请重试。', 'error')
+      console.error('Delete configuration failed:', error)
+    } finally {
+      operationInProgress.value = false
+    }
   }
 }
 
@@ -469,6 +517,12 @@ function resetChanges() {
 }
 
 function handleCancelNew() {
+  // Prevent concurrent operations
+  if (operationInProgress.value) {
+    showToast('操作进行中，请稍后再试。', 'warning')
+    return
+  }
+
   settingsStore.removeNewConfigCard(props.config.id)
 }
 

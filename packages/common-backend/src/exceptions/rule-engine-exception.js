@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.RuleEngineExecutionException = void 0
 class RuleEngineExecutionException extends Error {

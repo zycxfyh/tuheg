@@ -20,7 +20,7 @@ AI Services是创世星环系统的AI服务共享包，提供统一的AI服务�
 
 ### 目录结构
 
-```
+```text
 packages/ai-services/
 ├── src/
 │   ├── interfaces/           # AI服务接口定义
@@ -72,17 +72,17 @@ packages/ai-services/
 
 ```typescript
 interface AiProvider {
-  readonly name: string;
-  readonly supportedModels: string[];
+  readonly name: string
+  readonly supportedModels: string[]
 
   // 核心方法
-  chat(request: ChatRequest): Promise<ChatResponse>;
-  stream(request: ChatRequest): Promise<ReadableStream>;
+  chat(request: ChatRequest): Promise<ChatResponse>
+  stream(request: ChatRequest): Promise<ReadableStream>
 
   // 管理方法
-  validateConfig(): Promise<boolean>;
-  getModels(): Promise<ModelInfo[]>;
-  getUsage(): Promise<UsageStats>;
+  validateConfig(): Promise<boolean>
+  getModels(): Promise<ModelInfo[]>
+  getUsage(): Promise<UsageStats>
 }
 ```
 
@@ -96,14 +96,14 @@ export class OpenAiProvider implements AiProvider {
   constructor(private config: OpenAiConfig) {}
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
-    const client = new OpenAI({ apiKey: this.config.apiKey });
+    const client = new OpenAI({ apiKey: this.config.apiKey })
     const response = await client.chat.completions.create({
       model: request.model,
       messages: request.messages,
       temperature: request.temperature,
-    });
+    })
 
-    return this.transformResponse(response);
+    return this.transformResponse(response)
   }
 }
 ```
@@ -116,14 +116,14 @@ export class AnthropicProvider implements AiProvider {
   constructor(private config: AnthropicConfig) {}
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
-    const client = new Anthropic({ apiKey: this.config.apiKey });
+    const client = new Anthropic({ apiKey: this.config.apiKey })
     const response = await client.messages.create({
       model: request.model,
       messages: request.messages,
       temperature: request.temperature,
-    });
+    })
 
-    return this.transformResponse(response);
+    return this.transformResponse(response)
   }
 }
 ```
@@ -143,19 +143,19 @@ export class AnthropicProvider implements AiProvider {
 export class AiOrchestratorService {
   constructor(
     private providerManager: ProviderManagerService,
-    private fallbackService: FallbackService,
+    private fallbackService: FallbackService
   ) {}
 
   async executeChat(request: ChatRequest): Promise<ChatResponse> {
     // 1. 选择提供商
-    const provider = await this.selectProvider(request);
+    const provider = await this.selectProvider(request)
 
     // 2. 执行请求
     try {
-      return await provider.chat(request);
+      return await provider.chat(request)
     } catch (error) {
       // 3. 故障转移
-      return await this.fallbackService.handleFailure(provider, request, error);
+      return await this.fallbackService.handleFailure(provider, request, error)
     }
   }
 }
@@ -172,15 +172,16 @@ export class AiOrchestratorService {
 ```typescript
 @Injectable()
 export class ProviderManagerService {
-  private providers = new Map<string, AiProvider>();
+  private providers = new Map<string, AiProvider>()
 
   registerProvider(provider: AiProvider): void {
-    this.providers.set(provider.name, provider);
+    this.providers.set(provider.name, provider)
   }
 
   getAvailableProviders(): AiProvider[] {
-    return Array.from(this.providers.values())
-      .filter(provider => this.isHealthy(provider));
+    return Array.from(this.providers.values()).filter((provider) =>
+      this.isHealthy(provider)
+    )
   }
 
   private isHealthy(provider: AiProvider): boolean {
@@ -200,11 +201,11 @@ export class ProviderManagerService {
 ```typescript
 @Injectable()
 export class RateLimiterService {
-  private limiters = new Map<string, RateLimiter>();
+  private limiters = new Map<string, RateLimiter>()
 
   async checkLimit(providerName: string, userId: string): Promise<boolean> {
-    const limiter = this.getLimiter(providerName);
-    return await limiter.checkLimit(userId);
+    const limiter = this.getLimiter(providerName)
+    return await limiter.checkLimit(userId)
   }
 
   private getLimiter(providerName: string): RateLimiter {
@@ -252,17 +253,17 @@ AI_MAX_RETRIES=3
 
 ```typescript
 interface AiServiceConfig {
-  defaultProvider: string;
-  defaultModel: string;
-  requestTimeout: number;
-  maxRetries: number;
+  defaultProvider: string
+  defaultModel: string
+  requestTimeout: number
+  maxRetries: number
   rateLimits: {
     [providerName: string]: {
-      requestsPerMinute: number;
-      tokensPerMinute: number;
-    };
-  };
-  fallbackStrategy: 'round-robin' | 'priority';
+      requestsPerMinute: number
+      tokensPerMinute: number
+    }
+  }
+  fallbackStrategy: 'round-robin' | 'priority'
 }
 ```
 
@@ -272,10 +273,10 @@ interface AiServiceConfig {
 
 ```typescript
 enum TaskType {
-  CREATION = 'creation',     // 世界创建任务
-  LOGIC = 'logic',          // 逻辑推理任务
-  NARRATIVE = 'narrative',  // 叙事生成任务
-  GENERAL = 'general'       // 通用任务
+  CREATION = 'creation', // 世界创建任务
+  LOGIC = 'logic', // 逻辑推理任务
+  NARRATIVE = 'narrative', // 叙事生成任务
+  GENERAL = 'general', // 通用任务
 }
 
 const providerSelectionMatrix = {
@@ -283,7 +284,7 @@ const providerSelectionMatrix = {
   [TaskType.LOGIC]: ['anthropic:claude-3-sonnet', 'openai:gpt-4'],
   [TaskType.NARRATIVE]: ['anthropic:claude-3-haiku', 'openai:gpt-4-turbo'],
   [TaskType.GENERAL]: ['openai:gpt-3.5-turbo', 'anthropic:claude-3-haiku'],
-};
+}
 ```
 
 ### 2. 基于成本的路由
@@ -330,13 +331,13 @@ export class FallbackService {
     error: Error
   ): Promise<ChatResponse> {
     // 1. 记录失败
-    await this.logFailure(failedProvider, error);
+    await this.logFailure(failedProvider, error)
 
     // 2. 选择备用提供商
-    const fallbackProvider = await this.selectFallbackProvider(failedProvider);
+    const fallbackProvider = await this.selectFallbackProvider(failedProvider)
 
     // 3. 重试请求
-    return await this.retryWithFallback(fallbackProvider, request);
+    return await this.retryWithFallback(fallbackProvider, request)
   }
 }
 ```
@@ -364,16 +365,16 @@ export class FallbackService {
 @Injectable()
 export class AiHealthIndicator implements HealthIndicator {
   async isHealthy(): Promise<HealthIndicatorResult> {
-    const providers = this.providerManager.getAllProviders();
+    const providers = this.providerManager.getAllProviders()
 
     for (const provider of providers) {
-      const isHealthy = await provider.validateConfig();
+      const isHealthy = await provider.validateConfig()
       if (!isHealthy) {
-        return { status: 'unhealthy', details: { provider: provider.name } };
+        return { status: 'unhealthy', details: { provider: provider.name } }
       }
     }
 
-    return { status: 'healthy' };
+    return { status: 'healthy' }
   }
 }
 ```
@@ -387,15 +388,15 @@ export class AiHealthIndicator implements HealthIndicator {
 export class TokenOptimizerService {
   optimizeRequest(request: ChatRequest): ChatRequest {
     // 1. 移除冗余内容
-    request.messages = this.removeRedundancy(request.messages);
+    request.messages = this.removeRedundancy(request.messages)
 
     // 2. 压缩上下文
-    request.messages = this.compressContext(request.messages);
+    request.messages = this.compressContext(request.messages)
 
     // 3. 选择合适的模型
-    request.model = this.selectOptimalModel(request);
+    request.model = this.selectOptimalModel(request)
 
-    return request;
+    return request
   }
 }
 ```
@@ -406,13 +407,16 @@ export class TokenOptimizerService {
 @Injectable()
 export class AiCacheService {
   async getCachedResponse(request: ChatRequest): Promise<ChatResponse | null> {
-    const cacheKey = this.generateCacheKey(request);
-    return await this.cache.get(cacheKey);
+    const cacheKey = this.generateCacheKey(request)
+    return await this.cache.get(cacheKey)
   }
 
-  async cacheResponse(request: ChatRequest, response: ChatResponse): Promise<void> {
-    const cacheKey = this.generateCacheKey(request);
-    await this.cache.set(cacheKey, response, { ttl: 3600 }); // 1小时TTL
+  async cacheResponse(
+    request: ChatRequest,
+    response: ChatResponse
+  ): Promise<void> {
+    const cacheKey = this.generateCacheKey(request)
+    await this.cache.set(cacheKey, response, { ttl: 3600 }) // 1小时TTL
   }
 }
 ```
@@ -423,22 +427,22 @@ export class AiCacheService {
 
 ```typescript
 describe('AiOrchestratorService', () => {
-  let service: AiOrchestratorService;
-  let mockProviderManager: MockProviderManager;
+  let service: AiOrchestratorService
+  let mockProviderManager: MockProviderManager
 
   beforeEach(() => {
-    mockProviderManager = new MockProviderManager();
-    service = new AiOrchestratorService(mockProviderManager);
-  });
+    mockProviderManager = new MockProviderManager()
+    service = new AiOrchestratorService(mockProviderManager)
+  })
 
   it('should route request to appropriate provider', async () => {
-    const request = createMockChatRequest();
-    const response = await service.executeChat(request);
+    const request = createMockChatRequest()
+    const response = await service.executeChat(request)
 
-    expect(response).toBeDefined();
-    expect(mockProviderManager.selectProvider).toHaveBeenCalledWith(request);
-  });
-});
+    expect(response).toBeDefined()
+    expect(mockProviderManager.selectProvider).toHaveBeenCalledWith(request)
+  })
+})
 ```
 
 ### 集成测试
@@ -454,7 +458,7 @@ const mockAiProvider = {
   name: 'mock-provider',
   chat: jest.fn().mockResolvedValue(mockChatResponse),
   validateConfig: jest.fn().mockResolvedValue(true),
-};
+}
 ```
 
 ## 使用指南
@@ -462,7 +466,7 @@ const mockAiProvider = {
 ### 基本使用
 
 ```typescript
-import { AiServicesModule } from '@tuheg/ai-services';
+import { AiServicesModule } from '@tuheg/ai-services'
 
 @Module({
   imports: [AiServicesModule],
@@ -479,10 +483,10 @@ export class MyAiService {
       model: 'gpt-4',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
-    };
+    }
 
-    const response = await this.aiOrchestrator.executeChat(request);
-    return response.content;
+    const response = await this.aiOrchestrator.executeChat(request)
+    return response.content
   }
 }
 ```
@@ -499,9 +503,9 @@ const customConfig: AiServiceConfig = {
     anthropic: { requestsPerMinute: 50, tokensPerMinute: 80000 },
   },
   fallbackStrategy: 'priority',
-};
+}
 
-const aiModule = AiServicesModule.forRoot(customConfig);
+const aiModule = AiServicesModule.forRoot(customConfig)
 ```
 
 ## 扩展规划

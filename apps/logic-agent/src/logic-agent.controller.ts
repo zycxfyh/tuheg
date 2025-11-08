@@ -1,11 +1,11 @@
-// 文件路径: apps/backend/apps/logic-agent/src/logic-agent.controller.ts (已更新错误处理)
+// 文件路径: apps/logic-agent/src/logic-agent.controller.ts (已更新错误处理)
 
-import { Controller, Logger, Post, Body, HttpException, HttpStatus } from '@nestjs/common'
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices'
-import { LogicService } from './logic.service'
+import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
+import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
+import * as Sentry from '@sentry/node'
 import type { GameActionJobData } from '@tuheg/common-backend'
 import { z } from 'zod'
-import * as Sentry from '@sentry/node'
+import type { LogicService } from './logic.service'
 
 // [新增] HTTP API 输入验证
 const ProcessActionSchema = z.object({

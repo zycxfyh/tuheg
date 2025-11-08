@@ -49,8 +49,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router' // <-- [核心修正] 导入 useRouter
-import { useAuthStore } from '@/stores/auth.store'
 import { useToast } from '@/composables/useToast'
+import { useAuthStore } from '@/stores/auth.store'
 
 // true: 登录模式, false: 注册模式
 const isLoginMode = ref(true)

@@ -1,0 +1,81 @@
+# Codecov Configuration for AI Dialogue System
+# https://docs.codecov.com/docs/codecovyml-reference
+
+coverage:
+  status:
+    project:
+      default:
+        target: 80%    # 目标覆盖率
+        threshold: 1%  # 允许的覆盖率下降阈值
+        base: auto     # 基于分支比较
+      apps:
+        target: 75%    # 应用代码覆盖率
+        flags:
+          - apps
+      packages:
+        target: 85%    # 共享包覆盖率
+        flags:
+          - packages
+
+  # 分支覆盖率要求
+  patch:
+    default:
+      target: 70%    # PR中变更行的覆盖率
+      threshold: 2%  # 允许的覆盖率下降
+
+# 覆盖率标志配置
+flag_management:
+  default_rules:
+    carryforward: true
+    statuses:
+      - type: project
+      - type: patch
+  individual_flags:
+    - name: apps
+      paths:
+        - apps/
+      statuses:
+        - type: project
+        - type: patch
+    - name: packages
+      paths:
+        - packages/
+      statuses:
+        - type: project
+        - type: patch
+    - name: frontend
+      paths:
+        - apps/frontend/
+      statuses:
+        - type: project
+        - type: patch
+    - name: backend
+      paths:
+        - apps/backend-gateway/
+        - apps/*-agent/
+      statuses:
+        - type: project
+        - type: patch
+
+# 忽略文件配置
+ignore:
+  - "apps/*/tests/"      # 测试文件
+  - "packages/*/tests/"  # 测试文件
+  - "**/*.config.*"      # 配置文件
+  - "**/*.d.ts"          # 类型定义
+  - "**/mocks/"          # 模拟数据
+  - "**/generated/"      # 生成文件
+  - "**/dist/"           # 构建输出
+  - "**/node_modules/"   # 依赖包
+
+# 评论配置
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+  require_base: no
+  require_head: yes
+
+# GitHub集成
+github_checks:
+  annotations: true

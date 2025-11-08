@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { AgentLearning, Prisma } from '@prisma/client'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AgentLearning, Prisma } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 
 export interface LearningPattern {
   id: string

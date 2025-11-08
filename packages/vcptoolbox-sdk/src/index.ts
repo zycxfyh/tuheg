@@ -5,26 +5,25 @@
  * @packageDocumentation
  */
 
-export * from './types.js'
-export * from './client.js'
 export * from './auth.js'
-export * from './games.js'
-export * from './plugins.js'
-export * from './websocket.js'
-
+export { AuthManager } from './auth.js'
+export * from './client.js'
 // Re-export for convenience
 export { VCPToolBoxClient } from './client.js'
-export { AuthManager } from './auth.js'
+export * from './games.js'
 export { GameManager } from './games.js'
+export * from './plugins.js'
 export { PluginManager } from './plugins.js'
+export * from './types.js'
+export * from './websocket.js'
 export { WebSocketManager } from './websocket.js'
 
-import { VCPToolBoxClient } from './client.js'
 import { AuthManager } from './auth.js'
+import { VCPToolBoxClient } from './client.js'
 import { GameManager } from './games.js'
 import { PluginManager } from './plugins.js'
+import type { ClientConfig, WebSocketConfig } from './types.js'
 import { WebSocketManager } from './websocket.js'
-import { ClientConfig, WebSocketConfig } from './types.js'
 
 /**
  * VCPToolBox SDK 主类

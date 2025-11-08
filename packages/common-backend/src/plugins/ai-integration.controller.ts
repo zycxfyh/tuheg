@@ -1,22 +1,22 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
-  Delete,
-  Body,
-  Param,
   Query,
-  UseGuards,
   Request,
-  BadRequestException,
+  UseGuards,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../security/jwt-auth.guard'
-import { AiProviderService } from './ai-provider.service'
-import { AiModelService } from './ai-model.service'
-import { ModelRouterService } from './model-router.service'
-import { AiMetricsService } from './ai-metrics.service'
-import { AiTaskQueueService } from './ai-task-queue.service'
+import type { AiMetricsService } from './ai-metrics.service'
+import type { AiModelService } from './ai-model.service'
+import type { AiProviderService } from './ai-provider.service'
+import type { AiTaskQueueService } from './ai-task-queue.service'
+import type { ModelRouterService } from './model-router.service'
 
 @Controller('ai')
 export class AiIntegrationController {

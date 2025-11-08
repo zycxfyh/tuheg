@@ -1,15 +1,15 @@
 // apps/backend/apps/nexus-engine/src/settings/settings.service.ts
 
-import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '@tuheg/common-backend' // 你提供的共享 PrismaService
-import { HttpService } from '@nestjs/axios'
-import { lastValueFrom } from 'rxjs'
+import type { HttpService } from '@nestjs/axios'
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import {
-  CreateAiSettingsDto,
-  UpdateAiSettingsDto,
-  TestAiConnectionDto,
+  type CreateAiSettingsDto,
   createAiSettingsSchema,
-} from '@tuheg/common-backend'
+  type PrismaService,
+  type TestAiConnectionDto,
+  type UpdateAiSettingsDto,
+} from '@tuheg/common-backend' // 你提供的共享 PrismaService
+import { lastValueFrom } from 'rxjs'
 
 @Injectable()
 export class SettingsService {
@@ -470,10 +470,7 @@ export class SettingsService {
             .map((m: Record<string, unknown>) => String(m.id || m.name || m))
             .filter(Boolean)
         }
-      } catch {
-        // Continue to next endpoint
-        continue
-      }
+      } catch {}
     }
 
     return []

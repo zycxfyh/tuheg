@@ -1,24 +1,31 @@
-// 文件路径: apps/backend/apps/creation-agent/src/creation.service.ts (已修复 unknown 类型)
+// 文件路径: apps/creation-agent/src/creation.service.ts (已修复 unknown 类型)
 
-import { Prisma } from '@prisma/client'
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
-import { PromptTemplate } from '@langchain/core/prompts'
 import { StructuredOutputParser } from '@langchain/core/output_parsers'
-import { User } from '@prisma/client'
-import { z } from 'zod'
+import { PromptTemplate } from '@langchain/core/prompts'
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
+import type { Prisma, User } from '@prisma/client'
 import {
-  DynamicAiSchedulerService,
-  PrismaService,
-  PromptManagerService,
-  callAiWithGuard,
   AiGenerationException,
-  EventBusService,
-  PromptInjectionGuard,
+  callAiWithGuard,
+  type DynamicAiSchedulerService,
+  type EventBusService,
+  type PrismaService,
+  type PromptInjectionGuard,
+  type PromptManagerService,
 } from '@tuheg/common-backend'
+import { z } from 'zod'
 
 interface GameCreationPayload {
   userId: string
   concept: string
+}
+
+interface SagaContext {
+  gameId?: string
+  characterId?: string
+  worldBookEntryIds?: string[]
+  sagaId: string
+  step: 'generating' | 'persisting' | 'completed' | 'failed'
 }
 
 const architectResponseSchema = z.object({
@@ -56,63 +63,50 @@ export class CreationService {
 
   public async createNewWorld(payload: GameCreationPayload): Promise<void> {
     const { userId, concept } = payload
-    this.logger.log(`Starting world creation for user ${userId}`)
-    const pseudoUser = { id: userId } as User
+    const sagaId = `creation-${userId}-${Date.now()}`
+    this.logger.log(`Starting world creation saga ${sagaId} for user ${userId}`)
+
+    const sagaContext: SagaContext = {
+      sagaId,
+      step: 'generating',
+    }
 
     try {
-      // [安全修复] 在调用AI之前检查用户输入是否包含提示注入攻击
-      await this.promptInjectionGuard.ensureSafeOrThrow(concept, {
-        userId: userId,
-      })
-      const initialWorld = await this.generateInitialWorld(concept, pseudoUser)
+      // Step 1: AI Generation (with compensation: none needed, just log)
+      sagaContext.step = 'generating'
+      await this.promptInjectionGuard.ensureSafeOrThrow(concept, { userId })
+      const initialWorld = await this.generateInitialWorld(concept, { id: userId } as User)
       this.logger.log(`AI has generated initial world: "${initialWorld.gameName}"`)
 
-      const newGame = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-        const game = await tx.game.create({
-          data: {
-            name: initialWorld.gameName,
-            ownerId: userId,
-          },
-        })
+      // Step 2: Database Persistence (with compensation: cleanup created entities)
+      sagaContext.step = 'persisting'
+      const result = await this.executeGameCreationSaga(initialWorld, userId, sagaContext)
 
-        await tx.character.create({
-          data: {
-            gameId: game.id,
-            name: initialWorld.character.name,
-            card: initialWorld.character.card,
-          },
-        })
+      sagaContext.step = 'completed'
+      this.logger.log(
+        `Game creation saga ${sagaId} completed successfully with game ID ${result.game.id}`
+      )
 
-        if (initialWorld.worldBook?.length > 0) {
-          await tx.worldBookEntry.createMany({
-            data: initialWorld.worldBook.map((entry) => ({
-              gameId: game.id,
-              key: entry.key,
-              content: entry.content,
-            })),
-          })
-        }
-        return game
-      })
-      this.logger.log(`New game with ID ${newGame.id} successfully saved to database.`)
-
-      this.eventBus.publish('NOTIFY_USER', {
+      // Step 3: Success notification
+      await this.eventBus.publish('NOTIFY_USER', {
         userId: userId,
         event: 'creation_completed',
         data: {
-          message: `New world "${newGame.name}" created successfully.`,
-          gameId: newGame.id,
+          message: `New world "${result.game.name}" created successfully.`,
+          gameId: result.game.id,
+          sagaId,
         },
       })
     } catch (error: unknown) {
-      // <-- [核心修正] 明确 error 类型为 unknown
-      let errorMessage = 'An unknown error occurred during world creation'
-      // [核心修正] 类型检查
-      if (error instanceof Error) {
-        errorMessage = error.message
-      }
+      sagaContext.step = 'failed'
+
+      // Execute compensation actions based on saga context
+      await this.executeSagaCompensation(sagaContext, userId)
+
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred during world creation'
       this.logger.error(
-        `Failed to create world for user ${userId}: ${errorMessage}`,
+        `Game creation saga ${sagaId} failed for user ${userId}: ${errorMessage}`,
         error instanceof Error ? error.stack : undefined,
         error instanceof AiGenerationException ? error.details : undefined
       )
@@ -124,16 +118,16 @@ export class CreationService {
           data: {
             message: 'Failed to create new world.',
             error: errorMessage,
+            sagaId,
           },
         })
       } catch (eventBusError) {
         this.logger.error(
-          'CRITICAL: Failed to even send the creation failure message via event bus.',
+          `CRITICAL: Failed to send creation failure notification for saga ${sagaId}`,
           eventBusError
         )
       }
 
-      // 重新抛出异常以保持测试兼容性
       throw error
     }
   }
@@ -164,6 +158,106 @@ export class CreationService {
         `CRITICAL: Failed to send final creation failure notification to user ${userId}`,
         eventBusError
       )
+    }
+  }
+
+  /**
+   * Execute the game creation saga with proper transaction management
+   */
+  private async executeGameCreationSaga(
+    initialWorld: ArchitectResponse,
+    userId: string,
+    sagaContext: SagaContext
+  ): Promise<{ game: { id: string; name: string } }> {
+    return await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      // Create game entity
+      const game = await tx.game.create({
+        data: {
+          name: initialWorld.gameName,
+          ownerId: userId,
+        },
+      })
+      sagaContext.gameId = game.id
+
+      // Create character entity
+      const character = await tx.character.create({
+        data: {
+          gameId: game.id,
+          name: initialWorld.character.name,
+          card: initialWorld.character.card,
+        },
+      })
+      sagaContext.characterId = character.id
+
+      // Create world book entries if any
+      if (initialWorld.worldBook?.length > 0) {
+        const worldBookEntries = await tx.worldBookEntry.createManyAndReturn({
+          data: initialWorld.worldBook.map((entry) => ({
+            gameId: game.id,
+            key: entry.key,
+            content: entry.content,
+          })),
+        })
+        sagaContext.worldBookEntryIds = worldBookEntries.map((entry) => entry.id)
+      }
+
+      return { game: { id: game.id, name: game.name } }
+    })
+  }
+
+  /**
+   * Execute compensation actions for failed saga steps
+   */
+  private async executeSagaCompensation(sagaContext: SagaContext, userId: string): Promise<void> {
+    try {
+      this.logger.log(
+        `Executing compensation for saga ${sagaContext.sagaId}, step: ${sagaContext.step}`
+      )
+
+      // Compensation logic based on saga step and created entities
+      if (sagaContext.step === 'persisting' || sagaContext.step === 'completed') {
+        await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+          // Clean up world book entries
+          if (sagaContext.worldBookEntryIds?.length) {
+            await tx.worldBookEntry.deleteMany({
+              where: { id: { in: sagaContext.worldBookEntryIds } },
+            })
+            this.logger.log(
+              `Cleaned up ${sagaContext.worldBookEntryIds.length} world book entries for saga ${sagaContext.sagaId}`
+            )
+          }
+
+          // Clean up character
+          if (sagaContext.characterId) {
+            await tx.character.delete({
+              where: { id: sagaContext.characterId },
+            })
+            this.logger.log(
+              `Cleaned up character ${sagaContext.characterId} for saga ${sagaContext.sagaId}`
+            )
+          }
+
+          // Clean up game
+          if (sagaContext.gameId) {
+            await tx.game.delete({
+              where: { id: sagaContext.gameId },
+            })
+            this.logger.log(`Cleaned up game ${sagaContext.gameId} for saga ${sagaContext.sagaId}`)
+          }
+        })
+
+        this.logger.log(`Compensation completed for saga ${sagaContext.sagaId}`)
+      } else {
+        this.logger.log(
+          `No compensation needed for saga ${sagaContext.sagaId} at step ${sagaContext.step}`
+        )
+      }
+    } catch (compensationError) {
+      this.logger.error(
+        `CRITICAL: Compensation failed for saga ${sagaContext.sagaId}`,
+        compensationError instanceof Error ? compensationError.stack : compensationError
+      )
+      // Don't throw compensation errors as they would mask the original error
     }
   }
 

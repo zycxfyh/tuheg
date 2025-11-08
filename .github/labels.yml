@@ -1,0 +1,108 @@
+# GitHub Labels Configuration
+# This file defines the labels used in this repository
+# Use with https://github.com/marketplace/actions/github-labeler or manual setup
+
+labels:
+  # Issue Types
+  - name: "bug"
+    color: "d73a49"
+    description: "Something isn't working"
+
+  - name: "enhancement"
+    color: "a2eeef"
+    description: "New feature or request"
+
+  - name: "documentation"
+    color: "0075ca"
+    description: "Improvements or additions to documentation"
+
+  - name: "question"
+    color: "d876e3"
+    description: "Further information is requested"
+
+  - name: "help wanted"
+    color: "008672"
+    description: "Extra attention is needed"
+
+  - name: "good first issue"
+    color: "7057ff"
+    description: "Good for newcomers"
+
+  # Priority Levels
+  - name: "priority: critical"
+    color: "b60205"
+    description: "Critical priority - needs immediate attention"
+
+  - name: "priority: high"
+    color: "d93f0b"
+    description: "High priority"
+
+  - name: "priority: medium"
+    color: "fbca04"
+    description: "Medium priority"
+
+  - name: "priority: low"
+    color: "0e8a16"
+    description: "Low priority"
+
+  # Status
+  - name: "in progress"
+    color: "ffa500"
+    description: "Work in progress"
+
+  - name: "blocked"
+    color: "b60205"
+    description: "Blocked by another issue"
+
+  - name: "wontfix"
+    color: "ffffff"
+    description: "This will not be worked on"
+
+  - name: "duplicate"
+    color: "cfd3d7"
+    description: "This issue or pull request already exists"
+
+  # Components
+  - name: "frontend"
+    color: "1d76db"
+    description: "Frontend related"
+
+  - name: "backend"
+    color: "0052cc"
+    description: "Backend related"
+
+  - name: "ai-agent"
+    color: "fbca04"
+    description: "AI Agent related"
+
+  - name: "infrastructure"
+    color: "006b75"
+    description: "Infrastructure related"
+
+  - name: "security"
+    color: "b60205"
+    description: "Security related"
+
+  - name: "performance"
+    color: "d4c5f9"
+    description: "Performance related"
+
+  # Dependencies
+  - name: "dependencies"
+    color: "0366d6"
+    description: "Pull requests that update a dependency file"
+
+  # CI/CD
+  - name: "ci"
+    color: "0075ca"
+    description: "CI/CD related"
+
+  # Testing
+  - name: "testing"
+    color: "fbca04"
+    description: "Testing related"
+
+  # Breaking Changes
+  - name: "breaking change"
+    color: "b60205"
+    description: "Breaking changes"

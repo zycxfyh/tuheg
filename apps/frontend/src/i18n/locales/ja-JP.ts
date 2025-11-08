@@ -1,0 +1,41 @@
+export const jaJp = {
+  common: {
+    loading: '読み込み中...',
+    error: 'エラー',
+    success: '成功',
+    cancel: 'キャンセル',
+    confirm: '確認',
+    save: '保存',
+    delete: '削除',
+    edit: '編集',
+    create: '作成',
+    close: '閉じる',
+  },
+  navigation: {
+    home: 'ホーム',
+    creation: '創作センター',
+    game: 'ゲーム',
+    plugins: 'プラグイン市場',
+    settings: '設定',
+  },
+  auth: {
+    login: 'ログイン',
+    logout: 'ログアウト',
+    signup: '登録',
+    username: 'ユーザー名',
+    password: 'パスワード',
+    email: 'メール',
+  },
+  creation: {
+    title: '創作センター',
+    description: 'AI創作の旅を始めましょう',
+    newProject: '新規プロジェクト',
+    loadProject: 'プロジェクトを読み込む',
+  },
+  game: {
+    title: 'ゲーム世界',
+    start: '冒険を開始',
+    pause: '一時停止',
+    resume: '再開',
+  },
+}

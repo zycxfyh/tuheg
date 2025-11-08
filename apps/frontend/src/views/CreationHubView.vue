@@ -29,11 +29,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-// import { useUIStore } from '@/stores/ui.store'; // 暂时未使用
-import { useJobsStore } from '@/stores/jobs.store' // [核心] 导入任务控制中心
+import NarrativeDrivenPath from '@/components/creation/NarrativeDrivenPath.vue'
 import { useToast } from '@/composables/useToast'
 import { apiService } from '@/services/api.service' // [核心] 直接使用apiService
-import NarrativeDrivenPath from '@/components/creation/NarrativeDrivenPath.vue'
+// import { useUIStore } from '@/stores/ui.store'; // 暂时未使用
+import { useJobsStore } from '@/stores/jobs.store' // [核心] 导入任务控制中心
 
 const activePath = ref(null)
 const router = useRouter()

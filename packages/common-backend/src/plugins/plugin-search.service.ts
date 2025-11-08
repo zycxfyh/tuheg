@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { SearchPluginsDto } from '../dto/plugin-marketplace.dto'
+import type { SearchPluginsDto } from '../dto/plugin-marketplace.dto'
+import type { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PluginSearchService {

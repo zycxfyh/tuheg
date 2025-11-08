@@ -3,7 +3,7 @@
 
 import { Controller, Logger } from '@nestjs/common'
 import { MessagePattern } from '@nestjs/microservices'
-import { UpdatesGateway } from './updates.gateway'
+import type { UpdatesGateway } from './updates.gateway'
 
 interface NotifyUserEvent {
   userId: string

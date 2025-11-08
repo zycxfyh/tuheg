@@ -1,7 +1,7 @@
 // 文件路径: apps/frontend/src/composables/useRouteLoader.ts
 // 核心理念: 在 Vue Router 中使用 Loader 模式加载数据
 
-import { ref, type Ref } from 'vue'
+import { type Ref, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { LoaderContext, LoaderFunction, RouteLoaderConfig } from '../router/loader.types'
 

@@ -67,7 +67,7 @@ repomix . --output repomix-output.xml
 
 ## 📊 文件结构
 
-```
+```text
 repomix-output.xml
 ├── file_summary - 文件说明
 ├── directory_structure - 目录结构

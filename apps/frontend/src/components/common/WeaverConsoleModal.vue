@@ -40,10 +40,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useGameStore } from '@/stores/game.store'
 // [核心修正] 导入正确的 store 和函数名
 import { useUIStore } from '@/stores/ui.store'
-import { useGameStore } from '@/stores/game.store'
 
 const uiStore = useUIStore()
 const gameStore = useGameStore()

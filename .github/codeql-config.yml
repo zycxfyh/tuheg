@@ -1,26 +1,37 @@
-name: 'CodeQL Configuration'
+# CodeQL Configuration for AI Dialogue System
+# https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning
+
+name: "CodeQL Configuration"
 
 disable-default-queries: false
 
 queries:
+  # 使用安全扩展查询集
   - uses: security-and-quality
   - uses: security-experimental
 
-paths-ignore:
-  - node_modules
-  - '**/*.test.ts'
-  - '**/*.spec.ts'
-  - '**/__tests__/**'
-  - '**/coverage/**'
-  - '**/dist/**'
-  - '**/.next/**'
-  - '**/build/**'
-  - '**/out/**'
+# 自定义查询路径（如果有的话）
+# paths:
+#   - packages/
+#   - apps/
 
-paths:
-  - 'apps/'
-  - 'packages/'
-  - 'src/'
-  - '*.ts'
-  - '*.js'
-  - '*.json'
+# 忽略路径
+paths-ignore:
+  - node_modules/
+  - dist/
+  - build/
+  - coverage/
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/*.config.js"
+  - "**/*.config.ts"
+  - "**/*.d.ts"
+
+# 自定义查询
+# 关注AI对话系统特有的安全问题
+query-filters:
+  - exclude:
+      # 排除低风险问题，专注于高影响安全问题
+      problem.severity:
+        - recommendation
+        - low

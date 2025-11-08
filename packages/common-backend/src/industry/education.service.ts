@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { AiProviderService } from '../plugins/ai-provider.service'
-import { ModelRouterService } from '../plugins/model-router.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import type { EventEmitter2 } from '@nestjs/event-emitter'
+import type { AiProviderService } from '../plugins/ai-provider.service'
+import type { ModelRouterService } from '../plugins/model-router.service'
 
 export interface LearningPath {
   id: string
@@ -649,8 +649,7 @@ Include description, hints, and solution.`
 
     const scores = performanceData.map((p) => p.score)
     const mean = scores.reduce((sum, score) => sum + score, 0) / scores.length
-    const variance =
-      scores.reduce((sum, score) => sum + Math.pow(score - mean, 2), 0) / scores.length
+    const variance = scores.reduce((sum, score) => sum + (score - mean) ** 2, 0) / scores.length
     const standardDeviation = Math.sqrt(variance)
 
     // 一致性分数：标准差越小，分数越高

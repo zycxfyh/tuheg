@@ -1,7 +1,7 @@
-// 文件路径: apps/nexus-engine/src/gateway/gateway.controller.ts (已更新为 async)
+// 文件路径: apps/backend-gateway/src/gateway/gateway.controller.ts (已更新为 async)
 
-import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common'
-import { UpdatesGateway } from './updates.gateway'
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
+import type { UpdatesGateway } from './updates.gateway'
 
 class SendToUserDto {
   userId!: string

@@ -1,23 +1,23 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
+  Delete,
   Get,
+  NotFoundException,
+  Param,
   Post,
   Put,
-  Delete,
-  Body,
-  Param,
   Query,
-  UseGuards,
   Request,
-  BadRequestException,
-  NotFoundException,
+  UseGuards,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../security/jwt-auth.guard'
-import { AgentService } from './agent.service'
-import { TaskService } from './task.service'
-import { CollaborationService } from './collaboration.service'
-import { AgentLearningService } from './agent-learning.service'
-import { AgentCommunicationService } from './agent-communication.service'
+import type { AgentService } from './agent.service'
+import type { AgentCommunicationService } from './agent-communication.service'
+import type { AgentLearningService } from './agent-learning.service'
+import type { CollaborationService } from './collaboration.service'
+import type { TaskService } from './task.service'
 
 @Controller('agents')
 export class AgentCollaborationController {

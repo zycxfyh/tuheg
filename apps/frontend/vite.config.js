@@ -30,7 +30,7 @@ export default defineConfig({
           // Vue生态核心包
           'vue-vendor': ['vue', 'vue-router', 'pinia'],
 
-          // UI库
+          // UI库和网络库
           'ui-vendor': ['socket.io-client', 'axios'],
 
           // 国际化
@@ -38,9 +38,6 @@ export default defineConfig({
 
           // 监控
           'monitoring-vendor': ['@sentry/vue'],
-
-          // 工具库
-          'utils-vendor': ['axios'],
         },
         // 文件名格式优化
         chunkFileNames: (chunkInfo) => {
@@ -63,13 +60,12 @@ export default defineConfig({
       },
     },
 
-    // 压缩优化
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // 生产环境移除console
-        drop_debugger: true,
-      },
+    // 使用esbuild进行更快的压缩（替代terser）
+    minify: 'esbuild',
+    esbuild: {
+      // esbuild配置
+      drop: ['console', 'debugger'], // 生产环境移除console和debugger
+      legalComments: 'none', // 移除注释
     },
 
     // 分包大小警告阈值

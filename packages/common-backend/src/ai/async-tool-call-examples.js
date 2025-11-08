@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.AsyncToolCallExamples = void 0
 const async_tool_call_service_1 = require('./async-tool-call.service')

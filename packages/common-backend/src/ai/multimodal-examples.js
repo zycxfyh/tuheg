@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 exports.MultimodalExamples = void 0
 const multimodal_service_1 = require('./multimodal.service')

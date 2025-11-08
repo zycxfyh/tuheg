@@ -1,4 +1,3 @@
-'use strict'
 Object.defineProperty(exports, '__esModule', { value: true })
 const json_cleaner_1 = require('./json-cleaner')
 describe('cleanAndParseJson', () => {

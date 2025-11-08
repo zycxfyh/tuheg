@@ -2,7 +2,7 @@
 // 核心理念: 响应式数据流，使用 Observable 处理异步事件
 
 import { Injectable, Logger } from '@nestjs/common'
-import { Subject, Observable, mergeMap, catchError } from 'rxjs'
+import { catchError, mergeMap, type Observable, Subject } from 'rxjs'
 
 /**
  * @interface EventStreamConfig
