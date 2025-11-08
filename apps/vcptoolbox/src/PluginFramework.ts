@@ -1,10 +1,20 @@
 import { EventEmitter } from 'events'
 
 // VCPToolBox - 创世星环插件框架核心
-// 专注于AI叙事创作的插件生态系统
+// 基于VCP协议的AI叙事创作插件生态系统
+// 借鉴开源VCPToolBox的设计哲学：将AI视为创造者伙伴
 
-// 插件类型定义 - 围绕AI叙事核心功能
+// 插件类型定义 - VCP六大插件协议 + AI叙事专用类型
 export type PluginType =
+  // VCP六大基础协议
+  | 'static'              // 静态插件：实时世界知识注入
+  | 'messagePreprocessor' // 消息预处理器：多模态输入处理
+  | 'synchronous'         // 同步插件：快速任务执行
+  | 'asynchronous'        // 异步插件：耗时任务并行处理
+  | 'service'             // 服务插件：后台持续服务
+  | 'dynamic'             // 动态插件：AI自主学习和创造
+
+  // AI叙事专用插件类型
   | 'story-generator'      // 故事生成器
   | 'character-creator'    // 角色创建器
   | 'world-builder'        // 世界构建器
@@ -57,6 +67,13 @@ export interface PluginCompatibility {
   requiredPlugins: string[]
   conflictsWith: string[]
   platforms: ('web' | 'desktop' | 'mobile')[]
+  // VCP协议特定兼容性
+  vcpProtocolVersion: string
+  supportedModels?: string[] // 支持的AI模型
+  memoryRequirements?: {
+    minRAM: number // MB
+    recommendedRAM: number
+  }
 }
 
 // 插件功能定义
@@ -169,7 +186,114 @@ export interface PluginContext {
 
   // 日志系统
   logger: PluginLogger
+
+  // VCP协议核心功能 (借鉴开源VCPToolBox)
+  vcp: VCPProtocolAPI
 }
+
+// VCP协议API - 核心AI交互协议
+export interface VCPProtocolAPI {
+  // 工具调用 (VCP指令协议)
+  callTool: (toolRequest: VCPToolRequest) => Promise<VCPToolResponse>
+
+  // 变量替换系统
+  replaceVariables: (text: string, variables: Record<string, any>) => string
+
+  // 记忆系统访问
+  memory: {
+    read: (agentId: string, query?: string) => Promise<VCPMemoryEntry[]>
+    write: (agentId: string, entry: VCPMemoryEntry) => Promise<void>
+    search: (agentId: string, keywords: string[]) => Promise<VCPMemoryEntry[]>
+  }
+
+  // 多模态文件API
+  files: {
+    upload: (file: File, metadata?: any) => Promise<VCPFileHandle>
+    download: (handle: string) => Promise<VCPFile>
+    get: (handle: string) => Promise<VCPFile>
+    list: (query?: VCPFileQuery) => Promise<VCPFile[]>
+  }
+
+  // WebSocket推送
+  push: (clientId: string, data: any, type?: string) => void
+
+  // 异步任务管理
+  asyncTasks: {
+    create: (task: VCPAsyncTask) => Promise<string>
+    get: (taskId: string) => Promise<VCPAsyncTask | null>
+    update: (taskId: string, status: VCPAsyncTaskStatus) => Promise<void>
+    callback: (taskId: string, result: any) => Promise<void>
+  }
+}
+
+// VCP工具请求 (基于文本标记协议)
+export interface VCPToolRequest {
+  toolName: string
+  parameters: Record<string, any>
+  priority?: 'low' | 'medium' | 'high' | 'critical'
+  timeout?: number
+  // VCP协议格式: <<<[TOOL_REQUEST]>>>toolName:key:「始」value「末」<<<[END_TOOL_REQUEST]>>
+}
+
+// VCP工具响应
+export interface VCPToolResponse {
+  success: boolean
+  result: any
+  error?: string
+  executionTime: number
+  toolName: string
+}
+
+// VCP记忆条目
+export interface VCPMemoryEntry {
+  id: string
+  agentId: string
+  type: 'experience' | 'knowledge' | 'preference' | 'context'
+  content: string
+  tags: string[]
+  timestamp: Date
+  importance: number
+  relatedEntries: string[]
+}
+
+// VCP文件句柄
+export interface VCPFileHandle {
+  id: string
+  filename: string
+  size: number
+  type: string
+  url: string
+  metadata?: any
+}
+
+// VCP文件
+export interface VCPFile extends VCPFileHandle {
+  data: Buffer | string
+}
+
+// VCP文件查询
+export interface VCPFileQuery {
+  type?: string
+  tags?: string[]
+  dateRange?: { start: Date; end: Date }
+  limit?: number
+}
+
+// VCP异步任务
+export interface VCPAsyncTask {
+  id: string
+  toolName: string
+  parameters: Record<string, any>
+  status: VCPAsyncTaskStatus
+  createdAt: Date
+  updatedAt: Date
+  result?: any
+  error?: string
+  progress?: number
+  estimatedTime?: number
+}
+
+export type VCPAsyncTaskStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'
 
 // 插件API接口
 export interface PluginAPI {
@@ -516,9 +640,215 @@ export class PluginManager extends EventEmitter {
 
   // 创建插件上下文
   private createPluginContext(plugin: VCPPlugin): PluginContext {
-    // 这里实现插件上下文的创建
-    // 提供API访问、配置管理等
-    return {} as PluginContext
+    const context: PluginContext = {
+      api: this.createPluginAPI(plugin),
+      config: this.createPluginConfig(plugin),
+      events: this.createPluginEvents(plugin),
+      storage: this.createPluginStorage(plugin),
+      ui: this.createPluginUI(plugin),
+      logger: this.createPluginLogger(plugin),
+      vcp: this.createVCPProtocolAPI(plugin)
+    }
+
+    return context
+  }
+
+  // 创建插件API
+  private createPluginAPI(plugin: VCPPlugin): PluginAPI {
+    return {
+      stories: {
+        create: async (data) => `story-${Date.now()}`,
+        update: async (id, data) => {},
+        get: async (id) => ({}),
+        list: async (filters) => [],
+        delete: async (id) => {}
+      },
+      characters: {
+        create: async (data) => `character-${Date.now()}`,
+        update: async (id, data) => {},
+        get: async (id) => ({}),
+        list: async (filters) => [],
+        delete: async (id) => {}
+      },
+      worlds: {
+        create: async (data) => `world-${Date.now()}`,
+        update: async (id, data) => {},
+        get: async (id) => ({}),
+        list: async (filters) => [],
+        delete: async (id) => {}
+      },
+      ai: {
+        generateStory: async (prompt, options) => `Generated story for: ${prompt}`,
+        generateCharacter: async (traits, options) => ({}),
+        generateWorld: async (theme, options) => ({}),
+        analyzeText: async (text, type) => ({})
+      },
+      utils: {
+        validateJSON: (data) => true,
+        sanitizeHTML: (html) => html,
+        generateUUID: () => `uuid-${Date.now()}`,
+        formatDate: (date, format) => date.toISOString()
+      }
+    }
+  }
+
+  // 创建VCP协议API
+  private createVCPProtocolAPI(plugin: VCPPlugin): VCPProtocolAPI {
+    const pluginId = plugin.id
+
+    return {
+      callTool: async (toolRequest) => {
+        // VCP工具调用实现
+        console.log(`VCP Tool Call: ${toolRequest.toolName}`, toolRequest.parameters)
+
+        // 模拟工具执行
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        return {
+          success: true,
+          result: `Tool ${toolRequest.toolName} executed`,
+          executionTime: 100,
+          toolName: toolRequest.toolName
+        }
+      },
+
+      replaceVariables: (text, variables) => {
+        return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+          return variables[key] !== undefined ? String(variables[key]) : match
+        })
+      },
+
+      memory: {
+        read: async (agentId, query) => {
+          // 模拟记忆读取
+          return []
+        },
+        write: async (agentId, entry) => {
+          console.log(`Memory written for agent ${agentId}:`, entry)
+        },
+        search: async (agentId, keywords) => {
+          // 模拟记忆搜索
+          return []
+        }
+      },
+
+      files: {
+        upload: async (file, metadata) => {
+          const handle: VCPFileHandle = {
+            id: `file-${Date.now()}`,
+            filename: file.name,
+            size: file.size,
+            type: file.type,
+            url: `/files/${file.name}`
+          }
+          return handle
+        },
+        download: async (handle) => {
+          // 模拟文件下载
+          return {
+            id: handle,
+            filename: 'downloaded-file',
+            size: 1024,
+            type: 'application/octet-stream',
+            url: `/files/${handle}`,
+            data: Buffer.from('file content')
+          }
+        },
+        get: async (handle) => {
+          // 模拟文件获取
+          return {
+            id: handle,
+            filename: 'file',
+            size: 1024,
+            type: 'application/octet-stream',
+            url: `/files/${handle}`,
+            data: Buffer.from('file content')
+          }
+        },
+        list: async (query) => {
+          // 模拟文件列表
+          return []
+        }
+      },
+
+      push: (clientId, data, type) => {
+        // WebSocket推送实现
+        console.log(`WebSocket push to ${clientId}:`, data, type)
+      },
+
+      asyncTasks: {
+        create: async (task) => {
+          const taskId = `task-${Date.now()}`
+          console.log(`Async task created: ${taskId}`)
+          return taskId
+        },
+        get: async (taskId) => {
+          // 模拟任务获取
+          return null
+        },
+        update: async (taskId, status) => {
+          console.log(`Async task ${taskId} updated to ${status}`)
+        },
+        callback: async (taskId, result) => {
+          console.log(`Async task ${taskId} callback:`, result)
+        }
+      }
+    }
+  }
+
+  // 创建其他上下文组件的简化实现
+  private createPluginConfig(plugin: VCPPlugin): PluginConfig {
+    return {
+      get: (key, defaultValue) => defaultValue,
+      set: (key, value) => {},
+      update: (updates) => {},
+      reset: () => {},
+      export: () => ({}),
+      import: (config) => {}
+    }
+  }
+
+  private createPluginEvents(plugin: VCPPlugin): PluginEvents {
+    return {
+      emit: (event, data) => this.emit(event, { pluginId: plugin.id, data }),
+      on: (event, handler) => {},
+      off: (event, handler) => {},
+      once: (event, handler) => {}
+    }
+  }
+
+  private createPluginStorage(plugin: VCPPlugin): PluginStorage {
+    return {
+      get: (key, defaultValue) => defaultValue,
+      set: (key, value) => {},
+      delete: (key) => {},
+      clear: () => {},
+      keys: () => [],
+      export: () => ({}),
+      import: (data) => {}
+    }
+  }
+
+  private createPluginUI(plugin: VCPPlugin): PluginUI {
+    return {
+      registerComponent: (name, component) => {},
+      unregisterComponent: (name) => {},
+      addMenuItem: (menuId, item) => {},
+      removeMenuItem: (menuId, itemId) => {},
+      addToolbarButton: (button) => {},
+      removeToolbarButton: (buttonId) => {},
+      showModal: (modal) => {},
+      showNotification: (notification) => {}
+    }
+  }
+
+  private createPluginLogger(plugin: VCPPlugin): PluginLogger {
+    return {
+      debug: (message, meta) => console.debug(`[${plugin.id}] ${message}`, meta),
+      info: (message, meta) => console.info(`[${plugin.id}] ${message}`, meta),
+      warn: (message, meta) => console.warn(`[${plugin.id}] ${message}`, meta),
+      error: (message, meta) => console.error(`[${plugin.id}] ${message}`, meta)
+    }
   }
 
   // 执行插件方法
