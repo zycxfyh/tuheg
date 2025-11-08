@@ -6,9 +6,9 @@
 // 2. 生成统一的错误响应格式
 // 3. 提供错误码和建议操作
 
-import { ZodError } from 'zod';
-import { AiGenerationException } from '../exceptions/ai-exception';
-import { PromptInjectionDetectedException } from './prompt-injection-detected.exception';
+import { ZodError } from 'zod'
+import { AiGenerationException } from '../exceptions/ai-exception'
+import { PromptInjectionDetectedException } from './prompt-injection-detected.exception'
 
 /**
  * 错误类型枚举
@@ -33,17 +33,17 @@ export enum ProcessingErrorType {
  */
 export interface ProcessingErrorResponse {
   /** 错误类型 */
-  errorType: ProcessingErrorType;
+  errorType: ProcessingErrorType
   /** 是否可重试 */
-  retryable: boolean;
+  retryable: boolean
   /** 错误码 */
-  errorCode: string;
+  errorCode: string
   /** 用户友好的错误消息 */
-  message: string;
+  message: string
   /** 详细错误信息（仅用于日志） */
-  details?: unknown;
+  details?: unknown
   /** 建议的用户操作 */
-  suggestedAction?: string;
+  suggestedAction?: string
 }
 
 /**
@@ -63,10 +63,10 @@ export interface ProcessingErrorResponse {
  */
 export function classifyProcessingError(
   error: unknown,
-  context?: { operation?: string; gameId?: string; userId?: string },
+  context?: { operation?: string; gameId?: string; userId?: string }
 ): ProcessingErrorResponse {
   // context 参数保留用于未来扩展（如基于上下文的错误分类）
-  void context; // 标记为已使用，避免 lint 错误
+  void context // 标记为已使用，避免 lint 错误
   // Zod 验证错误 - 不可重试（消息格式错误）
   if (error instanceof ZodError) {
     return {
@@ -76,7 +76,7 @@ export function classifyProcessingError(
       message: 'Message validation failed. The message format is incorrect.',
       details: error.issues,
       suggestedAction: 'Check the message format and resend with correct structure.',
-    };
+    }
   }
 
   if (error instanceof PromptInjectionDetectedException) {
@@ -88,7 +88,7 @@ export function classifyProcessingError(
       details: error.details,
       suggestedAction:
         'Revise the input to remove system override or malicious patterns before retrying.',
-    };
+    }
   }
 
   // AI 生成错误 - 可重试
@@ -101,13 +101,13 @@ export function classifyProcessingError(
       details: error.details,
       suggestedAction:
         'Retry the operation. If the issue persists, check AI provider configuration.',
-    };
+    }
   }
 
   // 网络错误 - 可重试
   if (error instanceof Error) {
-    const errorMessage = error.message.toLowerCase();
-    const errorName = error.name.toLowerCase();
+    const errorMessage = error.message.toLowerCase()
+    const errorName = error.name.toLowerCase()
 
     if (
       errorName.includes('network') ||
@@ -125,7 +125,7 @@ export function classifyProcessingError(
         message: 'Network connection failed. The operation can be retried.',
         details: error.message,
         suggestedAction: 'Retry the operation. Check network connectivity if the issue persists.',
-      };
+      }
     }
 
     // 数据库错误 - 可重试
@@ -142,7 +142,7 @@ export function classifyProcessingError(
         message: 'Database operation failed. The operation can be retried.',
         details: error.message,
         suggestedAction: 'Retry the operation. Check database connection if the issue persists.',
-      };
+      }
     }
 
     // 业务逻辑错误（特定错误名称）
@@ -160,7 +160,7 @@ export function classifyProcessingError(
         message: 'Business logic validation failed. The operation cannot be retried.',
         details: error.message,
         suggestedAction: 'Review the request data and ensure it complies with business rules.',
-      };
+      }
     }
   }
 
@@ -172,7 +172,7 @@ export function classifyProcessingError(
     message: 'An unexpected error occurred. The operation can be retried.',
     details: error instanceof Error ? error.message : String(error),
     suggestedAction: 'Retry the operation. Contact support if the issue persists.',
-  };
+  }
 }
 
 /**
@@ -182,8 +182,8 @@ export function classifyProcessingError(
  * @returns 是否应该重试
  */
 export function shouldRetryError(error: unknown): boolean {
-  const classification = classifyProcessingError(error);
-  return classification.retryable;
+  const classification = classifyProcessingError(error)
+  return classification.retryable
 }
 
 /**
@@ -193,8 +193,8 @@ export function shouldRetryError(error: unknown): boolean {
  * @returns 用户友好的错误消息
  */
 export function getErrorMessage(error: unknown): string {
-  const classification = classifyProcessingError(error);
-  return classification.message;
+  const classification = classifyProcessingError(error)
+  return classification.message
 }
 
 // ProcessingErrorResponse 已经在上面定义并导出，不需要重复导出

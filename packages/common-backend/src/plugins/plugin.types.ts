@@ -7,29 +7,29 @@
  */
 export interface PluginManifest {
   /** 插件唯一标识符 */
-  id: string;
+  id: string
   /** 插件名称 */
-  name: string;
+  name: string
   /** 插件版本 */
-  version: string;
+  version: string
   /** 插件描述 */
-  description?: string;
+  description?: string
   /** 插件作者 */
-  author?: string;
+  author?: string
   /** 插件主页 */
-  homepage?: string;
+  homepage?: string
   /** 插件仓库 */
-  repository?: string;
+  repository?: string
   /** 插件贡献的能力 */
-  contributes?: PluginContributions;
+  contributes?: PluginContributions
   /** 激活事件（何时加载插件） */
-  activationEvents?: string[];
+  activationEvents?: string[]
   /** 插件入口点 */
-  main?: string;
+  main?: string
   /** 插件依赖 */
-  dependencies?: Record<string, string>;
+  dependencies?: Record<string, string>
   /** 其他元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -38,11 +38,11 @@ export interface PluginManifest {
  */
 export interface PluginContributions {
   /** AI Provider 贡献点 */
-  aiProviders?: AiProviderContribution[];
+  aiProviders?: AiProviderContribution[]
   /** AI 工具贡献点 */
-  aiTools?: AiToolContribution[];
+  aiTools?: AiToolContribution[]
   /** 其他贡献点 */
-  [key: string]: unknown;
+  [key: string]: unknown
 }
 
 /**
@@ -51,17 +51,17 @@ export interface PluginContributions {
  */
 export interface AiProviderContribution {
   /** Provider 类型标识符 */
-  type: string;
+  type: string
   /** Provider 名称 */
-  name: string;
+  name: string
   /** Provider 描述 */
-  description: string;
+  description: string
   /** Provider 工厂函数 */
-  factory: (config: unknown) => unknown;
+  factory: (config: unknown) => unknown
   /** 默认配置 */
-  defaultConfig?: Record<string, unknown>;
+  defaultConfig?: Record<string, unknown>
   /** 配置 Schema（Zod） */
-  configSchema?: unknown;
+  configSchema?: unknown
 }
 
 /**
@@ -70,15 +70,15 @@ export interface AiProviderContribution {
  */
 export interface AiToolContribution {
   /** 工具标识符 */
-  id: string;
+  id: string
   /** 工具名称 */
-  name: string;
+  name: string
   /** 工具描述 */
-  description: string;
+  description: string
   /** 工具执行函数 */
-  execute: (input: unknown) => Promise<unknown> | unknown;
+  execute: (input: unknown) => Promise<unknown> | unknown
   /** 工具参数 Schema */
-  inputSchema?: unknown;
+  inputSchema?: unknown
 }
 
 /**
@@ -87,18 +87,18 @@ export interface AiToolContribution {
  */
 export interface PluginContext {
   /** 插件 ID */
-  pluginId: string;
+  pluginId: string
   /** 插件配置 */
-  config: Record<string, unknown>;
+  config: Record<string, unknown>
   /** 日志记录器 */
   logger: {
-    info: (message: string, ...args: unknown[]) => void;
-    warn: (message: string, ...args: unknown[]) => void;
-    error: (message: string, ...args: unknown[]) => void;
-    debug: (message: string, ...args: unknown[]) => void;
-  };
+    info: (message: string, ...args: unknown[]) => void
+    warn: (message: string, ...args: unknown[]) => void
+    error: (message: string, ...args: unknown[]) => void
+    debug: (message: string, ...args: unknown[]) => void
+  }
   /** 其他 API */
-  [key: string]: unknown;
+  [key: string]: unknown
 }
 
 /**
@@ -107,15 +107,15 @@ export interface PluginContext {
  */
 export interface Plugin {
   /** 插件清单 */
-  manifest: PluginManifest;
+  manifest: PluginManifest
   /** 激活插件 */
-  activate(context: PluginContext): Promise<void> | void;
+  activate(context: PluginContext): Promise<void> | void
   /** 停用插件 */
-  deactivate?(): Promise<void> | void;
+  deactivate?(): Promise<void> | void
 }
 
 /**
  * @type PluginFactory
  * @description 插件工厂函数
  */
-export type PluginFactory = (context: PluginContext) => Plugin;
+export type PluginFactory = (context: PluginContext) => Plugin

@@ -1,7 +1,7 @@
 // 文件路径: packages/common-backend/src/ai/crew/agent.types.ts
 // 核心理念: 角色驱动的智能体系统，每个智能体有明确的角色、目标和工具
 
-import type { AiProvider } from '../../types/ai-providers.types';
+import type { AiProvider } from '../../types/ai-providers.types'
 
 /**
  * @interface AgentRole
@@ -9,13 +9,13 @@ import type { AiProvider } from '../../types/ai-providers.types';
  */
 export interface AgentRole {
   /** 角色名称 */
-  name: string;
+  name: string
   /** 角色描述 */
-  description: string;
+  description: string
   /** 角色的目标 */
-  goal: string;
+  goal: string
   /** 角色的背景信息 */
-  backstory?: string;
+  backstory?: string
 }
 
 /**
@@ -24,11 +24,11 @@ export interface AgentRole {
  */
 export interface AgentTool {
   /** 工具名称 */
-  name: string;
+  name: string
   /** 工具描述 */
-  description: string;
+  description: string
   /** 工具执行函数 */
-  execute: (input: unknown) => Promise<unknown> | unknown;
+  execute: (input: unknown) => Promise<unknown> | unknown
 }
 
 /**
@@ -37,17 +37,17 @@ export interface AgentTool {
  */
 export interface AgentConfig {
   /** 角色定义 */
-  role: AgentRole;
+  role: AgentRole
   /** 可用的工具列表 */
-  tools?: AgentTool[];
+  tools?: AgentTool[]
   /** AI Provider（用于 LLM 调用） */
-  provider?: AiProvider;
+  provider?: AiProvider
   /** 是否允许自主决策 */
-  allowDelegation?: boolean;
+  allowDelegation?: boolean
   /** 最大重试次数 */
-  maxRetries?: number;
+  maxRetries?: number
   /** 其他元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -56,15 +56,15 @@ export interface AgentConfig {
  */
 export interface AgentExecutionResult {
   /** 执行是否成功 */
-  success: boolean;
+  success: boolean
   /** 执行结果 */
-  output: unknown;
+  output: unknown
   /** 错误信息（如果有） */
-  error?: string;
+  error?: string
   /** 执行时间（毫秒） */
-  executionTime?: number;
+  executionTime?: number
   /** 使用的工具（如果有） */
-  toolsUsed?: string[];
+  toolsUsed?: string[]
   /** 元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }

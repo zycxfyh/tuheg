@@ -20,47 +20,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'; // [核心修正] 移除了 onUnmounted
-import { useGameStore } from '@/stores/game.store';
-import { useToast } from '@/composables/useToast';
+import { ref, onMounted } from 'vue' // [核心修正] 移除了 onUnmounted
+import { useGameStore } from '@/stores/game.store'
+import { useToast } from '@/composables/useToast'
 // import { useRouter } from 'vue-router'; // [新增] 导入 useRouter，但暂时未使用
 
 // 导入所有子组件
-import CharacterHUD from '@/components/game/CharacterHUD.vue';
-import MainInteractionPanel from '@/components/game/MainInteractionPanel.vue';
-import WorldHUD from '@/components/game/WorldHUD.vue';
+import CharacterHUD from '@/components/game/CharacterHUD.vue'
+import MainInteractionPanel from '@/components/game/MainInteractionPanel.vue'
+import WorldHUD from '@/components/game/WorldHUD.vue'
 
 const props = defineProps({
   id: {
     type: String,
     required: true,
   },
-});
+})
 
-const gameStore = useGameStore();
-const { show: showToast } = useToast();
+const gameStore = useGameStore()
+const { show: showToast } = useToast()
 // const router = useRouter(); // [新增] 获取 router 实例，但暂时未使用
 
-const isLoading = ref(true);
-const error = ref(null);
+const isLoading = ref(true)
+const error = ref(null)
 
 // [核心重构] onMounted 现在只负责加载初始游戏数据
 onMounted(async () => {
-  error.value = null;
-  isLoading.value = true;
+  error.value = null
+  isLoading.value = true
 
   try {
     // [注释] loadGame 现在只获取HTTP数据。WebSocket连接已由 authStore 状态自动管理。
-    await gameStore.loadGame(props.id);
+    await gameStore.loadGame(props.id)
   } catch (err) {
-    error.value = err.message;
-    showToast(`加载世界失败: ${err.message}`, 'error');
+    error.value = err.message
+    showToast(`加载世界失败: ${err.message}`, 'error')
     // [注释] 可以在加载失败后，自动导航回主菜单
     // router.push('/nexus');
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-});
+})
 
 // [核心重构] onUnmounted hook 已被完全移除。
 // game.store 不再需要手动清理，因为它不持有任何需要清理的监听器。

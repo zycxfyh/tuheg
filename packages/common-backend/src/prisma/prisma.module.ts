@@ -1,7 +1,7 @@
 // 文件路径: libs/common/src/prisma/prisma.module.ts
 
-import { Global, Module } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { Global, Module } from '@nestjs/common'
+import { PrismaService } from './prisma.service'
 
 @Global() // [核心] 声明这是一个全局模块，一次导入，处处可用。
 @Module({

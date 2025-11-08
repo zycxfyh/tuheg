@@ -31,10 +31,10 @@
 export class JsonSanitizationError extends Error {
   constructor(
     message: string,
-    public readonly context?: { raw: string; lastError?: unknown },
+    public readonly context?: { raw: string; lastError?: unknown }
   ) {
-    super(message);
-    this.name = 'JsonSanitizationError';
+    super(message)
+    this.name = 'JsonSanitizationError'
   }
 }
 
@@ -51,75 +51,75 @@ export class JsonSanitizationError extends Error {
 function isAcceptableJsonValue(value: unknown): value is Record<string, unknown> | unknown[] {
   // null 的类型是 'object'，需要显式排除
   if (value === null) {
-    return false;
+    return false
   }
   // 数组是可接受的
   if (Array.isArray(value)) {
-    return true;
+    return true
   }
   // 对象（但不是 null）是可接受的
-  return typeof value === 'object';
+  return typeof value === 'object'
 }
 
 /**
  * 移除 Markdown 代码块包裹，如 ```json ... ```
  */
 function stripCodeFences(raw: string): string {
-  let result = raw.trim();
+  let result = raw.trim()
 
   if (result.startsWith('```')) {
     // 移除开头的 ``` 或 ```json
-    result = result.replace(/^```[a-zA-Z]*\s*/i, '');
+    result = result.replace(/^```[a-zA-Z]*\s*/i, '')
   }
   if (result.endsWith('```')) {
-    result = result.replace(/```$/i, '');
+    result = result.replace(/```$/i, '')
   }
 
-  return result.trim();
+  return result.trim()
 }
 
 /**
  * 尝试提取字符串中的 JSON 主体（去掉说明文字、前后缀）。
  */
 function extractJsonCore(raw: string): string {
-  const firstBrace = raw.indexOf('{');
-  const firstBracket = raw.indexOf('[');
+  const firstBrace = raw.indexOf('{')
+  const firstBracket = raw.indexOf('[')
 
-  let start = -1;
+  let start = -1
   if (firstBrace !== -1 && firstBracket !== -1) {
-    start = Math.min(firstBrace, firstBracket);
+    start = Math.min(firstBrace, firstBracket)
   } else {
-    start = Math.max(firstBrace, firstBracket);
+    start = Math.max(firstBrace, firstBracket)
   }
 
   if (start === -1) {
-    return raw;
+    return raw
   }
 
-  const lastBrace = raw.lastIndexOf('}');
-  const lastBracket = raw.lastIndexOf(']');
-  const endCandidates = [lastBrace, lastBracket].filter((index) => index !== -1);
-  const end = endCandidates.length > 0 ? Math.max(...endCandidates) : raw.length - 1;
+  const lastBrace = raw.lastIndexOf('}')
+  const lastBracket = raw.lastIndexOf(']')
+  const endCandidates = [lastBrace, lastBracket].filter((index) => index !== -1)
+  const end = endCandidates.length > 0 ? Math.max(...endCandidates) : raw.length - 1
 
   if (end <= start) {
-    return raw.slice(start);
+    return raw.slice(start)
   }
 
-  return raw.slice(start, end + 1);
+  return raw.slice(start, end + 1)
 }
 
 /**
  * 尝试替换常见的单引号 JSON 格式为双引号。
  */
 function normalizeQuotes(raw: string): string {
-  const hasDoubleQuotes = raw.includes('"');
-  const hasSingleQuotes = raw.includes("'");
+  const hasDoubleQuotes = raw.includes('"')
+  const hasSingleQuotes = raw.includes("'")
 
   if (!hasDoubleQuotes && hasSingleQuotes) {
-    return raw.replace(/'/g, '"');
+    return raw.replace(/'/g, '"')
   }
 
-  return raw;
+  return raw
 }
 
 /**
@@ -160,15 +160,15 @@ function normalizeQuotes(raw: string): string {
 export async function cleanAndParseJson(raw: unknown): Promise<unknown> {
   // 如果已经是对象或数组，直接返回（避免不必要的处理）
   if (typeof raw !== 'string') {
-    return raw;
+    return raw
   }
 
   // 步骤 1: 移除 Markdown 代码块包裹
-  let working = stripCodeFences(raw);
+  let working = stripCodeFences(raw)
   // 步骤 2: 提取 JSON 核心部分（去掉前后说明文字）
-  working = extractJsonCore(working);
+  working = extractJsonCore(working)
   // 步骤 3: 去除首尾空白
-  working = working.trim();
+  working = working.trim()
 
   // 步骤 4: 按优先级尝试多种修复策略
   // 从最快到最慢，从简单到复杂
@@ -178,50 +178,50 @@ export async function cleanAndParseJson(raw: unknown): Promise<unknown> {
     // 策略 2: 使用 jsonrepair 修复常见语法错误（如缺少逗号、括号不匹配等）
     async () => {
       try {
-        const { jsonrepair } = await import('jsonrepair');
-        const repaired = jsonrepair(working);
-        console.log('jsonrepair input:', JSON.stringify(working));
-        console.log('jsonrepair output:', JSON.stringify(repaired));
-        return JSON.parse(repaired);
+        const { jsonrepair } = await import('jsonrepair')
+        const repaired = jsonrepair(working)
+        console.log('jsonrepair input:', JSON.stringify(working))
+        console.log('jsonrepair output:', JSON.stringify(repaired))
+        return JSON.parse(repaired)
       } catch (error) {
-        console.log('jsonrepair strategy failed:', error);
+        console.log('jsonrepair strategy failed:', error)
         // 如果jsonrepair不可用，跳过此策略，让下一个策略尝试
-        return undefined;
+        return undefined
       }
     },
     // 策略 3: 先修复引号再使用 jsonrepair（处理单引号 JSON）
     async () => {
       try {
-        const { jsonrepair } = await import('jsonrepair');
-        return JSON.parse(jsonrepair(normalizeQuotes(working)));
+        const { jsonrepair } = await import('jsonrepair')
+        return JSON.parse(jsonrepair(normalizeQuotes(working)))
       } catch {
         // 如果jsonrepair不可用，跳过此策略，让下一个策略尝试
-        return undefined;
+        return undefined
       }
     },
     // 策略 4: 仅修复引号（如果 jsonrepair 也不起作用）
     () => JSON.parse(normalizeQuotes(working)),
-  ];
+  ]
 
-  let lastError: unknown;
+  let lastError: unknown
   for (const attempt of attempts) {
     try {
-      const parsed = await attempt();
+      const parsed = await attempt()
       // 如果策略返回undefined，跳过此策略
       if (parsed === undefined) {
-        continue;
+        continue
       }
       // 验证结果是对象或数组（不接受原始值）
       if (isAcceptableJsonValue(parsed)) {
-        return parsed;
+        return parsed
       }
       // 如果解析成功但不是对象/数组，记录错误但继续尝试其他策略
-      lastError = new Error('Sanitized output was not a JSON object or array.');
+      lastError = new Error('Sanitized output was not a JSON object or array.')
     } catch (error) {
       // 解析失败，记录错误并尝试下一个策略
-      lastError = error;
+      lastError = error
       // 调试输出
-      console.log(`Strategy failed:`, error);
+      console.log(`Strategy failed:`, error)
     }
   }
 
@@ -229,5 +229,5 @@ export async function cleanAndParseJson(raw: unknown): Promise<unknown> {
   throw new JsonSanitizationError('Failed to sanitize AI output into valid JSON.', {
     raw,
     lastError,
-  });
+  })
 }

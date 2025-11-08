@@ -1,0 +1,442 @@
+name: 📈 性能监控与分析
+
+on:
+  schedule:
+    # 每天早上9点进行性能监控
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: '测试类型'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - lighthouse-only
+          - load-test-only
+  push:
+    branches: [main]
+    paths:
+      - 'apps/frontend/**'
+      - 'packages/common-backend/**'
+
+jobs:
+  performance-metrics:
+    name: 性能指标收集
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build application
+        run: pnpm build
+
+      - name: 🚀 Start application for testing
+        run: |
+          # Start the application in background
+          pnpm dev &
+          SERVER_PID=$!
+
+          # Wait for server to be ready
+          echo "⏳ Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -f http://localhost:5173 > /dev/null 2>&1; then
+              echo "✅ Server is ready"
+              break
+            fi
+            sleep 2
+          done
+
+          # Store PID for cleanup
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+
+      - name: 📊 Lighthouse 性能审计
+        run: |
+          echo "🏮 运行 Lighthouse 性能审计..."
+
+          # Install Lighthouse
+          npm install -g lighthouse
+
+          # Run Lighthouse audit
+          lighthouse http://localhost:5173 \
+            --output=json \
+            --output-path=./lighthouse-report.json \
+            --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu" \
+            --only-categories=performance,accessibility,best-practices,seo
+
+          echo "✅ Lighthouse 审计完成"
+
+      - name: 📈 生成性能报告
+        run: |
+          echo "# 📊 性能监控报告" > performance-report.md
+          echo "" >> performance-report.md
+          echo "## 🚀 Lighthouse 评分" >> performance-report.md
+          echo "" >> performance-report.md
+
+          if [ -f "lighthouse-report.json" ]; then
+            echo "| 指标 | 分数 | 状态 | 目标 | 差距 |" >> performance-report.md
+            echo "|------|------|------|------|------|" >> performance-report.md
+
+            # Parse Lighthouse results
+            node -e "
+              const fs = require('fs');
+              const report = JSON.parse(fs.readFileSync('lighthouse-report.json'));
+              const categories = report.categories;
+
+              const metrics = [
+                { name: '性能', key: 'performance', threshold: 85 },
+                { name: '无障碍性', key: 'accessibility', threshold: 90 },
+                { name: '最佳实践', key: 'best-practices', threshold: 85 },
+                { name: 'SEO', key: 'seo', threshold: 85 }
+              ];
+
+              metrics.forEach(metric => {
+                const score = Math.round(categories[metric.key].score * 100);
+                const status = score >= metric.threshold ? '✅' : score >= metric.threshold - 10 ? '⚠️' : '❌';
+                const gap = score - metric.threshold;
+                const gapText = gap >= 0 ? \`+\${gap}\` : gap.toString();
+                console.log(\`| \${metric.name} | \${score} | \${status} | \${metric.threshold} | \${gapText} |\`);
+              });
+            " >> performance-report.md
+
+            echo "" >> performance-report.md
+            echo "## 📏 详细性能指标" >> performance-report.md
+            echo "" >> performance-report.md
+
+            node -e "
+              const fs = require('fs');
+              const report = JSON.parse(fs.readFileSync('lighthouse-report.json'));
+
+              console.log('### 加载性能');
+              console.log('');
+              console.log('| 指标 | 值 | 状态 |');
+              console.log('|------|-----|------|');
+
+              const audits = report.audits;
+              const loadMetrics = [
+                { name: '首次内容绘制 (FCP)', key: 'first-contentful-paint', threshold: 1800 },
+                { name: '最大内容绘制 (LCP)', key: 'largest-contentful-paint', threshold: 2500 },
+                { name: '首次输入延迟 (FID)', key: 'max-potential-fid', threshold: 100 },
+                { name: '累积布局偏移 (CLS)', key: 'cumulative-layout-shift', threshold: 0.1 }
+              ];
+
+              loadMetrics.forEach(metric => {
+                if (audits[metric.key]) {
+                  const value = audits[metric.key].numericValue;
+                  let displayValue, status;
+
+                  if (metric.key === 'cumulative-layout-shift') {
+                    displayValue = value.toFixed(3);
+                    status = value <= metric.threshold ? '✅' : value <= metric.threshold * 2 ? '⚠️' : '❌';
+                  } else {
+                    displayValue = metric.key === 'max-potential-fid' ? \`\${Math.round(value)}ms\` : \`\${Math.round(value)}ms\`;
+                    status = value <= metric.threshold ? '✅' : value <= metric.threshold * 1.5 ? '⚠️' : '❌';
+                  }
+
+                  console.log(\`| \${metric.name} | \${displayValue} | \${status} |\`);
+                }
+              });
+
+              console.log('');
+              console.log('### 资源大小');
+              console.log('');
+              console.log('| 资源类型 | 大小 | 预算状态 |');
+              console.log('|----------|------|----------|');
+
+              if (audits['total-byte-weight']) {
+                const totalSize = audits['total-byte-weight'].numericValue;
+                const sizeKB = (totalSize / 1024).toFixed(1);
+                const status = totalSize < 2048000 ? '✅' : totalSize < 4096000 ? '⚠️' : '❌'; // 2MB / 4MB
+                console.log(\`| 总大小 | \${sizeKB} KB | \${status} |\`);
+              }
+            " >> performance-report.md
+
+          else
+            echo "| 状态 | 描述 |" >> performance-report.md
+            echo "|------|------|" >> performance-report.md
+            echo "| ❌ | Lighthouse 报告生成失败 |" >> performance-report.md
+          fi
+
+      - name: 🔍 包大小分析
+        run: |
+          echo "" >> performance-report.md
+          echo "## 📦 包大小分析" >> performance-report.md
+          echo "" >> performance-report.md
+
+          # Install and run bundle analyzer
+          npm install -g size-limit
+
+          echo "### Size Limit 分析" >> performance-report.md
+          echo "\`\`\`" >> performance-report.md
+          npx size-limit --json 2>/dev/null | jq -r '
+            if length > 0 then
+              "文件 | 大小 | 限制 | 状态",
+              "--- | --- | --- | ---",
+              (.[] | "\(.name) | \(.size) | \(.limit // "无限制") | \(if .passed == true then "✅" elif .passed == false then "❌" else "⚠️" end)")
+            else
+              "包大小分析完成，无配置限制"
+            end
+          ' >> performance-report.md 2>/dev/null || echo "包大小分析完成" >> performance-report.md
+          echo "\`\`\`" >> performance-report.md
+
+      - name: ⚡ 运行时性能测试
+        run: |
+          echo "" >> performance-report.md
+          echo "## ⚡ 运行时性能测试" >> performance-report.md
+          echo "" >> performance-report.md
+
+          # Simple runtime performance tests
+          echo "### API 响应时间测试" >> performance-report.md
+          echo "\`\`\`" >> performance-report.md
+
+          # Test API endpoints if available
+          if curl -f http://localhost:5173/api/health > /dev/null 2>&1; then
+            echo "健康检查端点响应测试:" >> performance-report.md
+            for i in {1..5}; do
+              RESPONSE_TIME=$(curl -o /dev/null -s -w "%{time_total}" http://localhost:5173/api/health)
+              echo "请求 $i: $(echo "$RESPONSE_TIME * 1000" | bc | xargs printf "%.0f")ms" >> performance-report.md
+            done
+          else
+            echo "API 端点不可用，跳过响应时间测试" >> performance-report.md
+          fi
+
+          echo "\`\`\`" >> performance-report.md
+
+          echo "" >> performance-report.md
+          echo "### 内存使用情况" >> performance-report.md
+          echo "\`\`\`" >> performance-report.md
+          # Get memory usage if possible
+          ps aux --no-headers -o pmem,pcpu,comm | head -5 >> performance-report.md 2>/dev/null || echo "内存监控数据不可用" >> performance-report.md
+          echo "\`\`\`" >> performance-report.md
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          # Stop the background server
+          if [ -n "$SERVER_PID" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
+
+      - name: 📤 Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report-$(date +%Y%m%d)
+          path: |
+            performance-report.md
+            lighthouse-report.json
+          retention-days: 30
+
+      - name: 📊 性能回归检测
+        run: |
+          # Check for performance regressions
+          if [ -f "lighthouse-report.json" ]; then
+            PERFORMANCE_SCORE=$(node -e "console.log(Math.round(JSON.parse(require('fs').readFileSync('lighthouse-report.json')).categories.performance.score * 100))")
+
+            # Define acceptable performance threshold
+            THRESHOLD=80
+
+            if [ "$PERFORMANCE_SCORE" -lt $THRESHOLD ]; then
+              echo "PERFORMANCE_REGRESSION=true" >> $GITHUB_ENV
+              echo "性能分数 $PERFORMANCE_SCORE 低于阈值 $THRESHOLD，检测到性能回归"
+            else
+              echo "PERFORMANCE_REGRESSION=false" >> $GITHUB_ENV
+              echo "性能分数 $PERFORMANCE_SCORE 符合要求"
+            fi
+          fi
+
+      - name: 🚨 性能回归告警
+        if: env.PERFORMANCE_REGRESSION == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('performance-report.md', 'utf8');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '📉 性能回归检测 - 需要立即处理',
+              body: \`## 性能回归警告\\n\\n🚨 检测到性能指标显著下降！\\n\\n### 📊 当前性能状态\\n\`\`\`\\n${report}\\n\`\`\`\\n\\n### 🔍 可能的原因\\n- 📦 新增大文件或依赖\\n- 🐌 低效的代码实现\\n- 🌐 网络请求增加\\n- 💾 内存泄漏\\n- 🎨 渲染性能问题\\n\\n### 💡 修复建议\\n1. **立即调查**最近的代码变更\\n2. **分析**Lighthouse性能报告\\n3. **检查**包大小变化\\n4. **优化**性能瓶颈\\n5. **考虑**代码分割和懒加载\\n\\n### 📞 紧急联系\\n- 前端团队: frontend@company.com\\n- DevOps团队: devops@company.com\\n\\n### 🎯 目标\\n- 性能分数 ≥85\\n- 首次内容绘制 <1.8s\\n- 总包大小 <2MB\\n\\n---\\n\\n*自动生成的性能告警 - $(date)*\`,
+              labels: ['performance', 'urgent', 'auto-generated', 'regression']
+            });
+
+  load-testing:
+    name: 负载测试
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: performance-metrics
+    if: github.event.inputs.test_type != 'lighthouse-only' || github.event_name == 'schedule'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build application
+        run: pnpm build
+
+      - name: 🚀 Start application
+        run: |
+          pnpm dev &
+          SERVER_PID=$!
+
+          # Wait for server to be ready
+          echo "⏳ Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -f http://localhost:5173 > /dev/null 2>&1; then
+              echo "✅ Server is ready"
+              break
+            fi
+            sleep 2
+          done
+
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+
+      - name: 🧪 k6 负载测试
+        run: |
+          echo "🔥 运行 k6 负载测试..."
+
+          # Install k6
+          curl -sSL https://github.com/grafana/k6/releases/latest/download/k6_0.45.0_linux_amd64.tar.gz | tar -xz
+          sudo mv k6 /usr/local/bin/
+
+          # Create k6 test script
+          cat > load-test.js << 'EOF'
+          import http from 'k6/http';
+          import { check, sleep } from 'k6';
+
+          export const options = {
+            stages: [
+              { duration: '30s', target: 10 },  // Ramp up to 10 users
+              { duration: '1m', target: 50 },   // Ramp up to 50 users
+              { duration: '2m', target: 50 },   // Stay at 50 users
+              { duration: '30s', target: 0 },   // Ramp down to 0 users
+            ],
+            thresholds: {
+              http_req_duration: ['p(95)<500'], // 95% of requests should be below 500ms
+              http_req_failed: ['rate<0.1'],    // Error rate should be below 10%
+            },
+          };
+
+          export default function () {
+            const response = http.get('http://localhost:5173');
+
+            check(response, {
+              'status is 200': (r) => r.status === 200,
+              'response time < 500ms': (r) => r.timings.duration < 500,
+            });
+
+            sleep(1);
+          }
+          EOF
+
+          # Run k6 test
+          k6 run --out json=load-test-results.json load-test.js
+
+      - name: 📊 生成负载测试报告
+        run: |
+          echo "## 🧪 负载测试结果" > load-test-report.md
+          echo "" >> load-test-report.md
+
+          if [ -f "load-test-results.json" ]; then
+            echo "### 📈 关键指标" >> load-test-report.md
+            echo "" >> load-test-report.md
+
+            # Parse k6 results
+            node -e "
+              const fs = require('fs');
+              const results = fs.readFileSync('load-test-results.json', 'utf8')
+                .split('\\n')
+                .filter(line => line.trim())
+                .map(line => {
+                  try {
+                    return JSON.parse(line);
+                  } catch (e) {
+                    return null;
+                  }
+                })
+                .filter(Boolean);
+
+              if (results.length > 0) {
+                console.log('| 指标 | 值 | 状态 |');
+                console.log('|------|-----|------|');
+
+                // Extract key metrics
+                const metrics = results.filter(r => r.type === 'Point' && r.metric);
+
+                // Find specific metrics
+                const findMetric = (name) => metrics.find(m => m.metric === name);
+
+                const httpReqDuration = findMetric('http_req_duration');
+                const httpReqFailed = findMetric('http_req_failed');
+
+                if (httpReqDuration) {
+                  const p95 = Math.round(httpReqDuration.data.value);
+                  const status = p95 < 500 ? '✅' : p95 < 1000 ? '⚠️' : '❌';
+                  console.log(\`| 响应时间 P95 | \${p95}ms | \${status} |\`);
+                }
+
+                if (httpReqFailed) {
+                  const errorRate = (httpReqFailed.data.value * 100).toFixed(2);
+                  const status = errorRate < 1 ? '✅' : errorRate < 5 ? '⚠️' : '❌';
+                  console.log(\`| 错误率 | \${errorRate}% | \${status} |\`);
+                }
+
+                console.log('');
+                console.log('### 📊 详细结果');
+                console.log('');
+                console.log('| 指标 | 最小值 | 平均值 | 最大值 | P95 | P99 |');
+                console.log('|------|--------|--------|--------|-----|-----|');
+
+                // More detailed metrics
+                ['http_req_duration', 'http_req_waiting'].forEach(metricName => {
+                  const metric = findMetric(metricName);
+                  if (metric && metric.data) {
+                    const data = metric.data;
+                    console.log(\`| \${metricName} | \${Math.round(data.min)}ms | \${Math.round(data.avg)}ms | \${Math.round(data.max)}ms | \${Math.round(data['p(95)'])}ms | \${Math.round(data['p(99)'])}ms |\`);
+                  }
+                });
+              } else {
+                console.log('负载测试结果解析失败');
+              }
+            " >> load-test-report.md
+          else
+            echo "❌ 负载测试结果文件不存在" >> load-test-report.md
+          fi
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          if [ -n "$SERVER_PID" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
+
+      - name: 📤 Upload load test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-report-$(date +%Y%m%d)
+          path: |
+            load-test-report.md
+            load-test-results.json
+            load-test.js
+          retention-days: 30

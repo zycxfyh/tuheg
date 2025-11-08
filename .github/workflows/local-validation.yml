@@ -1,0 +1,71 @@
+name: Local Validation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Code Quality & Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting with Prettier
+        run: pnpm format --check
+        continue-on-error: false
+
+      - name: Run Biome linter
+        run: pnpm lint
+        continue-on-error: false
+
+      - name: Type check with TypeScript
+        run: pnpm exec tsc --noEmit --project tsconfig.json
+
+      - name: Validate commit messages
+        if: github.event_name == 'pull_request'
+        run: pnpm exec commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+      - name: Check for sensitive data
+        run: |
+          if grep -r "password\|secret\|token\|key" --include="*.ts" --include="*.js" --include="*.json" --exclude-dir=node_modules --exclude-dir=.git .; then
+            echo "Sensitive data found in code. Please use environment variables or secure storage."
+            exit 1
+          fi
+
+      - name: Validate package.json files
+        run: |
+          find . -name "package.json" -not -path "./node_modules/*" -exec node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('{}', 'utf8'));
+            if (!pkg.name || !pkg.version) {
+              console.error('Invalid package.json:', '{}');
+              process.exit(1);
+            }
+          " \;

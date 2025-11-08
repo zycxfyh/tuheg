@@ -1,10 +1,10 @@
 // 文件路径: packages/common-backend/src/ai/crew/crew.ts
 // 核心理念: 工作流编排，组织智能体和任务，实现复杂的协作流程
 
-import { Injectable, Logger } from '@nestjs/common';
-import type { Agent } from './agent';
-import type { Task } from './task';
-import type { TaskResult } from './task.types';
+import { Injectable, Logger } from '@nestjs/common'
+import type { Agent } from './agent'
+import type { Task } from './task'
+import type { TaskResult } from './task.types'
 
 /**
  * @interface CrewConfig
@@ -12,15 +12,15 @@ import type { TaskResult } from './task.types';
  */
 export interface CrewConfig {
   /** Crew 描述 */
-  description?: string;
+  description?: string
   /** 执行模式：sequential（顺序）或 parallel（并行） */
-  executionMode?: 'sequential' | 'parallel';
+  executionMode?: 'sequential' | 'parallel'
   /** 是否在任务失败时继续执行 */
-  continueOnError?: boolean;
+  continueOnError?: boolean
   /** 最大并发数（并行模式） */
-  maxConcurrency?: number;
+  maxConcurrency?: number
   /** 其他元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -29,15 +29,15 @@ export interface CrewConfig {
  */
 export interface CrewExecutionResult {
   /** 执行是否成功 */
-  success: boolean;
+  success: boolean
   /** 所有任务的结果 */
-  results: TaskResult[];
+  results: TaskResult[]
   /** 总执行时间（毫秒） */
-  totalExecutionTime: number;
+  totalExecutionTime: number
   /** 错误信息（如果有） */
-  error?: string;
+  error?: string
   /** 元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -47,13 +47,13 @@ export interface CrewExecutionResult {
  */
 @Injectable()
 export class Crew {
-  private readonly logger = new Logger(Crew.name);
-  private readonly agents = new Map<string, Agent>();
-  private readonly tasks = new Map<string, Task>();
+  private readonly logger = new Logger(Crew.name)
+  private readonly agents = new Map<string, Agent>()
+  private readonly tasks = new Map<string, Task>()
 
   constructor(
     private readonly name: string,
-    private readonly config: CrewConfig = {},
+    private readonly config: CrewConfig = {}
   ) {}
 
   /**
@@ -61,8 +61,8 @@ export class Crew {
    * @description 添加智能体到 Crew
    */
   public addAgent(name: string, agent: Agent): void {
-    this.agents.set(name, agent);
-    this.logger.debug(`Added agent "${name}" to crew "${this.name}"`);
+    this.agents.set(name, agent)
+    this.logger.debug(`Added agent "${name}" to crew "${this.name}"`)
   }
 
   /**
@@ -70,8 +70,8 @@ export class Crew {
    * @description 添加任务到 Crew
    */
   public addTask(name: string, task: Task): void {
-    this.tasks.set(name, task);
-    this.logger.debug(`Added task "${name}" to crew "${this.name}"`);
+    this.tasks.set(name, task)
+    this.logger.debug(`Added task "${name}" to crew "${this.name}"`)
   }
 
   /**
@@ -79,7 +79,7 @@ export class Crew {
    * @description 获取智能体
    */
   public getAgent(name: string): Agent | undefined {
-    return this.agents.get(name);
+    return this.agents.get(name)
   }
 
   /**
@@ -87,7 +87,7 @@ export class Crew {
    * @description 获取任务
    */
   public getTask(name: string): Task | undefined {
-    return this.tasks.get(name);
+    return this.tasks.get(name)
   }
 
   /**
@@ -97,76 +97,76 @@ export class Crew {
    * @returns 执行结果
    */
   public async execute(context: Record<string, unknown> = {}): Promise<CrewExecutionResult> {
-    const startTime = Date.now();
-    const results: TaskResult[] = [];
-    const completedTasks = new Set<string>();
-    const executionMode = this.config.executionMode ?? 'sequential';
-    const continueOnError = this.config.continueOnError ?? false;
+    const startTime = Date.now()
+    const results: TaskResult[] = []
+    const completedTasks = new Set<string>()
+    const executionMode = this.config.executionMode ?? 'sequential'
+    const continueOnError = this.config.continueOnError ?? false
 
-    this.logger.log(`Starting crew "${this.name}" execution (mode: ${executionMode})`);
+    this.logger.log(`Starting crew "${this.name}" execution (mode: ${executionMode})`)
 
     try {
       if (executionMode === 'sequential') {
         // 顺序执行
-        const sortedTasks = this.sortTasksByDependencies();
+        const sortedTasks = this.sortTasksByDependencies()
         for (const task of sortedTasks) {
           if (!task.canExecute(completedTasks)) {
-            const error = `Task "${task.getName()}" dependencies not met`;
-            this.logger.error(error);
+            const error = `Task "${task.getName()}" dependencies not met`
+            this.logger.error(error)
             if (!continueOnError) {
-              throw new Error(error);
+              throw new Error(error)
             }
-            continue;
+            continue
           }
 
-          const agent = this.selectAgentForTask(task);
+          const agent = this.selectAgentForTask(task)
           if (!agent) {
-            const error = `No agent available for task "${task.getName()}"`;
-            this.logger.error(error);
+            const error = `No agent available for task "${task.getName()}"`
+            this.logger.error(error)
             if (!continueOnError) {
-              throw new Error(error);
+              throw new Error(error)
             }
-            continue;
+            continue
           }
 
           const result = await task.execute(agent, {
             input: context,
             dependencies: this.getDependencyResults(task.getName(), results),
             globalContext: context,
-          });
+          })
 
-          results.push(result);
-          completedTasks.add(task.getName());
+          results.push(result)
+          completedTasks.add(task.getName())
 
           if (!result.success && !continueOnError) {
-            throw new Error(result.error ?? 'Task execution failed');
+            throw new Error(result.error ?? 'Task execution failed')
           }
         }
       } else {
         // 并行执行
-        const maxConcurrency = this.config.maxConcurrency ?? 3;
-        const sortedTasks = this.sortTasksByDependencies();
-        const taskQueue = [...sortedTasks];
-        const executingTasks = new Set<string>();
+        const maxConcurrency = this.config.maxConcurrency ?? 3
+        const sortedTasks = this.sortTasksByDependencies()
+        const taskQueue = [...sortedTasks]
+        const executingTasks = new Set<string>()
 
         while (taskQueue.length > 0 || executingTasks.size > 0) {
           // 启动新任务
           while (taskQueue.length > 0 && executingTasks.size < maxConcurrency) {
-            const task = taskQueue[0];
+            const task = taskQueue[0]
             if (!task.canExecute(completedTasks)) {
-              taskQueue.shift();
-              continue;
+              taskQueue.shift()
+              continue
             }
 
-            const agent = this.selectAgentForTask(task);
+            const agent = this.selectAgentForTask(task)
             if (!agent) {
-              taskQueue.shift();
-              continue;
+              taskQueue.shift()
+              continue
             }
 
-            const taskName = task.getName();
-            executingTasks.add(taskName);
-            taskQueue.shift();
+            const taskName = task.getName()
+            executingTasks.add(taskName)
+            taskQueue.shift()
 
             // 异步执行任务
             task
@@ -176,33 +176,33 @@ export class Crew {
                 globalContext: context,
               })
               .then((result) => {
-                results.push(result);
-                completedTasks.add(taskName);
-                executingTasks.delete(taskName);
+                results.push(result)
+                completedTasks.add(taskName)
+                executingTasks.delete(taskName)
 
                 if (!result.success && !continueOnError) {
-                  throw new Error(result.error ?? 'Task execution failed');
+                  throw new Error(result.error ?? 'Task execution failed')
                 }
               })
               .catch((error) => {
-                executingTasks.delete(taskName);
+                executingTasks.delete(taskName)
                 if (!continueOnError) {
-                  throw error;
+                  throw error
                 }
-              });
+              })
           }
 
           // 等待一段时间再检查
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100))
         }
       }
 
-      const totalExecutionTime = Date.now() - startTime;
-      const allSuccess = results.every((r) => r.success);
+      const totalExecutionTime = Date.now() - startTime
+      const allSuccess = results.every((r) => r.success)
 
       this.logger.log(
-        `Crew "${this.name}" execution completed in ${totalExecutionTime}ms (success: ${allSuccess})`,
-      );
+        `Crew "${this.name}" execution completed in ${totalExecutionTime}ms (success: ${allSuccess})`
+      )
 
       return {
         success: allSuccess,
@@ -213,15 +213,15 @@ export class Crew {
           executionMode,
           crewName: this.name,
         },
-      };
+      }
     } catch (error) {
-      const totalExecutionTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const totalExecutionTime = Date.now() - startTime
+      const errorMessage = error instanceof Error ? error.message : String(error)
 
       this.logger.error(
         `Crew "${this.name}" execution failed: ${errorMessage}`,
-        error instanceof Error ? error.stack : undefined,
-      );
+        error instanceof Error ? error.stack : undefined
+      )
 
       return {
         success: false,
@@ -233,7 +233,7 @@ export class Crew {
           executionMode,
           crewName: this.name,
         },
-      };
+      }
     }
   }
 
@@ -242,42 +242,42 @@ export class Crew {
    * @description 根据依赖关系排序任务
    */
   private sortTasksByDependencies(): Task[] {
-    const tasks = Array.from(this.tasks.values());
-    const sorted: Task[] = [];
-    const visited = new Set<string>();
-    const visiting = new Set<string>();
+    const tasks = Array.from(this.tasks.values())
+    const sorted: Task[] = []
+    const visited = new Set<string>()
+    const visiting = new Set<string>()
 
     const visit = (task: Task) => {
       if (visiting.has(task.getName())) {
-        throw new Error(`Circular dependency detected in crew "${this.name}"`);
+        throw new Error(`Circular dependency detected in crew "${this.name}"`)
       }
 
       if (visited.has(task.getName())) {
-        return;
+        return
       }
 
-      visiting.add(task.getName());
+      visiting.add(task.getName())
 
-      const dependencies = task.getDependencies();
+      const dependencies = task.getDependencies()
       for (const depName of dependencies) {
-        const depTask = this.tasks.get(depName);
+        const depTask = this.tasks.get(depName)
         if (depTask) {
-          visit(depTask);
+          visit(depTask)
         }
       }
 
-      visiting.delete(task.getName());
-      visited.add(task.getName());
-      sorted.push(task);
-    };
+      visiting.delete(task.getName())
+      visited.add(task.getName())
+      sorted.push(task)
+    }
 
     for (const task of tasks) {
       if (!visited.has(task.getName())) {
-        visit(task);
+        visit(task)
       }
     }
 
-    return sorted;
+    return sorted
   }
 
   /**
@@ -285,15 +285,15 @@ export class Crew {
    * @description 为任务选择合适的智能体
    */
   private selectAgentForTask(task: Task): Agent | undefined {
-    const taskConfig = task.getConfig();
+    const taskConfig = task.getConfig()
 
     // 如果任务指定了智能体，使用指定的
     if (taskConfig.agent) {
-      return this.agents.get(taskConfig.agent);
+      return this.agents.get(taskConfig.agent)
     }
 
     // 否则返回第一个可用的智能体
-    return Array.from(this.agents.values())[0];
+    return Array.from(this.agents.values())[0]
   }
 
   /**
@@ -302,23 +302,23 @@ export class Crew {
    */
   private getDependencyResults(
     taskName: string,
-    results: TaskResult[],
+    results: TaskResult[]
   ): Record<string, TaskResult> {
-    const task = this.tasks.get(taskName);
+    const task = this.tasks.get(taskName)
     if (!task) {
-      return {};
+      return {}
     }
 
-    const dependencies = task.getDependencies();
-    const dependencyResults: Record<string, TaskResult> = {};
+    const dependencies = task.getDependencies()
+    const dependencyResults: Record<string, TaskResult> = {}
 
     for (const depName of dependencies) {
-      const depResult = results.find((r) => r.taskName === depName);
+      const depResult = results.find((r) => r.taskName === depName)
       if (depResult) {
-        dependencyResults[depName] = depResult;
+        dependencyResults[depName] = depResult
       }
     }
 
-    return dependencyResults;
+    return dependencyResults
   }
 }

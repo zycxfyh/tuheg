@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import EventEmitter from 'eventemitter3';
+import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import EventEmitter from 'eventemitter3'
 import {
   ClientConfig,
   RequestConfig,
@@ -9,23 +9,23 @@ import {
   VCPToolBoxError,
   AuthenticationError,
   NetworkError,
-  SDKEventMap
-} from './types.js';
+  SDKEventMap,
+} from './types.js'
 
 /**
  * VCPToolBox API Client
  * VCPToolBox API 客户端
  */
 export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
-  private axiosInstance: AxiosInstance;
-  private config: ClientConfig;
-  private token?: string;
-  private refreshToken?: string;
-  private isAuthenticated = false;
+  private axiosInstance: AxiosInstance
+  private config: ClientConfig
+  private token?: string
+  private refreshToken?: string
+  private isAuthenticated = false
 
   constructor(config: ClientConfig) {
-    super();
-    this.config = { ...config };
+    super()
+    this.config = { ...config }
 
     // 创建 axios 实例
     this.axiosInstance = axios.create({
@@ -34,17 +34,17 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'VCPToolBox-SDK/1.0.0',
-        ...this.config.headers
-      }
-    });
+        ...this.config.headers,
+      },
+    })
 
     // 设置请求拦截器
-    this.setupRequestInterceptors();
+    this.setupRequestInterceptors()
 
     // 设置响应拦截器
-    this.setupResponseInterceptors();
+    this.setupResponseInterceptors()
 
-    this.emit('ready');
+    this.emit('ready')
   }
 
   /**
@@ -55,17 +55,17 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
       (config) => {
         // 添加认证头
         if (this.token) {
-          config.headers.Authorization = `Bearer ${this.token}`;
+          config.headers.Authorization = `Bearer ${this.token}`
         } else if (this.config.auth?.apiKey) {
-          config.headers['X-API-Key'] = this.config.auth.apiKey;
+          config.headers['X-API-Key'] = this.config.auth.apiKey
         }
 
-        return config;
+        return config
       },
       (error) => {
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    );
+    )
   }
 
   /**
@@ -74,49 +74,49 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
   private setupResponseInterceptors() {
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        return response;
+        return response
       },
       (error) => {
         if (error.response) {
           // 服务器响应错误
-          const status = error.response.status;
-          const message = error.response.data?.message || error.message;
+          const status = error.response.status
+          const message = error.response.data?.message || error.message
 
           if (status === 401) {
-            this.isAuthenticated = false;
-            this.emit('error', new AuthenticationError('Authentication required'));
+            this.isAuthenticated = false
+            this.emit('error', new AuthenticationError('Authentication required'))
           } else if (status >= 400 && status < 500) {
-            throw new VCPToolBoxError(message, 'CLIENT_ERROR', status, error.response.data);
+            throw new VCPToolBoxError(message, 'CLIENT_ERROR', status, error.response.data)
           } else if (status >= 500) {
-            throw new VCPToolBoxError(message, 'SERVER_ERROR', status, error.response.data);
+            throw new VCPToolBoxError(message, 'SERVER_ERROR', status, error.response.data)
           }
         } else if (error.request) {
           // 网络错误
-          throw new NetworkError('Network request failed', error);
+          throw new NetworkError('Network request failed', error)
         } else {
           // 其他错误
-          throw new VCPToolBoxError(error.message, 'UNKNOWN_ERROR', undefined, error);
+          throw new VCPToolBoxError(error.message, 'UNKNOWN_ERROR', undefined, error)
         }
 
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    );
+    )
   }
 
   /**
    * 设置认证配置
    */
   setAuth(auth: AuthConfig) {
-    this.config.auth = { ...auth };
+    this.config.auth = { ...auth }
 
     if (auth.bearerToken) {
-      this.token = auth.bearerToken;
-      this.isAuthenticated = true;
+      this.token = auth.bearerToken
+      this.isAuthenticated = true
       this.emit('authenticated', {
         access_token: auth.bearerToken,
         token_type: 'Bearer',
-        expires_in: 3600 // 默认1小时
-      });
+        expires_in: 3600, // 默认1小时
+      })
     }
   }
 
@@ -124,62 +124,54 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
    * 设置认证令牌
    */
   setToken(token: string, refreshToken?: string) {
-    this.token = token;
-    this.refreshToken = refreshToken;
-    this.isAuthenticated = true;
+    this.token = token
+    this.refreshToken = refreshToken
+    this.isAuthenticated = true
 
     this.emit('authenticated', {
       access_token: token,
       refresh_token: refreshToken,
       token_type: 'Bearer',
-      expires_in: 3600
-    });
+      expires_in: 3600,
+    })
   }
 
   /**
    * 清除认证
    */
   clearAuth() {
-    this.token = undefined;
-    this.refreshToken = undefined;
-    this.isAuthenticated = false;
-    this.config.auth = undefined;
+    this.token = undefined
+    this.refreshToken = undefined
+    this.isAuthenticated = false
+    this.config.auth = undefined
   }
 
   /**
    * 检查是否已认证
    */
   isAuth(): boolean {
-    return this.isAuthenticated;
+    return this.isAuthenticated
   }
 
   /**
    * 发送 HTTP 请求
    */
-  async request<T = any>(
-    url: string,
-    config: RequestConfig = {}
-  ): Promise<ApiResponse<T>> {
-    try {
-      const response = await this.axiosInstance.request({
-        url,
-        method: config.method || 'GET',
-        headers: config.headers,
-        params: config.params,
-        data: config.data,
-        timeout: config.timeout
-      });
+  async request<T = any>(url: string, config: RequestConfig = {}): Promise<ApiResponse<T>> {
+    const response = await this.axiosInstance.request({
+      url,
+      method: config.method || 'GET',
+      headers: config.headers,
+      params: config.params,
+      data: config.data,
+      timeout: config.timeout,
+    })
 
-      return {
-        data: response.data,
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers as Record<string, string>,
-        request: response.request
-      };
-    } catch (error) {
-      // 错误已在响应拦截器中处理
-      throw error;
+    return {
+      data: response.data,
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers as Record<string, string>,
+      request: response.request,
     }
   }
 
@@ -191,7 +183,7 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
     params?: Record<string, any>,
     config: Omit<RequestConfig, 'method' | 'params'> = {}
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(url, { ...config, method: 'GET', params });
+    return this.request<T>(url, { ...config, method: 'GET', params })
   }
 
   /**
@@ -202,7 +194,7 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
     data?: any,
     config: Omit<RequestConfig, 'method' | 'data'> = {}
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(url, { ...config, method: 'POST', data });
+    return this.request<T>(url, { ...config, method: 'POST', data })
   }
 
   /**
@@ -213,7 +205,7 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
     data?: any,
     config: Omit<RequestConfig, 'method' | 'data'> = {}
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(url, { ...config, method: 'PUT', data });
+    return this.request<T>(url, { ...config, method: 'PUT', data })
   }
 
   /**
@@ -223,7 +215,7 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
     url: string,
     config: Omit<RequestConfig, 'method'> = {}
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(url, { ...config, method: 'DELETE' });
+    return this.request<T>(url, { ...config, method: 'DELETE' })
   }
 
   /**
@@ -234,33 +226,33 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
     data?: any,
     config: Omit<RequestConfig, 'method' | 'data'> = {}
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(url, { ...config, method: 'PATCH', data });
+    return this.request<T>(url, { ...config, method: 'PATCH', data })
   }
 
   /**
    * 获取客户端配置
    */
   getConfig(): ClientConfig {
-    return { ...this.config };
+    return { ...this.config }
   }
 
   /**
    * 更新客户端配置
    */
   updateConfig(updates: Partial<ClientConfig>) {
-    this.config = { ...this.config, ...updates };
+    this.config = { ...this.config, ...updates }
 
     // 重新配置 axios 实例
     if (updates.baseURL) {
-      this.axiosInstance.defaults.baseURL = updates.baseURL;
+      this.axiosInstance.defaults.baseURL = updates.baseURL
     }
 
     if (updates.timeout) {
-      this.axiosInstance.defaults.timeout = updates.timeout;
+      this.axiosInstance.defaults.timeout = updates.timeout
     }
 
     if (updates.headers) {
-      Object.assign(this.axiosInstance.defaults.headers, updates.headers);
+      Object.assign(this.axiosInstance.defaults.headers, updates.headers)
     }
   }
 
@@ -268,7 +260,7 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
    * 获取 SDK 版本信息
    */
   getVersion(): string {
-    return '1.0.0';
+    return '1.0.0'
   }
 
   /**
@@ -276,10 +268,10 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await this.get('/health');
-      return response.status === 200;
+      const response = await this.get('/health')
+      return response.status === 200
     } catch (error) {
-      return false;
+      return false
     }
   }
 }

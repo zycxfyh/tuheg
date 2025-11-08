@@ -106,13 +106,7 @@
     "grafana_endpoint": "http://grafana:3000",
     "alertmanager_endpoint": "http://alertmanager:9093",
 
-    "key_metrics": [
-      "http_requests_total",
-      "http_request_duration_seconds",
-      "process_cpu_user_seconds_total",
-      "process_resident_memory_bytes",
-      "go_gc_duration_seconds"
-    ],
+    "key_metrics": ["http_requests_total", "http_request_duration_seconds", "process_cpu_user_seconds_total", "process_resident_memory_bytes", "go_gc_duration_seconds"],
 
     "alert_rules": {
       "high_error_rate": {

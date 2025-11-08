@@ -1,7 +1,7 @@
 // 文件路径: packages/common-backend/src/resilience/circuit-breaker.service.ts
 // 核心理念: 熔断器模式，防止级联故障
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common'
 
 /**
  * @enum CircuitState
@@ -22,15 +22,15 @@ export enum CircuitState {
  */
 export interface CircuitBreakerOptions {
   /** 失败阈值（触发熔断的失败次数） */
-  failureThreshold?: number;
+  failureThreshold?: number
   /** 失败率阈值（触发熔断的失败率，0-1） */
-  failureRateThreshold?: number;
+  failureRateThreshold?: number
   /** 时间窗口（毫秒） */
-  timeout?: number;
+  timeout?: number
   /** 半开状态允许的请求数 */
-  halfOpenRequests?: number;
+  halfOpenRequests?: number
   /** 半开状态成功后切换到关闭状态需要的成功次数 */
-  successThreshold?: number;
+  successThreshold?: number
 }
 
 /**
@@ -39,17 +39,17 @@ export interface CircuitBreakerOptions {
  */
 export interface CircuitBreakerMetrics {
   /** 总请求数 */
-  totalRequests: number;
+  totalRequests: number
   /** 成功请求数 */
-  successfulRequests: number;
+  successfulRequests: number
   /** 失败请求数 */
-  failedRequests: number;
+  failedRequests: number
   /** 当前失败率 */
-  failureRate: number;
+  failureRate: number
   /** 当前状态 */
-  state: CircuitState;
+  state: CircuitState
   /** 最后状态变更时间 */
-  lastStateChange: number;
+  lastStateChange: number
 }
 
 /**
@@ -59,20 +59,20 @@ export interface CircuitBreakerMetrics {
  */
 @Injectable()
 export class CircuitBreakerService {
-  private readonly logger = new Logger(CircuitBreakerService.name);
+  private readonly logger = new Logger(CircuitBreakerService.name)
 
   // 每个服务的熔断器状态
   private readonly circuits = new Map<
     string,
     {
-      state: CircuitState;
-      failures: number;
-      successes: number;
-      lastFailureTime: number;
-      halfOpenRequests: number;
-      metrics: CircuitBreakerMetrics;
+      state: CircuitState
+      failures: number
+      successes: number
+      lastFailureTime: number
+      halfOpenRequests: number
+      metrics: CircuitBreakerMetrics
     }
-  >();
+  >()
 
   /**
    * @method execute
@@ -90,7 +90,7 @@ export class CircuitBreakerService {
   async execute<T>(
     name: string,
     operation: () => Promise<T>,
-    options: CircuitBreakerOptions = {},
+    options: CircuitBreakerOptions = {}
   ): Promise<T> {
     const {
       failureThreshold = 5,
@@ -98,42 +98,42 @@ export class CircuitBreakerService {
       timeout = 5000,
       halfOpenRequests = 3,
       successThreshold = 2,
-    } = options;
+    } = options
 
-    const circuit = this.getOrCreateCircuit(name);
+    const circuit = this.getOrCreateCircuit(name)
 
     // 检查熔断器状态
     if (circuit.state === CircuitState.OPEN) {
       // 检查是否可以进入半开状态
-      const timeSinceLastFailure = Date.now() - circuit.lastFailureTime;
+      const timeSinceLastFailure = Date.now() - circuit.lastFailureTime
       if (timeSinceLastFailure >= timeout) {
-        circuit.state = CircuitState.HALF_OPEN;
-        circuit.halfOpenRequests = 0;
-        this.logger.log(`Circuit breaker "${name}" transitioned to HALF_OPEN`);
+        circuit.state = CircuitState.HALF_OPEN
+        circuit.halfOpenRequests = 0
+        this.logger.log(`Circuit breaker "${name}" transitioned to HALF_OPEN`)
       } else {
-        throw new Error(`Circuit breaker "${name}" is OPEN. Request rejected.`);
+        throw new Error(`Circuit breaker "${name}" is OPEN. Request rejected.`)
       }
     }
 
     // 半开状态：限制请求数
     if (circuit.state === CircuitState.HALF_OPEN) {
       if (circuit.halfOpenRequests >= halfOpenRequests) {
-        throw new Error(`Circuit breaker "${name}" is HALF_OPEN. Request limit reached.`);
+        throw new Error(`Circuit breaker "${name}" is HALF_OPEN. Request limit reached.`)
       }
-      circuit.halfOpenRequests++;
+      circuit.halfOpenRequests++
     }
 
     // 执行操作
     try {
-      const result = await operation();
+      const result = await operation()
 
       // 成功
-      this.recordSuccess(name, circuit, successThreshold);
-      return result;
+      this.recordSuccess(name, circuit, successThreshold)
+      return result
     } catch (error) {
       // 失败
-      this.recordFailure(name, circuit, failureThreshold, failureRateThreshold);
-      throw error;
+      this.recordFailure(name, circuit, failureThreshold, failureRateThreshold)
+      throw error
     }
   }
 
@@ -157,9 +157,9 @@ export class CircuitBreakerService {
           state: CircuitState.CLOSED,
           lastStateChange: Date.now(),
         },
-      });
+      })
     }
-    return this.circuits.get(name)!;
+    return this.circuits.get(name)!
   }
 
   /**
@@ -169,21 +169,21 @@ export class CircuitBreakerService {
   private recordSuccess(
     name: string,
     circuit: ReturnType<typeof this.getOrCreateCircuit>,
-    successThreshold: number,
+    successThreshold: number
   ): void {
-    circuit.metrics.totalRequests++;
-    circuit.metrics.successfulRequests++;
-    circuit.successes++;
+    circuit.metrics.totalRequests++
+    circuit.metrics.successfulRequests++
+    circuit.successes++
 
     // 半开状态：如果成功次数达到阈值，切换到关闭状态
     if (circuit.state === CircuitState.HALF_OPEN) {
       if (circuit.successes >= successThreshold) {
-        circuit.state = CircuitState.CLOSED;
-        circuit.failures = 0;
-        circuit.successes = 0;
-        circuit.metrics.state = CircuitState.CLOSED;
-        circuit.metrics.lastStateChange = Date.now();
-        this.logger.log(`Circuit breaker "${name}" transitioned to CLOSED`);
+        circuit.state = CircuitState.CLOSED
+        circuit.failures = 0
+        circuit.successes = 0
+        circuit.metrics.state = CircuitState.CLOSED
+        circuit.metrics.lastStateChange = Date.now()
+        this.logger.log(`Circuit breaker "${name}" transitioned to CLOSED`)
       }
     }
 
@@ -191,7 +191,7 @@ export class CircuitBreakerService {
     circuit.metrics.failureRate =
       circuit.metrics.totalRequests > 0
         ? circuit.metrics.failedRequests / circuit.metrics.totalRequests
-        : 0;
+        : 0
   }
 
   /**
@@ -202,38 +202,38 @@ export class CircuitBreakerService {
     name: string,
     circuit: ReturnType<typeof this.getOrCreateCircuit>,
     failureThreshold: number,
-    failureRateThreshold: number,
+    failureRateThreshold: number
   ): void {
-    circuit.metrics.totalRequests++;
-    circuit.metrics.failedRequests++;
-    circuit.failures++;
-    circuit.lastFailureTime = Date.now();
+    circuit.metrics.totalRequests++
+    circuit.metrics.failedRequests++
+    circuit.failures++
+    circuit.lastFailureTime = Date.now()
 
     // 更新失败率
     circuit.metrics.failureRate =
       circuit.metrics.totalRequests > 0
         ? circuit.metrics.failedRequests / circuit.metrics.totalRequests
-        : 0;
+        : 0
 
     // 检查是否需要开启熔断器
     if (circuit.state === CircuitState.CLOSED) {
       const shouldOpen =
-        circuit.failures >= failureThreshold || circuit.metrics.failureRate >= failureRateThreshold;
+        circuit.failures >= failureThreshold || circuit.metrics.failureRate >= failureRateThreshold
 
       if (shouldOpen) {
-        circuit.state = CircuitState.OPEN;
-        circuit.metrics.state = CircuitState.OPEN;
-        circuit.metrics.lastStateChange = Date.now();
+        circuit.state = CircuitState.OPEN
+        circuit.metrics.state = CircuitState.OPEN
+        circuit.metrics.lastStateChange = Date.now()
         this.logger.warn(
-          `Circuit breaker "${name}" opened due to failures: ${circuit.failures}, failure rate: ${circuit.metrics.failureRate.toFixed(2)}`,
-        );
+          `Circuit breaker "${name}" opened due to failures: ${circuit.failures}, failure rate: ${circuit.metrics.failureRate.toFixed(2)}`
+        )
       }
     } else if (circuit.state === CircuitState.HALF_OPEN) {
       // 半开状态：如果失败，立即切换到开启状态
-      circuit.state = CircuitState.OPEN;
-      circuit.metrics.state = CircuitState.OPEN;
-      circuit.metrics.lastStateChange = Date.now();
-      this.logger.warn(`Circuit breaker "${name}" opened after failure in HALF_OPEN state`);
+      circuit.state = CircuitState.OPEN
+      circuit.metrics.state = CircuitState.OPEN
+      circuit.metrics.lastStateChange = Date.now()
+      this.logger.warn(`Circuit breaker "${name}" opened after failure in HALF_OPEN state`)
     }
   }
 
@@ -242,8 +242,8 @@ export class CircuitBreakerService {
    * @description 获取熔断器指标
    */
   getMetrics(name: string): CircuitBreakerMetrics | null {
-    const circuit = this.circuits.get(name);
-    return circuit ? circuit.metrics : null;
+    const circuit = this.circuits.get(name)
+    return circuit ? circuit.metrics : null
   }
 
   /**
@@ -251,12 +251,12 @@ export class CircuitBreakerService {
    * @description 重置熔断器
    */
   reset(name: string): void {
-    const circuit = this.circuits.get(name);
+    const circuit = this.circuits.get(name)
     if (circuit) {
-      circuit.state = CircuitState.CLOSED;
-      circuit.failures = 0;
-      circuit.successes = 0;
-      circuit.halfOpenRequests = 0;
+      circuit.state = CircuitState.CLOSED
+      circuit.failures = 0
+      circuit.successes = 0
+      circuit.halfOpenRequests = 0
       circuit.metrics = {
         totalRequests: 0,
         successfulRequests: 0,
@@ -264,8 +264,8 @@ export class CircuitBreakerService {
         failureRate: 0,
         state: CircuitState.CLOSED,
         lastStateChange: Date.now(),
-      };
-      this.logger.log(`Circuit breaker "${name}" reset`);
+      }
+      this.logger.log(`Circuit breaker "${name}" reset`)
     }
   }
 }

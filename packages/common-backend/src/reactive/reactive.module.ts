@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/reactive/reactive.module.ts
 // 核心理念: 模块化导出，方便使用
 
-import { Module } from '@nestjs/common';
-import { EventStream } from './event-stream';
+import { Module } from '@nestjs/common'
+import { EventStream } from './event-stream'
 
 /**
  * @module ReactiveModule

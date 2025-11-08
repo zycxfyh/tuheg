@@ -5,19 +5,19 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
-  Logger
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { PluginSandboxService, SandboxOptions, SandboxResult } from '@tuheg/common-backend';
+  Logger,
+} from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { PluginSandboxService, SandboxOptions, SandboxResult } from '@tuheg/common-backend'
 
 interface TestActivationDto {
-  options?: SandboxOptions;
+  options?: SandboxOptions
 }
 
 interface TestToolDto {
-  toolId: string;
-  input: any;
-  options?: SandboxOptions;
+  toolId: string
+  input: any
+  options?: SandboxOptions
 }
 
 /**
@@ -26,7 +26,7 @@ interface TestToolDto {
  */
 @Controller('plugin-sandbox')
 export class PluginSandboxController {
-  private readonly logger = new Logger(PluginSandboxController.name);
+  private readonly logger = new Logger(PluginSandboxController.name)
 
   constructor(private readonly sandboxService: PluginSandboxService) {}
 
@@ -41,29 +41,29 @@ export class PluginSandboxController {
     @Body() body: TestActivationDto
   ): Promise<SandboxResult> {
     if (!file) {
-      throw new BadRequestException('Plugin file is required');
+      throw new BadRequestException('Plugin file is required')
     }
 
     if (!file.originalname.endsWith('.js') && !file.originalname.endsWith('.ts')) {
-      throw new BadRequestException('Plugin file must be a JavaScript or TypeScript file');
+      throw new BadRequestException('Plugin file must be a JavaScript or TypeScript file')
     }
 
-    this.logger.log(`Testing plugin activation: ${file.originalname}`);
+    this.logger.log(`Testing plugin activation: ${file.originalname}`)
 
     try {
       // 将文件内容保存为临时文件
-      const tempPath = `/tmp/plugin-sandbox-${Date.now()}-${file.originalname}`;
-      await require('fs').promises.writeFile(tempPath, file.buffer);
+      const tempPath = `/tmp/plugin-sandbox-${Date.now()}-${file.originalname}`
+      await require('fs').promises.writeFile(tempPath, file.buffer)
 
-      const result = await this.sandboxService.testPluginActivation(tempPath, body.options);
+      const result = await this.sandboxService.testPluginActivation(tempPath, body.options)
 
       // 清理临时文件
-      await require('fs').promises.unlink(tempPath);
+      await require('fs').promises.unlink(tempPath)
 
-      return result;
+      return result
     } catch (error) {
-      this.logger.error(`Plugin activation test failed: ${error.message}`);
-      throw new BadRequestException(`Plugin test failed: ${error.message}`);
+      this.logger.error(`Plugin activation test failed: ${error.message}`)
+      throw new BadRequestException(`Plugin test failed: ${error.message}`)
     }
   }
 
@@ -78,34 +78,34 @@ export class PluginSandboxController {
     @Body() body: TestToolDto
   ): Promise<SandboxResult> {
     if (!file) {
-      throw new BadRequestException('Plugin file is required');
+      throw new BadRequestException('Plugin file is required')
     }
 
     if (!body.toolId) {
-      throw new BadRequestException('Tool ID is required');
+      throw new BadRequestException('Tool ID is required')
     }
 
-    this.logger.log(`Testing plugin tool: ${file.originalname} -> ${body.toolId}`);
+    this.logger.log(`Testing plugin tool: ${file.originalname} -> ${body.toolId}`)
 
     try {
       // 将文件内容保存为临时文件
-      const tempPath = `/tmp/plugin-sandbox-${Date.now()}-${file.originalname}`;
-      await require('fs').promises.writeFile(tempPath, file.buffer);
+      const tempPath = `/tmp/plugin-sandbox-${Date.now()}-${file.originalname}`
+      await require('fs').promises.writeFile(tempPath, file.buffer)
 
       const result = await this.sandboxService.testPluginTool(
         tempPath,
         body.toolId,
         body.input,
         body.options
-      );
+      )
 
       // 清理临时文件
-      await require('fs').promises.unlink(tempPath);
+      await require('fs').promises.unlink(tempPath)
 
-      return result;
+      return result
     } catch (error) {
-      this.logger.error(`Plugin tool test failed: ${error.message}`);
-      throw new BadRequestException(`Plugin tool test failed: ${error.message}`);
+      this.logger.error(`Plugin tool test failed: ${error.message}`)
+      throw new BadRequestException(`Plugin tool test failed: ${error.message}`)
     }
   }
 
@@ -115,7 +115,7 @@ export class PluginSandboxController {
    */
   @Post('stats')
   getSandboxStats() {
-    return this.sandboxService.getSandboxStats();
+    return this.sandboxService.getSandboxStats()
   }
 
   /**
@@ -127,7 +127,7 @@ export class PluginSandboxController {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      sandbox: this.sandboxService.getSandboxStats()
-    };
+      sandbox: this.sandboxService.getSandboxStats(),
+    }
   }
 }

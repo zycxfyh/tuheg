@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
-import { resolve } from 'path';
+import { defineConfig } from 'vitest/config'
+import { resolve } from 'path'
 
 export default defineConfig({
   test: {
@@ -8,14 +8,31 @@ export default defineConfig({
     setupFiles: ['./src/test-utils.ts'],
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', '.git', '.cache'],
-    pool: 'forks',
+    // GitHub风格的性能优化配置
+    pool: 'threads', // 使用线程池提高性能
     poolOptions: {
-      forks: {
-        singleFork: true,
+      threads: {
+        singleThread: false,
+        useAtomics: true,
+        isolate: false, // 允许共享内存以提高性能
       },
     },
-    testTimeout: 10000,
-    hookTimeout: 10000,
+    testTimeout: 8000, // GitHub标准超时时间
+    hookTimeout: 8000,
+    // 性能优化
+    maxThreads: 4, // 基于CPU核心数
+    minThreads: 1,
+    // 智能缓存
+    cache: {
+      dir: '.vitest-cache',
+    },
+    // 增量测试支持
+    changed: process.env.CI ? false : true,
+    // 性能监控
+    benchmark: {
+      include: ['**/*.benchmark.test.js'],
+      outputFile: 'benchmarks.json',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -31,10 +48,29 @@ export default defineConfig({
       ],
       thresholds: {
         global: {
-          branches: 70,
-          functions: 70,
-          lines: 70,
-          statements: 70,
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+        // GitHub风格的分层覆盖率要求
+        './src/components/': {
+          branches: 85,
+          functions: 90,
+          lines: 85,
+          statements: 85,
+        },
+        './src/services/': {
+          branches: 90,
+          functions: 95,
+          lines: 90,
+          statements: 90,
+        },
+        './src/composables/': {
+          branches: 85,
+          functions: 90,
+          lines: 85,
+          statements: 85,
         },
       },
     },
@@ -44,4 +80,12 @@ export default defineConfig({
       '@': resolve('./src'),
     },
   },
-});
+  define: {
+    'import.meta.env': {
+      VITE_API_BASE_URL: 'http://localhost:3000',
+    },
+  },
+  esbuild: {
+    target: 'node14',
+  },
+})

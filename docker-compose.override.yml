@@ -21,7 +21,7 @@ services:
     <<: *develop
     command: pnpm --filter=@tuheg/backend-gateway dev
     ports:
-      - "3000:3000"
+      - '3000:3000'
 
   creation-agent:
     <<: *develop
@@ -39,4 +39,4 @@ services:
     <<: *develop
     command: pnpm --filter=@tuheg/frontend dev
     ports:
-      - "5174:5173"
+      - '5174:5173'

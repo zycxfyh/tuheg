@@ -7,19 +7,19 @@
  */
 export interface TaskConfig {
   /** 任务描述 */
-  description: string;
+  description: string
   /** 预期输出格式 */
-  expectedOutput?: string;
+  expectedOutput?: string
   /** 分配给哪个智能体（可选，如果不指定则自动选择） */
-  agent?: string;
+  agent?: string
   /** 任务依赖的其他任务（任务名称列表） */
-  dependencies?: string[];
+  dependencies?: string[]
   /** 任务优先级（1-10，10为最高） */
-  priority?: number;
+  priority?: number
   /** 任务超时时间（毫秒） */
-  timeout?: number;
+  timeout?: number
   /** 其他元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -28,19 +28,19 @@ export interface TaskConfig {
  */
 export interface TaskResult {
   /** 任务名称 */
-  taskName: string;
+  taskName: string
   /** 执行是否成功 */
-  success: boolean;
+  success: boolean
   /** 任务输出 */
-  output: unknown;
+  output: unknown
   /** 执行任务的智能体 */
-  agent?: string;
+  agent?: string
   /** 执行时间（毫秒） */
-  executionTime?: number;
+  executionTime?: number
   /** 错误信息（如果有） */
-  error?: string;
+  error?: string
   /** 元数据 */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -49,9 +49,9 @@ export interface TaskResult {
  */
 export interface TaskContext {
   /** 任务输入数据 */
-  input: unknown;
+  input: unknown
   /** 依赖任务的结果 */
-  dependencies?: Record<string, TaskResult>;
+  dependencies?: Record<string, TaskResult>
   /** 全局上下文数据 */
-  globalContext?: Record<string, unknown>;
+  globalContext?: Record<string, unknown>
 }

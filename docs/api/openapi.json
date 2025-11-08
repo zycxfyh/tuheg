@@ -17,9 +17,7 @@
         "operationId": "handleClerkWebhook",
         "summary": "POST handleClerkWebhook",
         "description": "Execute handleClerkWebhook operation",
-        "tags": [
-          "webhooks"
-        ],
+        "tags": ["webhooks"],
         "parameters": [],
         "responses": {
           "200": {
@@ -52,9 +50,7 @@
         "operationId": "testPluginActivation",
         "summary": "测试插件工具执行",
         "description": "测试插件工具执行",
-        "tags": [
-          "pluginsandbox"
-        ],
+        "tags": ["pluginsandbox"],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -98,9 +94,7 @@
         "operationId": "testPluginTool",
         "summary": "获取沙盒统计信息",
         "description": "获取沙盒统计信息",
-        "tags": [
-          "pluginsandbox"
-        ],
+        "tags": ["pluginsandbox"],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -144,9 +138,7 @@
         "operationId": "testConnection",
         "summary": "POST testConnection",
         "description": "Execute testConnection operation",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "parameters": [
           {
             "name": "id",
@@ -196,9 +188,7 @@
         "operationId": "deleteAiSetting",
         "summary": "DELETE deleteAiSetting",
         "description": "Execute deleteAiSetting operation",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "parameters": [
           {
             "name": "id",
@@ -238,9 +228,7 @@
         "operationId": "updateAiSetting",
         "summary": "PATCH updateAiSetting",
         "description": "Execute updateAiSetting operation",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "parameters": [
           {
             "name": "id",
@@ -290,9 +278,7 @@
         "operationId": "sendToUser",
         "summary": "POST sendToUser",
         "description": "Execute sendToUser operation",
-        "tags": [
-          "gateway"
-        ],
+        "tags": ["gateway"],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -336,9 +322,7 @@
         "operationId": "findOne",
         "summary": "GET findOne",
         "description": "Execute findOne operation",
-        "tags": [
-          "games"
-        ],
+        "tags": ["games"],
         "parameters": [
           {
             "name": "id",
@@ -394,9 +378,7 @@
         "operationId": "delete",
         "summary": "DELETE delete",
         "description": "Execute delete operation",
-        "tags": [
-          "games"
-        ],
+        "tags": ["games"],
         "parameters": [
           {
             "name": "id",
@@ -446,9 +428,7 @@
         "operationId": "createNarrative",
         "summary": "POST createNarrative",
         "description": "Execute createNarrative operation",
-        "tags": [
-          "games"
-        ],
+        "tags": ["games"],
         "parameters": [
           {
             "name": "id",
@@ -514,9 +494,7 @@
         "operationId": "submitAction",
         "summary": "POST submitAction",
         "description": "Execute submitAction operation",
-        "tags": [
-          "games"
-        ],
+        "tags": ["games"],
         "parameters": [
           {
             "name": "id",
@@ -582,9 +560,7 @@
         "operationId": "updateCharacter",
         "summary": "PATCH updateCharacter",
         "description": "Execute updateCharacter operation",
-        "tags": [
-          "games"
-        ],
+        "tags": ["games"],
         "parameters": [
           {
             "name": "id",
@@ -626,9 +602,7 @@
         "operationId": "register",
         "summary": "POST register",
         "description": "Execute register operation",
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "parameters": [],
         "responses": {
           "200": {
@@ -661,9 +635,7 @@
         "operationId": "login",
         "summary": "POST login",
         "description": "Execute login operation",
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "parameters": [],
         "responses": {
           "200": {

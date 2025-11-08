@@ -12,21 +12,21 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
-} from '@nestjs/common';
-import type { Request } from 'express';
-import { GamesService } from './games.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { User } from '@prisma/client';
+} from '@nestjs/common'
+import type { Request } from 'express'
+import { GamesService } from './games.service'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { User } from '@prisma/client'
 
 // [核心修正] 从 @tuheg/common-backend 导入所有共享的 DTO 和管道
-import { ZodValidationPipe, submitActionSchema } from '@tuheg/common-backend';
-import type { SubmitActionDto } from '@tuheg/common-backend';
+import { ZodValidationPipe, submitActionSchema } from '@tuheg/common-backend'
+import type { SubmitActionDto } from '@tuheg/common-backend'
 
 // [修正] 从 common-backend 导入游戏相关的 DTO 和 schema
-import type { CreateNarrativeGameDto } from '@tuheg/common-backend';
-import { createNarrativeGameSchema } from '@tuheg/common-backend';
-import type { UpdateCharacterDto } from '@tuheg/common-backend';
-import { updateCharacterSchema } from '@tuheg/common-backend';
+import type { CreateNarrativeGameDto } from '@tuheg/common-backend'
+import { createNarrativeGameSchema } from '@tuheg/common-backend'
+import type { UpdateCharacterDto } from '@tuheg/common-backend'
+import { updateCharacterSchema } from '@tuheg/common-backend'
 
 @Controller('games')
 @UseGuards(JwtAuthGuard)
@@ -35,18 +35,18 @@ export class GamesController {
 
   @Get()
   public async findAllForUser(@Req() req: Request) {
-    const user = req.user as User;
-    return this.gamesService.findAllForUser(user.id);
+    const user = req.user as User
+    return this.gamesService.findAllForUser(user.id)
   }
 
   @Post('narrative-driven')
   public async createNarrative(
     @Req() req: Request,
     @Body(new ZodValidationPipe(createNarrativeGameSchema))
-    dto: CreateNarrativeGameDto,
+    dto: CreateNarrativeGameDto
   ) {
-    const user = req.user as User;
-    return this.gamesService.createNarrativeDriven(user.id, dto);
+    const user = req.user as User
+    return this.gamesService.createNarrativeDriven(user.id, dto)
   }
 
   @Post(':id/actions')
@@ -55,23 +55,23 @@ export class GamesController {
     @Req() req: Request,
     @Param('id') gameId: string,
     // [核心修正] 使用从 @tuheg/common-backend 导入的 schema 和 DTO
-    @Body(new ZodValidationPipe(submitActionSchema)) dto: SubmitActionDto,
+    @Body(new ZodValidationPipe(submitActionSchema)) dto: SubmitActionDto
   ): Promise<void> {
-    const user = req.user as User;
-    await this.gamesService.submitAction(user.id, gameId, dto);
+    const user = req.user as User
+    await this.gamesService.submitAction(user.id, gameId, dto)
   }
 
   @Get(':id')
   public async findOne(@Req() req: Request, @Param('id') gameId: string) {
-    const user = req.user as User;
-    return this.gamesService.findOne(user.id, gameId);
+    const user = req.user as User
+    return this.gamesService.findOne(user.id, gameId)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   public async delete(@Req() req: Request, @Param('id') gameId: string) {
-    const user = req.user as User;
-    return this.gamesService.delete(user.id, gameId);
+    const user = req.user as User
+    return this.gamesService.delete(user.id, gameId)
   }
 
   @Patch(':id/character')
@@ -80,9 +80,9 @@ export class GamesController {
     @Req() req: Request,
     @Param('id') gameId: string,
     @Body(new ZodValidationPipe(updateCharacterSchema))
-    dto: UpdateCharacterDto,
+    dto: UpdateCharacterDto
   ) {
-    const user = req.user as User;
-    return this.gamesService.updateCharacterState(user.id, gameId, dto);
+    const user = req.user as User
+    return this.gamesService.updateCharacterState(user.id, gameId, dto)
   }
 }

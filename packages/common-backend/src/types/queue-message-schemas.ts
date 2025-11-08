@@ -6,9 +6,9 @@
 // 2. 确保消息格式在运行时被验证
 // 3. 无效消息被立即丢弃，避免下游错误
 
-import { z } from 'zod';
-import { submitActionSchema } from '../dto/submit-action.dto';
-import { directiveSetSchema } from './state-change-directive.dto';
+import { z } from 'zod'
+import { submitActionSchema } from '../dto/submit-action.dto'
+import { directiveSetSchema } from './state-change-directive.dto'
 
 /**
  * GameCreationPayload Schema
@@ -20,9 +20,9 @@ export const gameCreationPayloadSchema = z.object({
     .string()
     .min(10, 'Concept must be at least 10 characters long')
     .max(500, 'Concept must be 500 characters or less'),
-});
+})
 
-export type GameCreationPayload = z.infer<typeof gameCreationPayloadSchema>;
+export type GameCreationPayload = z.infer<typeof gameCreationPayloadSchema>
 
 /**
  * GameActionJobData Schema
@@ -61,12 +61,12 @@ export const gameActionJobDataSchema = z.object({
           content: z.unknown(), // Prisma Json 类型
           createdAt: z.union([z.date(), z.string()]),
           updatedAt: z.union([z.date(), z.string()]),
-        }),
+        })
       )
       .optional(),
   }),
   correlationId: z.string().optional(),
-});
+})
 
 /**
  * NarrativeRenderingPayload Schema
@@ -78,6 +78,6 @@ export const narrativeRenderingPayloadSchema = z.object({
   playerAction: submitActionSchema,
   executedDirectives: directiveSetSchema,
   correlationId: z.string().min(1, 'CorrelationId must not be empty'),
-});
+})
 
-export type NarrativeRenderingPayload = z.infer<typeof narrativeRenderingPayloadSchema>;
+export type NarrativeRenderingPayload = z.infer<typeof narrativeRenderingPayloadSchema>

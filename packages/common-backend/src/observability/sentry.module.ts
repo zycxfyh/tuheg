@@ -1,7 +1,7 @@
 // 文件路径: packages/common-backend/src/observability/sentry.module.ts
 // 核心理念: 模块化导出，方便使用
 
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
 /**
  * @module SentryModule

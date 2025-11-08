@@ -1,0 +1,443 @@
+name: Monitoring & Tracing
+
+on:
+  schedule:
+    # Run comprehensive monitoring every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      check_type:
+        description: 'Type of check to perform'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - health
+          - performance
+          - security
+          - logs
+  workflow_run:
+    workflows: ['Production Deployment']
+    types: [completed]
+
+concurrency:
+  group: monitoring-tracing
+  cancel-in-progress: false
+
+jobs:
+  health-monitoring:
+    name: Health Monitoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout monitoring scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/monitoring/
+            deployment/monitoring/
+
+      - name: Health check - Production
+        run: |
+          echo "🔍 Checking production health..."
+
+          # Basic health check
+          if curl -f -s --max-time 10 "${{ secrets.PRODUCTION_URL }}/health" > /dev/null; then
+            echo "✅ Production API is healthy"
+            HEALTH_STATUS="healthy"
+          else
+            echo "❌ Production API is unhealthy"
+            HEALTH_STATUS="unhealthy"
+          fi
+
+          # Database connectivity check
+          if psql "${{ secrets.PRODUCTION_DB_URL }}" -c "SELECT 1;" > /dev/null 2>&1; then
+            echo "✅ Production database is accessible"
+            DB_STATUS="healthy"
+          else
+            echo "❌ Production database is unreachable"
+            DB_STATUS="unhealthy"
+          fi
+
+          # Cache connectivity check
+          if redis-cli -u "${{ secrets.PRODUCTION_REDIS_URL }}" ping > /dev/null 2>&1; then
+            echo "✅ Production cache is accessible"
+            CACHE_STATUS="healthy"
+          else
+            echo "❌ Production cache is unreachable"
+            CACHE_STATUS="unhealthy"
+          fi
+
+          # Record health status
+          echo "{
+            \"timestamp\": \"$(date -Iseconds)\",
+            \"environment\": \"production\",
+            \"api_health\": \"$HEALTH_STATUS\",
+            \"db_health\": \"$DB_STATUS\",
+            \"cache_health\": \"$CACHE_STATUS\",
+            \"overall_health\": \"$([ "$HEALTH_STATUS" = "healthy" ] && [ "$DB_STATUS" = "healthy" ] && [ "$CACHE_STATUS" = "healthy" ] && echo "healthy" || echo "unhealthy")\"
+          }" >> health-status.json
+
+      - name: Health check - Staging
+        run: |
+          echo "🔍 Checking staging health..."
+
+          if curl -f -s --max-time 10 "${{ secrets.STAGING_URL }}/health" > /dev/null; then
+            echo "✅ Staging API is healthy"
+          else
+            echo "⚠️ Staging API is unhealthy"
+          fi
+
+      - name: Upload health status
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-status-${{ github.run_id }}
+          path: health-status.json
+          retention-days: 7
+
+  performance-monitoring:
+    name: Performance Monitoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'schedule' || contains(github.event.inputs.check_type, 'performance') || contains(github.event.inputs.check_type, 'all')
+
+    steps:
+      - name: Checkout performance scripts
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run performance monitoring
+        run: |
+          echo "📊 Running performance monitoring..."
+
+          # API response time monitoring
+          RESPONSE_TIME=$(curl -o /dev/null -s -w "%{time_total}" ${{ secrets.PRODUCTION_URL }}/health)
+          echo "API Response Time: ${RESPONSE_TIME}s"
+
+          # Memory and CPU monitoring (if available via API)
+          METRICS=$(curl -s "${{ secrets.PRODUCTION_URL }}/metrics" 2>/dev/null || echo "{}")
+
+          # Database performance metrics
+          DB_METRICS=$(psql "${{ secrets.PRODUCTION_DB_URL }}" -c "
+            SELECT
+              schemaname,
+              tablename,
+              seq_scan,
+              seq_tup_read,
+              idx_scan,
+              idx_tup_fetch
+            FROM pg_stat_user_tables
+            ORDER BY seq_scan DESC
+            LIMIT 5;
+          " --csv 2>/dev/null || echo "db_metrics_unavailable")
+
+          # Generate performance report
+          echo "{
+            \"timestamp\": \"$(date -Iseconds)\",
+            \"api_response_time\": \"$RESPONSE_TIME\",
+            \"db_metrics\": \"$DB_METRICS\",
+            \"alerts\": []
+          }" > performance-report.json
+
+          # Check thresholds
+          if (( $(echo "$RESPONSE_TIME > 3.0" | bc -l) )); then
+            echo "⚠️ Slow API response detected: ${RESPONSE_TIME}s"
+            jq '.alerts += [{"type": "slow_response", "value": "'$RESPONSE_TIME'", "threshold": "3.0s"}]' performance-report.json > tmp.json && mv tmp.json performance-report.json
+          fi
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report-${{ github.run_id }}
+          path: performance-report.json
+          retention-days: 7
+
+  security-monitoring:
+    name: Security Monitoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'schedule' || contains(github.event.inputs.check_type, 'security') || contains(github.event.inputs.check_type, 'all')
+
+    steps:
+      - name: Checkout security scripts
+        uses: actions/checkout@v4
+
+      - name: Run security scans
+        run: |
+          echo "🔒 Running security monitoring..."
+
+          # Check for exposed secrets in logs
+          LOG_ENTRIES=$(curl -s "${{ secrets.LOG_AGGREGATOR_URL }}/search?query=secret+OR+password+OR+token" 2>/dev/null || echo "[]")
+
+          # Check SSL certificate validity
+          CERT_INFO=$(echo | openssl s_client -servername $(echo ${{ secrets.PRODUCTION_URL }} | sed 's|https://||') -connect $(echo ${{ secrets.PRODUCTION_URL }} | sed 's|https://||'):443 2>/dev/null | openssl x509 -noout -dates 2>/dev/null || echo "cert_check_failed")
+
+          # Check for security headers
+          SECURITY_HEADERS=$(curl -I -s ${{ secrets.PRODUCTION_URL }} | grep -E "(X-Frame-Options|X-Content-Type-Options|Content-Security-Policy)" | wc -l)
+
+          # Generate security report
+          echo "{
+            \"timestamp\": \"$(date -Iseconds)\",
+            \"ssl_certificate\": \"$CERT_INFO\",
+            \"security_headers_count\": \"$SECURITY_HEADERS\",
+            \"log_secret_exposure\": \"$LOG_ENTRIES\",
+            \"vulnerabilities\": []
+          }" > security-report.json
+
+          # Check for issues
+          if [ "$SECURITY_HEADERS" -lt 3 ]; then
+            echo "⚠️ Missing security headers detected"
+            jq '.vulnerabilities += [{"type": "missing_security_headers", "severity": "medium"}]' security-report.json > tmp.json && mv tmp.json security-report.json
+          fi
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report-${{ github.run_id }}
+          path: security-report.json
+          retention-days: 7
+
+  log-analysis:
+    name: Log Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'schedule' || contains(github.event.inputs.check_type, 'logs') || contains(github.event.inputs.check_type, 'all')
+
+    steps:
+      - name: Checkout log analysis scripts
+        uses: actions/checkout@v4
+
+      - name: Analyze application logs
+        run: |
+          echo "📝 Analyzing application logs..."
+
+          # Fetch recent logs (this would integrate with your log aggregator)
+          ERROR_LOGS=$(curl -s "${{ secrets.LOG_AGGREGATOR_URL }}/search?query=ERROR&time=15m" 2>/dev/null | jq '.hits.total' 2>/dev/null || echo "0")
+          WARN_LOGS=$(curl -s "${{ secrets.LOG_AGGREGATOR_URL }}/search?query=WARN&time=15m" 2>/dev/null | jq '.hits.total' 2>/dev/null || echo "0")
+
+          # Check for error spikes
+          echo "{
+            \"timestamp\": \"$(date -Iseconds)\",
+            \"error_count\": \"$ERROR_LOGS\",
+            \"warning_count\": \"$WARN_LOGS\",
+            \"error_patterns\": [],
+            \"alerts\": []
+          }" > log-analysis.json
+
+          # Alert on error spikes
+          if [ "$ERROR_LOGS" -gt 10 ]; then
+            echo "🚨 High error rate detected: $ERROR_LOGS errors in last 15 minutes"
+            jq '.alerts += [{"type": "error_spike", "count": '$ERROR_LOGS', "threshold": 10}]' log-analysis.json > tmp.json && mv tmp.json log-analysis.json
+          fi
+
+      - name: Upload log analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-analysis-${{ github.run_id }}
+          path: log-analysis.json
+          retention-days: 7
+
+  incident-detection:
+    name: Incident Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [health-monitoring, performance-monitoring, security-monitoring, log-analysis]
+    if: always()
+
+    steps:
+      - name: Download monitoring reports
+        uses: actions/download-artifact@v4
+        with:
+          name: health-status-${{ github.run_id }}
+          path: reports/
+
+      - name: Download performance report
+        uses: actions/download-artifact@v4
+        with:
+          name: performance-report-${{ github.run_id }}
+          path: reports/
+
+      - name: Download security report
+        uses: actions/download-artifact@v4
+        with:
+          name: security-report-${{ github.run_id }}
+          path: reports/
+
+      - name: Download log analysis
+        uses: actions/download-artifact@v4
+        with:
+          name: log-analysis-${{ github.run_id }}
+          path: reports/
+
+      - name: Analyze for incidents
+        run: |
+          echo "🔍 Analyzing monitoring data for incidents..."
+
+          INCIDENT_DETECTED=false
+          INCIDENT_TYPE=""
+
+          # Check health status
+          if [ -f reports/health-status.json ]; then
+            OVERALL_HEALTH=$(jq -r '.overall_health' reports/health-status.json)
+            if [ "$OVERALL_HEALTH" = "unhealthy" ]; then
+              INCIDENT_DETECTED=true
+              INCIDENT_TYPE="system_unhealthy"
+            fi
+          fi
+
+          # Check performance alerts
+          if [ -f reports/performance-report.json ]; then
+            ALERT_COUNT=$(jq '.alerts | length' reports/performance-report.json)
+            if [ "$ALERT_COUNT" -gt 0 ]; then
+              INCIDENT_DETECTED=true
+              INCIDENT_TYPE="performance_degradation"
+            fi
+          fi
+
+          # Check security vulnerabilities
+          if [ -f reports/security-report.json ]; then
+            VULN_COUNT=$(jq '.vulnerabilities | length' reports/security-report.json)
+            if [ "$VULN_COUNT" -gt 0 ]; then
+              INCIDENT_DETECTED=true
+              INCIDENT_TYPE="security_issue"
+            fi
+          fi
+
+          # Check log alerts
+          if [ -f reports/log-analysis.json ]; then
+            LOG_ALERT_COUNT=$(jq '.alerts | length' reports/log-analysis.json)
+            if [ "$LOG_ALERT_COUNT" -gt 0 ]; then
+              INCIDENT_DETECTED=true
+              INCIDENT_TYPE="log_anomalies"
+            fi
+          fi
+
+          # Create incident report
+          echo "{
+            \"timestamp\": \"$(date -Iseconds)\",
+            \"incident_detected\": \"$INCIDENT_DETECTED\",
+            \"incident_type\": \"$INCIDENT_TYPE\",
+            \"severity\": \"high\",
+            \"description\": \"Automated incident detection based on monitoring data\"
+          }" > incident-report.json
+
+          if [ "$INCIDENT_DETECTED" = true ]; then
+            echo "🚨 Incident detected: $INCIDENT_TYPE"
+          else
+            echo "✅ No incidents detected"
+          fi
+
+      - name: Trigger incident response
+        if: steps.analyze.outputs.incident_detected == 'true'
+        run: |
+          echo "🚨 Triggering incident response workflow..."
+
+          # Trigger incident response workflow
+          gh workflow run incident-response.yml \
+            --ref ${{ github.ref }} \
+            -f incident_type="${{ steps.analyze.outputs.incident_type }}" \
+            -f severity="high"
+
+      - name: Upload incident report
+        uses: actions/upload-artifact@v4
+        with:
+          name: incident-report-${{ github.run_id }}
+          path: incident-report.json
+          retention-days: 30
+
+  monitoring-summary:
+    name: Monitoring Summary
+    runs-on: ubuntu-latest
+    needs:
+      [
+        health-monitoring,
+        performance-monitoring,
+        security-monitoring,
+        log-analysis,
+        incident-detection,
+      ]
+    if: always()
+
+    steps:
+      - name: Generate monitoring summary
+        run: |
+          echo "## 📊 Monitoring & Tracing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Health status summary
+          if [ "${{ needs.health-monitoring.result }}" == "success" ]; then
+            echo "✅ Health Monitoring: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Health Monitoring: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Performance monitoring summary
+          if [ "${{ needs.performance-monitoring.result }}" == "success" ]; then
+            echo "✅ Performance Monitoring: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Performance Monitoring: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Security monitoring summary
+          if [ "${{ needs.security-monitoring.result }}" == "success" ]; then
+            echo "✅ Security Monitoring: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Security Monitoring: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Log analysis summary
+          if [ "${{ needs.log-analysis.result }}" == "success" ]; then
+            echo "✅ Log Analysis: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Log Analysis: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Incident detection summary
+          if [ "${{ needs.incident-detection.result }}" == "success" ]; then
+            echo "✅ Incident Detection: Completed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Incident Detection: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Monitoring Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Health status reports" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance metrics" >> $GITHUB_STEP_SUMMARY
+          echo "- Security scan results" >> $GITHUB_STEP_SUMMARY
+          echo "- Log analysis reports" >> $GITHUB_STEP_SUMMARY
+          echo "- Incident detection reports" >> $GITHUB_STEP_SUMMARY
+
+      - name: Send monitoring notifications
+        run: |
+          # Send periodic monitoring summary
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"📊 Monitoring Summary\",
+              \"blocks\": [
+                {
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Monitoring Summary*\nHealth: ${{ needs.health-monitoring.result }}\nPerformance: ${{ needs.performance-monitoring.result }}\nSecurity: ${{ needs.security-monitoring.result }}\nLogs: ${{ needs.log-analysis.result }}\"
+                  }
+                }
+              ]
+            }" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}

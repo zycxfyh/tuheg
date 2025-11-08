@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreatePluginReviewDto, UpdatePluginReviewDto } from '../dto/plugin-marketplace.dto';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { CreatePluginReviewDto, UpdatePluginReviewDto } from '../dto/plugin-marketplace.dto'
 
 @Injectable()
 export class PluginReviewService {
@@ -13,11 +18,11 @@ export class PluginReviewService {
     // 检查插件是否存在且已发布
     const plugin = await this.prisma.pluginMarketplace.findUnique({
       where: { id: pluginId },
-      select: { id: true, status: true, isPublic: true }
-    });
+      select: { id: true, status: true, isPublic: true },
+    })
 
     if (!plugin || plugin.status !== 'APPROVED' || !plugin.isPublic) {
-      throw new NotFoundException('Plugin not found or not available');
+      throw new NotFoundException('Plugin not found or not available')
     }
 
     // 检查用户是否已经评价过此插件
@@ -25,22 +30,23 @@ export class PluginReviewService {
       where: {
         pluginId_userId: {
           pluginId,
-          userId
-        }
-      }
-    });
+          userId,
+        },
+      },
+    })
 
     if (existingReview) {
-      throw new BadRequestException('You have already reviewed this plugin');
+      throw new BadRequestException('You have already reviewed this plugin')
     }
 
     // 检查用户是否下载过此插件（可选，用于验证购买）
-    const hasDownloaded = await this.prisma.pluginDownload.count({
-      where: {
-        pluginId,
-        userId
-      }
-    }) > 0;
+    const hasDownloaded =
+      (await this.prisma.pluginDownload.count({
+        where: {
+          pluginId,
+          userId,
+        },
+      })) > 0
 
     // 创建评价
     const review = await this.prisma.pluginReview.create({
@@ -50,19 +56,19 @@ export class PluginReviewService {
         rating: data.rating,
         title: data.title,
         content: data.content,
-        isVerifiedPurchase: hasDownloaded
+        isVerifiedPurchase: hasDownloaded,
       },
       include: {
         user: {
-          select: { id: true, email: true }
-        }
-      }
-    });
+          select: { id: true, email: true },
+        },
+      },
+    })
 
     // 更新插件的平均评分和评价数量
-    await this.updatePluginRating(pluginId);
+    await this.updatePluginRating(pluginId)
 
-    return review;
+    return review
   }
 
   /**
@@ -72,15 +78,15 @@ export class PluginReviewService {
     // 检查评价是否存在且属于当前用户
     const review = await this.prisma.pluginReview.findUnique({
       where: { id: reviewId },
-      select: { id: true, userId: true, pluginId: true }
-    });
+      select: { id: true, userId: true, pluginId: true },
+    })
 
     if (!review) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException('Review not found')
     }
 
     if (review.userId !== userId) {
-      throw new ForbiddenException('You do not have permission to update this review');
+      throw new ForbiddenException('You do not have permission to update this review')
     }
 
     // 更新评价
@@ -90,19 +96,19 @@ export class PluginReviewService {
         rating: data.rating,
         title: data.title,
         content: data.content,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       include: {
         user: {
-          select: { id: true, email: true }
-        }
-      }
-    });
+          select: { id: true, email: true },
+        },
+      },
+    })
 
     // 更新插件的平均评分
-    await this.updatePluginRating(review.pluginId);
+    await this.updatePluginRating(review.pluginId)
 
-    return updatedReview;
+    return updatedReview
   }
 
   /**
@@ -112,24 +118,24 @@ export class PluginReviewService {
     // 检查评价是否存在且属于当前用户
     const review = await this.prisma.pluginReview.findUnique({
       where: { id: reviewId },
-      select: { id: true, userId: true, pluginId: true }
-    });
+      select: { id: true, userId: true, pluginId: true },
+    })
 
     if (!review) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException('Review not found')
     }
 
     if (review.userId !== userId) {
-      throw new ForbiddenException('You do not have permission to delete this review');
+      throw new ForbiddenException('You do not have permission to delete this review')
     }
 
     // 删除评价
     await this.prisma.pluginReview.delete({
-      where: { id: reviewId }
-    });
+      where: { id: reviewId },
+    })
 
     // 更新插件的平均评分和评价数量
-    await this.updatePluginRating(review.pluginId);
+    await this.updatePluginRating(review.pluginId)
   }
 
   /**
@@ -138,34 +144,30 @@ export class PluginReviewService {
   async getPluginReviews(
     pluginId: string,
     options: {
-      page?: number;
-      limit?: number;
-      sort?: 'newest' | 'oldest' | 'rating' | 'helpful';
+      page?: number
+      limit?: number
+      sort?: 'newest' | 'oldest' | 'rating' | 'helpful'
     } = {}
   ) {
-    const {
-      page = 1,
-      limit = 20,
-      sort = 'newest'
-    } = options;
+    const { page = 1, limit = 20, sort = 'newest' } = options
 
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit
 
     // 构建排序条件
-    let orderBy: any = { createdAt: 'desc' };
+    let orderBy: any = { createdAt: 'desc' }
     switch (sort) {
       case 'newest':
-        orderBy = { createdAt: 'desc' };
-        break;
+        orderBy = { createdAt: 'desc' }
+        break
       case 'oldest':
-        orderBy = { createdAt: 'asc' };
-        break;
+        orderBy = { createdAt: 'asc' }
+        break
       case 'rating':
-        orderBy = { rating: 'desc' };
-        break;
+        orderBy = { rating: 'desc' }
+        break
       case 'helpful':
-        orderBy = { helpful: 'desc' };
-        break;
+        orderBy = { helpful: 'desc' }
+        break
     }
 
     // 获取评价列表
@@ -174,32 +176,36 @@ export class PluginReviewService {
         where: { pluginId },
         include: {
           user: {
-            select: { id: true, email: true }
-          }
+            select: { id: true, email: true },
+          },
         },
         orderBy,
         skip,
-        take: limit
+        take: limit,
       }),
       this.prisma.pluginReview.count({
-        where: { pluginId }
-      })
-    ]);
+        where: { pluginId },
+      }),
+    ])
 
     // 获取评分分布
     const ratingDistribution = await this.prisma.pluginReview.groupBy({
       by: ['rating'],
       where: { pluginId },
-      _count: { rating: true }
-    });
+      _count: { rating: true },
+    })
 
     const distribution = {
-      1: 0, 2: 0, 3: 0, 4: 0, 5: 0
-    };
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    }
 
-    ratingDistribution.forEach(item => {
-      distribution[item.rating as keyof typeof distribution] = item._count.rating;
-    });
+    ratingDistribution.forEach((item) => {
+      distribution[item.rating as keyof typeof distribution] = item._count.rating
+    })
 
     return {
       reviews,
@@ -209,14 +215,14 @@ export class PluginReviewService {
         total,
         totalPages: Math.ceil(total / limit),
         hasNext: page * limit < total,
-        hasPrev: page > 1
+        hasPrev: page > 1,
       },
       statistics: {
         totalReviews: total,
         averageRating: await this.getPluginAverageRating(pluginId),
-        ratingDistribution: distribution
-      }
-    };
+        ratingDistribution: distribution,
+      },
+    }
   }
 
   /**
@@ -226,40 +232,40 @@ export class PluginReviewService {
     // 检查评价是否存在
     const review = await this.prisma.pluginReview.findUnique({
       where: { id: reviewId },
-      select: { id: true, pluginId: true }
-    });
+      select: { id: true, pluginId: true },
+    })
 
     if (!review) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException('Review not found')
     }
 
     // 检查用户是否已经投票过（这里简化处理，实际应该有投票记录表）
     // 为了简化，这里直接更新helpful计数
-    const increment = helpful ? 1 : -1;
+    const increment = helpful ? 1 : -1
 
     await this.prisma.pluginReview.update({
       where: { id: reviewId },
       data: {
         helpful: {
-          increment
-        }
-      }
-    });
+          increment,
+        },
+      },
+    })
   }
 
   /**
    * 获取用户的评价列表
    */
-  async getUserReviews(userId: string, options: {
-    page?: number;
-    limit?: number;
-  } = {}) {
-    const {
-      page = 1,
-      limit = 20
-    } = options;
+  async getUserReviews(
+    userId: string,
+    options: {
+      page?: number
+      limit?: number
+    } = {}
+  ) {
+    const { page = 1, limit = 20 } = options
 
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit
 
     const [reviews, total] = await Promise.all([
       this.prisma.pluginReview.findMany({
@@ -271,19 +277,19 @@ export class PluginReviewService {
               name: true,
               displayName: true,
               author: {
-                select: { id: true, email: true }
-              }
-            }
-          }
+                select: { id: true, email: true },
+              },
+            },
+          },
         },
         orderBy: { createdAt: 'desc' },
         skip,
-        take: limit
+        take: limit,
       }),
       this.prisma.pluginReview.count({
-        where: { userId }
-      })
-    ]);
+        where: { userId },
+      }),
+    ])
 
     return {
       reviews,
@@ -293,9 +299,9 @@ export class PluginReviewService {
         total,
         totalPages: Math.ceil(total / limit),
         hasNext: page * limit < total,
-        hasPrev: page > 1
-      }
-    };
+        hasPrev: page > 1,
+      },
+    }
   }
 
   /**
@@ -305,10 +311,10 @@ export class PluginReviewService {
     const result = await this.prisma.pluginReview.aggregate({
       where: { pluginId },
       _avg: { rating: true },
-      _count: { rating: true }
-    });
+      _count: { rating: true },
+    })
 
-    return result._avg.rating || 0;
+    return result._avg.rating || 0
   }
 
   /**
@@ -318,51 +324,46 @@ export class PluginReviewService {
     const result = await this.prisma.pluginReview.aggregate({
       where: { pluginId },
       _avg: { rating: true },
-      _count: { rating: true }
-    });
+      _count: { rating: true },
+    })
 
     await this.prisma.pluginMarketplace.update({
       where: { id: pluginId },
       data: {
         averageRating: result._avg.rating,
-        reviewCount: result._count.rating
-      }
-    });
+        reviewCount: result._count.rating,
+      },
+    })
   }
 
   /**
    * 获取评价统计信息
    */
   async getReviewStatistics(pluginId: string) {
-    const [
-      totalReviews,
-      averageRating,
-      ratingDistribution,
-      verifiedReviews
-    ] = await Promise.all([
+    const [totalReviews, averageRating, ratingDistribution, verifiedReviews] = await Promise.all([
       this.prisma.pluginReview.count({ where: { pluginId } }),
       this.getPluginAverageRating(pluginId),
       this.prisma.pluginReview.groupBy({
         by: ['rating'],
         where: { pluginId },
-        _count: { rating: true }
+        _count: { rating: true },
       }),
       this.prisma.pluginReview.count({
-        where: { pluginId, isVerifiedPurchase: true }
-      })
-    ]);
+        where: { pluginId, isVerifiedPurchase: true },
+      }),
+    ])
 
-    const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    ratingDistribution.forEach(item => {
-      distribution[item.rating as keyof typeof distribution] = item._count.rating;
-    });
+    const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    ratingDistribution.forEach((item) => {
+      distribution[item.rating as keyof typeof distribution] = item._count.rating
+    })
 
     return {
       totalReviews,
       averageRating,
       ratingDistribution: distribution,
       verifiedReviews,
-      verificationRate: totalReviews > 0 ? verifiedReviews / totalReviews : 0
-    };
+      verificationRate: totalReviews > 0 ? verifiedReviews / totalReviews : 0,
+    }
   }
 }

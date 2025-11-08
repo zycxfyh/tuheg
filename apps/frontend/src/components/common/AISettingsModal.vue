@@ -72,10 +72,10 @@
 </template>
 
 <script setup>
-import { useSettingsStore } from '@/stores/settings.store';
-import AiConfigCard from './AiConfigCard.vue';
+import { useSettingsStore } from '@/stores/settings.store'
+import AiConfigCard from './AiConfigCard.vue'
 
-const settingsStore = useSettingsStore();
+const settingsStore = useSettingsStore()
 </script>
 
 <style scoped>

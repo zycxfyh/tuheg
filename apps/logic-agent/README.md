@@ -80,7 +80,7 @@ const directive: StateChangeDirective = {
     hp: { op: 'decrement', value: 10 },
     status: { op: 'append', value: 'wounded' },
   },
-};
+}
 ```
 
 #### 3. Message Queue Controller (消息队列控制器)
@@ -114,14 +114,14 @@ async handlePlayerAction(@Payload() data: GameActionJobData) {
 Logic Agent使用结构化输出解析器确保AI生成符合预定schema的指令：
 
 ```typescript
-const parser = StructuredOutputParser.fromZodSchema(directiveSetSchema);
+const parser = StructuredOutputParser.fromZodSchema(directiveSetSchema)
 const prompt = new PromptTemplate({
   template: `{system_prompt}\n# 推理任务\n{format_instructions}\n---\n当前世界状态:\n\`\`\`json\n{game_state}\n\`\`\`\n---\n玩家行动:\n\`\`\`json\n{player_action}\n\`\`\``,
   inputVariables: ['game_state', 'player_action', 'system_prompt'],
   partialVariables: {
     format_instructions: parser.getFormatInstructions(),
   },
-});
+})
 ```
 
 ### 2. 输入数据结构
@@ -130,10 +130,10 @@ const prompt = new PromptTemplate({
 
 ```typescript
 interface GameActionJobData {
-  gameId: string;
-  userId: string;
-  gameStateSnapshot: GameState;
-  playerAction: PlayerAction;
+  gameId: string
+  userId: string
+  gameStateSnapshot: GameState
+  playerAction: PlayerAction
 }
 ```
 
@@ -161,8 +161,8 @@ interface StateChangeDirective {
 const response = await callAiWithGuard(
   chain,
   inputVariables,
-  directiveSetSchema, // Zod验证schema
-);
+  directiveSetSchema // Zod验证schema
+)
 ```
 
 - **格式验证**: 确保输出符合预定结构
@@ -178,9 +178,9 @@ const response = await callAiWithGuard(
 ```typescript
 await this.prisma.$transaction(async (tx) => {
   for (const directive of directives) {
-    await this.executeDirective(tx, gameId, directive);
+    await this.executeDirective(tx, gameId, directive)
   }
-});
+})
 ```
 
 ### 2. 数值操作
@@ -248,13 +248,13 @@ private applyNumericOperation(currentValue: number, op: NumericOperation): numbe
 
 ```typescript
 // 成功处理
-channel.ack(originalMsg);
+channel.ack(originalMsg)
 
 // 重试处理
-channel.nack(originalMsg, false, true);
+channel.nack(originalMsg, false, true)
 
 // 发送到死信队列
-channel.nack(originalMsg, false, false);
+channel.nack(originalMsg, false, false)
 ```
 
 ## 依赖关系
@@ -301,7 +301,7 @@ const queueOptions = {
   deadLetterExchange: 'logic_agent_dlx', // 死信交换器
   deadLetterRoutingKey: 'logic_agent_dlq', // 死信路由键
   messageTtl: 24 * 60 * 60 * 1000, // 消息TTL: 24小时
-};
+}
 ```
 
 ## 性能优化
@@ -330,22 +330,22 @@ const queueOptions = {
 
 ```typescript
 describe('LogicService', () => {
-  let service: LogicService;
+  let service: LogicService
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [LogicService],
-    }).compile();
-    service = module.get<LogicService>(LogicService);
-  });
+    }).compile()
+    service = module.get<LogicService>(LogicService)
+  })
 
   it('should generate valid directives', async () => {
-    const jobData = createMockJobData();
-    const directives = await service.generateDirectives(jobData, mockUser);
-    expect(directives).toBeDefined();
-    expect(Array.isArray(directives)).toBe(true);
-  });
-});
+    const jobData = createMockJobData()
+    const directives = await service.generateDirectives(jobData, mockUser)
+    expect(directives).toBeDefined()
+    expect(Array.isArray(directives)).toBe(true)
+  })
+})
 ```
 
 ### 2. 集成测试
@@ -372,9 +372,9 @@ describe('LogicService', () => {
 ### 2. 日志记录
 
 ```typescript
-this.logger.log(`Processing logic for game ${jobData.gameId}`);
-this.logger.log(`Generated ${directives.length} directives`);
-this.logger.error(`Failed to process logic task`, error);
+this.logger.log(`Processing logic for game ${jobData.gameId}`)
+this.logger.log(`Generated ${directives.length} directives`)
+this.logger.error(`Failed to process logic task`, error)
 ```
 
 ### 3. 健康检查

@@ -1,0 +1,389 @@
+name: 🚀 Optimized CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '20.x'
+  PNPM_VERSION: '9.x'
+  TURBO_FORCE: true
+  TURBO_REMOTE_CACHE_DISABLED: false
+
+# 最小权限原则
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  statuses: write
+
+# 并发控制优化
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # 依赖安装和缓存 - 独立Job以便重用
+  deps:
+    name: '📦 Dependencies'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    outputs:
+      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      # 多层缓存策略
+      - name: 📦 Cache PNPM Store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 📦 Cache Node Modules
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: 📦 Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      # 验证安装
+      - name: ✅ Verify dependencies
+        run: pnpm ls --depth=0
+
+  # 构建缓存 - 为后续Job准备构建产物
+  build:
+    name: '🏗️ Build'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: deps
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.NODE_VERSION }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      # 恢复依赖缓存
+      - name: 📦 Restore Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      # 构建缓存
+      - name: 📦 Cache Build Artifacts
+        uses: actions/cache@v4
+        id: cache-build
+        with:
+          path: |
+            apps/frontend/dist
+            packages/common-backend/dist
+            apps/*/dist
+            packages/*/dist
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: 🏗️ Build application
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: pnpm build
+
+      # 上传构建产物供后续Job使用
+      - name: 📤 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ github.sha }}
+          path: |
+            apps/frontend/dist/
+            packages/common-backend/dist/
+          retention-days: 1
+
+  # 并行测试 - 单元测试
+  test-unit:
+    name: '🧪 Unit Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    needs: build
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        shard: [1, 2, 3]
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      # 恢复依赖缓存
+      - name: 📦 Restore Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      # 运行分片测试
+      - name: 🧪 Run unit tests (Shard ${{ matrix.shard }}/3)
+        run: |
+          pnpm test -- --shard=${{ matrix.shard }}/3 --coverage=false --passWithNoTests
+
+  # 并行测试 - 集成测试
+  test-integration:
+    name: '🔗 Integration Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    needs: build
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports: [5432:5432]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports: [6379:6379]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      # 恢复依赖缓存
+      - name: 📦 Restore Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      # 恢复构建产物
+      - name: 📥 Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ github.sha }}
+
+      - name: 🔗 Run integration tests
+        run: pnpm test:integration
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+          REDIS_URL: redis://localhost:6379
+
+  # 代码质量检查
+  quality:
+    name: '🔍 Code Quality'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: deps
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      # 恢复依赖缓存
+      - name: 📦 Restore Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: 🎨 Run ESLint
+        run: pnpm lint
+
+      - name: 🔷 Run TypeScript check
+        run: pnpm type-check
+
+      - name: 📏 Run Prettier check
+        run: pnpm format:check
+
+  # 安全检查
+  security:
+    name: '🔒 Security'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    needs: deps
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      # 恢复依赖缓存
+      - name: 📦 Restore Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: 🔒 Dependency audit
+        run: pnpm audit --audit-level moderate
+
+      - name: 🛡️ Trivy security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: 0
+
+      - name: 📊 Upload security results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+
+  # 结果汇总
+  results:
+    name: '📊 Test Results'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: [test-unit, test-integration, quality, security]
+    if: always()
+
+    steps:
+      - name: 📊 Generate test summary
+        run: |
+          echo "# 🚀 CI 执行摘要" > ci-summary.md
+          echo "" >> ci-summary.md
+          echo "**执行时间**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> ci-summary.md
+          echo "**提交**: \`${{ github.sha }}\`" >> ci-summary.md
+          echo "**分支**: \`${{ github.ref }}\`" >> ci-summary.md
+          echo "" >> ci-summary.md
+
+          # 检查各个Job状态
+          UNIT_STATUS="${{ needs.test-unit.result }}"
+          INTEGRATION_STATUS="${{ needs.test-integration.result }}"
+          QUALITY_STATUS="${{ needs.quality.result }}"
+          SECURITY_STATUS="${{ needs.security.result }}"
+
+          echo "## 📋 执行结果" >> ci-summary.md
+          echo "" >> ci-summary.md
+          echo "| 阶段 | 状态 |" >> ci-summary.md
+          echo "|------|------|" >> ci-summary.md
+          echo "| 单元测试 | $([ "$UNIT_STATUS" = "success" ] && echo "✅" || echo "❌") |" >> ci-summary.md
+          echo "| 集成测试 | $([ "$INTEGRATION_STATUS" = "success" ] && echo "✅" || echo "❌") |" >> ci-summary.md
+          echo "| 代码质量 | $([ "$QUALITY_STATUS" = "success" ] && echo "✅" || echo "❌") |" >> ci-summary.md
+          echo "| 安全检查 | $([ "$SECURITY_STATUS" = "success" ] && echo "✅" || echo "❌") |" >> ci-summary.md
+          echo "" >> ci-summary.md
+
+          # 总体状态
+          if [ "$UNIT_STATUS" = "success" ] && [ "$INTEGRATION_STATUS" = "success" ] && [ "$QUALITY_STATUS" = "success" ] && [ "$SECURITY_STATUS" = "success" ]; then
+            echo "## ✅ 所有检查通过" >> ci-summary.md
+            echo "" >> ci-summary.md
+            echo "🎉 CI流水线执行成功，所有质量门禁已通过！" >> ci-summary.md
+          else
+            echo "## ❌ 检查失败" >> ci-summary.md
+            echo "" >> ci-summary.md
+            echo "⚠️ 部分检查未通过，请查看详细日志。" >> ci-summary.md
+          fi
+
+      - name: 📤 Upload CI summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-summary-${{ github.sha }}
+          path: ci-summary.md
+          retention-days: 7

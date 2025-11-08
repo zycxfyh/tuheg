@@ -1,7 +1,7 @@
 // 文件路径: apps/frontend/src/router/loader.types.ts
 // 核心理念: 类型安全的路由数据加载器
 
-import type { RouteLocationNormalized } from 'vue-router';
+import type { RouteLocationNormalized } from 'vue-router'
 
 /**
  * @interface LoaderContext
@@ -9,13 +9,13 @@ import type { RouteLocationNormalized } from 'vue-router';
  */
 export interface LoaderContext {
   /** 路由信息 */
-  route: RouteLocationNormalized;
+  route: RouteLocationNormalized
   /** 查询参数 */
-  params: Record<string, string>;
+  params: Record<string, string>
   /** URL 查询参数 */
-  query: Record<string, string>;
+  query: Record<string, string>
   /** 请求头（如果可用） */
-  headers?: HeadersInit;
+  headers?: HeadersInit
 }
 
 /**
@@ -23,7 +23,7 @@ export interface LoaderContext {
  * @description Loader 函数类型
  * @template T - 返回的数据类型
  */
-export type LoaderFunction<T = unknown> = (_context: LoaderContext) => Promise<T> | T;
+export type LoaderFunction<T = unknown> = (_context: LoaderContext) => Promise<T> | T
 
 /**
  * @interface LoaderResult
@@ -31,11 +31,11 @@ export type LoaderFunction<T = unknown> = (_context: LoaderContext) => Promise<T
  */
 export interface LoaderResult<T = unknown> {
   /** 数据 */
-  data: T;
+  data: T
   /** 错误（如果有） */
-  error?: Error;
+  error?: Error
   /** 状态码 */
-  status?: number;
+  status?: number
 }
 
 /**
@@ -44,18 +44,18 @@ export interface LoaderResult<T = unknown> {
  */
 export interface RouteLoaderConfig<T = unknown> {
   /** Loader 函数 */
-  loader: LoaderFunction<T>;
+  loader: LoaderFunction<T>
   /** 是否启用缓存 */
-  cache?: boolean;
+  cache?: boolean
   /** 缓存时间（毫秒） */
-  cacheTime?: number;
+  cacheTime?: number
   /** 错误处理函数 */
-  onError?: (_error: Error, _context: LoaderContext) => void;
+  onError?: (_error: Error, _context: LoaderContext) => void
   /** 重试配置 */
   retry?: {
     /** 最大重试次数 */
-    maxRetries: number;
+    maxRetries: number
     /** 重试延迟（毫秒） */
-    delay: number;
-  };
+    delay: number
+  }
 }

@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/reactive/event-stream.ts
 // 核心理念: 响应式数据流，使用 Observable 处理异步事件
 
-import { Injectable, Logger } from '@nestjs/common';
-import { Subject, Observable, mergeMap, catchError } from 'rxjs';
+import { Injectable, Logger } from '@nestjs/common'
+import { Subject, Observable, mergeMap, catchError } from 'rxjs'
 
 /**
  * @interface EventStreamConfig
@@ -10,13 +10,13 @@ import { Subject, Observable, mergeMap, catchError } from 'rxjs';
  */
 export interface EventStreamConfig {
   /** 事件名称 */
-  eventName: string;
+  eventName: string
   /** 是否自动重试 */
-  autoRetry?: boolean;
+  autoRetry?: boolean
   /** 最大重试次数 */
-  maxRetries?: number;
+  maxRetries?: number
   /** 重试延迟（毫秒） */
-  retryDelay?: number;
+  retryDelay?: number
 }
 
 /**
@@ -26,8 +26,8 @@ export interface EventStreamConfig {
  */
 @Injectable()
 export class EventStream {
-  private readonly logger = new Logger(EventStream.name);
-  private readonly streams = new Map<string, Subject<any>>();
+  private readonly logger = new Logger(EventStream.name)
+  private readonly streams = new Map<string, Subject<any>>()
 
   /**
    * @method createStream
@@ -35,10 +35,10 @@ export class EventStream {
    */
   public createStream<T = unknown>(eventName: string): Observable<T> {
     if (!this.streams.has(eventName)) {
-      this.streams.set(eventName, new Subject<any>());
+      this.streams.set(eventName, new Subject<any>())
     }
 
-    return this.streams.get(eventName) as Observable<T>;
+    return this.streams.get(eventName) as Observable<T>
   }
 
   /**
@@ -46,12 +46,12 @@ export class EventStream {
    * @description 发送事件到流
    */
   public emit<T = unknown>(eventName: string, data: T): void {
-    const stream = this.streams.get(eventName);
+    const stream = this.streams.get(eventName)
     if (stream) {
-      stream.next(data);
-      this.logger.debug(`Emitted event "${eventName}"`);
+      stream.next(data)
+      this.logger.debug(`Emitted event "${eventName}"`)
     } else {
-      this.logger.warn(`Stream "${eventName}" not found`);
+      this.logger.warn(`Stream "${eventName}" not found`)
     }
   }
 
@@ -62,34 +62,34 @@ export class EventStream {
   public subscribe<T = unknown>(
     eventName: string,
     handler: (data: T) => void | Promise<void>,
-    config?: EventStreamConfig,
+    config?: EventStreamConfig
   ): () => void {
-    const stream = this.createStream<T>(eventName);
+    const stream = this.createStream<T>(eventName)
 
     const subscription = stream.subscribe({
       next: async (data) => {
         try {
-          await handler(data);
+          await handler(data)
         } catch (error) {
           this.logger.error(
             `Error handling event "${eventName}":`,
-            error instanceof Error ? error.message : String(error),
-          );
+            error instanceof Error ? error.message : String(error)
+          )
 
           if (config?.autoRetry) {
-            await this.retryHandler(eventName, handler, data, config);
+            await this.retryHandler(eventName, handler, data, config)
           }
         }
       },
       error: (error) => {
         this.logger.error(
           `Stream error for "${eventName}":`,
-          error instanceof Error ? error.message : String(error),
-        );
+          error instanceof Error ? error.message : String(error)
+        )
       },
-    });
+    })
 
-    return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe()
   }
 
   /**
@@ -97,28 +97,28 @@ export class EventStream {
    * @description 管道操作符（简化版）
    */
   public pipe<T, R>(eventName: string, transform: (data: T) => R | Promise<R>): Observable<R> {
-    const stream = this.createStream<T>(eventName);
+    const stream = this.createStream<T>(eventName)
 
     return stream.pipe(
       mergeMap(async (data) => {
         try {
-          return await transform(data);
+          return await transform(data)
         } catch (error) {
           this.logger.error(
             `Error in pipe for "${eventName}":`,
-            error instanceof Error ? error.message : String(error),
-          );
-          throw error;
+            error instanceof Error ? error.message : String(error)
+          )
+          throw error
         }
       }),
       catchError((error) => {
         this.logger.error(
           `Pipe error for "${eventName}":`,
-          error instanceof Error ? error.message : String(error),
-        );
-        throw error;
-      }),
-    );
+          error instanceof Error ? error.message : String(error)
+        )
+        throw error
+      })
+    )
   }
 
   /**
@@ -129,25 +129,25 @@ export class EventStream {
     eventName: string,
     handler: (data: T) => void | Promise<void>,
     data: T,
-    config: EventStreamConfig,
+    config: EventStreamConfig
   ): Promise<void> {
-    const maxRetries = config.maxRetries ?? 3;
-    const retryDelay = config.retryDelay ?? 1000;
+    const maxRetries = config.maxRetries ?? 3
+    const retryDelay = config.retryDelay ?? 1000
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt));
+      await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt))
 
       try {
-        await handler(data);
-        this.logger.log(`Successfully retried event "${eventName}" after ${attempt} attempts`);
-        return;
+        await handler(data)
+        this.logger.log(`Successfully retried event "${eventName}" after ${attempt} attempts`)
+        return
       } catch (error) {
         if (attempt === maxRetries) {
           this.logger.error(
             `Failed to handle event "${eventName}" after ${maxRetries} attempts`,
-            error instanceof Error ? error.message : String(error),
-          );
-          throw error;
+            error instanceof Error ? error.message : String(error)
+          )
+          throw error
         }
       }
     }
@@ -158,11 +158,11 @@ export class EventStream {
    * @description 关闭事件流
    */
   public close(eventName: string): void {
-    const stream = this.streams.get(eventName);
+    const stream = this.streams.get(eventName)
     if (stream) {
-      stream.complete();
-      this.streams.delete(eventName);
-      this.logger.debug(`Closed stream "${eventName}"`);
+      stream.complete()
+      this.streams.delete(eventName)
+      this.logger.debug(`Closed stream "${eventName}"`)
     }
   }
 
@@ -172,9 +172,9 @@ export class EventStream {
    */
   public closeAll(): void {
     for (const [eventName, stream] of this.streams.entries()) {
-      stream.complete();
-      this.logger.debug(`Closed stream "${eventName}"`);
+      stream.complete()
+      this.logger.debug(`Closed stream "${eventName}"`)
     }
-    this.streams.clear();
+    this.streams.clear()
   }
 }

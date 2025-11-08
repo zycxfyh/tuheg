@@ -6,7 +6,7 @@
 // 2. 生成用户友好的错误消息
 // 3. 提供前端错误处理的标准化格式
 
-import { type ProcessingErrorResponse, ProcessingErrorType } from './error-classification';
+import { type ProcessingErrorResponse, ProcessingErrorType } from './error-classification'
 
 /**
  * WebSocket processing_failed 事件的标准载荷
@@ -20,19 +20,19 @@ import { type ProcessingErrorResponse, ProcessingErrorType } from './error-class
  */
 export interface ProcessingFailedEventPayload {
   /** 错误分类码 */
-  errorCode: string;
+  errorCode: string
   /** 用户友好的错误信息 */
-  errorMessage: string;
+  errorMessage: string
   /** 是否可重试 */
-  retryable: boolean;
+  retryable: boolean
   /** 建议的用户操作 */
-  suggestedAction?: string;
+  suggestedAction?: string
   /** 关联ID（用于追踪） */
-  correlationId?: string;
+  correlationId?: string
   /** 错误类型（用于调试和日志） */
-  errorType?: ProcessingErrorType;
+  errorType?: ProcessingErrorType
   /** 原始错误消息（用于调试，可选） */
-  originalError?: string;
+  originalError?: string
 }
 
 /**
@@ -63,10 +63,10 @@ export interface ProcessingFailedEventPayload {
 export function formatErrorForWebSocket(
   errorResponse: ProcessingErrorResponse,
   correlationId?: string,
-  originalError?: string,
+  originalError?: string
 ): ProcessingFailedEventPayload {
   // 根据错误类型生成更友好的消息
-  const friendlyMessage = getFriendlyErrorMessage(errorResponse);
+  const friendlyMessage = getFriendlyErrorMessage(errorResponse)
 
   return {
     errorCode: errorResponse.errorCode,
@@ -76,7 +76,7 @@ export function formatErrorForWebSocket(
     correlationId,
     errorType: errorResponse.errorType,
     originalError,
-  };
+  }
 }
 
 /**
@@ -96,27 +96,27 @@ export function formatErrorForWebSocket(
 function getFriendlyErrorMessage(errorResponse: ProcessingErrorResponse): string {
   // 如果已经有建议的操作，优先使用原始消息
   if (errorResponse.suggestedAction) {
-    return errorResponse.message;
+    return errorResponse.message
   }
 
   // 根据错误类型返回本地化的友好消息
   switch (errorResponse.errorType) {
     case ProcessingErrorType.VALIDATION_ERROR:
-      return '输入格式错误，请检查后重试';
+      return '输入格式错误，请检查后重试'
 
     case ProcessingErrorType.AI_GENERATION_ERROR:
-      return 'AI 处理失败，系统将自动重试。如果问题持续，请联系支持';
+      return 'AI 处理失败，系统将自动重试。如果问题持续，请联系支持'
 
     case ProcessingErrorType.NETWORK_ERROR:
-      return '网络连接失败，请检查网络连接后重试';
+      return '网络连接失败，请检查网络连接后重试'
 
     case ProcessingErrorType.DATABASE_ERROR:
-      return '数据服务暂时不可用，请稍后重试';
+      return '数据服务暂时不可用，请稍后重试'
 
     case ProcessingErrorType.BUSINESS_LOGIC_ERROR:
-      return '处理失败，请检查输入是否正确';
+      return '处理失败，请检查输入是否正确'
 
     default:
-      return errorResponse.message || '处理失败，请稍后重试';
+      return errorResponse.message || '处理失败，请稍后重试'
   }
 }

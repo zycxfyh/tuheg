@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { AgentService } from './agent.service';
-import { TaskService } from './task.service';
-import { CollaborationService } from './collaboration.service';
-import { AgentLearningService } from './agent-learning.service';
-import { AgentCollaborationController } from './agent-collaboration.controller';
-import { AgentCommunicationService } from './agent-communication.service';
+import { Module } from '@nestjs/common'
+import { AgentService } from './agent.service'
+import { TaskService } from './task.service'
+import { CollaborationService } from './collaboration.service'
+import { AgentLearningService } from './agent-learning.service'
+import { AgentCollaborationController } from './agent-collaboration.controller'
+import { AgentCommunicationService } from './agent-communication.service'
 
 @Module({
   providers: [

@@ -80,15 +80,15 @@ export class PrismaService extends PrismaClient {
     super({
       log: ['query', 'error', 'warn'],
       errorFormat: 'pretty',
-    });
+    })
   }
 
   async onModuleInit() {
-    await this.$connect();
+    await this.$connect()
   }
 
   async onModuleDestroy() {
-    await this.$disconnect();
+    await this.$disconnect()
   }
 }
 ```
@@ -110,13 +110,13 @@ export class PrismaService extends PrismaClient {
 export class DynamicAiSchedulerService {
   async getProviderForRole(user: User, role: AiRole): Promise<AiProvider> {
     // 1. 获取用户AI配置
-    const config = await this.getUserAiConfiguration(user.id);
+    const config = await this.getUserAiConfiguration(user.id)
 
     // 2. 根据角色选择提供商
-    const provider = this.selectProviderForRole(config, role);
+    const provider = this.selectProviderForRole(config, role)
 
     // 3. 返回配置的提供商实例
-    return this.aiProviderFactory.createProvider(provider);
+    return this.aiProviderFactory.createProvider(provider)
   }
 }
 ```
@@ -136,15 +136,15 @@ export async function callAiWithGuard<T>(
   chain: Runnable,
   inputs: Record<string, any>,
   schema: ZodSchema<T>,
-  maxRetries: number = 3,
+  maxRetries: number = 3
 ): Promise<T> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const result = await chain.invoke(inputs);
-      const parsed = schema.parse(result);
-      return parsed;
+      const result = await chain.invoke(inputs)
+      const parsed = schema.parse(result)
+      return parsed
     } catch (error) {
-      if (attempt === maxRetries) throw error;
+      if (attempt === maxRetries) throw error
       // 清理和重试逻辑
     }
   }
@@ -183,7 +183,7 @@ export class EventBusService {
   constructor(private readonly redisClient: Redis) {}
 
   async publish(event: string, data: any): Promise<void> {
-    await this.redisClient.publish(event, JSON.stringify(data));
+    await this.redisClient.publish(event, JSON.stringify(data))
   }
 
   async subscribe(event: string, handler: Function): Promise<void> {
@@ -426,7 +426,7 @@ export const envSchema = z.object({
   ANTHROPIC_API_KEY: z.string().optional(),
   SENTRY_DSN: z.string().url().optional(),
   QDRANT_URL: z.string().url().optional(),
-});
+})
 ```
 
 ## 测试策略
@@ -435,20 +435,20 @@ export const envSchema = z.object({
 
 ```typescript
 describe('DynamicAiSchedulerService', () => {
-  let service: DynamicAiSchedulerService;
+  let service: DynamicAiSchedulerService
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [DynamicAiSchedulerService],
-    }).compile();
-    service = module.get<DynamicAiSchedulerService>(DynamicAiSchedulerService);
-  });
+    }).compile()
+    service = module.get<DynamicAiSchedulerService>(DynamicAiSchedulerService)
+  })
 
   it('should select appropriate provider for role', async () => {
-    const provider = await service.getProviderForRole(mockUser, AiRole.LOGIC);
-    expect(provider).toBeDefined();
-  });
-});
+    const provider = await service.getProviderForRole(mockUser, AiRole.LOGIC)
+    expect(provider).toBeDefined()
+  })
+})
 ```
 
 ### 集成测试

@@ -19,31 +19,31 @@ export class Langfuse {
       end: () => ({
         // Mock trace end
       }),
-    };
+    }
   }
 
   shutdown() {
     // Mock shutdown
-    return Promise.resolve();
+    return Promise.resolve()
   }
 
   // Mock other methods as needed
   authWithApiKey() {
-    return this;
+    return this
   }
 
   getDataset() {
     return Promise.resolve({
       items: [],
       meta: { totalItems: 0, totalPages: 0, page: 1 },
-    });
+    })
   }
 
   createDataset() {
     return Promise.resolve({
       id: 'mock-dataset-id',
       name: 'mock-dataset',
-    });
+    })
   }
 
   createDatasetItem() {
@@ -51,8 +51,8 @@ export class Langfuse {
       id: 'mock-dataset-item-id',
       input: 'mock-input',
       expectedOutput: 'mock-output',
-    });
+    })
   }
 }
 
-export default Langfuse;
+export default Langfuse

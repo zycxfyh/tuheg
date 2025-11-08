@@ -21,9 +21,9 @@
 </template>
 
 <script setup>
-import { ref, onErrorCaptured } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { ref, onErrorCaptured } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 // Props
 const props = defineProps({
@@ -31,32 +31,32 @@ const props = defineProps({
     type: Error,
     default: null,
   },
-});
+})
 
 // Composables
-const { t } = useI18n();
-const router = useRouter();
+const { t } = useI18n()
+const router = useRouter()
 
 // Reactive
-const capturedError = ref(props.error);
-const errorMessage = ref('');
+const capturedError = ref(props.error)
+const errorMessage = ref('')
 
 // Methods
 const retry = () => {
-  window.location.reload();
-};
+  window.location.reload()
+}
 
 const goHome = () => {
-  router.push('/');
-};
+  router.push('/')
+}
 
 // Error capture
 onErrorCaptured((err) => {
-  capturedError.value = err;
-  errorMessage.value = err.message || t('common.unknownError');
-  console.error('Route loading error:', err);
-  return false; // Prevent error from propagating
-});
+  capturedError.value = err
+  errorMessage.value = err.message || t('common.unknownError')
+  console.error('Route loading error:', err)
+  return false // Prevent error from propagating
+})
 </script>
 
 <style scoped>

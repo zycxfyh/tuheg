@@ -1,59 +1,59 @@
 // 文件路径: apps/nexus-engine/src/main.ts (已集成 Redis Adapter)
 
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as Sentry from '@sentry/node';
-import helmet from 'helmet';
-import { ConfigService } from '@nestjs/config'; // [!] 核心改造：导入 ConfigService
-import { IoAdapter } from '@nestjs/platform-socket.io';
-import { createAdapter } from '@socket.io/redis-adapter'; // [!] 核心改造：导入 Redis 适配器
-import { createClient } from 'redis'; // [!] 核心改造：导入 Redis 客户端
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import * as Sentry from '@sentry/node'
+import helmet from 'helmet'
+import { ConfigService } from '@nestjs/config' // [!] 核心改造：导入 ConfigService
+import { IoAdapter } from '@nestjs/platform-socket.io'
+import { createAdapter } from '@socket.io/redis-adapter' // [!] 核心改造：导入 Redis 适配器
+import { createClient } from 'redis' // [!] 核心改造：导入 Redis 客户端
 
 // [!] 核心改造：创建一个自定义的 Socket.IO 适配器类
 export class RedisIoAdapter extends IoAdapter {
-  private adapterConstructor!: ReturnType<typeof createAdapter>;
+  private adapterConstructor!: ReturnType<typeof createAdapter>
 
   constructor(
     app: NestApplication,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {
-    super(app);
+    super(app)
   }
 
   async connectToRedis(): Promise<void> {
-    const redisUrl = this.configService.get<string>('REDIS_URL', 'redis://localhost:6379');
+    const redisUrl = this.configService.get<string>('REDIS_URL', 'redis://localhost:6379')
 
     // 根据官方建议，为 pub/sub 创建两个独立的 Redis 连接
-    const pubClient = createClient({ url: redisUrl });
-    const subClient = pubClient.duplicate();
+    const pubClient = createClient({ url: redisUrl })
+    const subClient = pubClient.duplicate()
 
-    await Promise.all([pubClient.connect(), subClient.connect()]);
+    await Promise.all([pubClient.connect(), subClient.connect()])
 
-    this.adapterConstructor = createAdapter(pubClient, subClient);
+    this.adapterConstructor = createAdapter(pubClient, subClient)
   }
 
   createIOServer(port: number, options?: Record<string, unknown>): Record<string, unknown> {
-    const server = super.createIOServer(port, options);
-    server.adapter(this.adapterConstructor);
-    return server;
+    const server = super.createIOServer(port, options)
+    server.adapter(this.adapterConstructor)
+    return server
   }
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
+  const app = await NestFactory.create(AppModule)
+  const configService = app.get(ConfigService)
 
   Sentry.init({
     dsn: configService.get<string>('SENTRY_DSN'),
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
     environment: process.env.NODE_ENV || 'development',
-  });
+  })
 
   // [!] 核心改造：设置并连接 Redis 适配器
-  const redisIoAdapter = new RedisIoAdapter(app, configService);
-  await redisIoAdapter.connectToRedis();
-  app.useWebSocketAdapter(redisIoAdapter);
+  const redisIoAdapter = new RedisIoAdapter(app, configService)
+  await redisIoAdapter.connectToRedis()
+  app.useWebSocketAdapter(redisIoAdapter)
 
   // 配置增强的安全中间件 - 依赖框架内置安全措施
   app.use(
@@ -80,23 +80,23 @@ async function bootstrap() {
       noSniff: true, // 防止MIME类型嗅探
       xssFilter: true, // 启用XSS过滤
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    }),
-  );
+    })
+  )
 
   // 配置 CORS
-  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
+  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173'
   app.enableCors({
     origin: corsOrigin.split(','),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
-  });
+  })
 
-  await app.listen(3000);
+  await app.listen(3000)
 }
 
 bootstrap().catch((err) => {
-  Sentry.captureException(err);
-  console.error('Failed to bootstrap the application:', err);
-  process.exit(1);
-});
+  Sentry.captureException(err)
+  console.error('Failed to bootstrap the application:', err)
+  process.exit(1)
+})

@@ -1,5 +1,5 @@
 // 文件路径: apps/backend-gateway/jest.config.js
-const baseConfig = require('../../shared/jest.config.js');
+const baseConfig = require('../../shared/jest.config.js')
 
 module.exports = {
   ...baseConfig,
@@ -10,4 +10,4 @@ module.exports = {
     '^langfuse$': '<rootDir>/../../../tests/mocks/langfuse.ts',
     '^langfuse/(.*)$': '<rootDir>/../../../tests/mocks/langfuse.ts',
   },
-};
+}

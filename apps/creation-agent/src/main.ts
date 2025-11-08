@@ -1,15 +1,15 @@
 // 文件路径: apps/creation-agent/src/main.ts (已集成Sentry)
 
-import { NestFactory } from '@nestjs/core';
-import { CreationAgentModule } from './creation-agent.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
-import { Channel } from 'amqplib'; // [核心修正] 导入 Channel 类型
-import * as Sentry from '@sentry/node'; // [Sentry] 导入 Sentry
+import { NestFactory } from '@nestjs/core'
+import { CreationAgentModule } from './creation-agent.module'
+import { MicroserviceOptions, Transport } from '@nestjs/microservices'
+import { ConfigService } from '@nestjs/config'
+import { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
+import * as Sentry from '@sentry/node' // [Sentry] 导入 Sentry
 
 async function bootstrap() {
-  const app = await NestFactory.create(CreationAgentModule);
-  const configService = app.get(ConfigService);
+  const app = await NestFactory.create(CreationAgentModule)
+  const configService = app.get(ConfigService)
 
   // [Sentry] 初始化 Sentry
   Sentry.init({
@@ -18,17 +18,17 @@ async function bootstrap() {
     profilesSampleRate: 1.0,
     // [Sentry] 为此Agent设置一个独特的环境标签
     environment: `agent-creation-${process.env.NODE_ENV || 'development'}`,
-  });
+  })
 
   const rmqUrl = configService.get<string>(
     'RABBITMQ_URL', // [修正] 确保环境变量名称与您的.env文件一致，通常是RABBITMQ_URL
-    'amqp://localhost:5672',
-  );
+    'amqp://localhost:5672'
+  )
 
-  const RETRY_EXCHANGE = 'creation_retry_exchange';
-  const RETRY_QUEUE = 'creation_retry_queue';
-  const DEAD_LETTER_EXCHANGE = 'dlx';
-  const DEAD_LETTER_QUEUE = 'creation_queue_dead';
+  const RETRY_EXCHANGE = 'creation_retry_exchange'
+  const RETRY_QUEUE = 'creation_retry_queue'
+  const DEAD_LETTER_EXCHANGE = 'dlx'
+  const DEAD_LETTER_QUEUE = 'creation_queue_dead'
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
@@ -58,39 +58,39 @@ async function bootstrap() {
           channel.assertExchange(DEAD_LETTER_EXCHANGE, 'direct', { durable: true }),
           channel.assertQueue(DEAD_LETTER_QUEUE, { durable: true }),
           channel.bindQueue(DEAD_LETTER_QUEUE, DEAD_LETTER_EXCHANGE, DEAD_LETTER_QUEUE),
-        ]);
+        ])
       },
     },
-  });
+  })
 
   // [新增] 配置HTTP服务器
-  const httpPort = configService.get<number>('CREATION_AGENT_HTTP_PORT', 8080);
-  app.setGlobalPrefix('api/v1/creation'); // API前缀
+  const httpPort = configService.get<number>('CREATION_AGENT_HTTP_PORT', 8080)
+  app.setGlobalPrefix('api/v1/creation') // API前缀
 
   // [Sentry] 使用 try...catch 块包裹启动过程
   try {
-    await app.startAllMicroservices();
-    await app.listen(httpPort);
+    await app.startAllMicroservices()
+    await app.listen(httpPort)
 
-    console.log('🚀 Creation Agent is running:');
-    console.log(`   📡 Microservices: listening for tasks on the event bus`);
-    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/creation`);
+    console.log('🚀 Creation Agent is running:')
+    console.log(`   📡 Microservices: listening for tasks on the event bus`)
+    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/creation`)
   } catch (err) {
     // [Sentry] 如果启动失败，捕获异常并上报
-    Sentry.captureException(err);
-    console.error('Failed to start Creation Agent:', err);
+    Sentry.captureException(err)
+    console.error('Failed to start Creation Agent:', err)
     // 确保在启动失败时进程退出
     await Sentry.close(2000).then(() => {
-      process.exit(1);
-    });
+      process.exit(1)
+    })
   }
 }
 
 // [Sentry] 使用 try...catch 包裹顶层bootstrap调用
 bootstrap().catch((err) => {
-  Sentry.captureException(err);
-  console.error('Unhandled error during bootstrap of Creation Agent:', err);
+  Sentry.captureException(err)
+  console.error('Unhandled error during bootstrap of Creation Agent:', err)
   Sentry.close(2000).then(() => {
-    process.exit(1);
-  });
-});
+    process.exit(1)
+  })
+})

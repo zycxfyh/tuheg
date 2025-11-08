@@ -39,15 +39,15 @@ export enum ErrorCategory {
  */
 export interface ErrorClassification {
   /** 错误类别 */
-  category: ErrorCategory;
+  category: ErrorCategory
   /** 是否应该重试 */
-  shouldRetry: boolean;
+  shouldRetry: boolean
   /** 错误消息 */
-  message: string;
+  message: string
   /** 是否包含错误反馈信息（用于传递给 AI） */
-  hasFeedback: boolean;
+  hasFeedback: boolean
   /** 错误反馈信息（如果适用） */
-  feedback?: string;
+  feedback?: string
 }
 
 /**
@@ -55,17 +55,17 @@ export interface ErrorClassification {
  */
 export interface RetryConfig {
   /** 最大重试次数（不包括初始尝试） */
-  maxRetries: number;
+  maxRetries: number
   /** 初始延迟（毫秒） */
-  initialDelayMs: number;
+  initialDelayMs: number
   /** 最大延迟（毫秒） */
-  maxDelayMs: number;
+  maxDelayMs: number
   /** 指数退避的底数（默认 2） */
-  backoffMultiplier: number;
+  backoffMultiplier: number
   /** 是否启用随机抖动 */
-  enableJitter: boolean;
+  enableJitter: boolean
   /** 抖动百分比（0-1，默认 0.2 即 ±20%） */
-  jitterRatio: number;
+  jitterRatio: number
 }
 
 /** 默认重试配置 */
@@ -76,7 +76,7 @@ export const DEFAULT_RETRY_CONFIG: RetryConfig = {
   backoffMultiplier: 2,
   enableJitter: true,
   jitterRatio: 0.2,
-};
+}
 
 /**
  * 分类错误并决定是否应该重试
@@ -105,13 +105,13 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
       message: 'Schema validation failed',
       hasFeedback: true,
       feedback: validationFeedback,
-    };
+    }
   }
 
   // Error 对象
   if (error instanceof Error) {
-    const errorMessage = error.message.toLowerCase();
-    const errorName = error.name.toLowerCase();
+    const errorMessage = error.message.toLowerCase()
+    const errorName = error.name.toLowerCase()
 
     // 网络错误
     if (
@@ -128,13 +128,13 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
         shouldRetry: true,
         message: `Network error: ${error.message}`,
         hasFeedback: false,
-      };
+      }
     }
 
     // HTTP 错误（如果有 status 属性）
     const statusCode =
       (error as { status?: number; statusCode?: number }).status ||
-      (error as { status?: number; statusCode?: number }).statusCode;
+      (error as { status?: number; statusCode?: number }).statusCode
 
     if (statusCode) {
       if (statusCode === 429) {
@@ -143,7 +143,7 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
           shouldRetry: true,
           message: 'Rate limit exceeded (429)',
           hasFeedback: false,
-        };
+        }
       }
       if (statusCode === 503 || statusCode === 502 || statusCode === 504) {
         return {
@@ -151,7 +151,7 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
           shouldRetry: true,
           message: `Service unavailable (${statusCode})`,
           hasFeedback: false,
-        };
+        }
       }
       if (statusCode === 401 || statusCode === 403) {
         return {
@@ -159,7 +159,7 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
           shouldRetry: false,
           message: `Authentication failed (${statusCode})`,
           hasFeedback: false,
-        };
+        }
       }
       if (statusCode === 400) {
         return {
@@ -167,7 +167,7 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
           shouldRetry: false,
           message: `Invalid request (${statusCode})`,
           hasFeedback: false,
-        };
+        }
       }
     }
 
@@ -183,7 +183,7 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
         shouldRetry: true,
         message: `JSON parse error: ${error.message}`,
         hasFeedback: false,
-      };
+      }
     }
 
     // 业务逻辑错误（特定错误名称）
@@ -197,20 +197,20 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
         shouldRetry: false,
         message: `Business logic error: ${error.message}`,
         hasFeedback: false,
-      };
+      }
     }
   }
 
   // 字符串错误
   if (typeof error === 'string') {
-    const lowerError = error.toLowerCase();
+    const lowerError = error.toLowerCase()
     if (lowerError.includes('timeout') || lowerError.includes('network')) {
       return {
         category: ErrorCategory.NETWORK,
         shouldRetry: true,
         message: `Network error: ${error}`,
         hasFeedback: false,
-      };
+      }
     }
   }
 
@@ -220,7 +220,7 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
     shouldRetry: true,
     message: error instanceof Error ? error.message : String(error),
     hasFeedback: false,
-  };
+  }
 }
 
 /**
@@ -245,21 +245,21 @@ export function classifyError(error: unknown, validationFeedback?: string): Erro
  */
 export function calculateRetryDelay(
   attemptNumber: number,
-  config: RetryConfig = DEFAULT_RETRY_CONFIG,
+  config: RetryConfig = DEFAULT_RETRY_CONFIG
 ): number {
   // 计算基础延迟（指数退避）
   const baseDelay = Math.min(
     config.initialDelayMs * config.backoffMultiplier ** attemptNumber,
-    config.maxDelayMs,
-  );
+    config.maxDelayMs
+  )
 
   // 添加随机抖动（如果启用）
   if (config.enableJitter) {
-    const jitter = baseDelay * config.jitterRatio * (Math.random() - 0.5) * 2;
-    return Math.max(0, Math.round(baseDelay + jitter));
+    const jitter = baseDelay * config.jitterRatio * (Math.random() - 0.5) * 2
+    return Math.max(0, Math.round(baseDelay + jitter))
   }
 
-  return Math.round(baseDelay);
+  return Math.round(baseDelay)
 }
 
 /**
@@ -279,7 +279,7 @@ export function calculateRetryDelay(
 export function getRecommendedDelay(
   category: ErrorCategory,
   attemptNumber: number,
-  config: RetryConfig = DEFAULT_RETRY_CONFIG,
+  config: RetryConfig = DEFAULT_RETRY_CONFIG
 ): number {
   // Rate Limit 错误需要更长的延迟
   if (category === ErrorCategory.TEMPORARY_API_ERROR) {
@@ -287,8 +287,8 @@ export function getRecommendedDelay(
       ...config,
       initialDelayMs: 2000, // Rate limit 需要更长延迟
       maxDelayMs: 10000,
-    };
-    return calculateRetryDelay(attemptNumber, rateLimitConfig);
+    }
+    return calculateRetryDelay(attemptNumber, rateLimitConfig)
   }
 
   // 验证错误使用较短延迟（AI 应该能快速修复）
@@ -296,12 +296,12 @@ export function getRecommendedDelay(
     const validationConfig = {
       ...config,
       initialDelayMs: 200, // 验证错误修复应该很快
-    };
-    return calculateRetryDelay(attemptNumber, validationConfig);
+    }
+    return calculateRetryDelay(attemptNumber, validationConfig)
   }
 
   // 其他错误使用标准延迟
-  return calculateRetryDelay(attemptNumber, config);
+  return calculateRetryDelay(attemptNumber, config)
 }
 
 /**
@@ -311,5 +311,5 @@ export function getRecommendedDelay(
  * @returns Promise，在指定时间后 resolve
  */
 export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

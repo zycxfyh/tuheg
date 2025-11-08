@@ -1,39 +1,39 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { AuditService } from './audit.service';
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { AuditService } from './audit.service'
+import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 export interface EncryptionOptions {
-  algorithm?: string;
-  keyLength?: number;
+  algorithm?: string
+  keyLength?: number
 }
 
 export interface SecurityEvent {
-  type: 'login' | 'logout' | 'permission_change' | 'data_access' | 'security_alert';
-  userId?: string;
-  tenantId?: string;
-  resource: string;
-  action: string;
-  details: Record<string, any>;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  ipAddress?: string;
-  userAgent?: string;
+  type: 'login' | 'logout' | 'permission_change' | 'data_access' | 'security_alert'
+  userId?: string
+  tenantId?: string
+  resource: string
+  action: string
+  details: Record<string, any>
+  riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  ipAddress?: string
+  userAgent?: string
 }
 
 @Injectable()
 export class EnterpriseSecurityService {
-  private readonly algorithm = 'aes-256-gcm';
-  private readonly keyLength = 32;
-  private encryptionKey: Buffer;
+  private readonly algorithm = 'aes-256-gcm'
+  private readonly keyLength = 32
+  private encryptionKey: Buffer
 
   constructor(
     private prisma: PrismaService,
     private auditService: AuditService,
-    private eventEmitter: EventEmitter2,
+    private eventEmitter: EventEmitter2
   ) {
     // 初始化加密密钥
-    this.initializeEncryptionKey();
+    this.initializeEncryptionKey()
   }
 
   // ==================== 数据加密 ====================
@@ -42,82 +42,76 @@ export class EnterpriseSecurityService {
    * 加密敏感数据
    */
   encryptData(data: string, options?: EncryptionOptions): string {
-    const algorithm = options?.algorithm || this.algorithm;
-    const iv = randomBytes(16);
-    const cipher = createCipheriv(algorithm, this.encryptionKey, iv);
+    const algorithm = options?.algorithm || this.algorithm
+    const iv = randomBytes(16)
+    const cipher = createCipheriv(algorithm, this.encryptionKey, iv)
 
-    let encrypted = cipher.update(data, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
+    let encrypted = cipher.update(data, 'utf8', 'hex')
+    encrypted += cipher.final('hex')
 
-    const authTag = cipher.getAuthTag();
+    const authTag = cipher.getAuthTag()
 
     // 返回格式: iv:authTag:encryptedData
-    return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`;
+    return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`
   }
 
   /**
    * 解密数据
    */
   decryptData(encryptedData: string, options?: EncryptionOptions): string {
-    const algorithm = options?.algorithm || this.algorithm;
-    const parts = encryptedData.split(':');
+    const algorithm = options?.algorithm || this.algorithm
+    const parts = encryptedData.split(':')
 
     if (parts.length !== 3) {
-      throw new Error('Invalid encrypted data format');
+      throw new Error('Invalid encrypted data format')
     }
 
-    const iv = Buffer.from(parts[0], 'hex');
-    const authTag = Buffer.from(parts[1], 'hex');
-    const encrypted = parts[2];
+    const iv = Buffer.from(parts[0], 'hex')
+    const authTag = Buffer.from(parts[1], 'hex')
+    const encrypted = parts[2]
 
-    const decipher = createDecipheriv(algorithm, this.encryptionKey, iv);
-    decipher.setAuthTag(authTag);
+    const decipher = createDecipheriv(algorithm, this.encryptionKey, iv)
+    decipher.setAuthTag(authTag)
 
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+    decrypted += decipher.final('utf8')
 
-    return decrypted;
+    return decrypted
   }
 
   /**
    * 加密对象中的敏感字段
    */
-  encryptSensitiveFields<T extends Record<string, any>>(
-    data: T,
-    sensitiveFields: (keyof T)[]
-  ): T {
-    const encrypted = { ...data };
+  encryptSensitiveFields<T extends Record<string, any>>(data: T, sensitiveFields: (keyof T)[]): T {
+    const encrypted = { ...data }
 
     for (const field of sensitiveFields) {
       if (encrypted[field] && typeof encrypted[field] === 'string') {
-        encrypted[field] = this.encryptData(encrypted[field]) as any;
+        encrypted[field] = this.encryptData(encrypted[field]) as any
       }
     }
 
-    return encrypted;
+    return encrypted
   }
 
   /**
    * 解密对象中的敏感字段
    */
-  decryptSensitiveFields<T extends Record<string, any>>(
-    data: T,
-    sensitiveFields: (keyof T)[]
-  ): T {
-    const decrypted = { ...data };
+  decryptSensitiveFields<T extends Record<string, any>>(data: T, sensitiveFields: (keyof T)[]): T {
+    const decrypted = { ...data }
 
     for (const field of sensitiveFields) {
       if (decrypted[field] && typeof decrypted[field] === 'string') {
         try {
-          decrypted[field] = this.decryptData(decrypted[field]) as any;
+          decrypted[field] = this.decryptData(decrypted[field]) as any
         } catch (error) {
           // 如果解密失败，保持原值
-          console.warn(`Failed to decrypt field ${String(field)}:`, error);
+          console.warn(`Failed to decrypt field ${String(field)}:`, error)
         }
       }
     }
 
-    return decrypted;
+    return decrypted
   }
 
   // ==================== 安全事件监控 ====================
@@ -136,20 +130,20 @@ export class EnterpriseSecurityService {
         ...event.details,
         riskLevel: event.riskLevel,
         ipAddress: event.ipAddress,
-        userAgent: event.userAgent
+        userAgent: event.userAgent,
       },
       riskLevel: this.mapRiskLevel(event.riskLevel),
       ipAddress: event.ipAddress,
       userAgent: event.userAgent,
-      tenantId: event.tenantId
-    });
+      tenantId: event.tenantId,
+    })
 
     // 触发安全事件
-    this.eventEmitter.emit('security.event', event);
+    this.eventEmitter.emit('security.event', event)
 
     // 检查是否需要安全警报
     if (this.shouldTriggerAlert(event)) {
-      await this.triggerSecurityAlert(event);
+      await this.triggerSecurityAlert(event)
     }
   }
 
@@ -160,51 +154,51 @@ export class EnterpriseSecurityService {
     userId: string,
     tenantId: string,
     activity: {
-      type: string;
-      resource: string;
-      ipAddress: string;
-      userAgent: string;
-      timestamp: Date;
+      type: string
+      resource: string
+      ipAddress: string
+      userAgent: string
+      timestamp: Date
     }
   ): Promise<{
-    isSuspicious: boolean;
-    reasons: string[];
-    riskScore: number;
+    isSuspicious: boolean
+    reasons: string[]
+    riskScore: number
   }> {
-    const reasons: string[] = [];
-    let riskScore = 0;
+    const reasons: string[] = []
+    let riskScore = 0
 
     // 检查登录异常
     if (activity.type === 'login') {
-      const unusualLogin = await this.detectUnusualLogin(userId, activity);
+      const unusualLogin = await this.detectUnusualLogin(userId, activity)
       if (unusualLogin.isUnusual) {
-        reasons.push(...unusualLogin.reasons);
-        riskScore += unusualLogin.riskScore;
+        reasons.push(...unusualLogin.reasons)
+        riskScore += unusualLogin.riskScore
       }
     }
 
     // 检查高频操作
-    const highFrequency = await this.detectHighFrequencyActivity(userId, tenantId, activity);
+    const highFrequency = await this.detectHighFrequencyActivity(userId, tenantId, activity)
     if (highFrequency.isHighFrequency) {
-      reasons.push(...highFrequency.reasons);
-      riskScore += highFrequency.riskScore;
+      reasons.push(...highFrequency.reasons)
+      riskScore += highFrequency.riskScore
     }
 
     // 检查敏感资源访问
-    const sensitiveAccess = this.isSensitiveResourceAccess(activity.resource);
+    const sensitiveAccess = this.isSensitiveResourceAccess(activity.resource)
     if (sensitiveAccess) {
-      reasons.push('Access to sensitive resource');
-      riskScore += 30;
+      reasons.push('Access to sensitive resource')
+      riskScore += 30
     }
 
     // 检查地理位置异常
-    const geoAnomaly = await this.detectGeographicAnomaly(userId, activity.ipAddress);
+    const geoAnomaly = await this.detectGeographicAnomaly(userId, activity.ipAddress)
     if (geoAnomaly.isAnomaly) {
-      reasons.push(...geoAnomaly.reasons);
-      riskScore += geoAnomaly.riskScore;
+      reasons.push(...geoAnomaly.reasons)
+      riskScore += geoAnomaly.riskScore
     }
 
-    const isSuspicious = riskScore >= 50;
+    const isSuspicious = riskScore >= 50
 
     if (isSuspicious) {
       await this.logSecurityEvent({
@@ -216,19 +210,19 @@ export class EnterpriseSecurityService {
         details: {
           reasons,
           riskScore,
-          activity
+          activity,
         },
         riskLevel: riskScore >= 80 ? 'critical' : riskScore >= 60 ? 'high' : 'medium',
         ipAddress: activity.ipAddress,
-        userAgent: activity.userAgent
-      });
+        userAgent: activity.userAgent,
+      })
     }
 
     return {
       isSuspicious,
       reasons,
-      riskScore
-    };
+      riskScore,
+    }
   }
 
   // ==================== 访问控制 ====================
@@ -243,33 +237,33 @@ export class EnterpriseSecurityService {
     action: string,
     context?: Record<string, any>
   ): Promise<{
-    hasPermission: boolean;
-    reasons: string[];
-    riskLevel: 'low' | 'medium' | 'high';
+    hasPermission: boolean
+    reasons: string[]
+    riskLevel: 'low' | 'medium' | 'high'
   }> {
-    const reasons: string[] = [];
-    let riskLevel: 'low' | 'medium' | 'high' = 'low';
+    const reasons: string[] = []
+    let riskLevel: 'low' | 'medium' | 'high' = 'low'
 
     // 获取用户在租户中的角色
     const tenantUser = await this.prisma.tenantUser.findUnique({
       where: {
         tenantId_userId: {
           tenantId,
-          userId
-        }
-      }
-    });
+          userId,
+        },
+      },
+    })
 
     if (!tenantUser) {
-      reasons.push('User is not a member of the tenant');
-      return { hasPermission: false, reasons, riskLevel: 'high' };
+      reasons.push('User is not a member of the tenant')
+      return { hasPermission: false, reasons, riskLevel: 'high' }
     }
 
     // 检查租户级别的权限
-    const tenantPermission = this.checkTenantPermission(tenantUser.role as any, resource, action);
+    const tenantPermission = this.checkTenantPermission(tenantUser.role as any, resource, action)
     if (!tenantPermission.hasPermission) {
-      reasons.push(...tenantPermission.reasons);
-      riskLevel = 'medium';
+      reasons.push(...tenantPermission.reasons)
+      riskLevel = 'medium'
     }
 
     // 检查资源特定的权限（如果适用）
@@ -280,22 +274,22 @@ export class EnterpriseSecurityService {
         context.resourceId,
         resource,
         action
-      );
+      )
 
       if (!resourcePermission.hasPermission) {
-        reasons.push(...resourcePermission.reasons);
-        riskLevel = 'high';
+        reasons.push(...resourcePermission.reasons)
+        riskLevel = 'high'
       }
     }
 
     // 检查时间-based限制
-    const timeRestriction = this.checkTimeRestrictions(action);
+    const timeRestriction = this.checkTimeRestrictions(action)
     if (timeRestriction.restricted) {
-      reasons.push(...timeRestriction.reasons);
-      riskLevel = 'medium';
+      reasons.push(...timeRestriction.reasons)
+      riskLevel = 'medium'
     }
 
-    const hasPermission = reasons.length === 0;
+    const hasPermission = reasons.length === 0
 
     // 记录权限检查
     await this.auditService.createAuditLog({
@@ -308,17 +302,17 @@ export class EnterpriseSecurityService {
         hasPermission,
         reasons,
         riskLevel,
-        context
+        context,
       },
       riskLevel: this.mapRiskLevel(riskLevel),
-      tenantId
-    });
+      tenantId,
+    })
 
     return {
       hasPermission,
       reasons,
-      riskLevel
-    };
+      riskLevel,
+    }
   }
 
   /**
@@ -331,7 +325,7 @@ export class EnterpriseSecurityService {
     permissions: string[],
     expiresIn: number // 秒
   ): Promise<string> {
-    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+    const expiresAt = new Date(Date.now() + expiresIn * 1000)
 
     const token = await this.prisma.temporaryAccessToken.create({
       data: {
@@ -339,9 +333,9 @@ export class EnterpriseSecurityService {
         tenantId,
         resource,
         permissions,
-        expiresAt
-      }
-    });
+        expiresAt,
+      },
+    })
 
     // 记录令牌创建
     await this.auditService.createAuditLog({
@@ -352,13 +346,13 @@ export class EnterpriseSecurityService {
       details: {
         resource,
         permissions,
-        expiresAt
+        expiresAt,
       },
       riskLevel: 'LOW',
-      tenantId
-    });
+      tenantId,
+    })
 
-    return token.id;
+    return token.id
   }
 
   /**
@@ -369,40 +363,40 @@ export class EnterpriseSecurityService {
     resource: string,
     action: string
   ): Promise<{
-    valid: boolean;
-    userId?: string;
-    tenantId?: string;
-    permissions?: string[];
+    valid: boolean
+    userId?: string
+    tenantId?: string
+    permissions?: string[]
   }> {
     const token = await this.prisma.temporaryAccessToken.findUnique({
-      where: { id: tokenId }
-    });
+      where: { id: tokenId },
+    })
 
     if (!token) {
-      return { valid: false };
+      return { valid: false }
     }
 
     // 检查是否过期
     if (token.expiresAt < new Date()) {
-      return { valid: false };
+      return { valid: false }
     }
 
     // 检查权限
     if (!token.permissions.includes(action) && !token.permissions.includes('*')) {
-      return { valid: false };
+      return { valid: false }
     }
 
     // 检查资源匹配
     if (token.resource !== resource && token.resource !== '*') {
-      return { valid: false };
+      return { valid: false }
     }
 
     return {
       valid: true,
       userId: token.userId,
       tenantId: token.tenantId,
-      permissions: token.permissions
-    };
+      permissions: token.permissions,
+    }
   }
 
   // ==================== 合规性检查 ====================
@@ -411,97 +405,97 @@ export class EnterpriseSecurityService {
    * 执行GDPR合规检查
    */
   async performGDPRComplianceCheck(tenantId: string): Promise<{
-    compliant: boolean;
-    issues: string[];
-    recommendations: string[];
+    compliant: boolean
+    issues: string[]
+    recommendations: string[]
   }> {
-    const issues: string[] = [];
-    const recommendations: string[] = [];
+    const issues: string[] = []
+    const recommendations: string[] = []
 
     // 检查数据加密
-    const encryptionCheck = await this.checkDataEncryption(tenantId);
+    const encryptionCheck = await this.checkDataEncryption(tenantId)
     if (!encryptionCheck.encrypted) {
-      issues.push('Sensitive data is not properly encrypted');
-      recommendations.push('Implement end-to-end encryption for all sensitive data');
+      issues.push('Sensitive data is not properly encrypted')
+      recommendations.push('Implement end-to-end encryption for all sensitive data')
     }
 
     // 检查数据保留政策
-    const retentionCheck = await this.checkDataRetentionPolicies(tenantId);
+    const retentionCheck = await this.checkDataRetentionPolicies(tenantId)
     if (!retentionCheck.hasPolicy) {
-      issues.push('No data retention policy defined');
-      recommendations.push('Define and implement data retention policies');
+      issues.push('No data retention policy defined')
+      recommendations.push('Define and implement data retention policies')
     }
 
     // 检查审计日志
-    const auditCheck = await this.checkAuditLogging(tenantId);
+    const auditCheck = await this.checkAuditLogging(tenantId)
     if (!auditCheck.enabled) {
-      issues.push('Audit logging is not enabled');
-      recommendations.push('Enable comprehensive audit logging');
+      issues.push('Audit logging is not enabled')
+      recommendations.push('Enable comprehensive audit logging')
     }
 
     // 检查数据处理同意
-    const consentCheck = await this.checkDataProcessingConsent(tenantId);
+    const consentCheck = await this.checkDataProcessingConsent(tenantId)
     if (!consentCheck.consentCollected) {
-      issues.push('User consent for data processing not collected');
-      recommendations.push('Implement user consent management system');
+      issues.push('User consent for data processing not collected')
+      recommendations.push('Implement user consent management system')
     }
 
     return {
       compliant: issues.length === 0,
       issues,
-      recommendations
-    };
+      recommendations,
+    }
   }
 
   /**
    * 执行安全健康检查
    */
   async performSecurityHealthCheck(tenantId: string): Promise<{
-    score: number;
-    issues: string[];
-    recommendations: string[];
+    score: number
+    issues: string[]
+    recommendations: string[]
   }> {
-    const issues: string[] = [];
-    const recommendations: string[] = [];
-    let score = 100;
+    const issues: string[] = []
+    const recommendations: string[] = []
+    let score = 100
 
     // 检查密码策略
-    const passwordPolicy = await this.checkPasswordPolicy(tenantId);
+    const passwordPolicy = await this.checkPasswordPolicy(tenantId)
     if (!passwordPolicy.strong) {
-      issues.push('Weak password policy');
-      recommendations.push('Implement strong password requirements');
-      score -= 20;
+      issues.push('Weak password policy')
+      recommendations.push('Implement strong password requirements')
+      score -= 20
     }
 
     // 检查多因素认证
-    const mfaCheck = await this.checkMFAEnabled(tenantId);
+    const mfaCheck = await this.checkMFAEnabled(tenantId)
     if (!mfaCheck.enabled) {
-      issues.push('Multi-factor authentication not enabled');
-      recommendations.push('Enable MFA for all users');
-      score -= 15;
+      issues.push('Multi-factor authentication not enabled')
+      recommendations.push('Enable MFA for all users')
+      score -= 15
     }
 
     // 检查API密钥安全
-    const apiKeyCheck = await this.checkAPIKeySecurity(tenantId);
+    const apiKeyCheck = await this.checkAPIKeySecurity(tenantId)
     if (!apiKeyCheck.secure) {
-      issues.push('API keys are not properly secured');
-      recommendations.push('Implement API key rotation and secure storage');
-      score -= 10;
+      issues.push('API keys are not properly secured')
+      recommendations.push('Implement API key rotation and secure storage')
+      score -= 10
     }
 
     // 检查网络安全
-    const networkCheck = await this.checkNetworkSecurity(tenantId);
+    const networkCheck = await this.checkNetworkSecurity(tenantId)
     if (!networkCheck.secure) {
-      issues.push('Network security vulnerabilities detected');
-      recommendations.push('Implement network security best practices');
-      score -= 15;
+      issues.push('Network security vulnerabilities detected')
+      recommendations.push('Implement network security best practices')
+      score -= 15
     }
 
     return {
       score: Math.max(0, score),
       issues,
-      recommendations
-    };
+      recommendations,
+    }
   }
 
   // ==================== 私有方法 ====================
@@ -510,12 +504,12 @@ export class EnterpriseSecurityService {
    * 初始化加密密钥
    */
   private initializeEncryptionKey(): void {
-    const key = process.env.ENCRYPTION_KEY;
+    const key = process.env.ENCRYPTION_KEY
     if (!key) {
-      throw new Error('ENCRYPTION_KEY environment variable is required');
+      throw new Error('ENCRYPTION_KEY environment variable is required')
     }
 
-    this.encryptionKey = scryptSync(key, 'salt', this.keyLength);
+    this.encryptionKey = scryptSync(key, 'salt', this.keyLength)
   }
 
   /**
@@ -523,11 +517,16 @@ export class EnterpriseSecurityService {
    */
   private mapRiskLevel(riskLevel: string): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
     switch (riskLevel) {
-      case 'low': return 'LOW';
-      case 'medium': return 'MEDIUM';
-      case 'high': return 'HIGH';
-      case 'critical': return 'CRITICAL';
-      default: return 'LOW';
+      case 'low':
+        return 'LOW'
+      case 'medium':
+        return 'MEDIUM'
+      case 'high':
+        return 'HIGH'
+      case 'critical':
+        return 'CRITICAL'
+      default:
+        return 'LOW'
     }
   }
 
@@ -535,7 +534,7 @@ export class EnterpriseSecurityService {
    * 判断是否需要触发警报
    */
   private shouldTriggerAlert(event: SecurityEvent): boolean {
-    return event.riskLevel === 'high' || event.riskLevel === 'critical';
+    return event.riskLevel === 'high' || event.riskLevel === 'critical'
   }
 
   /**
@@ -543,9 +542,9 @@ export class EnterpriseSecurityService {
    */
   private async triggerSecurityAlert(event: SecurityEvent): Promise<void> {
     // 这里可以集成邮件通知、Slack通知等
-    console.warn('Security Alert:', event);
+    console.warn('Security Alert:', event)
 
-    this.eventEmitter.emit('security.alert', event);
+    this.eventEmitter.emit('security.alert', event)
   }
 
   // 其他检测方法的实现...

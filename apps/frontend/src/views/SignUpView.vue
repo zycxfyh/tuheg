@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import { SignUp } from '@clerk/vue';
+import { SignUp } from '@clerk/vue'
 </script>

@@ -1,7 +1,7 @@
 // 文件路径: src/auth/guards/jwt-auth.guard.ts
 
-import { Injectable } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
 /**
  * 一个实现了JWT认证策略的守卫。

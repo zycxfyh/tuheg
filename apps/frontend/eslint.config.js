@@ -1,6 +1,6 @@
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const vueParser = require('vue-eslint-parser');
+const eslint = require('@eslint/js')
+const tseslint = require('typescript-eslint')
+const vueParser = require('vue-eslint-parser')
 
 module.exports = [
   {
@@ -149,4 +149,4 @@ module.exports = [
       'valid-typeof': 'error',
     },
   },
-];
+]

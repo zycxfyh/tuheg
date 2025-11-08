@@ -1,7 +1,7 @@
 // 文件路径: packages/common-backend/src/config/env.schema.ts
 // 核心理念: 类型安全的环境变量验证，启动时验证所有配置
 
-import { z } from 'zod';
+import { z } from 'zod'
 
 /**
  * @description 环境变量 Schema
@@ -55,13 +55,13 @@ export const envSchema = z.object({
   // Clerk 配置
   CLERK_SECRET_KEY: z.string().optional(),
   CLERK_PUBLISHABLE_KEY: z.string().optional(),
-});
+})
 
 /**
  * @type Env
  * @description 验证后的环境变量类型
  */
-export type Env = z.infer<typeof envSchema>;
+export type Env = z.infer<typeof envSchema>
 
 /**
  * @function validateEnv
@@ -71,18 +71,18 @@ export type Env = z.infer<typeof envSchema>;
  */
 export function validateEnv(): Env {
   try {
-    return envSchema.parse(process.env);
+    return envSchema.parse(process.env)
   } catch (error) {
     if (error instanceof z.ZodError) {
       const errorMessages = error.errors.map((err) => {
-        const path = err.path.join('.');
-        return `${path}: ${err.message}`;
-      });
+        const path = err.path.join('.')
+        return `${path}: ${err.message}`
+      })
 
       throw new Error(
-        `环境变量验证失败:\n${errorMessages.join('\n')}\n\n请检查 .env 文件或环境变量配置。`,
-      );
+        `环境变量验证失败:\n${errorMessages.join('\n')}\n\n请检查 .env 文件或环境变量配置。`
+      )
     }
-    throw error;
+    throw error
   }
 }

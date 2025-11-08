@@ -15,8 +15,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 // Props
 const props = defineProps({
@@ -24,16 +24,16 @@ const props = defineProps({
     type: String,
     default: '',
   },
-});
+})
 
 // Composables
-const { t } = useI18n();
+const { t } = useI18n()
 
 // Computed
 const loadingMessage = computed(() => {
-  if (props.message) return props.message;
-  return t('game.processingAction');
-});
+  if (props.message) return props.message
+  return t('game.processingAction')
+})
 </script>
 
 <style scoped>

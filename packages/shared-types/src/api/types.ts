@@ -7,13 +7,13 @@
  */
 export interface ApiResponse<T = unknown> {
   /** 数据 */
-  data: T;
+  data: T
   /** 消息 */
-  message?: string;
+  message?: string
   /** 状态码 */
-  status: number;
+  status: number
   /** 时间戳 */
-  timestamp?: string;
+  timestamp?: string
 }
 
 /**
@@ -22,15 +22,15 @@ export interface ApiResponse<T = unknown> {
  */
 export interface ApiError {
   /** 错误消息 */
-  message: string;
+  message: string
   /** 错误代码 */
-  code?: string;
+  code?: string
   /** 状态码 */
-  status: number;
+  status: number
   /** 错误详情 */
-  details?: Record<string, unknown>;
+  details?: Record<string, unknown>
   /** 时间戳 */
-  timestamp?: string;
+  timestamp?: string
 }
 
 /**
@@ -39,15 +39,15 @@ export interface ApiError {
  */
 export interface PaginatedResponse<T> {
   /** 数据列表 */
-  data: T[];
+  data: T[]
   /** 总数 */
-  total: number;
+  total: number
   /** 当前页 */
-  page: number;
+  page: number
   /** 每页数量 */
-  pageSize: number;
+  pageSize: number
   /** 总页数 */
-  totalPages: number;
+  totalPages: number
 }
 
 /**
@@ -56,11 +56,11 @@ export interface PaginatedResponse<T> {
  */
 export interface PaginationParams {
   /** 页码 */
-  page?: number;
+  page?: number
   /** 每页数量 */
-  pageSize?: number;
+  pageSize?: number
   /** 排序字段 */
-  sortBy?: string;
+  sortBy?: string
   /** 排序方向 */
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: 'asc' | 'desc'
 }

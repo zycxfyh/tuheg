@@ -1,7 +1,7 @@
 // 文件路径: apps/creation-agent/src/creation-agent.module.ts
 
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 
 // 从 @tuheg/common-backend 导入所有需要的共享模块
 import {
@@ -11,11 +11,11 @@ import {
   DynamicAiSchedulerService,
   EventBusModule,
   PromptInjectionGuard,
-} from '@tuheg/common-backend';
+} from '@tuheg/common-backend'
 
 // 导入本模块自己的器官
-import { CreationAgentController } from './creation-agent.controller';
-import { CreationService } from './creation.service';
+import { CreationAgentController } from './creation-agent.controller'
+import { CreationService } from './creation.service'
 
 @Module({
   imports: [

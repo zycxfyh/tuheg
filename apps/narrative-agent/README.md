@@ -120,10 +120,10 @@ const progressionResponseSchema = z.object({
         check: z.string(), // 检查类型 (力量/智力/魅力等)
         success_rate: z.string(), // 成功率估计
         text: z.string(), // 行动描述
-      }),
+      })
     )
     .nullable(),
-});
+})
 ```
 
 ### 2. 输入数据结构
@@ -132,9 +132,9 @@ const progressionResponseSchema = z.object({
 
 ```typescript
 interface LogicCompletePayload {
-  gameId: string; // 游戏ID
-  userId: string; // 用户ID
-  playerAction: any; // 玩家行动详情
+  gameId: string // 游戏ID
+  userId: string // 用户ID
+  playerAction: any // 玩家行动详情
 }
 ```
 
@@ -144,15 +144,15 @@ interface LogicCompletePayload {
 
 ```typescript
 interface ProgressionResponse {
-  narrative: string; // 生动叙事文本
-  options: ActionOption[] | null; // 后续行动选项
+  narrative: string // 生动叙事文本
+  options: ActionOption[] | null // 后续行动选项
 }
 
 interface ActionOption {
-  dimension: string; // 行动分类
-  check: string; // 所需能力
-  success_rate: string; // 成功概率
-  text: string; // 行动描述
+  dimension: string // 行动分类
+  check: string // 所需能力
+  success_rate: string // 成功概率
+  text: string // 行动描述
 }
 ```
 
@@ -166,8 +166,8 @@ const response = await callAiWithGuard(
     playerAction: JSON.stringify(playerAction),
     system_prompt: systemPrompt,
   },
-  progressionResponseSchema,
-);
+  progressionResponseSchema
+)
 ```
 
 - **格式验证**: 确保输出结构完整
@@ -235,11 +235,11 @@ if (this.needsCriticReview(finalProgression, gameState)) {
 ```typescript
 try {
   // 正常处理流程
-  await this.narrativeService.processNarrative(data);
-  channel.ack(originalMsg);
+  await this.narrativeService.processNarrative(data)
+  channel.ack(originalMsg)
 } catch (error) {
   // 记录错误
-  this.logger.error(`Failed to process narrative task`, error);
+  this.logger.error(`Failed to process narrative task`, error)
 
   // 发布错误事件
   try {
@@ -247,13 +247,13 @@ try {
       userId: payload.userId,
       gameId: payload.gameId,
       error: error.message,
-    });
+    })
   } catch (eventError) {
     // 事件发布失败的最后防线
-    this.logger.error('CRITICAL: Failed to publish error event', eventError);
+    this.logger.error('CRITICAL: Failed to publish error event', eventError)
   }
 
-  channel.nack(originalMsg);
+  channel.nack(originalMsg)
 }
 ```
 
@@ -355,22 +355,22 @@ SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
 
 ```typescript
 describe('NarrativeService', () => {
-  let service: NarrativeService;
+  let service: NarrativeService
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [NarrativeService],
-    }).compile();
-    service = module.get<NarrativeService>(NarrativeService);
-  });
+    }).compile()
+    service = module.get<NarrativeService>(NarrativeService)
+  })
 
   it('should generate valid progression response', async () => {
-    const payload = createMockPayload();
-    const progression = await service.generateNarrative(payload);
-    expect(progression.narrative).toBeDefined();
-    expect(progression.options).toBeDefined();
-  });
-});
+    const payload = createMockPayload()
+    const progression = await service.generateNarrative(payload)
+    expect(progression.narrative).toBeDefined()
+    expect(progression.options).toBeDefined()
+  })
+})
 ```
 
 ### 2. 集成测试

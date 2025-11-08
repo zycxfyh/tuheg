@@ -86,25 +86,25 @@ async createNewWorld(payload: GameCreationPayload): Promise<void> {
 
 ```typescript
 interface ArchitectResponse {
-  gameName: string; // 游戏标题
+  gameName: string // 游戏标题
   character: {
     // 玩家角色
-    name: string; // 角色名称
+    name: string // 角色名称
     card: {
       // 角色卡
-      coreIdentity: string; // 核心身份
-      personality: string[]; // 性格关键词
-      appearance: string; // 外貌描述
-    };
-  };
+      coreIdentity: string // 核心身份
+      personality: string[] // 性格关键词
+      appearance: string // 外貌描述
+    }
+  }
   worldBook: Array<{
     // 世界设定
-    key: string; // 条目关键字
+    key: string // 条目关键字
     content: {
       // 条目内容
-      description: string; // 详细描述
-    };
-  }>;
+      description: string // 详细描述
+    }
+  }>
 }
 ```
 
@@ -155,9 +155,9 @@ const architectResponseSchema = z.object({
       content: z.object({
         description: z.string().describe('该条目的详细描述'),
       }),
-    }),
+    })
   ),
-});
+})
 ```
 
 ### 2. 输入数据结构
@@ -166,8 +166,8 @@ const architectResponseSchema = z.object({
 
 ```typescript
 interface GameCreationPayload {
-  userId: string; // 用户ID
-  concept: string; // 用户提供的游戏概念描述
+  userId: string // 用户ID
+  concept: string // 用户提供的游戏概念描述
 }
 ```
 
@@ -180,8 +180,8 @@ const response = await callAiWithGuard(
     concept: concept,
     system_prompt: systemPrompt,
   },
-  architectResponseSchema,
-);
+  architectResponseSchema
+)
 ```
 
 - **格式验证**: 确保输出包含所有必需字段
@@ -202,7 +202,7 @@ const newGame = await this.prisma.$transaction(async (tx) => {
       name: initialWorld.gameName,
       ownerId: userId,
     },
-  });
+  })
 
   // 2. 创建角色记录
   await tx.character.create({
@@ -211,7 +211,7 @@ const newGame = await this.prisma.$transaction(async (tx) => {
       name: initialWorld.character.name,
       card: initialWorld.character.card,
     },
-  });
+  })
 
   // 3. 批量创建世界书条目
   if (initialWorld.worldBook?.length > 0) {
@@ -221,11 +221,11 @@ const newGame = await this.prisma.$transaction(async (tx) => {
         key: entry.key,
         content: entry.content,
       })),
-    });
+    })
   }
 
-  return game;
-});
+  return game
+})
 ```
 
 ### 2. 数据关系
@@ -254,7 +254,7 @@ const prompt = new PromptTemplate({
   partialVariables: {
     format_instructions: parser.getFormatInstructions(),
   },
-});
+})
 ```
 
 ## 错误处理和监控
@@ -385,23 +385,23 @@ SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
 
 ```typescript
 describe('CreationService', () => {
-  let service: CreationService;
+  let service: CreationService
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [CreationService],
-    }).compile();
-    service = module.get<CreationService>(CreationService);
-  });
+    }).compile()
+    service = module.get<CreationService>(CreationService)
+  })
 
   it('should create a valid game world', async () => {
-    const payload = { userId: 'test-user', concept: 'fantasy adventure' };
-    const world = await service.generateInitialWorld(payload.concept, mockUser);
-    expect(world.gameName).toBeDefined();
-    expect(world.character).toBeDefined();
-    expect(world.worldBook).toBeDefined();
-  });
-});
+    const payload = { userId: 'test-user', concept: 'fantasy adventure' }
+    const world = await service.generateInitialWorld(payload.concept, mockUser)
+    expect(world.gameName).toBeDefined()
+    expect(world.character).toBeDefined()
+    expect(world.worldBook).toBeDefined()
+  })
+})
 ```
 
 ### 2. 集成测试

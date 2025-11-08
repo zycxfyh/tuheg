@@ -1,7 +1,7 @@
 // 文件路径: apps/nexus-engine/src/app.controller.ts (已植入Sentry测试端点)
 
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get } from '@nestjs/common'
+import { AppService } from './app.service'
 
 @Controller()
 export class AppController {
@@ -12,7 +12,7 @@ export class AppController {
    */
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return this.appService.getHello()
   }
 
   /**
@@ -24,6 +24,6 @@ export class AppController {
    */
   @Get('/sentry-test-backend')
   sentryTestBackend() {
-    throw new Error('Sentry Backend Test - ' + new Date().toISOString());
+    throw new Error('Sentry Backend Test - ' + new Date().toISOString())
   }
 }

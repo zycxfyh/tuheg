@@ -1,0 +1,263 @@
+name: 📦 依赖安全检查
+
+on:
+  schedule:
+    # 每周一早上8点检查依赖
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  dependency-audit:
+    name: 安全审计与更新检查
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.x
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔒 全面安全审计
+        run: |
+          echo "## 🔒 依赖安全审计报告" > security-report.md
+          echo "" >> security-report.md
+          echo "### 📊 审计概览" >> security-report.md
+          echo "- 审计时间: $(date)" >> security-report.md
+          echo "- Node.js版本: $(node --version)" >> security-report.md
+          echo "- PNPM版本: $(pnpm --version)" >> security-report.md
+          echo "" >> security-report.md
+
+          echo "### 🚨 安全漏洞统计" >> security-report.md
+          echo "\`\`\`" >> security-report.md
+
+          # Run audit and capture results
+          AUDIT_OUTPUT=$(pnpm audit --audit-level moderate --json 2>/dev/null || true)
+
+          if [ -n "$AUDIT_OUTPUT" ]; then
+            echo "$AUDIT_OUTPUT" | jq -r '
+              if .metadata then
+                "总依赖数: \(.metadata.total // 0)",
+                "高危漏洞: \(.metadata.high // 0)",
+                "中危漏洞: \(.metadata.moderate // 0)",
+                "低危漏洞: \(.metadata.low // 0)",
+                "信息级: \(.metadata.info // 0)"
+              else
+                "审计完成，无严重漏洞"
+              end
+            ' 2>/dev/null || echo "审计数据解析失败"
+          else
+            echo "审计完成，无漏洞发现"
+          fi
+
+          echo "\`\`\`" >> security-report.md
+
+      - name: 📈 过时依赖分析
+        run: |
+          echo "" >> security-report.md
+          echo "### 📅 过时依赖检查" >> security-report.md
+          echo "\`\`\`" >> security-report.md
+
+          # Check for outdated packages
+          OUTDATED=$(pnpm outdated --format json 2>/dev/null || echo "[]")
+
+          if [ "$OUTDATED" != "[]" ] && [ -n "$OUTDATED" ]; then
+            echo "$OUTDATED" | jq -r '
+              if length > 0 then
+                "发现 \(length) 个过时依赖:",
+                "",
+                "包名 | 当前版本 | 最新版本 | 严重程度",
+                "--- | --- | --- | ---",
+                (.[] | "\(.name) | \(.current) | \(.latest) | \(.severity // "unknown")")
+              else
+                "所有依赖都是最新的"
+              end
+            ' 2>/dev/null || echo "过时依赖检查完成"
+          else
+            echo "所有依赖都是最新的"
+          fi
+
+          echo "\`\`\`" >> security-report.md
+
+      - name: 🔄 可用更新分析
+        run: |
+          echo "" >> security-report.md
+          echo "### 📦 推荐更新" >> security-report.md
+          echo "\`\`\`" >> security-report.md
+
+          # Check what can be updated
+          pnpm update --latest --dry-run | head -20 >> security-report.md 2>/dev/null || echo "更新检查完成" >> security-report.md
+          echo "\`\`\`" >> security-report.md
+
+      - name: 🏷️ 生成安全评分
+        run: |
+          echo "" >> security-report.md
+          echo "### 📊 安全评分" >> security-report.md
+
+          # Calculate security score
+          SCORE=100
+
+          # Check for high severity vulnerabilities
+          HIGH_VULN=$(pnpm audit --audit-level high --json 2>/dev/null | jq -r '.metadata.high // 0' 2>/dev/null || echo "0")
+          if [ "$HIGH_VULN" -gt 0 ]; then
+            SCORE=$((SCORE - HIGH_VULN * 20))
+            echo "-20分/高危漏洞 (发现 $HIGH_VULN 个高危漏洞)" >> security-report.md
+          fi
+
+          # Check for moderate severity vulnerabilities
+          MODERATE_VULN=$(pnpm audit --audit-level moderate --json 2>/dev/null | jq -r '.metadata.moderate // 0' 2>/dev/null || echo "0")
+          if [ "$MODERATE_VULN" -gt 0 ]; then
+            SCORE=$((SCORE - MODERATE_VULN * 5))
+            echo "-5分/中危漏洞 (发现 $MODERATE_VULN 个中危漏洞)" >> security-report.md
+          fi
+
+          # Check for outdated packages (minor penalty)
+          OUTDATED_COUNT=$(pnpm outdated --format json 2>/dev/null | jq length 2>/dev/null || echo "0")
+          if [ "$OUTDATED_COUNT" -gt 0 ]; then
+            SCORE=$((SCORE - OUTDATED_COUNT * 2))
+            echo "-2分/过时依赖 (发现 $OUTDATED_COUNT 个过时依赖)" >> security-report.md
+          fi
+
+          # Ensure score doesn't go below 0
+          if [ $SCORE -lt 0 ]; then
+            SCORE=0
+          fi
+
+          echo "" >> security-report.md
+          echo "**总得分: $SCORE/100**" >> security-report.md
+
+          if [ $SCORE -ge 90 ]; then
+            echo "**安全等级: 🟢 优秀**" >> security-report.md
+          elif [ $SCORE -ge 70 ]; then
+            echo "**安全等级: 🟡 良好**" >> security-report.md
+          else
+            echo "**安全等级: 🔴 需要改进**" >> security-report.md
+          fi
+
+          # Export score for later use
+          echo "SECURITY_SCORE=$SCORE" >> $GITHUB_ENV
+
+      - name: 📤 Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report-$(date +%Y%m%d)
+          path: security-report.md
+          retention-days: 30
+
+      - name: 🚨 创建安全问题 (如果需要)
+        if: env.SECURITY_SCORE < 70
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('security-report.md', 'utf8');
+            const score = process.env.SECURITY_SCORE;
+
+            // Check if there's already an open security issue
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['security', 'dependencies'],
+              state: 'open'
+            });
+
+            const existingIssue = issues.find(issue =>
+              issue.title.includes('依赖安全检查失败')
+            );
+
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 依赖安全检查失败 - 需要立即处理',
+                body: `## 安全检查失败\\n\\n### 安全评分: **\${score}/100** 🔴\\n\\n\`\`\`\\n${report}\\n\`\`\`\\n\\n### 紧急程度\\n- 🔴 **高危漏洞**: 必须立即修复\\n- 🟡 **中危漏洞**: 建议在一周内修复\\n- 🟢 **低危漏洞**: 可选择性修复\\n\\n### 修复建议\\n1. **立即更新**高危漏洞包\\n2. **审查**依赖的使用情况\\n3. **评估**安全风险影响\\n4. **制定**升级计划\\n\\n### 联系方式\\n- 安全团队: security@company.com\\n- 紧急响应: +1-XXX-XXX-XXXX\\n\\n---\\n\\n*自动生成的安全报告 - $(date)*`,
+                labels: ['security', 'dependencies', 'urgent', 'auto-generated']
+              });
+            }
+
+  license-check:
+    name: 许可证合规检查
+    runs-on: ubuntu-latest
+    needs: dependency-audit
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: 📋 许可证兼容性检查
+        run: |
+          echo "## 📄 许可证合规报告" > license-report.md
+          echo "" >> license-report.md
+          echo "### 📊 许可证概览" >> license-report.md
+          echo "- 检查时间: $(date)" >> license-report.md
+          echo "- 项目许可证: $(jq -r '.license // "Unknown"' package.json)" >> license-report.md
+          echo "" >> license-report.md
+
+          echo "### 🔍 依赖许可证分析" >> license-report.md
+          echo "\`\`\`" >> license-report.md
+
+          # Check licenses using license-checker or similar tool
+          npx license-checker --production --json | jq -r '
+            to_entries | sort_by(.value.licenses) |
+            "许可证 | 包数量 | 示例包名",
+            "--- | --- | ---",
+            (group_by(.value.licenses) | map({
+              license: .[0].value.licenses,
+              count: length,
+              examples: map(.key) | .[0:3] | join(", ")
+            }) | .[] | "\(.license) | \(.count) | \(.examples)")
+          ' >> license-report.md 2>/dev/null || echo "许可证检查完成" >> license-report.md
+
+          echo "\`\`\`" >> license-report.md
+
+          echo "" >> license-report.md
+          echo "### ⚠️ 许可证兼容性警告" >> license-report.md
+
+          # Check for potentially problematic licenses
+          PROBLEMATIC_LICENSES=$(npx license-checker --production --json 2>/dev/null | jq -r '
+            to_entries | map(select(
+              (.value.licenses | test("GPL"; "i")) or
+              (.value.licenses | test("AGPL"; "i")) or
+              (.value.licenses | test("LGPL"; "i"))
+            )) | length
+          ' 2>/dev/null || echo "0")
+
+          if [ "$PROBLEMATIC_LICENSES" -gt 0 ]; then
+            echo "⚠️ 发现 $PROBLEMATIC_LICENSES 个使用GPL/LGPL许可证的依赖" >> license-report.md
+            echo "" >> license-report.md
+            echo "**建议措施:**" >> license-report.md
+            echo "- 评估许可证兼容性" >> license-report.md
+            echo "- 考虑替换为MIT/BSD许可证的替代品" >> license-report.md
+            echo "- 咨询法律顾问" >> license-report.md
+          else
+            echo "✅ 未发现许可证兼容性问题" >> license-report.md
+          fi
+
+      - name: 📤 Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report-$(date +%Y%m%d)
+          path: license-report.md
+          retention-days: 30

@@ -1,6 +1,6 @@
 // 文件路径: libs/common/src/types/ai-providers.d.ts
 
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 
 /**
  * @name AiRole
@@ -23,15 +23,15 @@ export type AiRole =
   | 'specialist_dialogue' // 专家：对话生成
   | 'specialist_description' // 专家：环境描写
   | 'specialist_options' // 专家：选项生成
-  | 'image_generation'; // 专家：图像生成
+  | 'image_generation' // 专家：图像生成
 
 /**
  * @interface AiGenerationOptions
  * @description 定义了在调用AI模型生成内容时，可以传入的通用配置选项。
  */
 export interface AiGenerationOptions {
-  temperature?: number;
-  maxTokens?: number;
+  temperature?: number
+  maxTokens?: number
 }
 
 /**
@@ -40,5 +40,5 @@ export interface AiGenerationOptions {
  * 与LangChain的.pipe()方法兼容的 BaseChatModel 实例。
  */
 export interface AiProvider {
-  model: BaseChatModel;
+  model: BaseChatModel
 }

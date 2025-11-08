@@ -16,11 +16,7 @@
       <div class="plugin-header">
         <h3 class="plugin-name">{{ plugin.displayName }}</h3>
         <div class="plugin-badges">
-          <span
-            v-for="tag in plugin.tags.slice(0, 2)"
-            :key="tag.id"
-            class="plugin-tag"
-          >
+          <span v-for="tag in plugin.tags.slice(0, 2)" :key="tag.id" class="plugin-tag">
             {{ tag.displayName }}
           </span>
         </div>
@@ -53,16 +49,16 @@
           <i
             v-for="star in 5"
             :key="star"
-            :class="star <= Math.floor(plugin.averageRating || 0) ? 'icon-star-full' : 'icon-star-empty'"
+            :class="
+              star <= Math.floor(plugin.averageRating || 0) ? 'icon-star-full' : 'icon-star-empty'
+            "
             class="star-icon"
           ></i>
         </div>
         <span class="rating-score">
           {{ plugin.averageRating ? plugin.averageRating.toFixed(1) : '暂无' }}
         </span>
-        <span class="rating-count">
-          ({{ plugin.reviewCount || 0 }})
-        </span>
+        <span class="rating-count"> ({{ plugin.reviewCount || 0 }}) </span>
       </div>
 
       <!-- 版本信息 -->
@@ -77,19 +73,12 @@
 
     <!-- 操作按钮 -->
     <div class="plugin-actions">
-      <button
-        @click="$emit('viewDetails', plugin)"
-        class="action-btn secondary"
-      >
+      <button @click="$emit('viewDetails', plugin)" class="action-btn secondary">
         <i class="icon-info"></i>
         详情
       </button>
 
-      <button
-        @click="$emit('install', plugin)"
-        :disabled="installing"
-        class="action-btn primary"
-      >
+      <button @click="$emit('install', plugin)" :disabled="installing" class="action-btn primary">
         <i v-if="installing" class="icon-spinner spinning"></i>
         <i v-else class="icon-download"></i>
         {{ installing ? '安装中...' : '安装' }}
@@ -112,12 +101,12 @@ import { computed, ref } from 'vue'
 const props = defineProps({
   plugin: {
     type: Object,
-    required: true
+    required: true,
   },
   viewMode: {
     type: String,
-    default: 'grid'
-  }
+    default: 'grid',
+  },
 })
 
 const emit = defineEmits(['install', 'viewDetails'])
@@ -134,10 +123,10 @@ const pluginIconClass = computed(() => {
   // 根据插件分类返回不同的图标
   const categoryIcons = {
     'ai-tools': 'icon-brain',
-    'utilities': 'icon-wrench',
-    'themes': 'icon-palette',
-    'languages': 'icon-globe',
-    'integrations': 'icon-plug'
+    utilities: 'icon-wrench',
+    themes: 'icon-palette',
+    languages: 'icon-globe',
+    integrations: 'icon-plug',
   }
 
   return categoryIcons[props.plugin.category.name] || 'icon-puzzle-piece'
@@ -451,8 +440,12 @@ async function handleInstall() {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 安装覆盖层 */

@@ -6,9 +6,9 @@ export class RuleEngineExecutionException extends Error {
   // 这比 any 更安全，因为它阻止了我们对 details 属性进行不安全的直接访问。
   constructor(
     message: string,
-    public readonly details?: Record<string, unknown>,
+    public readonly details?: Record<string, unknown>
   ) {
-    super(message);
-    this.name = 'RuleEngineExecutionException';
+    super(message)
+    this.name = 'RuleEngineExecutionException'
   }
 }

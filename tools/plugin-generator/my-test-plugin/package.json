@@ -39,7 +39,9 @@
   },
   "vcpPlugin": {
     "type": "tool",
-    "activationEvents": ["onStartup"],
+    "activationEvents": [
+      "onStartup"
+    ],
     "contributes": {
       "aiTools": [
         {

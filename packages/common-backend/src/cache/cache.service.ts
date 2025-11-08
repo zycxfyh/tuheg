@@ -1,10 +1,10 @@
 // 文件路径: packages/common-backend/src/cache/cache.service.ts
 // 核心理念: 多级缓存策略，支持内存和 Redis
 
-import { Injectable, Logger } from '@nestjs/common';
-import type { Cache } from 'cache-manager';
-import { Inject } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Injectable, Logger } from '@nestjs/common'
+import type { Cache } from 'cache-manager'
+import { Inject } from '@nestjs/common'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 
 /**
  * @interface CacheOptions
@@ -12,9 +12,9 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
  */
 export interface CacheOptions {
   /** TTL（秒） */
-  ttl?: number;
+  ttl?: number
   /** 缓存键前缀 */
-  prefix?: string;
+  prefix?: string
 }
 
 /**
@@ -24,7 +24,7 @@ export interface CacheOptions {
  */
 @Injectable()
 export class CacheService {
-  private readonly logger = new Logger(CacheService.name);
+  private readonly logger = new Logger(CacheService.name)
 
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
@@ -38,13 +38,13 @@ export class CacheService {
    * ```
    */
   async get<T>(key: string, options?: CacheOptions): Promise<T | undefined> {
-    const fullKey = this.buildKey(key, options?.prefix);
+    const fullKey = this.buildKey(key, options?.prefix)
     try {
-      const value = await this.cacheManager.get<T>(fullKey);
-      return value;
+      const value = await this.cacheManager.get<T>(fullKey)
+      return value
     } catch (error) {
-      this.logger.error(`Failed to get cache key ${fullKey}:`, error);
-      return undefined;
+      this.logger.error(`Failed to get cache key ${fullKey}:`, error)
+      return undefined
     }
   }
 
@@ -58,13 +58,13 @@ export class CacheService {
    * ```
    */
   async set<T>(key: string, value: T, options?: CacheOptions): Promise<void> {
-    const fullKey = this.buildKey(key, options?.prefix);
-    const ttl = options?.ttl ? options.ttl * 1000 : undefined; // 转换为毫秒
+    const fullKey = this.buildKey(key, options?.prefix)
+    const ttl = options?.ttl ? options.ttl * 1000 : undefined // 转换为毫秒
 
     try {
-      await this.cacheManager.set(fullKey, value, ttl);
+      await this.cacheManager.set(fullKey, value, ttl)
     } catch (error) {
-      this.logger.error(`Failed to set cache key ${fullKey}:`, error);
+      this.logger.error(`Failed to set cache key ${fullKey}:`, error)
     }
   }
 
@@ -73,11 +73,11 @@ export class CacheService {
    * @description 删除缓存
    */
   async delete(key: string, prefix?: string): Promise<void> {
-    const fullKey = this.buildKey(key, prefix);
+    const fullKey = this.buildKey(key, prefix)
     try {
-      await this.cacheManager.del(fullKey);
+      await this.cacheManager.del(fullKey)
     } catch (error) {
-      this.logger.error(`Failed to delete cache key ${fullKey}:`, error);
+      this.logger.error(`Failed to delete cache key ${fullKey}:`, error)
     }
   }
 
@@ -88,15 +88,15 @@ export class CacheService {
   async clear(): Promise<void> {
     try {
       // 使用cache-manager的store接口来清空缓存
-      const store = (this.cacheManager as any).store;
+      const store = (this.cacheManager as any).store
       if (store && typeof store.reset === 'function') {
-        await store.reset();
+        await store.reset()
       } else {
         // 如果没有reset方法，记录警告但不抛出错误
-        this.logger.warn('Cache store does not support reset operation');
+        this.logger.warn('Cache store does not support reset operation')
       }
     } catch (error) {
-      this.logger.error('Failed to clear cache:', error);
+      this.logger.error('Failed to clear cache:', error)
     }
   }
 
@@ -114,14 +114,14 @@ export class CacheService {
    * ```
    */
   async getOrSet<T>(key: string, factory: () => Promise<T>, options?: CacheOptions): Promise<T> {
-    const cached = await this.get<T>(key, options);
+    const cached = await this.get<T>(key, options)
     if (cached !== undefined) {
-      return cached;
+      return cached
     }
 
-    const value = await factory();
-    await this.set(key, value, options);
-    return value;
+    const value = await factory()
+    await this.set(key, value, options)
+    return value
   }
 
   /**
@@ -129,6 +129,6 @@ export class CacheService {
    * @description 构建完整的缓存键
    */
   private buildKey(key: string, prefix?: string): string {
-    return prefix ? `${prefix}:${key}` : key;
+    return prefix ? `${prefix}:${key}` : key
   }
 }

@@ -1,4 +1,4 @@
-import { Plugin, PluginContext, AiToolContribution } from '@tuheg/common-backend';
+import { Plugin, PluginContext, AiToolContribution } from '@tuheg/common-backend'
 
 /**
  * my-test-plugin - A test plugin for VCPToolBox
@@ -25,18 +25,18 @@ export class MyTestPluginPlugin implements Plugin {
             properties: {
               input: {
                 type: 'string',
-                description: 'Input for the my-test-plugin tool'
-              }
+                description: 'Input for the my-test-plugin tool',
+              },
             },
-            required: ['input']
-          }
-        }
-      ] as AiToolContribution[]
-    }
-  };
+            required: ['input'],
+          },
+        },
+      ] as AiToolContribution[],
+    },
+  }
 
   async activate(context: PluginContext): Promise<void> {
-    context.logger.info('my-test-plugin plugin activated');
+    context.logger.info('my-test-plugin plugin activated')
 
     // Plugin activation logic
     // Register event listeners, initialize resources, etc.
@@ -53,21 +53,21 @@ export class MyTestPluginPlugin implements Plugin {
   private async executeMyTestPluginTool(input: { input: string }): Promise<{ result: string }> {
     try {
       // Tool execution logic here
-      const { input: userInput } = input;
+      const { input: userInput } = input
 
       // Example implementation - replace with actual logic
-      const result = `Processed input: ${userInput}`;
+      const result = `Processed input: ${userInput}`
 
       return {
-        result
-      };
+        result,
+      }
     } catch (error) {
-      throw new Error(`my-test-plugin tool execution failed: ${error.message}`);
+      throw new Error(`my-test-plugin tool execution failed: ${error.message}`)
     }
   }
 }
 
 // Export factory function for the plugin system
 export default function createMyTestPluginPlugin(context: PluginContext): Plugin {
-  return new MyTestPluginPlugin();
+  return new MyTestPluginPlugin()
 }

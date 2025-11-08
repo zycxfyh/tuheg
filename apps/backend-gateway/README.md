@@ -71,9 +71,9 @@ apps/backend-gateway/
 **API端点**:
 
 ```typescript
-POST / auth / login; // 用户登录
-POST / auth / register; // 用户注册
-GET / auth / profile; // 获取用户信息
+POST / auth / login // 用户登录
+POST / auth / register // 用户注册
+GET / auth / profile // 获取用户信息
 ```
 
 #### 2. 游戏管理模块 (GamesModule)
@@ -140,12 +140,12 @@ POST   /settings/ai-configurations/test-connection // 测试连接
 
 ```typescript
 // 客户端事件
-connect; // 连接建立
-disconnect; // 连接断开
+connect // 连接建立
+disconnect // 连接断开
 
 // 服务端事件
-game: update; // 游戏状态更新
-action: result; // 行动结果
+game: update // 游戏状态更新
+action: result // 行动结果
 ```
 
 #### 5. Webhook处理模块
@@ -191,10 +191,10 @@ async createNarrative(
 // Redis集群支持的WebSocket适配器
 export class RedisIoAdapter extends IoAdapter {
   async connectToRedis(): Promise<void> {
-    const pubClient = createClient({ url: redisUrl });
-    const subClient = pubClient.duplicate();
-    await Promise.all([pubClient.connect(), subClient.connect()]);
-    this.adapterConstructor = createAdapter(pubClient, subClient);
+    const pubClient = createClient({ url: redisUrl })
+    const subClient = pubClient.duplicate()
+    await Promise.all([pubClient.connect(), subClient.connect()])
+    this.adapterConstructor = createAdapter(pubClient, subClient)
   }
 }
 ```
@@ -206,7 +206,7 @@ export class RedisIoAdapter extends IoAdapter {
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    const response = host.switchToHttp().getResponse();
+    const response = host.switchToHttp().getResponse()
     // 标准化错误响应
   }
 }
@@ -261,7 +261,7 @@ SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
 export const databaseConfig = {
   url: process.env.DATABASE_URL,
   // 其他数据库配置
-};
+}
 ```
 
 ## 部署和扩展
@@ -336,20 +336,20 @@ CMD ["node", "dist/main.js"]
 
 ```typescript
 describe('AuthService', () => {
-  let service: AuthService;
+  let service: AuthService
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [AuthService],
-    }).compile();
+    }).compile()
 
-    service = module.get<AuthService>(AuthService);
-  });
+    service = module.get<AuthService>(AuthService)
+  })
 
   it('should validate user credentials', async () => {
     // 测试逻辑
-  });
-});
+  })
+})
 ```
 
 ### 集成测试
@@ -402,7 +402,7 @@ npx prisma generate
 
 ```typescript
 // main.ts
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 const config = new DocumentBuilder()
   .setTitle('创世星环 API')
@@ -410,10 +410,10 @@ const config = new DocumentBuilder()
   .setVersion('1.0')
   .addTag('auth', '认证相关接口')
   .addTag('games', '游戏管理接口')
-  .build();
+  .build()
 
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api', app, document);
+const document = SwaggerModule.createDocument(app, config)
+SwaggerModule.setup('api', app, document)
 ```
 
 ## 故障排查
