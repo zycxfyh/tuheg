@@ -12,6 +12,9 @@
     <!-- Toast通知容器 -->
     <ToastContainer />
 
+    <!-- 反馈收集组件 -->
+    <FeedbackWidget />
+
     <!-- 语言切换器 (开发调试用，生产环境可隐藏) -->
     <LanguageSwitcher v-if="showLanguageSwitcher" class="language-switcher-overlay" />
   </div>
@@ -29,6 +32,7 @@ import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
 import ProcessingOverlay from '@/components/common/ProcessingOverlay.vue'
 import ToastContainer from '@/components/common/ToastContainer.vue'
 import WeaverConsoleModal from '@/components/common/WeaverConsoleModal.vue'
+import FeedbackWidget from '@/components/feedback/FeedbackWidget.vue'
 import { useAuthStore } from '@/stores/auth.store'
 import { useThemeStore } from '@/stores/theme.store'
 import { useUIStore } from '@/stores/ui.store'
