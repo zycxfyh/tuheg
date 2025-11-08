@@ -33,13 +33,7 @@ export type ContentType =
   | 'ebook'
   | 'whitepaper'
 
-export type ContentStatus =
-  | 'draft'
-  | 'review'
-  | 'approved'
-  | 'scheduled'
-  | 'published'
-  | 'archived'
+export type ContentStatus = 'draft' | 'review' | 'approved' | 'scheduled' | 'published' | 'archived'
 
 export interface PublishingPlatform {
   name: string
@@ -214,15 +208,15 @@ export class ContentMarketingManager extends EventEmitter {
             url: '/blog/multi-agent-architecture',
             status: 'published',
             publishedAt: new Date('2024-11-01'),
-            engagement: { views: 2500, likes: 120, shares: 45, comments: 28 }
+            engagement: { views: 2500, likes: 120, shares: 45, comments: 28 },
           },
           {
             name: 'DEV.to',
             url: 'https://dev.to/creation-ring/multi-agent-architecture',
             status: 'published',
             publishedAt: new Date('2024-11-02'),
-            engagement: { views: 1200, likes: 85, shares: 32, comments: 15 }
-          }
+            engagement: { views: 1200, likes: 85, shares: 32, comments: 15 },
+          },
         ],
         content: '多Agent协作架构的详细介绍...',
         excerpt: '探索如何通过多个AI代理的智能协作，实现从概念到完整游戏世界的创作流程。',
@@ -234,8 +228,8 @@ export class ContentMarketingManager extends EventEmitter {
             url: '/blog/architecture-diagram.png',
             title: '多Agent协作架构图',
             fileSize: 245760,
-            dimensions: { width: 1200, height: 800 }
-          }
+            dimensions: { width: 1200, height: 800 },
+          },
         ],
         metadata: {
           wordCount: 2800,
@@ -245,7 +239,7 @@ export class ContentMarketingManager extends EventEmitter {
           tags: ['AI', '多Agent', '架构设计'],
           categories: ['技术深度', 'AI研究'],
           relatedContent: ['video-agent-demo', 'case-study-rpg-maker'],
-          canonicalUrl: '/blog/multi-agent-architecture'
+          canonicalUrl: '/blog/multi-agent-architecture',
         },
         performance: {
           totalViews: 3700,
@@ -257,10 +251,10 @@ export class ContentMarketingManager extends EventEmitter {
           socialShares: 77,
           backlinks: 12,
           organicTraffic: 2850,
-          paidTraffic: 850
+          paidTraffic: 850,
         },
         createdAt: new Date('2024-10-25'),
-        publishedAt: new Date('2024-11-01')
+        publishedAt: new Date('2024-11-01'),
       },
       {
         id: 'video-product-demo',
@@ -276,15 +270,15 @@ export class ContentMarketingManager extends EventEmitter {
             url: 'https://youtube.com/watch?v=demo-video',
             status: 'published',
             publishedAt: new Date('2024-11-05'),
-            engagement: { views: 8500, likes: 420, shares: 156, comments: 89 }
+            engagement: { views: 8500, likes: 420, shares: 156, comments: 89 },
           },
           {
             name: 'B站',
             url: 'https://bilibili.com/video/demo',
             status: 'published',
             publishedAt: new Date('2024-11-06'),
-            engagement: { views: 3200, likes: 280, shares: 95, comments: 67 }
-          }
+            engagement: { views: 3200, likes: 280, shares: 95, comments: 67 },
+          },
         ],
         content: '完整的产品功能演示视频脚本和内容...',
         excerpt: '跟随我们的演示，亲眼见证AI如何将简单的想法转化为完整的游戏世界。',
@@ -297,15 +291,15 @@ export class ContentMarketingManager extends EventEmitter {
             title: '创世星环产品演示视频',
             thumbnail: '/videos/demo-thumbnail.jpg',
             fileSize: 157286400,
-            dimensions: { width: 1920, height: 1080 }
-          }
+            dimensions: { width: 1920, height: 1080 },
+          },
         ],
         metadata: {
           wordCount: 0,
           readingTime: 0,
           tags: ['产品演示', '教程', '视频'],
           categories: ['产品介绍'],
-          relatedContent: ['blog-getting-started', 'case-study-fantasy-world']
+          relatedContent: ['blog-getting-started', 'case-study-fantasy-world'],
         },
         performance: {
           totalViews: 11700,
@@ -317,14 +311,14 @@ export class ContentMarketingManager extends EventEmitter {
           socialShares: 251,
           backlinks: 8,
           organicTraffic: 9200,
-          paidTraffic: 2500
+          paidTraffic: 2500,
         },
         createdAt: new Date('2024-10-28'),
-        publishedAt: new Date('2024-11-05')
-      }
+        publishedAt: new Date('2024-11-05'),
+      },
     ]
 
-    sampleContent.forEach(content => this.content.set(content.id, content))
+    sampleContent.forEach((content) => this.content.set(content.id, content))
 
     // 初始化营销活动
     this.initializeSampleCampaigns()
@@ -341,9 +335,21 @@ export class ContentMarketingManager extends EventEmitter {
         status: 'active',
         targetAudience: ['独立游戏开发者', 'AI技术爱好者', '创意作家'],
         goals: [
-          { id: 'website-traffic', metric: '网站访问量', target: 50000, current: 32500, unit: 'PV' },
+          {
+            id: 'website-traffic',
+            metric: '网站访问量',
+            target: 50000,
+            current: 32500,
+            unit: 'PV',
+          },
           { id: 'beta-signups', metric: 'Beta注册数', target: 2000, current: 1250, unit: '人' },
-          { id: 'social-followers', metric: '社交媒体关注者', target: 5000, current: 2800, unit: '人' }
+          {
+            id: 'social-followers',
+            metric: '社交媒体关注者',
+            target: 5000,
+            current: 2800,
+            unit: '人',
+          },
         ],
         budget: {
           total: 50000,
@@ -352,9 +358,9 @@ export class ContentMarketingManager extends EventEmitter {
             content: 20000,
             advertising: 20000,
             partnerships: 5000,
-            events: 5000
+            events: 5000,
           },
-          spent: 28500
+          spent: 28500,
         },
         timeline: {
           startDate: new Date('2024-11-01'),
@@ -366,7 +372,7 @@ export class ContentMarketingManager extends EventEmitter {
               description: '在各大平台发布产品上线消息',
               dueDate: new Date('2024-11-15'),
               completed: true,
-              deliverables: ['网站更新', '社交媒体发布', '邮件通知']
+              deliverables: ['网站更新', '社交媒体发布', '邮件通知'],
             },
             {
               id: 'content-series',
@@ -374,9 +380,9 @@ export class ContentMarketingManager extends EventEmitter {
               description: '发布技术博客、教程视频、案例研究',
               dueDate: new Date('2024-12-15'),
               completed: false,
-              deliverables: ['5篇博客文章', '3个视频教程', '2个案例研究']
-            }
-          ]
+              deliverables: ['5篇博客文章', '3个视频教程', '2个案例研究'],
+            },
+          ],
         },
         content: ['blog-multi-agent-architecture', 'video-product-demo'],
         channels: [
@@ -392,8 +398,8 @@ export class ContentMarketingManager extends EventEmitter {
               engagement: 1200,
               conversions: 45,
               costPerAcquisition: 44.4,
-              returnOnInvestment: 3.2
-            }
+              returnOnInvestment: 3.2,
+            },
           },
           {
             platform: 'YouTube',
@@ -407,9 +413,9 @@ export class ContentMarketingManager extends EventEmitter {
               engagement: 850,
               conversions: 32,
               costPerAcquisition: 31.3,
-              returnOnInvestment: 4.1
-            }
-          }
+              returnOnInvestment: 4.1,
+            },
+          },
         ],
         performance: {
           reach: 40000,
@@ -417,17 +423,19 @@ export class ContentMarketingManager extends EventEmitter {
           conversions: 77,
           revenue: 0,
           roi: 3.6,
-          costPerAcquisition: 370
+          costPerAcquisition: 370,
         },
-        createdAt: new Date('2024-10-20')
-      }
+        createdAt: new Date('2024-10-20'),
+      },
     ]
 
-    campaigns.forEach(campaign => this.campaigns.set(campaign.id, campaign))
+    campaigns.forEach((campaign) => this.campaigns.set(campaign.id, campaign))
   }
 
   // 创建内容
-  async createContent(contentData: Omit<ContentPiece, 'id' | 'createdAt' | 'performance'>): Promise<ContentPiece> {
+  async createContent(
+    contentData: Omit<ContentPiece, 'id' | 'createdAt' | 'performance'>
+  ): Promise<ContentPiece> {
     const content: ContentPiece = {
       ...contentData,
       id: `content-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -442,8 +450,8 @@ export class ContentMarketingManager extends EventEmitter {
         socialShares: 0,
         backlinks: 0,
         organicTraffic: 0,
-        paidTraffic: 0
-      }
+        paidTraffic: 0,
+      },
     }
 
     this.content.set(content.id, content)
@@ -468,7 +476,11 @@ export class ContentMarketingManager extends EventEmitter {
   }
 
   // 发布内容
-  async publishContent(contentId: string, platforms: string[], scheduledAt?: Date): Promise<ContentPiece> {
+  async publishContent(
+    contentId: string,
+    platforms: string[],
+    scheduledAt?: Date
+  ): Promise<ContentPiece> {
     const content = this.content.get(contentId)
     if (!content) throw new Error('Content not found')
 
@@ -477,10 +489,10 @@ export class ContentMarketingManager extends EventEmitter {
     content.publishedAt = scheduledAt ? undefined : new Date()
 
     // 初始化平台发布状态
-    content.platforms = platforms.map(platform => ({
+    content.platforms = platforms.map((platform) => ({
       name: platform,
       status: 'pending',
-      engagement: { views: 0, likes: 0, shares: 0, comments: 0 }
+      engagement: { views: 0, likes: 0, shares: 0, comments: 0 },
     }))
 
     this.emit('contentPublished', { content, platforms, scheduledAt })
@@ -511,7 +523,7 @@ export class ContentMarketingManager extends EventEmitter {
         priority: 'high',
         suggestion: '标题长度应在30-60字符之间，便于搜索引擎显示',
         impact: 0.8,
-        effort: 0.2
+        effort: 0.2,
       })
     }
 
@@ -523,7 +535,7 @@ export class ContentMarketingManager extends EventEmitter {
         priority: 'high',
         suggestion: '添加120-160字符的SEO描述，提升点击率',
         impact: 0.7,
-        effort: 0.3
+        effort: 0.3,
       })
     }
 
@@ -535,7 +547,7 @@ export class ContentMarketingManager extends EventEmitter {
         priority: 'medium',
         suggestion: '添加更多相关关键词，提升搜索排名',
         impact: 0.5,
-        effort: 0.4
+        effort: 0.4,
       })
     }
 
@@ -547,7 +559,7 @@ export class ContentMarketingManager extends EventEmitter {
         priority: 'medium',
         suggestion: '添加相关内容的内部链接，提升网站粘性',
         impact: 0.4,
-        effort: 0.3
+        effort: 0.3,
       })
     }
 
@@ -555,11 +567,13 @@ export class ContentMarketingManager extends EventEmitter {
   }
 
   // 创建营销活动
-  async createCampaign(campaignData: Omit<MarketingCampaign, 'id' | 'createdAt'>): Promise<MarketingCampaign> {
+  async createCampaign(
+    campaignData: Omit<MarketingCampaign, 'id' | 'createdAt'>
+  ): Promise<MarketingCampaign> {
     const campaign: MarketingCampaign = {
       ...campaignData,
       id: `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
     this.campaigns.set(campaign.id, campaign)
@@ -580,30 +594,32 @@ export class ContentMarketingManager extends EventEmitter {
 
     if (filters) {
       if (filters.type) {
-        content = content.filter(c => c.type === filters.type)
+        content = content.filter((c) => c.type === filters.type)
       }
 
       if (filters.status) {
-        content = content.filter(c => c.status === filters.status)
+        content = content.filter((c) => c.status === filters.status)
       }
 
       if (filters.author) {
-        content = content.filter(c => c.author === filters.author)
+        content = content.filter((c) => c.author === filters.author)
       }
 
       if (filters.platform) {
-        content = content.filter(c => c.platforms.some(p => p.name === filters.platform))
+        content = content.filter((c) => c.platforms.some((p) => p.name === filters.platform))
       }
 
       if (filters.dateRange) {
-        content = content.filter(c => {
+        content = content.filter((c) => {
           const pubDate = c.publishedAt || c.createdAt
           return pubDate >= filters.dateRange!.start && pubDate <= filters.dateRange!.end
         })
       }
     }
 
-    return content.sort((a, b) => (b.publishedAt || b.createdAt).getTime() - (a.publishedAt || a.createdAt).getTime())
+    return content.sort(
+      (a, b) => (b.publishedAt || b.createdAt).getTime() - (a.publishedAt || a.createdAt).getTime()
+    )
   }
 
   // 获取营销活动
@@ -612,11 +628,11 @@ export class ContentMarketingManager extends EventEmitter {
 
     if (filters) {
       if (filters.type) {
-        campaigns = campaigns.filter(c => c.type === filters.type)
+        campaigns = campaigns.filter((c) => c.type === filters.type)
       }
 
       if (filters.status) {
-        campaigns = campaigns.filter(c => c.status === filters.status)
+        campaigns = campaigns.filter((c) => c.status === filters.status)
       }
     }
 
@@ -627,7 +643,7 @@ export class ContentMarketingManager extends EventEmitter {
   getContentCalendar(startDate: Date, endDate: Date): Map<string, ContentPiece[]> {
     const calendar = new Map<string, ContentPiece[]>()
 
-    this.content.forEach(content => {
+    this.content.forEach((content) => {
       if (content.scheduledAt || content.publishedAt) {
         const date = content.scheduledAt || content.publishedAt!
         const dateKey = date.toISOString().split('T')[0]
@@ -660,31 +676,33 @@ export class ContentMarketingManager extends EventEmitter {
     contentTypeBreakdown: Record<ContentType, number>
     platformPerformance: Record<string, any>
   } {
-    const content = dateRange ?
-      this.getContent({ dateRange }) :
-      Array.from(this.content.values())
+    const content = dateRange ? this.getContent({ dateRange }) : Array.from(this.content.values())
 
-    const publishedContent = content.filter(c => c.status === 'published')
+    const publishedContent = content.filter((c) => c.status === 'published')
 
     const totalViews = publishedContent.reduce((sum, c) => sum + c.performance.totalViews, 0)
-    const totalEngagement = publishedContent.reduce((sum, c) => sum + c.performance.totalEngagement, 0)
+    const totalEngagement = publishedContent.reduce(
+      (sum, c) => sum + c.performance.totalEngagement,
+      0
+    )
     const averageEngagementRate = totalViews > 0 ? (totalEngagement / totalViews) * 100 : 0
 
     // 内容类型分布
     const contentTypeBreakdown: Record<ContentType, number> = {} as any
-    publishedContent.forEach(c => {
+    publishedContent.forEach((c) => {
       contentTypeBreakdown[c.type] = (contentTypeBreakdown[c.type] || 0) + 1
     })
 
     // 平台表现
     const platformPerformance: Record<string, any> = {}
-    publishedContent.forEach(c => {
-      c.platforms.forEach(p => {
+    publishedContent.forEach((c) => {
+      c.platforms.forEach((p) => {
         if (!platformPerformance[p.name]) {
           platformPerformance[p.name] = { views: 0, engagement: 0, contentCount: 0 }
         }
         platformPerformance[p.name].views += p.engagement.views
-        platformPerformance[p.name].engagement += p.engagement.likes + p.engagement.shares + p.engagement.comments
+        platformPerformance[p.name].engagement +=
+          p.engagement.likes + p.engagement.shares + p.engagement.comments
         platformPerformance[p.name].contentCount += 1
       })
     })
@@ -702,7 +720,7 @@ export class ContentMarketingManager extends EventEmitter {
       averageEngagementRate,
       topPerformingContent,
       contentTypeBreakdown,
-      platformPerformance
+      platformPerformance,
     }
   }
 

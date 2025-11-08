@@ -114,12 +114,12 @@ import { computed } from 'vue'
 const props = defineProps({
   plugin: {
     type: Object,
-    required: true
+    required: true,
   },
   size: {
     type: String,
-    default: 'normal' // 'normal' | 'large'
-  }
+    default: 'normal', // 'normal' | 'large'
+  },
 })
 
 const emit = defineEmits(['view-details', 'install'])
@@ -132,9 +132,9 @@ const getCategoryIcon = (categoryId) => {
     'world-building': '🌍',
     'narrative-tools': '🎭',
     'ui-themes': '🎨',
-    'integrations': '🔗',
-    'localization': '🌐',
-    'analytics': '📊'
+    integrations: '🔗',
+    localization: '🌐',
+    analytics: '📊',
   }
   return icons[categoryId] || '🔧'
 }
@@ -147,9 +147,9 @@ const getCategoryName = (categoryId) => {
     'world-building': '世界构建',
     'narrative-tools': '叙事工具',
     'ui-themes': '界面主题',
-    'integrations': '集成工具',
-    'localization': '本地化',
-    'analytics': '分析工具'
+    integrations: '集成工具',
+    localization: '本地化',
+    analytics: '分析工具',
   }
   return names[categoryId] || categoryId
 }

@@ -58,17 +58,18 @@ export class AccessibilityEngine {
       screenReader: this.detectScreenReader(),
       keyboardNavigation: true,
       focusIndicators: true,
-      colorBlindFriendly: false
+      colorBlindFriendly: false,
     }
   }
 
   // 检测屏幕阅读器
   private detectScreenReader(): boolean {
     // 检查常见的屏幕阅读器特征
-    const hasScreenReader = window.speechSynthesis !== undefined ||
-                           navigator.userAgent.includes('NVDA') ||
-                           navigator.userAgent.includes('JAWS') ||
-                           navigator.userAgent.includes('VoiceOver')
+    const hasScreenReader =
+      window.speechSynthesis !== undefined ||
+      navigator.userAgent.includes('NVDA') ||
+      navigator.userAgent.includes('JAWS') ||
+      navigator.userAgent.includes('VoiceOver')
 
     // 检查是否通过键盘导航
     const usingKeyboard = !window.matchMedia('(pointer: fine)').matches
@@ -131,7 +132,12 @@ export class AccessibilityEngine {
 
   // 注册键盘快捷键
   registerShortcut(shortcut: KeyboardShortcut) {
-    const key = this.normalizeKey(shortcut.key, shortcut.ctrlKey, shortcut.altKey, shortcut.shiftKey)
+    const key = this.normalizeKey(
+      shortcut.key,
+      shortcut.ctrlKey,
+      shortcut.altKey,
+      shortcut.shiftKey
+    )
     this.shortcuts.set(key, shortcut)
   }
 
@@ -168,7 +174,7 @@ export class AccessibilityEngine {
     const trap: FocusTrap = {
       container,
       active: false,
-      restoreFocus: document.activeElement as HTMLElement
+      restoreFocus: document.activeElement as HTMLElement,
     }
 
     this.focusTraps.push(trap)
@@ -185,7 +191,7 @@ export class AccessibilityEngine {
     )
 
     if (focusableElements.length > 0) {
-      (focusableElements[0] as HTMLElement).focus()
+      ;(focusableElements[0] as HTMLElement).focus()
     }
 
     // 监听Tab键
@@ -240,7 +246,7 @@ export class AccessibilityEngine {
     const announcement: AccessibilityAnnouncement = {
       message,
       priority,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }
 
     this.announcements.push(announcement)
@@ -264,7 +270,7 @@ export class AccessibilityEngine {
   getShortcutsByCategory(): Record<string, KeyboardShortcut[]> {
     const categories: Record<string, KeyboardShortcut[]> = {}
 
-    this.shortcuts.forEach(shortcut => {
+    this.shortcuts.forEach((shortcut) => {
       if (!categories[shortcut.category]) {
         categories[shortcut.category] = []
       }
@@ -310,7 +316,7 @@ export class AccessibilityEngine {
       this.liveRegion.parentNode.removeChild(this.liveRegion)
     }
 
-    this.focusTraps.forEach(trap => {
+    this.focusTraps.forEach((trap) => {
       this.deactivateFocusTrap(trap)
     })
 
@@ -393,7 +399,7 @@ export function useAccessibility() {
     const handlePreferenceChange = () => {
       updateConfig({
         reducedMotion: motionQuery.matches,
-        highContrast: contrastQuery.matches
+        highContrast: contrastQuery.matches,
       })
     }
 
@@ -430,6 +436,6 @@ export function useAccessibility() {
     announce,
     getShortcutsByCategory,
     resetAccessibility,
-    handleKeydown
+    handleKeydown,
   }
 }

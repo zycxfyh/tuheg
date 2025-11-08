@@ -6,7 +6,7 @@ import {
   MultimodalContent,
   MultimodalType,
   RenderOptions,
-  ImageContent
+  ImageContent,
 } from '../types'
 
 export class ImageRenderer implements MultimodalRenderer {
@@ -17,7 +17,13 @@ export class ImageRenderer implements MultimodalRenderer {
   async render(
     content: MultimodalContent,
     container: HTMLElement,
-    options: RenderOptions = { format: 'html', includeAssets: true, compressAssets: false, optimizeFor: 'web', quality: 'medium' }
+    options: RenderOptions = {
+      format: 'html',
+      includeAssets: true,
+      compressAssets: false,
+      optimizeFor: 'web',
+      quality: 'medium',
+    }
   ): Promise<void> {
     if (!content.image) {
       throw new Error('No image content to render')
@@ -69,7 +75,11 @@ export class ImageRenderer implements MultimodalRenderer {
     }
   }
 
-  private applyImageStyles(container: HTMLElement, image: ImageContent, options: RenderOptions): void {
+  private applyImageStyles(
+    container: HTMLElement,
+    image: ImageContent,
+    options: RenderOptions
+  ): void {
     const styles = {
       textAlign: 'center' as const,
       padding: '20px',
@@ -77,13 +87,16 @@ export class ImageRenderer implements MultimodalRenderer {
       backgroundColor: this.getBackgroundColor(options),
       boxShadow: options.optimizeFor === 'web' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
       maxWidth: '800px',
-      margin: '0 auto'
+      margin: '0 auto',
     }
 
     Object.assign(container.style, styles)
   }
 
-  private async createImageElement(image: ImageContent, options: RenderOptions): Promise<HTMLImageElement> {
+  private async createImageElement(
+    image: ImageContent,
+    options: RenderOptions
+  ): Promise<HTMLImageElement> {
     const img = document.createElement('img')
     img.src = image.url
     img.alt = image.alt || 'Generated image'
@@ -96,7 +109,7 @@ export class ImageRenderer implements MultimodalRenderer {
       borderRadius: '4px',
       display: 'block',
       margin: '0 auto',
-      cursor: options.optimizeFor === 'web' ? 'zoom-in' : 'default'
+      cursor: options.optimizeFor === 'web' ? 'zoom-in' : 'default',
     }
 
     Object.assign(img.style, imgStyles)
@@ -162,18 +175,19 @@ export class ImageRenderer implements MultimodalRenderer {
 
     // 尺寸信息
     if (image.width && image.height) {
-      metadataItems.push(this.createMetadataBadge(`${image.width}×${image.height}`, '#e8f5e8', '#388e3c'))
+      metadataItems.push(
+        this.createMetadataBadge(`${image.width}×${image.height}`, '#e8f5e8', '#388e3c')
+      )
     }
 
     // 提示词（如果有）
     if (image.prompt) {
-      const promptPreview = image.prompt.length > 30
-        ? image.prompt.substring(0, 27) + '...'
-        : image.prompt
+      const promptPreview =
+        image.prompt.length > 30 ? image.prompt.substring(0, 27) + '...' : image.prompt
       metadataItems.push(this.createMetadataBadge(`"${promptPreview}"`, '#fff3e0', '#f57c00'))
     }
 
-    metadataItems.forEach(item => metadata.appendChild(item))
+    metadataItems.forEach((item) => metadata.appendChild(item))
 
     return metadata
   }
@@ -194,7 +208,11 @@ export class ImageRenderer implements MultimodalRenderer {
     return badge
   }
 
-  private addImageInteractions(img: HTMLImageElement, image: ImageContent, options: RenderOptions): void {
+  private addImageInteractions(
+    img: HTMLImageElement,
+    image: ImageContent,
+    options: RenderOptions
+  ): void {
     if (options.optimizeFor !== 'web') return
 
     // 点击放大功能

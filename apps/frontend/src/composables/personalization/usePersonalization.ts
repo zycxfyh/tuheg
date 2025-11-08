@@ -62,7 +62,7 @@ export class PersonalizationEngine {
       autoSaveEnabled: true,
       exportFormat: 'json',
       worldComplexity: 'medium',
-      narrativeStyle: 'branching'
+      narrativeStyle: 'branching',
     }
   }
 
@@ -76,7 +76,7 @@ export class PersonalizationEngine {
       lastActiveDate: new Date().toISOString(),
       totalSessions: 1,
       createdWorlds: 0,
-      completedStories: 0
+      completedStories: 0,
     }
   }
 
@@ -133,7 +133,10 @@ export class PersonalizationEngine {
     const recommendations: PersonalizationRecommendation[] = []
 
     // 基于偏好的推荐
-    if (this.preferences.worldComplexity === 'simple' && this.behavior.preferredComplexity === 'complex') {
+    if (
+      this.preferences.worldComplexity === 'simple' &&
+      this.behavior.preferredComplexity === 'complex'
+    ) {
       recommendations.push({
         id: 'complexity-upgrade',
         type: 'feature',
@@ -141,7 +144,7 @@ export class PersonalizationEngine {
         description: '基于您的创作经验，建议尝试更复杂的世界构建',
         confidence: 0.8,
         action: 'enable_advanced_features',
-        metadata: { feature: 'advanced_world_builder' }
+        metadata: { feature: 'advanced_world_builder' },
       })
     }
 
@@ -154,7 +157,7 @@ export class PersonalizationEngine {
         description: '您已经创建了多个世界，试试导出功能来分享您的创作',
         confidence: 0.7,
         action: 'show_export_tutorial',
-        metadata: { tutorial: 'world_export' }
+        metadata: { tutorial: 'world_export' },
       })
     }
 
@@ -166,13 +169,15 @@ export class PersonalizationEngine {
         description: `基于您对${this.behavior.favoriteGenres[0]}的偏好，我们为您准备了专用模板`,
         confidence: 0.9,
         action: 'apply_template',
-        metadata: { genre: this.behavior.favoriteGenres[0] }
+        metadata: { genre: this.behavior.favoriteGenres[0] },
       })
     }
 
     // 基于使用频率的推荐
-    if (this.behavior.commonActions.includes('character_interaction') &&
-        !this.behavior.commonActions.includes('narrative_branching')) {
+    if (
+      this.behavior.commonActions.includes('character_interaction') &&
+      !this.behavior.commonActions.includes('narrative_branching')
+    ) {
       recommendations.push({
         id: 'branching-intro',
         type: 'feature',
@@ -180,12 +185,13 @@ export class PersonalizationEngine {
         description: '既然您喜欢角色交互，何不试试分支叙事让故事更加丰富',
         confidence: 0.6,
         action: 'introduce_branching',
-        metadata: { feature: 'narrative_branching' }
+        metadata: { feature: 'narrative_branching' },
       })
     }
 
     // 效率优化推荐
-    if (this.preferences.autoSaveEnabled && this.behavior.averageSessionDuration > 3600000) { // 1小时
+    if (this.preferences.autoSaveEnabled && this.behavior.averageSessionDuration > 3600000) {
+      // 1小时
       recommendations.push({
         id: 'workflow-optimization',
         type: 'workflow',
@@ -193,7 +199,7 @@ export class PersonalizationEngine {
         description: '检测到您的工作时长较长，建议使用快捷键和工作区预设来提高效率',
         confidence: 0.5,
         action: 'show_shortcuts_guide',
-        metadata: { optimization: 'keyboard_shortcuts' }
+        metadata: { optimization: 'keyboard_shortcuts' },
       })
     }
 
@@ -208,12 +214,14 @@ export class PersonalizationEngine {
 
   // 应用推荐
   applyRecommendation(recommendationId: string) {
-    const recommendation = this.recommendations.find(r => r.id === recommendationId)
+    const recommendation = this.recommendations.find((r) => r.id === recommendationId)
     if (recommendation) {
       // 标记为已应用
       recommendation.metadata.applied = true
-      this.saveToStorage('applied_recommendations',
-        [...(this.getFromStorage('applied_recommendations') || []), recommendationId])
+      this.saveToStorage('applied_recommendations', [
+        ...(this.getFromStorage('applied_recommendations') || []),
+        recommendationId,
+      ])
     }
   }
 
@@ -313,7 +321,7 @@ export function usePersonalization() {
       preferences: prefs,
       behavior: behavior,
       recommendationsCount: recommendations.value.length,
-      appliedRecommendations: engine.getFromStorage('applied_recommendations') || []
+      appliedRecommendations: engine.getFromStorage('applied_recommendations') || [],
     }
   }
 
@@ -335,6 +343,6 @@ export function usePersonalization() {
     getRecommendations,
     applyRecommendation,
     getPersonalizationSummary,
-    resetPersonalization
+    resetPersonalization,
   }
 }

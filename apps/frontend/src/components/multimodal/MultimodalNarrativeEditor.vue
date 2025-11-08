@@ -100,7 +100,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { MultimodalNarrativeService } from '../../services/multimodal/MultimodalNarrativeService'
-import { MultimodalNarrative, NarrativeSegment, MultimodalType } from '../../services/multimodal/types'
+import {
+  MultimodalNarrative,
+  NarrativeSegment,
+  MultimodalType,
+} from '../../services/multimodal/types'
 import SegmentEditor from './SegmentEditor.vue'
 
 interface Props {
@@ -127,7 +131,7 @@ const narrative = ref<MultimodalNarrative>({
     interactiveElements: false,
     aiGenerated: false,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   settings: {
     autoplay: false,
@@ -141,11 +145,11 @@ const narrative = ref<MultimodalNarrative>({
       largeText: false,
       reducedMotion: false,
       screenReader: false,
-      captions: true
-    }
+      captions: true,
+    },
   },
   variables: {},
-  assets: []
+  assets: [],
 })
 
 const isEditing = computed(() => !!props.narrativeId)
@@ -182,8 +186,8 @@ const addSegment = () => {
       createdAt: new Date(),
       updatedAt: new Date(),
       tags: [],
-      aiGenerated: false
-    }
+      aiGenerated: false,
+    },
   }
 
   narrative.value.segments.push(newSegment)
@@ -219,8 +223,8 @@ const duplicateSegment = (index: number) => {
     metadata: {
       ...segment.metadata,
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   }
 
   narrative.value.segments.splice(index + 1, 0, duplicated)
@@ -299,7 +303,8 @@ const previewNarrative = async () => {
 const closePreview = () => {
   showPreview.value = false
   if (previewContainer.value) {
-    service.getPlaybackState(narrative.value.id)?.isPlaying && service.pauseNarrative(narrative.value.id)
+    service.getPlaybackState(narrative.value.id)?.isPlaying &&
+      service.pauseNarrative(narrative.value.id)
   }
 }
 
@@ -325,7 +330,7 @@ const getSegmentTypeIcon = (type: MultimodalType): string => {
     image: '🖼️',
     audio: '🎵',
     video: '🎬',
-    interactive: '🎮'
+    interactive: '🎮',
   }
   return icons[type] || '📄'
 }

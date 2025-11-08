@@ -6,7 +6,7 @@ import {
   MultimodalContent,
   MultimodalType,
   VideoContent,
-  VideoScene
+  VideoScene,
 } from '../types'
 
 export class VideoProcessor implements MultimodalProcessor {
@@ -52,7 +52,7 @@ export class VideoProcessor implements MultimodalProcessor {
       duration: 0,
       thumbnail: '',
       format: file.type.split('/')[1] || 'unknown',
-      generated: false
+      generated: false,
     }
 
     // 获取视频信息
@@ -92,7 +92,7 @@ export class VideoProcessor implements MultimodalProcessor {
       duration: 0,
       thumbnail: '',
       format: this.extractVideoFormat(url),
-      generated: false
+      generated: false,
     }
 
     // 获取视频信息
@@ -125,14 +125,16 @@ export class VideoProcessor implements MultimodalProcessor {
     }
   }
 
-  private async getVideoInfo(file: File): Promise<{ duration: number; width: number; height: number }> {
+  private async getVideoInfo(
+    file: File
+  ): Promise<{ duration: number; width: number; height: number }> {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video')
       video.onloadedmetadata = () => {
         resolve({
           duration: video.duration,
           width: video.videoWidth,
-          height: video.videoHeight
+          height: video.videoHeight,
         })
         URL.revokeObjectURL(video.src)
       }
@@ -141,7 +143,9 @@ export class VideoProcessor implements MultimodalProcessor {
     })
   }
 
-  private async getVideoInfoFromUrl(url: string): Promise<{ duration: number; width: number; height: number }> {
+  private async getVideoInfoFromUrl(
+    url: string
+  ): Promise<{ duration: number; width: number; height: number }> {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video')
       video.crossOrigin = 'anonymous'
@@ -149,7 +153,7 @@ export class VideoProcessor implements MultimodalProcessor {
         resolve({
           duration: video.duration,
           width: video.videoWidth,
-          height: video.videoHeight
+          height: video.videoHeight,
         })
       }
       video.onerror = reject
@@ -204,7 +208,7 @@ export class VideoProcessor implements MultimodalProcessor {
         startTime: i * sceneDuration,
         endTime: (i + 1) * sceneDuration,
         description: `场景 ${i + 1}：视频内容片段`,
-        image: `thumbnail-${i}.jpg` // 实际应用中会生成真实的场景缩略图
+        image: `thumbnail-${i}.jpg`, // 实际应用中会生成真实的场景缩略图
       })
     }
 

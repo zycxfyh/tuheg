@@ -22,7 +22,11 @@ program
 program
   .command('create <name>')
   .description('创建新的插件项目')
-  .option('-t, --type <type>', '插件类型 (static|messagePreprocessor|synchronous|asynchronous|service|dynamic)', 'static')
+  .option(
+    '-t, --type <type>',
+    '插件类型 (static|messagePreprocessor|synchronous|asynchronous|service|dynamic)',
+    'static'
+  )
   .option('-d, --description <description>', '插件描述')
   .option('-a, --author <author>', '插件作者')
   .option('--typescript', '使用TypeScript', true)

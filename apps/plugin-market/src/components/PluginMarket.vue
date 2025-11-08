@@ -226,7 +226,7 @@ const trendingPlugins = ref([])
 const searchResults = ref({
   plugins: [],
   total: 0,
-  hasMore: false
+  hasMore: false,
 })
 const selectedPlugin = ref(null)
 const showDetailsModal = ref(false)
@@ -235,8 +235,14 @@ const currentOffset = ref(0)
 
 // 计算属性
 const hasActiveFilters = computed(() => {
-  return !!(searchQuery.value || selectedCategory.value || selectedPricing.value ||
-           minRating.value > 0 || showVerified.value || showFeatured.value)
+  return !!(
+    searchQuery.value ||
+    selectedCategory.value ||
+    selectedPricing.value ||
+    minRating.value > 0 ||
+    showVerified.value ||
+    showFeatured.value
+  )
 })
 
 const activeFilter = computed(() => {
@@ -252,14 +258,14 @@ const quickFilters = computed(() => [
   { id: 'verified', label: '认证', icon: '✅' },
   { id: 'free', label: '免费', icon: '🆓' },
   { id: 'paid', label: '付费', icon: '💰' },
-  { id: 'trending', label: '热门', icon: '🔥' }
+  { id: 'trending', label: '热门', icon: '🔥' },
 ])
 
 const pricingOptions = computed(() => [
   { value: '', label: '全部' },
   { value: 'free', label: '免费' },
   { value: 'paid', label: '付费' },
-  { value: 'subscription', label: '订阅' }
+  { value: 'subscription', label: '订阅' },
 ])
 
 // 防抖搜索
@@ -287,7 +293,7 @@ const applyFilters = () => {
     verified: showVerified.value || undefined,
     featured: showFeatured.value || undefined,
     sortBy: sortBy.value,
-    sortOrder: sortOrder.value
+    sortOrder: sortOrder.value,
   }
 
   const results = marketManager.searchPlugins(filters, 20, currentOffset.value)
@@ -322,7 +328,7 @@ const applyQuickFilter = (filter) => {
       searchResults.value = {
         plugins: marketManager.getTrendingPlugins(20),
         total: marketManager.getTrendingPlugins().length,
-        hasMore: false
+        hasMore: false,
       }
       return
   }
@@ -374,7 +380,7 @@ const loadMore = async () => {
     verified: showVerified.value || undefined,
     featured: showFeatured.value || undefined,
     sortBy: sortBy.value,
-    sortOrder: sortOrder.value
+    sortOrder: sortOrder.value,
   }
 
   const results = marketManager.searchPlugins(filters, 20, currentOffset.value)
@@ -408,7 +414,6 @@ const installPlugin = async (plugin) => {
 
     // 显示成功消息
     alert(`插件 "${plugin.package.name}" 已开始安装！`)
-
   } catch (error) {
     console.error('Failed to install plugin:', error)
     alert('安装失败，请重试')

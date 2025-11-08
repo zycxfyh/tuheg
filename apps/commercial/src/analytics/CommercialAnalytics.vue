@@ -272,12 +272,12 @@ import PluginCategoryChart from './charts/PluginCategoryChart.vue'
 const props = defineProps({
   autoRefresh: {
     type: Boolean,
-    default: true
+    default: true,
   },
   refreshInterval: {
     type: Number,
-    default: 300000 // 5分钟
-  }
+    default: 300000, // 5分钟
+  },
 })
 
 // 响应式数据
@@ -295,7 +295,7 @@ const analytics = ref({
   ltvCacRatio: 0,
   ltvCacRatioChange: 0,
   mau: 0,
-  mauChange: 0
+  mauChange: 0,
 })
 
 const subscriptionPlanData = ref([])
@@ -305,7 +305,7 @@ const pluginStats = ref({
   totalPlugins: 0,
   totalDownloads: 0,
   totalRevenue: 0,
-  averageRating: 0
+  averageRating: 0,
 })
 const pluginDownloadData = ref([])
 const pluginCategoryData = ref([])
@@ -314,7 +314,7 @@ const priceElasticityData = ref([])
 const conversionFunnel = ref({
   freeTrial: 0,
   paidConversion: 0,
-  monthlyRenewal: 0
+  monthlyRenewal: 0,
 })
 const abTestResults = ref([])
 const competitionMatrix = ref([])
@@ -326,7 +326,7 @@ const refreshAnalytics = async () => {
     isLoading.value = true
 
     // 模拟数据获取
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500))
 
     // 更新关键指标
     analytics.value = {
@@ -341,7 +341,7 @@ const refreshAnalytics = async () => {
       ltvCacRatio: 20.0,
       ltvCacRatioChange: 23.4,
       mau: 12500,
-      mauChange: 22.1
+      mauChange: 22.1,
     }
 
     // 更新订阅数据
@@ -349,14 +349,14 @@ const refreshAnalytics = async () => {
       { plan: '免费版', users: 8500, percentage: 68.0, revenue: 0 },
       { plan: '创作者', users: 3200, percentage: 25.6, revenue: 92800 },
       { plan: '工作室', users: 650, percentage: 5.2, revenue: 19750 },
-      { plan: '企业版', users: 150, percentage: 1.2, revenue: 27000 }
+      { plan: '企业版', users: 150, percentage: 1.2, revenue: 27000 },
     ]
 
     subscriptionLifecycleData.value = [
       { stage: '试用', users: 1200, percentage: 100 },
       { stage: '付费', users: 400, percentage: 33.3 },
       { stage: '活跃', users: 320, percentage: 26.7 },
-      { stage: '续订', users: 280, percentage: 23.3 }
+      { stage: '续订', users: 280, percentage: 23.3 },
     ]
 
     retentionTrendData.value = [
@@ -365,7 +365,7 @@ const refreshAnalytics = async () => {
       { month: '3月', retention: 82 },
       { month: '4月', retention: 79 },
       { month: '5月', retention: 84 },
-      { month: '6月', retention: 81 }
+      { month: '6月', retention: 81 },
     ]
 
     // 更新插件数据
@@ -373,7 +373,7 @@ const refreshAnalytics = async () => {
       totalPlugins: 145,
       totalDownloads: 45600,
       totalRevenue: 125000,
-      averageRating: 4.3
+      averageRating: 4.3,
     }
 
     pluginDownloadData.value = generatePluginDownloadData()
@@ -385,7 +385,7 @@ const refreshAnalytics = async () => {
       { category: 'UI主题', plugins: 15, downloads: 4500 },
       { category: '语言包', plugins: 12, downloads: 3200 },
       { category: '集成工具', plugins: 10, downloads: 2800 },
-      { category: '实用工具', plugins: 5, downloads: 1000 }
+      { category: '实用工具', plugins: 5, downloads: 1000 },
     ]
 
     topDevelopers.value = [
@@ -393,7 +393,7 @@ const refreshAnalytics = async () => {
       { id: 'dev2', name: '叙事工具专家', pluginsCount: 12, revenue: 38000, rating: 4.7 },
       { id: 'dev3', name: 'UI设计工作室', pluginsCount: 6, revenue: 25000, rating: 4.5 },
       { id: 'dev4', name: '集成工具开发商', pluginsCount: 4, revenue: 18000, rating: 4.6 },
-      { id: 'dev5', name: '语言专家团队', pluginsCount: 5, revenue: 15000, rating: 4.4 }
+      { id: 'dev5', name: '语言专家团队', pluginsCount: 5, revenue: 15000, rating: 4.4 },
     ]
 
     // 更新定价数据
@@ -401,34 +401,69 @@ const refreshAnalytics = async () => {
       { price: 19, demand: 1000, elasticity: -1.2 },
       { price: 29, demand: 800, elasticity: -0.8 },
       { price: 39, demand: 600, elasticity: -0.6 },
-      { price: 49, demand: 450, elasticity: -0.4 }
+      { price: 49, demand: 450, elasticity: -0.4 },
     ]
 
     conversionFunnel.value = {
       freeTrial: 1200,
       paidConversion: 400,
-      monthlyRenewal: 280
+      monthlyRenewal: 280,
     }
 
     abTestResults.value = [
       { name: '原价 ¥29/月', conversionRate: 12.5, avgRevenue: 29, isWinner: false },
       { name: '折扣 ¥19/月', conversionRate: 18.7, avgRevenue: 19, isWinner: true },
-      { name: '年付 8折', conversionRate: 15.3, avgRevenue: 24.8, isWinner: false }
+      { name: '年付 8折', conversionRate: 15.3, avgRevenue: 24.8, isWinner: false },
     ]
 
     // 更新竞争矩阵
     competitionMatrix.value = [
-      { name: '多Agent协作', ours: '优势', competitorA: '无', competitorB: '基础', competitorC: '无' },
-      { name: '插件生态', ours: '完整', competitorA: '基础', competitorB: '丰富', competitorC: '无' },
-      { name: 'AI质量', ours: '高级', competitorA: '中等', competitorB: '高级', competitorC: '基础' },
-      { name: '用户体验', ours: '优秀', competitorA: '良好', competitorB: '优秀', competitorC: '基础' },
-      { name: '定价策略', ours: '灵活', competitorA: '固定', competitorB: '固定', competitorC: '低价' },
-      { name: '技术支持', ours: '7*24', competitorA: '工作日', competitorB: '7*24', competitorC: '有限' }
+      {
+        name: '多Agent协作',
+        ours: '优势',
+        competitorA: '无',
+        competitorB: '基础',
+        competitorC: '无',
+      },
+      {
+        name: '插件生态',
+        ours: '完整',
+        competitorA: '基础',
+        competitorB: '丰富',
+        competitorC: '无',
+      },
+      {
+        name: 'AI质量',
+        ours: '高级',
+        competitorA: '中等',
+        competitorB: '高级',
+        competitorC: '基础',
+      },
+      {
+        name: '用户体验',
+        ours: '优秀',
+        competitorA: '良好',
+        competitorB: '优秀',
+        competitorC: '基础',
+      },
+      {
+        name: '定价策略',
+        ours: '灵活',
+        competitorA: '固定',
+        competitorB: '固定',
+        competitorC: '低价',
+      },
+      {
+        name: '技术支持',
+        ours: '7*24',
+        competitorA: '工作日',
+        competitorB: '7*24',
+        competitorC: '有限',
+      },
     ]
 
     // 生成商业洞察
     generateBusinessInsights()
-
   } catch (error) {
     console.error('Failed to refresh analytics:', error)
   } finally {
@@ -444,7 +479,7 @@ const generatePluginDownloadData = () => {
     const date = new Date(now - i * 24 * 60 * 60 * 1000)
     data.push({
       date: date.toISOString().split('T')[0],
-      downloads: 800 + Math.random() * 400 + Math.sin(i / 7) * 200
+      downloads: 800 + Math.random() * 400 + Math.sin(i / 7) * 200,
     })
   }
 
@@ -460,7 +495,7 @@ const generateBusinessInsights = () => {
       title: '价格弹性优化建议',
       description: '数据显示 ¥19/月的折扣价格带来了18.7%的转化率提升，建议扩大折扣策略的应用范围',
       confidence: 0.89,
-      recommendation: '实施更灵活的定价策略，包括季节性折扣和用户分层定价'
+      recommendation: '实施更灵活的定价策略，包括季节性折扣和用户分层定价',
     },
     {
       id: 'plugin-market-growth',
@@ -469,7 +504,7 @@ const generateBusinessInsights = () => {
       title: '插件市场高速增长',
       description: '插件下载量月均增长15%，市场收入已达12.5万元，建议加大对优质开发者的扶持',
       confidence: 0.94,
-      recommendation: '建立开发者激励计划，包括分成比例提升和营销资源支持'
+      recommendation: '建立开发者激励计划，包括分成比例提升和营销资源支持',
     },
     {
       id: 'retention-improvement',
@@ -478,7 +513,7 @@ const generateBusinessInsights = () => {
       title: '续订率需要提升',
       description: '月度续订率稳定在75-80%区间，相比行业平均85%有提升空间',
       confidence: 0.76,
-      recommendation: '优化用户 onboarding 流程，增加用户成功指导和定期价值提醒'
+      recommendation: '优化用户 onboarding 流程，增加用户成功指导和定期价值提醒',
     },
     {
       id: 'expansion-opportunity',
@@ -487,7 +522,7 @@ const generateBusinessInsights = () => {
       title: '企业市场机会',
       description: '企业版用户贡献了27%的ARR，但渗透率仅1.2%，企业市场潜力巨大',
       confidence: 0.82,
-      recommendation: '加强企业营销策略，包括行业定制解决方案和企业级功能开发'
+      recommendation: '加强企业营销策略，包括行业定制解决方案和企业级功能开发',
     },
     {
       id: 'competition-advantage',
@@ -496,8 +531,8 @@ const generateBusinessInsights = () => {
       title: '技术领先优势明显',
       description: '在多Agent协作和AI质量方面具有明显竞争优势，建议加大技术品牌建设',
       confidence: 0.91,
-      recommendation: '通过技术博客、行业会议等渠道强化技术领先形象'
-    }
+      recommendation: '通过技术博客、行业会议等渠道强化技术领先形象',
+    },
   ]
 }
 
@@ -511,10 +546,10 @@ const exportReport = () => {
     pricingAnalysis: {
       priceElasticity: priceElasticityData.value,
       conversionFunnel: conversionFunnel.value,
-      abTestResults: abTestResults.value
+      abTestResults: abTestResults.value,
     },
     competitionAnalysis: competitionMatrix.value,
-    insights: businessInsights.value
+    insights: businessInsights.value,
   }
 
   const dataStr = JSON.stringify(reportData, null, 2)

@@ -1,12 +1,7 @@
 // 图像处理器
 // 处理图像内容的分析、转换和增强
 
-import {
-  MultimodalProcessor,
-  MultimodalContent,
-  MultimodalType,
-  ImageContent
-} from '../types'
+import { MultimodalProcessor, MultimodalContent, MultimodalType, ImageContent } from '../types'
 
 export class ImageProcessor implements MultimodalProcessor {
   canProcess(type: MultimodalType): boolean {
@@ -49,7 +44,7 @@ export class ImageProcessor implements MultimodalProcessor {
     const imageContent: ImageContent = {
       url: URL.createObjectURL(file),
       alt: file.name,
-      generated: false
+      generated: false,
     }
 
     // 获取图像信息
@@ -88,7 +83,7 @@ export class ImageProcessor implements MultimodalProcessor {
     const imageContent: ImageContent = {
       url,
       alt: this.extractFilename(url),
-      generated: false
+      generated: false,
     }
 
     // 获取图像信息
@@ -133,7 +128,7 @@ export class ImageProcessor implements MultimodalProcessor {
       img.onload = () => {
         resolve({
           width: img.naturalWidth,
-          height: img.naturalHeight
+          height: img.naturalHeight,
         })
         URL.revokeObjectURL(img.src)
       }
@@ -149,7 +144,7 @@ export class ImageProcessor implements MultimodalProcessor {
       img.onload = () => {
         resolve({
           width: img.naturalWidth,
-          height: img.naturalHeight
+          height: img.naturalHeight,
         })
       }
       img.onerror = reject
@@ -191,7 +186,11 @@ export class ImageProcessor implements MultimodalProcessor {
     return `从 ${url} 加载的图像`
   }
 
-  private async generateThumbnail(file: File, maxWidth: number, maxHeight: number): Promise<string> {
+  private async generateThumbnail(
+    file: File,
+    maxWidth: number,
+    maxHeight: number
+  ): Promise<string> {
     const canvas = await this.fileToCanvas(file)
     const thumbnailCanvas = this.resizeCanvas(canvas, maxWidth, maxHeight)
 
@@ -207,7 +206,7 @@ export class ImageProcessor implements MultimodalProcessor {
     const colors = this.analyzeColors(imageData.data)
 
     // 返回最主要的几种颜色
-    return colors.slice(0, 5).map(color => color.name)
+    return colors.slice(0, 5).map((color) => color.name)
   }
 
   private async detectText(file: File): Promise<string> {
@@ -239,7 +238,11 @@ export class ImageProcessor implements MultimodalProcessor {
     })
   }
 
-  private resizeCanvas(canvas: HTMLCanvasElement, maxWidth: number, maxHeight: number): HTMLCanvasElement {
+  private resizeCanvas(
+    canvas: HTMLCanvasElement,
+    maxWidth: number,
+    maxHeight: number
+  ): HTMLCanvasElement {
     const ratio = Math.min(maxWidth / canvas.width, maxHeight / canvas.height)
     const newWidth = canvas.width * ratio
     const newHeight = canvas.height * ratio
@@ -255,7 +258,9 @@ export class ImageProcessor implements MultimodalProcessor {
     return newCanvas
   }
 
-  private analyzeColors(data: Uint8ClampedArray): Array<{ r: number; g: number; b: number; count: number; name: string }> {
+  private analyzeColors(
+    data: Uint8ClampedArray
+  ): Array<{ r: number; g: number; b: number; count: number; name: string }> {
     const colorMap: Map<string, { r: number; g: number; b: number; count: number }> = new Map()
 
     // 采样图像中的像素
@@ -283,7 +288,7 @@ export class ImageProcessor implements MultimodalProcessor {
     return Array.from(colorMap.entries())
       .map(([key, color]) => ({
         ...color,
-        name: this.colorToName(color.r, color.g, color.b)
+        name: this.colorToName(color.r, color.g, color.b),
       }))
       .sort((a, b) => b.count - a.count)
   }
@@ -299,7 +304,7 @@ export class ImageProcessor implements MultimodalProcessor {
       { name: '青色', r: 0, g: 255, b: 255 },
       { name: '白色', r: 255, g: 255, b: 255 },
       { name: '黑色', r: 0, g: 0, b: 0 },
-      { name: '灰色', r: 128, g: 128, b: 128 }
+      { name: '灰色', r: 128, g: 128, b: 128 },
     ]
 
     let closestColor = colors[0]
@@ -307,9 +312,7 @@ export class ImageProcessor implements MultimodalProcessor {
 
     for (const color of colors) {
       const distance = Math.sqrt(
-        Math.pow(r - color.r, 2) +
-        Math.pow(g - color.g, 2) +
-        Math.pow(b - color.b, 2)
+        Math.pow(r - color.r, 2) + Math.pow(g - color.g, 2) + Math.pow(b - color.b, 2)
       )
 
       if (distance < minDistance) {
@@ -330,14 +333,16 @@ export class ImageProcessor implements MultimodalProcessor {
       const g = data[i + 1]
       const b = data[i + 2]
       // 使用相对亮度公式
-      const brightness = (0.299 * r + 0.587 * g + 0.114 * b)
+      const brightness = 0.299 * r + 0.587 * g + 0.114 * b
       totalBrightness += brightness
     }
 
     return totalBrightness / pixelCount
   }
 
-  private getDominantColor(colors: Array<{ r: number; g: number; b: number; count: number; name: string }>): string {
+  private getDominantColor(
+    colors: Array<{ r: number; g: number; b: number; count: number; name: string }>
+  ): string {
     return colors[0]?.name || '未知'
   }
 }

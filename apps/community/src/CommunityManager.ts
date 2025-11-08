@@ -96,12 +96,7 @@ export type PostCategory =
   | 'announcements'
   | 'off-topic'
 
-export type PostStatus =
-  | 'published'
-  | 'draft'
-  | 'pending-review'
-  | 'flagged'
-  | 'deleted'
+export type PostStatus = 'published' | 'draft' | 'pending-review' | 'flagged' | 'deleted'
 
 export interface PostAttachment {
   id: string
@@ -302,7 +297,7 @@ export class CommunityManager extends EventEmitter {
         requirements: [{ type: 'posts', value: 1, operator: 'gte' }],
         rewards: [{ type: 'badge', value: '新手创作者', description: '新手创作者徽章' }],
         unlockedBy: 0,
-        createdAt: new Date('2024-10-01')
+        createdAt: new Date('2024-10-01'),
       },
       {
         id: 'helpful-contributor',
@@ -314,7 +309,7 @@ export class CommunityManager extends EventEmitter {
         requirements: [{ type: 'likes', value: 10, operator: 'gte' }],
         rewards: [{ type: 'badge', value: '社区助手', description: '社区助手徽章' }],
         unlockedBy: 0,
-        createdAt: new Date('2024-10-01')
+        createdAt: new Date('2024-10-01'),
       },
       {
         id: 'community-leader',
@@ -325,14 +320,14 @@ export class CommunityManager extends EventEmitter {
         rarity: 'epic',
         requirements: [
           { type: 'likes', value: 100, operator: 'gte' },
-          { type: 'comments', value: 50, operator: 'gte' }
+          { type: 'comments', value: 50, operator: 'gte' },
         ],
         rewards: [
           { type: 'badge', value: '社区领袖', description: '社区领袖徽章' },
-          { type: 'access', value: 'moderator-tools', description: '版主工具访问权限' }
+          { type: 'access', value: 'moderator-tools', description: '版主工具访问权限' },
         ],
         unlockedBy: 0,
-        createdAt: new Date('2024-10-01')
+        createdAt: new Date('2024-10-01'),
       },
       {
         id: 'streak-master',
@@ -344,14 +339,14 @@ export class CommunityManager extends EventEmitter {
         requirements: [{ type: 'streak', value: 30, operator: 'gte' }],
         rewards: [
           { type: 'title', value: '连续登录大师', description: '特殊称号' },
-          { type: 'discount', value: '20%', description: '订阅折扣20%' }
+          { type: 'discount', value: '20%', description: '订阅折扣20%' },
         ],
         unlockedBy: 0,
-        createdAt: new Date('2024-10-01')
-      }
+        createdAt: new Date('2024-10-01'),
+      },
     ]
 
-    achievements.forEach(achievement => {
+    achievements.forEach((achievement) => {
       this.achievements.set(achievement.id, achievement)
     })
   }
@@ -367,7 +362,14 @@ export class CommunityManager extends EventEmitter {
       role: 'contributor',
       reputation: 450,
       badges: [
-        { id: 'first-post', name: '初次发帖', description: '发布第一篇帖子', icon: '📝', earnedAt: new Date('2024-10-15'), rarity: 'common' }
+        {
+          id: 'first-post',
+          name: '初次发帖',
+          description: '发布第一篇帖子',
+          icon: '📝',
+          earnedAt: new Date('2024-10-15'),
+          rarity: 'common',
+        },
       ],
       joinedAt: new Date('2024-10-01'),
       lastActive: new Date(),
@@ -375,7 +377,7 @@ export class CommunityManager extends EventEmitter {
       isBanned: false,
       socialLinks: {
         github: 'https://github.com/alice-dev',
-        twitter: '@alice_dev'
+        twitter: '@alice_dev',
       },
       stats: {
         postsCount: 12,
@@ -385,8 +387,8 @@ export class CommunityManager extends EventEmitter {
         helpfulVotes: 23,
         reputationPoints: 450,
         streakDays: 15,
-        achievements: ['first-post', 'helpful-contributor']
-      }
+        achievements: ['first-post', 'helpful-contributor'],
+      },
     }
 
     this.users.set(sampleUser.id, sampleUser)
@@ -421,14 +423,19 @@ export class CommunityManager extends EventEmitter {
       updatedAt: new Date('2024-11-01'),
       lastActivity: new Date('2024-11-02'),
       attachments: [],
-      metadata: {}
+      metadata: {},
     }
 
     this.posts.set(samplePost.id, samplePost)
   }
 
   // 用户管理
-  async createUser(userData: Omit<CommunityUser, 'id' | 'reputation' | 'badges' | 'joinedAt' | 'lastActive' | 'stats'>): Promise<CommunityUser> {
+  async createUser(
+    userData: Omit<
+      CommunityUser,
+      'id' | 'reputation' | 'badges' | 'joinedAt' | 'lastActive' | 'stats'
+    >
+  ): Promise<CommunityUser> {
     const user: CommunityUser = {
       ...userData,
       id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -444,8 +451,8 @@ export class CommunityManager extends EventEmitter {
         helpfulVotes: 0,
         reputationPoints: 0,
         streakDays: 0,
-        achievements: []
-      }
+        achievements: [],
+      },
     }
 
     this.users.set(user.id, user)
@@ -496,7 +503,19 @@ export class CommunityManager extends EventEmitter {
   }
 
   // 内容管理
-  async createPost(postData: Omit<CommunityPost, 'id' | 'viewCount' | 'likeCount' | 'commentCount' | 'shareCount' | 'createdAt' | 'updatedAt' | 'lastActivity'>): Promise<CommunityPost> {
+  async createPost(
+    postData: Omit<
+      CommunityPost,
+      | 'id'
+      | 'viewCount'
+      | 'likeCount'
+      | 'commentCount'
+      | 'shareCount'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'lastActivity'
+    >
+  ): Promise<CommunityPost> {
     const post: CommunityPost = {
       ...postData,
       id: `post-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -506,7 +525,7 @@ export class CommunityManager extends EventEmitter {
       shareCount: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     }
 
     this.posts.set(post.id, post)
@@ -565,13 +584,15 @@ export class CommunityManager extends EventEmitter {
   }
 
   // 评论管理
-  async createComment(commentData: Omit<Comment, 'id' | 'likeCount' | 'replyCount' | 'createdAt'>): Promise<Comment> {
+  async createComment(
+    commentData: Omit<Comment, 'id' | 'likeCount' | 'replyCount' | 'createdAt'>
+  ): Promise<Comment> {
     const comment: Comment = {
       ...commentData,
       id: `comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       likeCount: 0,
       replyCount: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
     const postComments = this.comments.get(comment.postId) || []
@@ -596,13 +617,15 @@ export class CommunityManager extends EventEmitter {
   }
 
   // 事件管理
-  async createEvent(eventData: Omit<CommunityEvent, 'id' | 'registeredCount' | 'attendees' | 'createdAt'>): Promise<CommunityEvent> {
+  async createEvent(
+    eventData: Omit<CommunityEvent, 'id' | 'registeredCount' | 'attendees' | 'createdAt'>
+  ): Promise<CommunityEvent> {
     const event: CommunityEvent = {
       ...eventData,
       id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       registeredCount: 0,
       attendees: [],
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
     this.events.set(event.id, event)
@@ -646,7 +669,7 @@ export class CommunityManager extends EventEmitter {
           description: achievement.description,
           icon: achievement.icon,
           earnedAt: new Date(),
-          rarity: achievement.rarity
+          rarity: achievement.rarity,
         })
 
         achievement.unlockedBy++
@@ -659,22 +682,36 @@ export class CommunityManager extends EventEmitter {
   }
 
   private checkAchievementRequirements(user: CommunityUser, achievement: Achievement): boolean {
-    return achievement.requirements.every(req => {
+    return achievement.requirements.every((req) => {
       let userValue = 0
 
       switch (req.type) {
-        case 'posts': userValue = user.stats.postsCount; break
-        case 'comments': userValue = user.stats.commentsCount; break
-        case 'likes': userValue = user.stats.likesReceived; break
-        case 'reputation': userValue = user.reputation; break
-        case 'streak': userValue = user.stats.streakDays; break
+        case 'posts':
+          userValue = user.stats.postsCount
+          break
+        case 'comments':
+          userValue = user.stats.commentsCount
+          break
+        case 'likes':
+          userValue = user.stats.likesReceived
+          break
+        case 'reputation':
+          userValue = user.reputation
+          break
+        case 'streak':
+          userValue = user.stats.streakDays
+          break
       }
 
       switch (req.operator) {
-        case 'gte': return userValue >= req.value
-        case 'lte': return userValue <= req.value
-        case 'eq': return userValue === req.value
-        default: return false
+        case 'gte':
+          return userValue >= req.value
+        case 'lte':
+          return userValue <= req.value
+        case 'eq':
+          return userValue === req.value
+        default:
+          return false
       }
     })
   }
@@ -685,7 +722,7 @@ export class CommunityManager extends EventEmitter {
     if (!user) return
 
     if (typeof user.stats[stat] === 'number') {
-      (user.stats[stat] as number) += delta
+      ;(user.stats[stat] as number) += delta
       user.reputation = user.stats.reputationPoints
     }
   }
@@ -702,14 +739,14 @@ export class CommunityManager extends EventEmitter {
     const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
     const activeUsers = {
-      daily: users.filter(u => u.lastActive >= oneDayAgo).length,
-      weekly: users.filter(u => u.lastActive >= oneWeekAgo).length,
-      monthly: users.filter(u => u.lastActive >= oneMonthAgo).length
+      daily: users.filter((u) => u.lastActive >= oneDayAgo).length,
+      weekly: users.filter((u) => u.lastActive >= oneWeekAgo).length,
+      monthly: users.filter((u) => u.lastActive >= oneMonthAgo).length,
     }
 
     // 分类统计
     const categoryCount: Record<PostCategory, number> = {} as any
-    posts.forEach(post => {
+    posts.forEach((post) => {
       categoryCount[post.category] = (categoryCount[post.category] || 0) + 1
     })
 
@@ -724,25 +761,30 @@ export class CommunityManager extends EventEmitter {
       const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000)
       userGrowth.push({
         date: date.toISOString().split('T')[0],
-        users: Math.floor(users.length * (0.5 + Math.random() * 0.5))
+        users: Math.floor(users.length * (0.5 + Math.random() * 0.5)),
       })
     }
 
     // 参与度指标
-    const totalComments = Array.from(this.comments.values()).reduce((sum, comments) => sum + comments.length, 0)
+    const totalComments = Array.from(this.comments.values()).reduce(
+      (sum, comments) => sum + comments.length,
+      0
+    )
 
     const engagementMetrics = {
       avgPostsPerUser: users.length > 0 ? posts.length / users.length : 0,
       avgCommentsPerPost: posts.length > 0 ? totalComments / posts.length : 0,
-      avgLikesPerPost: posts.length > 0 ? posts.reduce((sum, p) => sum + p.likeCount, 0) / posts.length : 0,
-      responseTime: 4.2 // 平均回复时间（小时）
+      avgLikesPerPost:
+        posts.length > 0 ? posts.reduce((sum, p) => sum + p.likeCount, 0) / posts.length : 0,
+      responseTime: 4.2, // 平均回复时间（小时）
     }
 
     // 内容质量指标
     const contentQuality = {
-      avgPostLength: posts.length > 0 ? posts.reduce((sum, p) => sum + p.content.length, 0) / posts.length : 0,
+      avgPostLength:
+        posts.length > 0 ? posts.reduce((sum, p) => sum + p.content.length, 0) / posts.length : 0,
       helpfulVotesRate: 0.15, // 有帮助投票率
-      flaggedContentRate: 0.02 // 被举报内容率
+      flaggedContentRate: 0.02, // 被举报内容率
     }
 
     return {
@@ -754,7 +796,7 @@ export class CommunityManager extends EventEmitter {
       topCategories,
       userGrowth,
       engagementMetrics,
-      contentQuality
+      contentQuality,
     }
   }
 
@@ -765,58 +807,66 @@ export class CommunityManager extends EventEmitter {
     return users
       .sort((a, b) => {
         switch (type) {
-          case 'reputation': return b.reputation - a.reputation
-          case 'posts': return b.stats.postsCount - a.stats.postsCount
-          case 'comments': return b.stats.commentsCount - a.stats.commentsCount
-          case 'likes': return b.stats.likesReceived - a.stats.likesReceived
-          default: return 0
+          case 'reputation':
+            return b.reputation - a.reputation
+          case 'posts':
+            return b.stats.postsCount - a.stats.postsCount
+          case 'comments':
+            return b.stats.commentsCount - a.stats.commentsCount
+          case 'likes':
+            return b.stats.likesReceived - a.stats.likesReceived
+          default:
+            return 0
         }
       })
       .slice(0, limit)
   }
 
   // 搜索功能
-  searchPosts(query: string, filters?: {
-    category?: PostCategory
-    type?: PostType
-    author?: string
-    tags?: string[]
-    dateRange?: { start: Date; end: Date }
-  }): CommunityPost[] {
+  searchPosts(
+    query: string,
+    filters?: {
+      category?: PostCategory
+      type?: PostType
+      author?: string
+      tags?: string[]
+      dateRange?: { start: Date; end: Date }
+    }
+  ): CommunityPost[] {
     let posts = Array.from(this.posts.values())
 
     // 文本搜索
     if (query) {
       const searchTerm = query.toLowerCase()
-      posts = posts.filter(post =>
-        post.title.toLowerCase().includes(searchTerm) ||
-        post.content.toLowerCase().includes(searchTerm) ||
-        post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      posts = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm) ||
+          post.content.toLowerCase().includes(searchTerm) ||
+          post.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
       )
     }
 
     // 应用过滤器
     if (filters) {
       if (filters.category) {
-        posts = posts.filter(p => p.category === filters.category)
+        posts = posts.filter((p) => p.category === filters.category)
       }
 
       if (filters.type) {
-        posts = posts.filter(p => p.type === filters.type)
+        posts = posts.filter((p) => p.type === filters.type)
       }
 
       if (filters.author) {
-        posts = posts.filter(p => p.author.id === filters.author)
+        posts = posts.filter((p) => p.author.id === filters.author)
       }
 
       if (filters.tags && filters.tags.length > 0) {
-        posts = posts.filter(p => filters.tags!.some(tag => p.tags.includes(tag)))
+        posts = posts.filter((p) => filters.tags!.some((tag) => p.tags.includes(tag)))
       }
 
       if (filters.dateRange) {
-        posts = posts.filter(p =>
-          p.createdAt >= filters.dateRange!.start &&
-          p.createdAt <= filters.dateRange!.end
+        posts = posts.filter(
+          (p) => p.createdAt >= filters.dateRange!.start && p.createdAt <= filters.dateRange!.end
         )
       }
     }
@@ -832,7 +882,7 @@ export class CommunityManager extends EventEmitter {
   // 获取用户帖子
   getUserPosts(userId: string): CommunityPost[] {
     return Array.from(this.posts.values())
-      .filter(post => post.author.id === userId)
+      .filter((post) => post.author.id === userId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
   }
 

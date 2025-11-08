@@ -6,7 +6,7 @@ import {
   MultimodalContent,
   MultimodalType,
   RenderOptions,
-  VideoContent
+  VideoContent,
 } from '../types'
 
 export class VideoRenderer implements MultimodalRenderer {
@@ -17,7 +17,13 @@ export class VideoRenderer implements MultimodalRenderer {
   async render(
     content: MultimodalContent,
     container: HTMLElement,
-    options: RenderOptions = { format: 'html', includeAssets: true, compressAssets: false, optimizeFor: 'web', quality: 'medium' }
+    options: RenderOptions = {
+      format: 'html',
+      includeAssets: true,
+      compressAssets: false,
+      optimizeFor: 'web',
+      quality: 'medium',
+    }
   ): Promise<void> {
     if (!content.video) {
       throw new Error('No video content to render')
@@ -67,11 +73,14 @@ export class VideoRenderer implements MultimodalRenderer {
       backgroundColor: '#000',
       boxShadow: options.optimizeFor === 'web' ? '0 2px 8px rgba(0,0,0,0.3)' : 'none',
       maxWidth: '800px',
-      margin: '0 auto'
+      margin: '0 auto',
     })
   }
 
-  private async createVideoPlayer(video: VideoContent, options: RenderOptions): Promise<HTMLElement> {
+  private async createVideoPlayer(
+    video: VideoContent,
+    options: RenderOptions
+  ): Promise<HTMLElement> {
     const playerContainer = document.createElement('div')
     playerContainer.className = 'video-player'
 
@@ -132,7 +141,8 @@ export class VideoRenderer implements MultimodalRenderer {
     // 全屏按钮
     const fullscreenButton = document.createElement('button')
     fullscreenButton.innerHTML = '⛶'
-    fullscreenButton.style.cssText = 'background: none; border: none; color: white; font-size: 16px;'
+    fullscreenButton.style.cssText =
+      'background: none; border: none; color: white; font-size: 16px;'
     fullscreenButton.onclick = () => this.toggleFullscreen(videoElement)
 
     controls.appendChild(playButton)

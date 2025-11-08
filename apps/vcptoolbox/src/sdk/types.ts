@@ -21,7 +21,7 @@ export type {
   PluginEvents,
   PluginStorage,
   PluginUI,
-  PluginLogger
+  PluginLogger,
 } from '../PluginFramework'
 
 // SDK特有的类型定义

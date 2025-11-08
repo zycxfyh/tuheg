@@ -129,7 +129,7 @@ export class PluginMarketManager extends EventEmitter {
     'ui-themes',
     'language-packs',
     'integrations',
-    'utilities'
+    'utilities',
   ]
 
   constructor() {
@@ -152,7 +152,7 @@ export class PluginMarketManager extends EventEmitter {
           email: 'contact@fantasy-master.com',
           verified: true,
           reputation: 4.8,
-          pluginsCount: 5
+          pluginsCount: 5,
         },
         category: 'world-building',
         tags: ['fantasy', 'magic', 'world-building', 'rpg'],
@@ -163,8 +163,8 @@ export class PluginMarketManager extends EventEmitter {
           trialDays: 7,
           features: {
             free: ['基础世界模板', '简单地理生成'],
-            premium: ['高级魔法体系', '自定义种族', '复杂地形', '天气系统']
-          }
+            premium: ['高级魔法体系', '自定义种族', '复杂地形', '天气系统'],
+          },
         },
         stats: {
           downloads: 1250,
@@ -172,37 +172,37 @@ export class PluginMarketManager extends EventEmitter {
           rating: 4.6,
           reviewCount: 89,
           revenue: 24500,
-          trending: true
+          trending: true,
         },
         reviews: [],
         media: [
           {
             type: 'image',
             url: '/plugins/fantasy-world-builder/screenshot1.jpg',
-            title: '魔法森林生成器界面'
+            title: '魔法森林生成器界面',
           },
           {
             type: 'video',
             url: '/plugins/fantasy-world-builder/demo.mp4',
             thumbnail: '/plugins/fantasy-world-builder/video-thumb.jpg',
-            title: '完整功能演示'
-          }
+            title: '完整功能演示',
+          },
         ],
         technical: {
           compatibility: {
             minVersion: '1.0.0',
-            platforms: ['web', 'desktop']
+            platforms: ['web', 'desktop'],
           },
           dependencies: [],
           permissions: ['world-building', 'file-system'],
           fileSize: 15.2,
           checksum: 'abc123...',
-          downloadUrl: '/downloads/plugins/fantasy-world-builder-1.2.0.zip'
+          downloadUrl: '/downloads/plugins/fantasy-world-builder-1.2.0.zip',
         },
         status: 'approved',
         createdAt: new Date('2024-10-01'),
         updatedAt: new Date('2024-11-01'),
-        publishedAt: new Date('2024-10-15')
+        publishedAt: new Date('2024-10-15'),
       },
       {
         id: 'character-relationship-mapper',
@@ -215,7 +215,7 @@ export class PluginMarketManager extends EventEmitter {
           email: 'tools@narrative-expert.com',
           verified: true,
           reputation: 4.9,
-          pluginsCount: 8
+          pluginsCount: 8,
         },
         category: 'character-creation',
         tags: ['character', 'relationships', 'visualization', 'network'],
@@ -225,8 +225,8 @@ export class PluginMarketManager extends EventEmitter {
           currency: 'CNY',
           features: {
             free: ['基础关系图', '最多5个角色'],
-            premium: ['无限角色', '关系分析', '导出功能', '协作编辑']
-          }
+            premium: ['无限角色', '关系分析', '导出功能', '协作编辑'],
+          },
         },
         stats: {
           downloads: 2100,
@@ -234,31 +234,31 @@ export class PluginMarketManager extends EventEmitter {
           rating: 4.8,
           reviewCount: 156,
           revenue: 18500,
-          trending: true
+          trending: true,
         },
         reviews: [],
         media: [
           {
             type: 'image',
             url: '/plugins/character-relationship-mapper/network-view.jpg',
-            title: '复杂关系网络视图'
-          }
+            title: '复杂关系网络视图',
+          },
         ],
         technical: {
           compatibility: {
             minVersion: '1.1.0',
-            platforms: ['web', 'desktop']
+            platforms: ['web', 'desktop'],
           },
           dependencies: ['character-interaction'],
           permissions: ['character-data', 'export'],
           fileSize: 8.7,
           checksum: 'def456...',
-          downloadUrl: '/downloads/plugins/character-relationship-mapper-2.1.0.zip'
+          downloadUrl: '/downloads/plugins/character-relationship-mapper-2.1.0.zip',
         },
         status: 'approved',
         createdAt: new Date('2024-09-15'),
         updatedAt: new Date('2024-10-20'),
-        publishedAt: new Date('2024-09-20')
+        publishedAt: new Date('2024-09-20'),
       },
       {
         id: 'dark-theme-pack',
@@ -271,12 +271,12 @@ export class PluginMarketManager extends EventEmitter {
           email: 'design@ui-studio.com',
           verified: false,
           reputation: 4.2,
-          pluginsCount: 3
+          pluginsCount: 3,
         },
         category: 'ui-themes',
         tags: ['theme', 'dark', 'ui', 'design'],
         pricing: {
-          model: 'free'
+          model: 'free',
         },
         stats: {
           downloads: 5200,
@@ -284,35 +284,35 @@ export class PluginMarketManager extends EventEmitter {
           rating: 4.4,
           reviewCount: 234,
           revenue: 0,
-          trending: false
+          trending: false,
         },
         reviews: [],
         media: [
           {
             type: 'image',
             url: '/plugins/dark-theme-pack/preview.jpg',
-            title: '深色主题预览'
-          }
+            title: '深色主题预览',
+          },
         ],
         technical: {
           compatibility: {
             minVersion: '1.0.0',
-            platforms: ['web']
+            platforms: ['web'],
           },
           dependencies: [],
           permissions: ['ui-customization'],
           fileSize: 2.1,
           checksum: 'ghi789...',
-          downloadUrl: '/downloads/plugins/dark-theme-pack-1.0.5.zip'
+          downloadUrl: '/downloads/plugins/dark-theme-pack-1.0.5.zip',
         },
         status: 'approved',
         createdAt: new Date('2024-08-01'),
         updatedAt: new Date('2024-09-01'),
-        publishedAt: new Date('2024-08-10')
-      }
+        publishedAt: new Date('2024-08-10'),
+      },
     ]
 
-    samplePlugins.forEach(plugin => this.plugins.set(plugin.id, plugin))
+    samplePlugins.forEach((plugin) => this.plugins.set(plugin.id, plugin))
   }
 
   // 获取所有插件
@@ -328,23 +328,24 @@ export class PluginMarketManager extends EventEmitter {
     // 应用过滤器
     if (filters) {
       if (filters.category) {
-        plugins = plugins.filter(p => p.category === filters.category)
+        plugins = plugins.filter((p) => p.category === filters.category)
       }
 
       if (filters.pricing) {
-        plugins = plugins.filter(p => p.pricing.model === filters.pricing)
+        plugins = plugins.filter((p) => p.pricing.model === filters.pricing)
       }
 
       if (filters.author) {
-        plugins = plugins.filter(p => p.author.id === filters.author)
+        plugins = plugins.filter((p) => p.author.id === filters.author)
       }
 
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase()
-        plugins = plugins.filter(p =>
-          p.name.toLowerCase().includes(searchTerm) ||
-          p.description.toLowerCase().includes(searchTerm) ||
-          p.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+        plugins = plugins.filter(
+          (p) =>
+            p.name.toLowerCase().includes(searchTerm) ||
+            p.description.toLowerCase().includes(searchTerm) ||
+            p.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
         )
       }
     }
@@ -376,7 +377,9 @@ export class PluginMarketManager extends EventEmitter {
   }
 
   // 提交插件
-  async submitPlugin(pluginData: Omit<Plugin, 'id' | 'stats' | 'reviews' | 'createdAt' | 'updatedAt'>): Promise<Plugin> {
+  async submitPlugin(
+    pluginData: Omit<Plugin, 'id' | 'stats' | 'reviews' | 'createdAt' | 'updatedAt'>
+  ): Promise<Plugin> {
     const plugin: Plugin = {
       ...pluginData,
       id: `plugin-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -386,12 +389,12 @@ export class PluginMarketManager extends EventEmitter {
         rating: 0,
         reviewCount: 0,
         revenue: 0,
-        trending: false
+        trending: false,
       },
       reviews: [],
       createdAt: new Date(),
       updatedAt: new Date(),
-      status: 'pending'
+      status: 'pending',
     }
 
     this.plugins.set(plugin.id, plugin)
@@ -454,9 +457,11 @@ export class PluginMarketManager extends EventEmitter {
       currency,
       status: 'completed',
       purchasedAt: new Date(),
-      expiresAt: purchaseType === 'subscription' ?
-        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : undefined,
-      licenseKey: this.generateLicenseKey()
+      expiresAt:
+        purchaseType === 'subscription'
+          ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          : undefined,
+      licenseKey: this.generateLicenseKey(),
     }
 
     // 更新插件统计
@@ -477,15 +482,19 @@ export class PluginMarketManager extends EventEmitter {
   // 检查用户是否拥有插件
   hasPluginAccess(userId: string, pluginId: string): boolean {
     const userPurchases = this.purchases.get(userId) || []
-    return userPurchases.some(purchase =>
-      purchase.pluginId === pluginId &&
-      purchase.status === 'completed' &&
-      (!purchase.expiresAt || purchase.expiresAt > new Date())
+    return userPurchases.some(
+      (purchase) =>
+        purchase.pluginId === pluginId &&
+        purchase.status === 'completed' &&
+        (!purchase.expiresAt || purchase.expiresAt > new Date())
     )
   }
 
   // 添加插件评价
-  addReview(pluginId: string, review: Omit<PluginReview, 'id' | 'helpful' | 'createdAt'>): PluginReview {
+  addReview(
+    pluginId: string,
+    review: Omit<PluginReview, 'id' | 'helpful' | 'createdAt'>
+  ): PluginReview {
     const plugin = this.plugins.get(pluginId)
     if (!plugin) throw new Error('Plugin not found')
 
@@ -493,7 +502,7 @@ export class PluginMarketManager extends EventEmitter {
       ...review,
       id: `review-${Date.now()}`,
       helpful: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
     plugin.reviews.push(newReview)
@@ -522,7 +531,7 @@ export class PluginMarketManager extends EventEmitter {
   // 获取热门插件
   getTrendingPlugins(limit = 10): Plugin[] {
     return Array.from(this.plugins.values())
-      .filter(p => p.status === 'approved')
+      .filter((p) => p.status === 'approved')
       .sort((a, b) => {
         // 综合评分：下载量 * 0.4 + 评分 * 0.3 + 是否热门 * 0.3
         const scoreA = a.stats.downloads * 0.4 + a.stats.rating * 0.3 + (a.stats.trending ? 10 : 0)
@@ -534,8 +543,7 @@ export class PluginMarketManager extends EventEmitter {
 
   // 获取作者插件
   getAuthorPlugins(authorId: string): Plugin[] {
-    return Array.from(this.plugins.values())
-      .filter(p => p.author.id === authorId)
+    return Array.from(this.plugins.values()).filter((p) => p.author.id === authorId)
   }
 
   // 获取插件分类
@@ -552,15 +560,17 @@ export class PluginMarketManager extends EventEmitter {
     averageRating: number
   } {
     const plugins = Array.from(this.plugins.values())
-    const approvedPlugins = plugins.filter(p => p.status === 'approved')
+    const approvedPlugins = plugins.filter((p) => p.status === 'approved')
 
     return {
       totalPlugins: plugins.length,
       totalDownloads: plugins.reduce((sum, p) => sum + p.stats.downloads, 0),
       totalRevenue: plugins.reduce((sum, p) => sum + p.stats.revenue, 0),
       activePlugins: approvedPlugins.length,
-      averageRating: approvedPlugins.length > 0 ?
-        approvedPlugins.reduce((sum, p) => sum + p.stats.rating, 0) / approvedPlugins.length : 0
+      averageRating:
+        approvedPlugins.length > 0
+          ? approvedPlugins.reduce((sum, p) => sum + p.stats.rating, 0) / approvedPlugins.length
+          : 0,
     }
   }
 
@@ -586,7 +596,7 @@ export class PluginMarketManager extends EventEmitter {
   async processRefund(purchaseId: string, reason: string): Promise<boolean> {
     // 查找购买记录
     for (const [userId, purchases] of this.purchases.entries()) {
-      const purchase = purchases.find(p => p.id === purchaseId)
+      const purchase = purchases.find((p) => p.id === purchaseId)
       if (purchase) {
         purchase.status = 'refunded'
 

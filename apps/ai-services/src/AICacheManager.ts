@@ -52,7 +52,7 @@ export class AICacheManager {
     evictions: 0,
     totalRequests: 0,
     semanticMatches: 0,
-    compressionSavings: 0
+    compressionSavings: 0,
   }
 
   constructor(config: Partial<CacheConfig> = {}) {
@@ -63,12 +63,12 @@ export class AICacheManager {
       semanticSimilarity: true,
       adaptiveTTL: true,
       storageBackend: 'memory',
-      ...config
+      ...config,
     }
 
     this.similarityConfig = {
       threshold: 0.85,
-      algorithm: 'cosine'
+      algorithm: 'cosine',
     }
 
     this.loadPersistedCache()
@@ -118,7 +118,7 @@ export class AICacheManager {
   private jaccardSimilarity(text1: string, text2: string): number {
     const set1 = new Set(text1.toLowerCase().split(/\s+/))
     const set2 = new Set(text2.toLowerCase().split(/\s+/))
-    const intersection = new Set([...set1].filter(x => set2.has(x)))
+    const intersection = new Set([...set1].filter((x) => set2.has(x)))
     const union = new Set([...set1, ...set2])
     return intersection.size / union.size
   }
@@ -137,7 +137,9 @@ export class AICacheManager {
 
   // 计算Levenshtein距离
   private levenshteinDistance(str1: string, str2: string): number {
-    const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null))
+    const matrix = Array(str2.length + 1)
+      .fill(null)
+      .map(() => Array(str1.length + 1).fill(null))
 
     for (let i = 0; i <= str1.length; i++) matrix[0][i] = i
     for (let j = 0; j <= str2.length; j++) matrix[j][0] = j
@@ -146,8 +148,8 @@ export class AICacheManager {
       for (let i = 1; i <= str1.length; i++) {
         const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1
         matrix[j][i] = Math.min(
-          matrix[j][i - 1] + 1,     // deletion
-          matrix[j - 1][i] + 1,     // insertion
+          matrix[j][i - 1] + 1, // deletion
+          matrix[j - 1][i] + 1, // insertion
           matrix[j - 1][i - 1] + indicator // substitution
         )
       }
@@ -163,13 +165,13 @@ export class AICacheManager {
 
     // 使用简单的词频向量
     const wordFreq: Record<string, number> = {}
-    words.forEach(word => {
+    words.forEach((word) => {
       wordFreq[word] = (wordFreq[word] || 0) + 1
     })
 
     // 转换为向量（这里使用固定词汇表的前100个词）
     const vocab = this.getVocabulary()
-    vocab.forEach(word => {
+    vocab.forEach((word) => {
       vector.push(wordFreq[word] || 0)
     })
 
@@ -197,10 +199,47 @@ export class AICacheManager {
   private getVocabulary(): string[] {
     // 在实际实现中，这应该从训练数据中提取
     return [
-      'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
-      'an', 'a', 'that', 'this', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
-      'world', 'story', 'character', 'plot', 'scene', 'dialogue', 'narrative', 'fiction',
-      'fantasy', 'magic', 'hero', 'villain', 'quest', 'adventure', 'kingdom', 'castle'
+      'the',
+      'and',
+      'or',
+      'but',
+      'in',
+      'on',
+      'at',
+      'to',
+      'for',
+      'of',
+      'with',
+      'by',
+      'an',
+      'a',
+      'that',
+      'this',
+      'these',
+      'those',
+      'i',
+      'you',
+      'he',
+      'she',
+      'it',
+      'we',
+      'they',
+      'world',
+      'story',
+      'character',
+      'plot',
+      'scene',
+      'dialogue',
+      'narrative',
+      'fiction',
+      'fantasy',
+      'magic',
+      'hero',
+      'villain',
+      'quest',
+      'adventure',
+      'kingdom',
+      'castle',
     ]
   }
 
@@ -296,8 +335,10 @@ export class AICacheManager {
       metadata: {
         requestType,
         promptHash,
-        contextHash: context ? createHash('md5').update(JSON.stringify(context)).digest('hex') : undefined
-      }
+        contextHash: context
+          ? createHash('md5').update(JSON.stringify(context)).digest('hex')
+          : undefined,
+      },
     }
 
     // 检查缓存大小限制
@@ -358,7 +399,7 @@ export class AICacheManager {
       }
     }
 
-    expiredKeys.forEach(key => {
+    expiredKeys.forEach((key) => {
       this.cache.delete(key)
       this.stats.evictions++
     })
@@ -366,9 +407,12 @@ export class AICacheManager {
 
   // 启动清理定时器
   private startCleanupTimer(): void {
-    setInterval(() => {
-      this.cleanup()
-    }, 60 * 60 * 1000) // 每小时清理一次
+    setInterval(
+      () => {
+        this.cleanup()
+      },
+      60 * 60 * 1000
+    ) // 每小时清理一次
   }
 
   // 持久化缓存
@@ -379,7 +423,7 @@ export class AICacheManager {
       const cacheData = {
         entries: Array.from(this.cache.entries()),
         stats: this.stats,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }
 
       if (this.config.storageBackend === 'redis') {
@@ -422,15 +466,15 @@ export class AICacheManager {
 
   // 获取缓存统计
   getStats() {
-    const hitRate = this.stats.totalRequests > 0 ?
-      (this.stats.hits / this.stats.totalRequests) * 100 : 0
+    const hitRate =
+      this.stats.totalRequests > 0 ? (this.stats.hits / this.stats.totalRequests) * 100 : 0
 
     return {
       ...this.stats,
       hitRate: Math.round(hitRate * 100) / 100,
       size: this.cache.size,
       maxSize: this.config.maxSize,
-      semanticMatches: this.stats.semanticMatches
+      semanticMatches: this.stats.semanticMatches,
     }
   }
 
@@ -443,7 +487,7 @@ export class AICacheManager {
       evictions: 0,
       totalRequests: 0,
       semanticMatches: 0,
-      compressionSavings: 0
+      compressionSavings: 0,
     }
     this.persistCache()
   }
@@ -464,5 +508,5 @@ export const aiCacheManager = new AICacheManager({
   maxSize: 5000,
   defaultTTL: 7 * 24 * 60 * 60 * 1000, // 7天
   semanticSimilarity: true,
-  adaptiveTTL: true
+  adaptiveTTL: true,
 })

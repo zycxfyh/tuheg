@@ -7,26 +7,26 @@ import { EventEmitter } from 'events'
 // 插件类型定义 - VCP六大插件协议 + AI叙事专用类型
 export type PluginType =
   // VCP六大基础协议
-  | 'static'              // 静态插件：实时世界知识注入
+  | 'static' // 静态插件：实时世界知识注入
   | 'messagePreprocessor' // 消息预处理器：多模态输入处理
-  | 'synchronous'         // 同步插件：快速任务执行
-  | 'asynchronous'        // 异步插件：耗时任务并行处理
-  | 'service'             // 服务插件：后台持续服务
-  | 'dynamic'             // 动态插件：AI自主学习和创造
+  | 'synchronous' // 同步插件：快速任务执行
+  | 'asynchronous' // 异步插件：耗时任务并行处理
+  | 'service' // 服务插件：后台持续服务
+  | 'dynamic' // 动态插件：AI自主学习和创造
 
   // AI叙事专用插件类型
-  | 'story-generator'      // 故事生成器
-  | 'character-creator'    // 角色创建器
-  | 'world-builder'        // 世界构建器
-  | 'narrative-logic'      // 叙事逻辑
-  | 'dialogue-system'      // 对话系统
-  | 'plot-engine'          // 情节引擎
-  | 'style-template'       // 风格模板
-  | 'export-format'        // 导出格式
-  | 'ui-theme'            // UI主题
-  | 'localization'        // 本地化
-  | 'analytics'           // 分析工具
-  | 'integration'         // 第三方集成
+  | 'story-generator' // 故事生成器
+  | 'character-creator' // 角色创建器
+  | 'world-builder' // 世界构建器
+  | 'narrative-logic' // 叙事逻辑
+  | 'dialogue-system' // 对话系统
+  | 'plot-engine' // 情节引擎
+  | 'style-template' // 风格模板
+  | 'export-format' // 导出格式
+  | 'ui-theme' // UI主题
+  | 'localization' // 本地化
+  | 'analytics' // 分析工具
+  | 'integration' // 第三方集成
 
 // 插件接口定义
 export interface VCPPlugin {
@@ -498,7 +498,7 @@ export class PluginManager extends EventEmitter {
     // 创建运行时状态
     const runtime: PluginRuntime = {
       id: plugin.id,
-      status: 'inactive'
+      status: 'inactive',
     }
     this.runtimes.set(plugin.id, runtime)
 
@@ -554,7 +554,6 @@ export class PluginManager extends EventEmitter {
       runtime.activatedAt = new Date()
 
       this.emit('pluginActivated', { plugin, context })
-
     } catch (error) {
       runtime.status = 'error'
       runtime.error = error instanceof Error ? error.message : String(error)
@@ -583,7 +582,6 @@ export class PluginManager extends EventEmitter {
       runtime.deactivatedAt = new Date()
 
       this.emit('pluginDeactivated', plugin)
-
     } catch (error) {
       runtime.status = 'error'
       runtime.error = error instanceof Error ? error.message : String(error)
@@ -603,7 +601,7 @@ export class PluginManager extends EventEmitter {
 
   // 获取活跃插件
   getActivePlugins(): VCPPlugin[] {
-    return Array.from(this.plugins.values()).filter(plugin => {
+    return Array.from(this.plugins.values()).filter((plugin) => {
       const runtime = this.runtimes.get(plugin.id)
       return runtime?.status === 'active'
     })
@@ -647,7 +645,7 @@ export class PluginManager extends EventEmitter {
       storage: this.createPluginStorage(plugin),
       ui: this.createPluginUI(plugin),
       logger: this.createPluginLogger(plugin),
-      vcp: this.createVCPProtocolAPI(plugin)
+      vcp: this.createVCPProtocolAPI(plugin),
     }
 
     return context
@@ -661,34 +659,34 @@ export class PluginManager extends EventEmitter {
         update: async (id, data) => {},
         get: async (id) => ({}),
         list: async (filters) => [],
-        delete: async (id) => {}
+        delete: async (id) => {},
       },
       characters: {
         create: async (data) => `character-${Date.now()}`,
         update: async (id, data) => {},
         get: async (id) => ({}),
         list: async (filters) => [],
-        delete: async (id) => {}
+        delete: async (id) => {},
       },
       worlds: {
         create: async (data) => `world-${Date.now()}`,
         update: async (id, data) => {},
         get: async (id) => ({}),
         list: async (filters) => [],
-        delete: async (id) => {}
+        delete: async (id) => {},
       },
       ai: {
         generateStory: async (prompt, options) => `Generated story for: ${prompt}`,
         generateCharacter: async (traits, options) => ({}),
         generateWorld: async (theme, options) => ({}),
-        analyzeText: async (text, type) => ({})
+        analyzeText: async (text, type) => ({}),
       },
       utils: {
         validateJSON: (data) => true,
         sanitizeHTML: (html) => html,
         generateUUID: () => `uuid-${Date.now()}`,
-        formatDate: (date, format) => date.toISOString()
-      }
+        formatDate: (date, format) => date.toISOString(),
+      },
     }
   }
 
@@ -702,13 +700,13 @@ export class PluginManager extends EventEmitter {
         console.log(`VCP Tool Call: ${toolRequest.toolName}`, toolRequest.parameters)
 
         // 模拟工具执行
-        await new Promise(resolve => setTimeout(resolve, 100))
+        await new Promise((resolve) => setTimeout(resolve, 100))
 
         return {
           success: true,
           result: `Tool ${toolRequest.toolName} executed`,
           executionTime: 100,
-          toolName: toolRequest.toolName
+          toolName: toolRequest.toolName,
         }
       },
 
@@ -729,7 +727,7 @@ export class PluginManager extends EventEmitter {
         search: async (agentId, keywords) => {
           // 模拟记忆搜索
           return []
-        }
+        },
       },
 
       files: {
@@ -739,7 +737,7 @@ export class PluginManager extends EventEmitter {
             filename: file.name,
             size: file.size,
             type: file.type,
-            url: `/files/${file.name}`
+            url: `/files/${file.name}`,
           }
           return handle
         },
@@ -751,7 +749,7 @@ export class PluginManager extends EventEmitter {
             size: 1024,
             type: 'application/octet-stream',
             url: `/files/${handle}`,
-            data: Buffer.from('file content')
+            data: Buffer.from('file content'),
           }
         },
         get: async (handle) => {
@@ -762,13 +760,13 @@ export class PluginManager extends EventEmitter {
             size: 1024,
             type: 'application/octet-stream',
             url: `/files/${handle}`,
-            data: Buffer.from('file content')
+            data: Buffer.from('file content'),
           }
         },
         list: async (query) => {
           // 模拟文件列表
           return []
-        }
+        },
       },
 
       push: (clientId, data, type) => {
@@ -791,8 +789,8 @@ export class PluginManager extends EventEmitter {
         },
         callback: async (taskId, result) => {
           console.log(`Async task ${taskId} callback:`, result)
-        }
-      }
+        },
+      },
     }
   }
 
@@ -804,7 +802,7 @@ export class PluginManager extends EventEmitter {
       update: (updates) => {},
       reset: () => {},
       export: () => ({}),
-      import: (config) => {}
+      import: (config) => {},
     }
   }
 
@@ -813,7 +811,7 @@ export class PluginManager extends EventEmitter {
       emit: (event, data) => this.emit(event, { pluginId: plugin.id, data }),
       on: (event, handler) => {},
       off: (event, handler) => {},
-      once: (event, handler) => {}
+      once: (event, handler) => {},
     }
   }
 
@@ -825,7 +823,7 @@ export class PluginManager extends EventEmitter {
       clear: () => {},
       keys: () => [],
       export: () => ({}),
-      import: (data) => {}
+      import: (data) => {},
     }
   }
 
@@ -838,7 +836,7 @@ export class PluginManager extends EventEmitter {
       addToolbarButton: (button) => {},
       removeToolbarButton: (buttonId) => {},
       showModal: (modal) => {},
-      showNotification: (notification) => {}
+      showNotification: (notification) => {},
     }
   }
 
@@ -847,16 +845,12 @@ export class PluginManager extends EventEmitter {
       debug: (message, meta) => console.debug(`[${plugin.id}] ${message}`, meta),
       info: (message, meta) => console.info(`[${plugin.id}] ${message}`, meta),
       warn: (message, meta) => console.warn(`[${plugin.id}] ${message}`, meta),
-      error: (message, meta) => console.error(`[${plugin.id}] ${message}`, meta)
+      error: (message, meta) => console.error(`[${plugin.id}] ${message}`, meta),
     }
   }
 
   // 执行插件方法
-  async executePluginMethod<T>(
-    pluginId: string,
-    method: string,
-    ...args: any[]
-  ): Promise<T> {
+  async executePluginMethod<T>(pluginId: string, method: string, ...args: any[]): Promise<T> {
     const context = this.contexts.get(pluginId)
     if (!context) {
       throw new Error(`Plugin ${pluginId} context not found`)

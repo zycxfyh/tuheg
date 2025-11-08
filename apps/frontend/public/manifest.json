@@ -1,0 +1,169 @@
+{
+  "name": "创世星环 - AI叙事创作平台",
+  "short_name": "创世星环",
+  "description": "AI驱动的多Agent协作叙事创作平台，开启全模态沉浸式创作新时代",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["productivity", "entertainment", "education"],
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "创世星环主界面"
+    },
+    {
+      "src": "/screenshots/narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "移动端叙事编辑器"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新建叙事",
+      "short_name": "新建",
+      "description": "创建新的AI叙事",
+      "url": "/#/editor/new",
+      "icons": [
+        {
+          "src": "/icons/shortcut-new.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "我的叙事",
+      "short_name": "我的",
+      "description": "查看我的叙事作品",
+      "url": "/#/library",
+      "icons": [
+        {
+          "src": "/icons/shortcut-library.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "插件市场",
+      "short_name": "插件",
+      "description": "浏览和安装插件",
+      "url": "/#/marketplace",
+      "icons": [
+        {
+          "src": "/icons/shortcut-market.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.creationring.app",
+      "id": "com.creationring.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/creation-ring/id123456789"
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "file_handlers": [
+    {
+      "action": "/#/editor/import",
+      "accept": {
+        "application/json": [".crn"],
+        "text/markdown": [".md"],
+        "application/zip": [".zip"]
+      },
+      "icons": [
+        {
+          "src": "/icons/file-handler.png",
+          "sizes": "256x256"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ],
+  "share_target": {
+    "action": "/#/editor/import",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "files",
+          "accept": ["text/*", "image/*", ".crn", ".md"]
+        }
+      ]
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+creationring",
+      "url": "/#/handle/%s"
+    }
+  ]
+}

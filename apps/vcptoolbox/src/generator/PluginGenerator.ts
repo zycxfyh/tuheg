@@ -64,37 +64,36 @@ export class PluginGenerator {
       type: 'story-generator',
       category: '故事创作',
       complexity: 'beginner',
-      features: [
-        '自定义故事提示',
-        '基础故事结构',
-        '简单文本生成',
-        '配置界面'
-      ],
+      features: ['自定义故事提示', '基础故事结构', '简单文本生成', '配置界面'],
       files: [
         {
           path: 'src/index.ts',
-          content: this.getStoryGeneratorTemplate()
+          content: this.getStoryGeneratorTemplate(),
         },
         {
           path: 'src/types.ts',
-          content: this.getStoryTypesTemplate()
+          content: this.getStoryTypesTemplate(),
         },
         {
           path: 'src/config.ts',
-          content: this.getConfigTemplate()
+          content: this.getConfigTemplate(),
         },
         {
           path: 'package.json',
-          content: this.getPackageTemplate('story-generator-basic')
+          content: this.getPackageTemplate('story-generator-basic'),
         },
         {
           path: 'vcptoolbox.json',
-          content: this.getManifestTemplate('story-generator-basic', '基础故事生成器', 'story-generator')
+          content: this.getManifestTemplate(
+            'story-generator-basic',
+            '基础故事生成器',
+            'story-generator'
+          ),
         },
         {
           path: 'README.md',
-          content: this.getReadmeTemplate('基础故事生成器')
-        }
+          content: this.getReadmeTemplate('基础故事生成器'),
+        },
       ],
       dependencies: ['@vcptoolbox/core'],
       configuration: {
@@ -104,45 +103,45 @@ export class PluginGenerator {
             type: 'input',
             message: '插件名称',
             default: 'My Story Generator',
-            required: true
+            required: true,
           },
           {
             id: 'description',
             type: 'input',
             message: '插件描述',
             default: 'A custom story generator plugin',
-            required: true
+            required: true,
           },
           {
             id: 'author',
             type: 'input',
             message: '作者名称',
-            required: true
+            required: true,
           },
           {
             id: 'genres',
             type: 'multiselect',
             message: '支持的故事类型',
             choices: ['fantasy', 'sci-fi', 'mystery', 'romance', 'horror', 'adventure'],
-            default: ['fantasy']
-          }
+            default: ['fantasy'],
+          },
         ],
         variables: {
-          currentYear: new Date().getFullYear()
+          currentYear: new Date().getFullYear(),
         },
         validation: [
           {
             field: 'pluginName',
             rule: 'required',
-            message: '插件名称不能为空'
+            message: '插件名称不能为空',
           },
           {
             field: 'author',
             rule: 'required',
-            message: '作者名称不能为空'
-          }
-        ]
-      }
+            message: '作者名称不能为空',
+          },
+        ],
+      },
     })
 
     // 角色创建器模板
@@ -159,33 +158,37 @@ export class PluginGenerator {
         '关系网络映射',
         '视觉描述生成',
         '语音特征定义',
-        '自定义属性系统'
+        '自定义属性系统',
       ],
       files: [
         {
           path: 'src/index.ts',
-          content: this.getCharacterCreatorTemplate()
+          content: this.getCharacterCreatorTemplate(),
         },
         {
           path: 'src/character-engine.ts',
-          content: this.getCharacterEngineTemplate()
+          content: this.getCharacterEngineTemplate(),
         },
         {
           path: 'src/ui/components/CharacterForm.vue',
-          content: this.getCharacterFormTemplate()
+          content: this.getCharacterFormTemplate(),
         },
         {
           path: 'src/ui/components/CharacterPreview.vue',
-          content: this.getCharacterPreviewTemplate()
+          content: this.getCharacterPreviewTemplate(),
         },
         {
           path: 'package.json',
-          content: this.getPackageTemplate('character-creator-advanced')
+          content: this.getPackageTemplate('character-creator-advanced'),
         },
         {
           path: 'vcptoolbox.json',
-          content: this.getManifestTemplate('character-creator-advanced', '高级角色创建器', 'character-creator')
-        }
+          content: this.getManifestTemplate(
+            'character-creator-advanced',
+            '高级角色创建器',
+            'character-creator'
+          ),
+        },
       ],
       dependencies: ['@vcptoolbox/core', '@vcptoolbox/ui', 'vue'],
       configuration: {
@@ -195,30 +198,30 @@ export class PluginGenerator {
             type: 'input',
             message: '插件名称',
             default: 'Advanced Character Creator',
-            required: true
+            required: true,
           },
           {
             id: 'includeVisual',
             type: 'confirm',
             message: '是否包含视觉描述功能',
-            default: true
+            default: true,
           },
           {
             id: 'includeVoice',
             type: 'confirm',
             message: '是否包含语音特征功能',
-            default: false
+            default: false,
           },
           {
             id: 'customTraits',
             type: 'input',
             message: '自定义性格特征 (用逗号分隔)',
-            default: '勇敢,智慧,善良'
-          }
+            default: '勇敢,智慧,善良',
+          },
         ],
         variables: {},
-        validation: []
-      }
+        validation: [],
+      },
     })
 
     // 世界构建器模板
@@ -236,41 +239,45 @@ export class PluginGenerator {
         '历史事件线',
         '规则系统定义',
         '可视化编辑器',
-        '导出多种格式'
+        '导出多种格式',
       ],
       files: [
         {
           path: 'src/index.ts',
-          content: this.getWorldBuilderTemplate()
+          content: this.getWorldBuilderTemplate(),
         },
         {
           path: 'src/world-engine.ts',
-          content: this.getWorldEngineTemplate()
+          content: this.getWorldEngineTemplate(),
         },
         {
           path: 'src/generators/geography.ts',
-          content: this.getGeographyGeneratorTemplate()
+          content: this.getGeographyGeneratorTemplate(),
         },
         {
           path: 'src/generators/culture.ts',
-          content: this.getCultureGeneratorTemplate()
+          content: this.getCultureGeneratorTemplate(),
         },
         {
           path: 'src/ui/WorldEditor.vue',
-          content: this.getWorldEditorTemplate()
+          content: this.getWorldEditorTemplate(),
         },
         {
           path: 'src/exporters/index.ts',
-          content: this.getExporterTemplate()
+          content: this.getExporterTemplate(),
         },
         {
           path: 'package.json',
-          content: this.getPackageTemplate('world-builder-comprehensive')
+          content: this.getPackageTemplate('world-builder-comprehensive'),
         },
         {
           path: 'vcptoolbox.json',
-          content: this.getManifestTemplate('world-builder-comprehensive', '综合世界构建器', 'world-builder')
-        }
+          content: this.getManifestTemplate(
+            'world-builder-comprehensive',
+            '综合世界构建器',
+            'world-builder'
+          ),
+        },
       ],
       dependencies: ['@vcptoolbox/core', '@vcptoolbox/ui', 'vue', 'd3'],
       configuration: {
@@ -280,26 +287,26 @@ export class PluginGenerator {
             type: 'input',
             message: '插件名称',
             default: 'Comprehensive World Builder',
-            required: true
+            required: true,
           },
           {
             id: 'worldTypes',
             type: 'multiselect',
             message: '支持的世界类型',
             choices: ['fantasy', 'sci-fi', 'historical', 'modern', 'post-apocalyptic'],
-            default: ['fantasy', 'sci-fi']
+            default: ['fantasy', 'sci-fi'],
           },
           {
             id: 'maxContinents',
             type: 'input',
             message: '最大大陆数量',
             default: '5',
-            validate: (value) => parseInt(value) > 0 && parseInt(value) <= 10
-          }
+            validate: (value) => parseInt(value) > 0 && parseInt(value) <= 10,
+          },
         ],
         variables: {},
-        validation: []
-      }
+        validation: [],
+      },
     })
 
     // UI主题模板
@@ -310,38 +317,32 @@ export class PluginGenerator {
       type: 'ui-theme',
       category: '界面定制',
       complexity: 'beginner',
-      features: [
-        '自定义颜色方案',
-        '字体选择',
-        '布局调整',
-        '动画效果',
-        '主题切换'
-      ],
+      features: ['自定义颜色方案', '字体选择', '布局调整', '动画效果', '主题切换'],
       files: [
         {
           path: 'src/index.ts',
-          content: this.getUIThemeTemplate()
+          content: this.getUIThemeTemplate(),
         },
         {
           path: 'src/themes/default.ts',
-          content: this.getDefaultThemeTemplate()
+          content: this.getDefaultThemeTemplate(),
         },
         {
           path: 'src/themes/dark.ts',
-          content: this.getDarkThemeTemplate()
+          content: this.getDarkThemeTemplate(),
         },
         {
           path: 'assets/styles/theme.css',
-          content: this.getThemeCSSTemplate()
+          content: this.getThemeCSSTemplate(),
         },
         {
           path: 'package.json',
-          content: this.getPackageTemplate('ui-theme-custom')
+          content: this.getPackageTemplate('ui-theme-custom'),
         },
         {
           path: 'vcptoolbox.json',
-          content: this.getManifestTemplate('ui-theme-custom', '自定义UI主题', 'ui-theme')
-        }
+          content: this.getManifestTemplate('ui-theme-custom', '自定义UI主题', 'ui-theme'),
+        },
       ],
       dependencies: ['@vcptoolbox/core', '@vcptoolbox/ui'],
       configuration: {
@@ -351,24 +352,24 @@ export class PluginGenerator {
             type: 'input',
             message: '主题名称',
             default: 'My Custom Theme',
-            required: true
+            required: true,
           },
           {
             id: 'primaryColor',
             type: 'input',
             message: '主色调 (HEX)',
-            default: '#667eea'
+            default: '#667eea',
           },
           {
             id: 'includeDarkMode',
             type: 'confirm',
             message: '是否包含暗色模式',
-            default: true
-          }
+            default: true,
+          },
         ],
         variables: {},
-        validation: []
-      }
+        validation: [],
+      },
     })
   }
 
@@ -379,7 +380,7 @@ export class PluginGenerator {
 
   // 根据类型获取模板
   getTemplatesByType(type: PluginType): PluginTemplate[] {
-    return Array.from(this.templates.values()).filter(template => template.type === type)
+    return Array.from(this.templates.values()).filter((template) => template.type === type)
   }
 
   // 获取单个模板
@@ -406,7 +407,7 @@ export class PluginGenerator {
       ...template.configuration.variables,
       ...config,
       timestamp: new Date().toISOString(),
-      templateId
+      templateId,
     }
 
     // 确保目标目录存在
@@ -476,7 +477,7 @@ dist/
     await fs.promises.writeFile(path.join(targetPath, '.gitignore'), gitignore)
 
     // 生成 tsconfig.json（如果需要）
-    if (template.files.some(f => f.path.endsWith('.ts'))) {
+    if (template.files.some((f) => f.path.endsWith('.ts'))) {
       const tsconfig = `{
   "compilerOptions": {
     "target": "ES2020",
@@ -510,13 +511,13 @@ dist/
   }
 
   // 获取模板预览
-  getTemplatePreview(templateId: string): { files: string[], features: string[] } | null {
+  getTemplatePreview(templateId: string): { files: string[]; features: string[] } | null {
     const template = this.templates.get(templateId)
     if (!template) return null
 
     return {
-      files: template.files.map(f => f.path),
-      features: template.features
+      files: template.files.map((f) => f.path),
+      features: template.features,
     }
   }
 
@@ -1012,17 +1013,39 @@ MIT License
   }
 
   // 其他模板方法（简化版）
-  private getCharacterEngineTemplate(): string { return '// Character engine implementation' }
-  private getCharacterFormTemplate(): string { return '<template><div>Character Form</div></template>' }
-  private getCharacterPreviewTemplate(): string { return '<template><div>Character Preview</div></template>' }
-  private getWorldEngineTemplate(): string { return '// World engine implementation' }
-  private getGeographyGeneratorTemplate(): string { return '// Geography generator' }
-  private getCultureGeneratorTemplate(): string { return '// Culture generator' }
-  private getWorldEditorTemplate(): string { return '<template><div>World Editor</div></template>' }
-  private getExporterTemplate(): string { return '// Exporter implementation' }
-  private getDefaultThemeTemplate(): string { return 'export const defaultTheme = {}' }
-  private getDarkThemeTemplate(): string { return 'export const darkTheme = {}' }
-  private getThemeCSSTemplate(): string { return '/* Theme styles */' }
+  private getCharacterEngineTemplate(): string {
+    return '// Character engine implementation'
+  }
+  private getCharacterFormTemplate(): string {
+    return '<template><div>Character Form</div></template>'
+  }
+  private getCharacterPreviewTemplate(): string {
+    return '<template><div>Character Preview</div></template>'
+  }
+  private getWorldEngineTemplate(): string {
+    return '// World engine implementation'
+  }
+  private getGeographyGeneratorTemplate(): string {
+    return '// Geography generator'
+  }
+  private getCultureGeneratorTemplate(): string {
+    return '// Culture generator'
+  }
+  private getWorldEditorTemplate(): string {
+    return '<template><div>World Editor</div></template>'
+  }
+  private getExporterTemplate(): string {
+    return '// Exporter implementation'
+  }
+  private getDefaultThemeTemplate(): string {
+    return 'export const defaultTheme = {}'
+  }
+  private getDarkThemeTemplate(): string {
+    return 'export const darkTheme = {}'
+  }
+  private getThemeCSSTemplate(): string {
+    return '/* Theme styles */'
+  }
 }
 
 // 创建单例实例

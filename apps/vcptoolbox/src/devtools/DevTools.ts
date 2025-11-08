@@ -111,7 +111,7 @@ export class DevTools extends EventEmitter {
       errorTracking: true,
       hotReload: false,
       breakpoints: false,
-      ...config
+      ...config,
     }
   }
 
@@ -134,9 +134,9 @@ export class DevTools extends EventEmitter {
         memoryUsage: 0,
         apiCalls: 0,
         averageResponseTime: 0,
-        errorRate: 0
+        errorRate: 0,
       },
-      errors: []
+      errors: [],
     }
 
     this.sessions.set(sessionId, session)
@@ -164,7 +164,7 @@ export class DevTools extends EventEmitter {
       timestamp: new Date(),
       level,
       message,
-      context
+      context,
     }
 
     session.logs.push(log)
@@ -186,7 +186,7 @@ export class DevTools extends EventEmitter {
     const bp: Breakpoint = {
       id: `bp-${Date.now()}`,
       hitCount: 0,
-      ...breakpoint
+      ...breakpoint,
     }
 
     session.breakpoints.push(bp)
@@ -205,7 +205,7 @@ export class DevTools extends EventEmitter {
     const session = this.sessions.get(sessionId)
     if (!session) return false
 
-    const index = session.breakpoints.findIndex(bp => bp.id === breakpointId)
+    const index = session.breakpoints.findIndex((bp) => bp.id === breakpointId)
     if (index === -1) return false
 
     const breakpoint = session.breakpoints[index]
@@ -213,7 +213,7 @@ export class DevTools extends EventEmitter {
 
     // 从插件级别断点中移除
     const pluginBreakpoints = this.activeBreakpoints.get(session.pluginId) || []
-    const pluginIndex = pluginBreakpoints.findIndex(bp => bp.id === breakpointId)
+    const pluginIndex = pluginBreakpoints.findIndex((bp) => bp.id === breakpointId)
     if (pluginIndex !== -1) {
       pluginBreakpoints.splice(pluginIndex, 1)
     }
@@ -268,7 +268,12 @@ export class DevTools extends EventEmitter {
   }
 
   // 错误跟踪
-  trackError(sessionId: string, error: Error, context: any, severity: ErrorEvent['severity'] = 'medium'): void {
+  trackError(
+    sessionId: string,
+    error: Error,
+    context: any,
+    severity: ErrorEvent['severity'] = 'medium'
+  ): void {
     if (!this.config.errorTracking) return
 
     const session = this.sessions.get(sessionId)
@@ -280,7 +285,7 @@ export class DevTools extends EventEmitter {
       error,
       context,
       pluginId: session.pluginId,
-      severity
+      severity,
     }
 
     session.errors.push(errorEvent)
@@ -331,13 +336,12 @@ export class DevTools extends EventEmitter {
       this.emit('testCompleted', { testId, result })
 
       return result
-
     } catch (error) {
       const result: TestResult = {
         passed: false,
         duration: Date.now() - startTime,
         assertions: [],
-        errors: [error instanceof Error ? error : new Error(String(error))]
+        errors: [error instanceof Error ? error : new Error(String(error))],
       }
 
       this.emit('testFailed', { testId, result })
@@ -350,8 +354,7 @@ export class DevTools extends EventEmitter {
   }
 
   async runPluginTests(pluginId: string): Promise<Map<string, TestResult>> {
-    const pluginTests = Array.from(this.tests.values())
-      .filter(test => test.pluginId === pluginId)
+    const pluginTests = Array.from(this.tests.values()).filter((test) => test.pluginId === pluginId)
 
     const results = new Map<string, TestResult>()
 
@@ -384,18 +387,20 @@ export class DevTools extends EventEmitter {
         return {
           passed: true,
           duration: 0,
-          assertions: [{
-            description: '插件初始化成功',
-            passed: true,
-            expected: true,
-            actual: true
-          }],
-          errors: []
+          assertions: [
+            {
+              description: '插件初始化成功',
+              passed: true,
+              expected: true,
+              actual: true,
+            },
+          ],
+          errors: [],
         }
       },
       teardown: async () => {
         // 清理测试环境
-      }
+      },
     })
 
     // API调用测试
@@ -411,23 +416,28 @@ export class DevTools extends EventEmitter {
         return {
           passed: true,
           duration: 0,
-          assertions: [{
-            description: 'API调用成功',
-            passed: true,
-            expected: 'success',
-            actual: 'success'
-          }],
-          errors: []
+          assertions: [
+            {
+              description: 'API调用成功',
+              passed: true,
+              expected: 'success',
+              actual: 'success',
+            },
+          ],
+          errors: [],
         }
       },
-      teardown: async () => {}
+      teardown: async () => {},
     })
 
     return tests
   }
 
   // 代码分析工具
-  analyzePluginCode(pluginId: string, code: string): {
+  analyzePluginCode(
+    pluginId: string,
+    code: string
+  ): {
     complexity: number
     maintainability: number
     testCoverage: number
@@ -452,7 +462,7 @@ export class DevTools extends EventEmitter {
         type: 'warning',
         message: '发现console.log调用，建议在生产环境中移除',
         line: code.indexOf('console.log'),
-        severity: 'low'
+        severity: 'low',
       })
     }
 
@@ -461,7 +471,7 @@ export class DevTools extends EventEmitter {
         type: 'info',
         message: '使用了any类型，考虑使用更具体的类型',
         line: code.indexOf('any'),
-        severity: 'medium'
+        severity: 'medium',
       })
     }
 
@@ -469,7 +479,7 @@ export class DevTools extends EventEmitter {
       complexity,
       maintainability,
       testCoverage: 0, // 需要实际测试覆盖率数据
-      issues
+      issues,
     }
   }
 
@@ -528,7 +538,7 @@ export class ${name}Plugin implements VCPPlugin {
 
   // 实现插件接口...
 }
-`
+`,
     }
 
     return templates[type as keyof typeof templates] || templates['story-generator']
@@ -550,7 +560,7 @@ export class ${name}Plugin implements VCPPlugin {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     }
   }
 
@@ -569,12 +579,14 @@ ${plugin.description}
 
 ## 功能特性
 
-${Object.entries(plugin.capabilities).map(([key, value]) => {
-  if (typeof value === 'object' && value !== null) {
-    return `- ${key}: ${JSON.stringify(value, null, 2)}`
-  }
-  return `- ${key}: ${value}`
-}).join('\n')}
+${Object.entries(plugin.capabilities)
+  .map(([key, value]) => {
+    if (typeof value === 'object' && value !== null) {
+      return `- ${key}: ${JSON.stringify(value, null, 2)}`
+    }
+    return `- ${key}: ${value}`
+  })
+  .join('\n')}
 
 ## 兼容性
 
@@ -595,5 +607,5 @@ export const devTools = new DevTools({
   performanceMonitoring: true,
   errorTracking: true,
   hotReload: false,
-  breakpoints: false
+  breakpoints: false,
 })

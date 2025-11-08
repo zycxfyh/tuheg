@@ -35,17 +35,12 @@ export class TestFramework {
 
   // 运行插件测试
   async runTests(plugin: VCPPlugin, options: any = {}): Promise<any> {
-    const {
-      unit = true,
-      integration = false,
-      performance = false,
-      coverage = false
-    } = options
+    const { unit = true, integration = false, performance = false, coverage = false } = options
 
     const results: any = {
       pluginId: plugin.id,
       timestamp: new Date(),
-      tests: []
+      tests: [],
     }
 
     if (unit) {
@@ -98,7 +93,7 @@ export class TestFramework {
         test: async (context) => {
           await plugin.activate(context)
           // 验证插件是否正确激活
-        }
+        },
       },
       {
         name: 'Plugin Deactivation',
@@ -106,7 +101,7 @@ export class TestFramework {
           if (plugin.deactivate) {
             await plugin.deactivate()
           }
-        }
+        },
       },
       {
         name: 'VCP Protocol Integration',
@@ -114,13 +109,13 @@ export class TestFramework {
           // 测试VCP协议集成
           const result = await context.vcp.callTool({
             toolName: 'test-tool',
-            parameters: { test: true }
+            parameters: { test: true },
           })
           if (!result.success) {
             throw new Error('VCP protocol integration failed')
           }
-        }
-      }
+        },
+      },
     ]
 
     const results: TestResult[] = []
@@ -149,7 +144,7 @@ export class TestFramework {
     for (let i = 0; i < iterations; i++) {
       await context.vcp.callTool({
         toolName: 'performance-test',
-        parameters: { iteration: i }
+        parameters: { iteration: i },
       })
     }
 
@@ -170,7 +165,7 @@ export class TestFramework {
       loadTime,
       memoryUsage,
       cpuTime,
-      throughput
+      throughput,
     }
   }
 
@@ -182,7 +177,7 @@ export class TestFramework {
       metrics,
       score: this.calculatePerformanceScore(metrics),
       recommendations: this.generateRecommendations(metrics),
-      bottlenecks: this.identifyBottlenecks(metrics)
+      bottlenecks: this.identifyBottlenecks(metrics),
     }
 
     return analysis
@@ -195,7 +190,7 @@ export class TestFramework {
       statements: 85,
       branches: 80,
       functions: 90,
-      lines: 85
+      lines: 85,
     }
   }
 
@@ -211,15 +206,15 @@ export class TestFramework {
               if (!plugin.id || !plugin.name || !plugin.version) {
                 throw new Error('Plugin basic properties not set')
               }
-            }
+            },
           },
           {
             name: 'Plugin Activation',
             test: async (context) => {
               await plugin.activate(context)
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         name: 'VCP Protocol',
@@ -229,12 +224,12 @@ export class TestFramework {
             test: async (context) => {
               const result = await context.vcp.callTool({
                 toolName: 'test-tool',
-                parameters: {}
+                parameters: {},
               })
               if (!result) {
                 throw new Error('Tool calling failed')
               }
-            }
+            },
           },
           {
             name: 'Memory Operations',
@@ -246,17 +241,17 @@ export class TestFramework {
                 content: 'Test memory entry',
                 tags: ['test'],
                 importance: 0.5,
-                relatedEntries: []
+                relatedEntries: [],
               })
 
               const memories = await context.vcp.memory.read('test-agent')
               if (memories.length === 0) {
                 throw new Error('Memory write/read failed')
               }
-            }
-          }
-        ]
-      }
+            },
+          },
+        ],
+      },
     ]
   }
 
@@ -270,18 +265,18 @@ export class TestFramework {
         testCase.test(context),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Test timeout')), testCase.timeout || 5000)
-        )
+        ),
       ])
 
       return {
         success: true,
-        duration: Date.now() - startTime
+        duration: Date.now() - startTime,
       }
     } catch (error: any) {
       return {
         success: false,
         duration: Date.now() - startTime,
-        error
+        error,
       }
     }
   }
@@ -295,34 +290,34 @@ export class TestFramework {
           update: async () => {},
           get: async () => ({}),
           list: async () => [],
-          delete: async () => {}
+          delete: async () => {},
         },
         characters: {
           create: async () => 'mock-character',
           update: async () => {},
           get: async () => ({}),
           list: async () => [],
-          delete: async () => {}
+          delete: async () => {},
         },
         worlds: {
           create: async () => 'mock-world',
           update: async () => {},
           get: async () => ({}),
           list: async () => [],
-          delete: async () => {}
+          delete: async () => {},
         },
         ai: {
           generateStory: async (prompt) => `Mock story for: ${prompt}`,
           generateCharacter: async () => ({}),
           generateWorld: async () => ({}),
-          analyzeText: async () => ({})
+          analyzeText: async () => ({}),
         },
         utils: {
           validateJSON: () => true,
           sanitizeHTML: (html) => html,
           generateUUID: () => 'mock-uuid',
-          formatDate: (date) => date.toISOString()
-        }
+          formatDate: (date) => date.toISOString(),
+        },
       },
       config: {
         get: (key, defaultValue) => defaultValue,
@@ -330,13 +325,13 @@ export class TestFramework {
         update: () => {},
         reset: () => {},
         export: () => ({}),
-        import: () => {}
+        import: () => {},
       },
       events: {
         emit: () => {},
         on: () => {},
         off: () => {},
-        once: () => {}
+        once: () => {},
       },
       storage: {
         get: (key, defaultValue) => defaultValue,
@@ -345,7 +340,7 @@ export class TestFramework {
         clear: () => {},
         keys: () => [],
         export: () => ({}),
-        import: () => {}
+        import: () => {},
       },
       ui: {
         registerComponent: () => {},
@@ -355,26 +350,26 @@ export class TestFramework {
         addToolbarButton: () => {},
         removeToolbarButton: () => {},
         showModal: () => {},
-        showNotification: () => {}
+        showNotification: () => {},
       },
       logger: {
         debug: () => {},
         info: () => {},
         warn: () => {},
-        error: () => {}
+        error: () => {},
       },
       vcp: {
         callTool: async () => ({
           success: true,
           result: 'mock result',
           executionTime: 100,
-          toolName: 'mock-tool'
+          toolName: 'mock-tool',
         }),
         replaceVariables: (text, variables) => text,
         memory: {
           read: async () => [],
           write: async () => {},
-          search: async () => []
+          search: async () => [],
         },
         files: {
           upload: async () => ({
@@ -382,7 +377,7 @@ export class TestFramework {
             filename: 'mock.txt',
             size: 100,
             type: 'text/plain',
-            url: '/mock/file'
+            url: '/mock/file',
           }),
           download: async () => ({
             id: 'mock-file',
@@ -390,7 +385,7 @@ export class TestFramework {
             size: 100,
             type: 'text/plain',
             url: '/mock/file',
-            data: 'mock content'
+            data: 'mock content',
           }),
           get: async () => ({
             id: 'mock-file',
@@ -398,18 +393,18 @@ export class TestFramework {
             size: 100,
             type: 'text/plain',
             url: '/mock/file',
-            data: 'mock content'
+            data: 'mock content',
           }),
-          list: async () => []
+          list: async () => [],
         },
         push: () => {},
         asyncTasks: {
           create: async () => 'mock-task-id',
           get: async () => null,
           update: async () => {},
-          callback: async () => {}
-        }
-      }
+          callback: async () => {},
+        },
+      },
     }
   }
 
@@ -424,7 +419,8 @@ export class TestFramework {
     if (loadTime > 1000) score -= Math.min(30, (loadTime - 1000) / 100)
 
     // 内存使用评分 (期望 < 50MB)
-    if (memoryUsage > 50 * 1024 * 1024) score -= Math.min(20, (memoryUsage / (1024 * 1024) - 50) / 10)
+    if (memoryUsage > 50 * 1024 * 1024)
+      score -= Math.min(20, (memoryUsage / (1024 * 1024) - 50) / 10)
 
     // CPU时间评分 (期望 < 5000ms for 100 iterations)
     if (cpuTime > 5000) score -= Math.min(30, (cpuTime - 5000) / 500)
@@ -453,7 +449,6 @@ export class TestFramework {
 
     if (metrics.throughput < 10) {
       recommendations.push('提高操作吞吐量，优化算法复杂度')
-
     }
 
     return recommendations

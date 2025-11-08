@@ -1,12 +1,7 @@
 // 文本渲染器
 // 将文本内容渲染到DOM中
 
-import {
-  MultimodalRenderer,
-  MultimodalContent,
-  MultimodalType,
-  RenderOptions
-} from '../types'
+import { MultimodalRenderer, MultimodalContent, MultimodalType, RenderOptions } from '../types'
 
 export class TextRenderer implements MultimodalRenderer {
   canRender(type: MultimodalType): boolean {
@@ -16,7 +11,13 @@ export class TextRenderer implements MultimodalRenderer {
   async render(
     content: MultimodalContent,
     container: HTMLElement,
-    options: RenderOptions = { format: 'html', includeAssets: true, compressAssets: false, optimizeFor: 'web', quality: 'medium' }
+    options: RenderOptions = {
+      format: 'html',
+      includeAssets: true,
+      compressAssets: false,
+      optimizeFor: 'web',
+      quality: 'medium',
+    }
   ): Promise<void> {
     if (!content.text) {
       throw new Error('No text content to render')
@@ -62,14 +63,18 @@ export class TextRenderer implements MultimodalRenderer {
     if (textContainer) {
       // 移除所有事件监听器
       const elements = textContainer.querySelectorAll('*')
-      elements.forEach(element => {
+      elements.forEach((element) => {
         const clone = element.cloneNode(true) as HTMLElement
         element.parentNode?.replaceChild(clone, element)
       })
     }
   }
 
-  private applyTextStyles(container: HTMLElement, content: MultimodalContent, options: RenderOptions): void {
+  private applyTextStyles(
+    container: HTMLElement,
+    content: MultimodalContent,
+    options: RenderOptions
+  ): void {
     const styles = {
       fontFamily: this.getFontFamily(content),
       fontSize: this.getFontSize(options),
@@ -81,7 +86,7 @@ export class TextRenderer implements MultimodalRenderer {
       backgroundColor: this.getBackgroundColor(options),
       boxShadow: options.optimizeFor === 'web' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
       maxWidth: '800px',
-      margin: '0 auto'
+      margin: '0 auto',
     }
 
     Object.assign(container.style, styles)
@@ -91,7 +96,7 @@ export class TextRenderer implements MultimodalRenderer {
       Object.assign(container.style, {
         fontSize: '16px',
         padding: '15px',
-        maxWidth: '100%'
+        maxWidth: '100%',
       })
     }
   }
@@ -184,7 +189,7 @@ export class TextRenderer implements MultimodalRenderer {
         margin-top: 10px;
       `
 
-      content.keywords.slice(0, 5).forEach(keyword => {
+      content.keywords.slice(0, 5).forEach((keyword) => {
         const keywordBadge = document.createElement('span')
         keywordBadge.className = 'keyword-badge'
         keywordBadge.textContent = `#${keyword}`
@@ -268,7 +273,7 @@ export class TextRenderer implements MultimodalRenderer {
     const colors = {
       positive: '#4caf50',
       negative: '#f44336',
-      neutral: '#9e9e9e'
+      neutral: '#9e9e9e',
     }
     return colors[sentiment as keyof typeof colors] || colors.neutral
   }

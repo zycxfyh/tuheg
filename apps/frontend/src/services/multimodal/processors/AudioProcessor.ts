@@ -1,12 +1,7 @@
 // 音频处理器
 // 处理音频内容的分析、转换和增强
 
-import {
-  MultimodalProcessor,
-  MultimodalContent,
-  MultimodalType,
-  AudioContent
-} from '../types'
+import { MultimodalProcessor, MultimodalContent, MultimodalType, AudioContent } from '../types'
 
 export class AudioProcessor implements MultimodalProcessor {
   canProcess(type: MultimodalType): boolean {
@@ -50,7 +45,7 @@ export class AudioProcessor implements MultimodalProcessor {
       url: URL.createObjectURL(file),
       duration: 0,
       format: file.type.split('/')[1] || 'unknown',
-      generated: false
+      generated: false,
     }
 
     // 获取音频信息
@@ -85,7 +80,7 @@ export class AudioProcessor implements MultimodalProcessor {
       url,
       duration: 0,
       format: this.extractAudioFormat(url),
-      generated: false
+      generated: false,
     }
 
     // 获取音频信息
@@ -123,7 +118,7 @@ export class AudioProcessor implements MultimodalProcessor {
       const audio = new Audio()
       audio.onloadedmetadata = () => {
         resolve({
-          duration: audio.duration
+          duration: audio.duration,
         })
         URL.revokeObjectURL(audio.src)
       }
@@ -138,7 +133,7 @@ export class AudioProcessor implements MultimodalProcessor {
       audio.crossOrigin = 'anonymous'
       audio.onloadedmetadata = () => {
         resolve({
-          duration: audio.duration
+          duration: audio.duration,
         })
       }
       audio.onerror = reject
@@ -166,20 +161,22 @@ export class AudioProcessor implements MultimodalProcessor {
       channels: 2,
       bitrate: 128,
       volume: 0.8,
-      silence: []
+      silence: [],
     }
   }
 
-  private async generateMarkers(file: File): Promise<Array<{
-    time: number
-    label: string
-    confidence: number
-  }>> {
+  private async generateMarkers(file: File): Promise<
+    Array<{
+      time: number
+      label: string
+      confidence: number
+    }>
+  > {
     // 生成音频标记（例如章节、关键词等）
     return [
       { time: 0, label: '开始', confidence: 1.0 },
       { time: 10, label: '主要内容', confidence: 0.8 },
-      { time: 30, label: '结尾', confidence: 0.9 }
+      { time: 30, label: '结尾', confidence: 0.9 },
     ]
   }
 }

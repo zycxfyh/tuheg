@@ -38,7 +38,6 @@ export class BuildCommand {
       await this.generateManifest(outDir, packageJson)
 
       console.log(`✅ 构建完成！输出目录: ${outDir}`)
-
     } catch (error: any) {
       console.error(`❌ 构建失败: ${error.message}`)
       process.exit(1)
@@ -64,9 +63,7 @@ export class BuildCommand {
     }
 
     try {
-      const command = options.watch
-        ? 'tsc --watch'
-        : 'tsc'
+      const command = options.watch ? 'tsc --watch' : 'tsc'
 
       if (!options.watch) {
         execSync(command, { stdio: 'inherit', cwd: process.cwd() })
@@ -83,11 +80,7 @@ export class BuildCommand {
   private async copyAssets(outDir: string): Promise<void> {
     console.log('📋 复制资源文件...')
 
-    const assetsToCopy = [
-      'README.md',
-      'LICENSE',
-      'CHANGELOG.md'
-    ]
+    const assetsToCopy = ['README.md', 'LICENSE', 'CHANGELOG.md']
 
     for (const asset of assetsToCopy) {
       const srcPath = path.join(process.cwd(), asset)
@@ -128,8 +121,8 @@ export class BuildCommand {
       keywords: packageJson.keywords,
       buildInfo: {
         buildTime: new Date().toISOString(),
-        builder: 'VCPToolBox SDK v1.0.0'
-      }
+        builder: 'VCPToolBox SDK v1.0.0',
+      },
     }
 
     const outputPath = path.join(outDir, 'manifest.json')

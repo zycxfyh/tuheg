@@ -10,7 +10,7 @@ import {
   RenderOptions,
   MultimodalType,
   MultimodalContent,
-  NarrativeAnalytics
+  NarrativeAnalytics,
 } from './types'
 import { MultimodalProcessor } from './processors'
 import { MultimodalGenerator } from './generators'
@@ -59,7 +59,7 @@ export class MultimodalNarrativeService {
         interactiveElements: false,
         aiGenerated: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       settings: {
         autoplay: false,
@@ -73,11 +73,11 @@ export class MultimodalNarrativeService {
           largeText: false,
           reducedMotion: false,
           screenReader: false,
-          captions: true
-        }
+          captions: true,
+        },
       },
       variables: {},
-      assets: []
+      assets: [],
     }
 
     this.narratives.set(narrative.id, narrative)
@@ -154,7 +154,7 @@ export class MultimodalNarrativeService {
 
     const newSegment: NarrativeSegment = {
       ...segment,
-      id: `segment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      id: `segment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     }
 
     narrative.segments.push(newSegment)
@@ -174,14 +174,14 @@ export class MultimodalNarrativeService {
       throw new Error(`Narrative ${narrativeId} not found`)
     }
 
-    const segmentIndex = narrative.segments.findIndex(s => s.id === segmentId)
+    const segmentIndex = narrative.segments.findIndex((s) => s.id === segmentId)
     if (segmentIndex === -1) {
       throw new Error(`Segment ${segmentId} not found in narrative ${narrativeId}`)
     }
 
     narrative.segments[segmentIndex] = {
       ...narrative.segments[segmentIndex],
-      ...updates
+      ...updates,
     }
 
     await this.saveNarrative(narrative)
@@ -194,7 +194,7 @@ export class MultimodalNarrativeService {
       throw new Error(`Narrative ${narrativeId} not found`)
     }
 
-    narrative.segments = narrative.segments.filter(s => s.id !== segmentId)
+    narrative.segments = narrative.segments.filter((s) => s.id !== segmentId)
     await this.saveNarrative(narrative)
   }
 
@@ -231,7 +231,13 @@ export class MultimodalNarrativeService {
     type: MultimodalType,
     content: MultimodalContent,
     container: HTMLElement,
-    options: RenderOptions = { format: 'html', includeAssets: true, compressAssets: false, optimizeFor: 'web', quality: 'medium' }
+    options: RenderOptions = {
+      format: 'html',
+      includeAssets: true,
+      compressAssets: false,
+      optimizeFor: 'web',
+      quality: 'medium',
+    }
   ): Promise<void> {
     const renderer = this.renderers.get(type)
     if (!renderer) {
@@ -257,7 +263,7 @@ export class MultimodalNarrativeService {
       volume: 1,
       muted: false,
       fullscreen: false,
-      captions: narrative.settings.showCaptions
+      captions: narrative.settings.showCaptions,
     }
 
     this.playbackStates.set(narrativeId, playbackState)
@@ -291,7 +297,11 @@ export class MultimodalNarrativeService {
   }
 
   // 跳转到指定片段
-  async seekToSegment(narrativeId: string, segmentIndex: number, container: HTMLElement): Promise<void> {
+  async seekToSegment(
+    narrativeId: string,
+    segmentIndex: number,
+    container: HTMLElement
+  ): Promise<void> {
     const narrative = await this.loadNarrative(narrativeId)
     if (!narrative || segmentIndex < 0 || segmentIndex >= narrative.segments.length) {
       throw new Error(`Invalid segment index: ${segmentIndex}`)
@@ -312,7 +322,11 @@ export class MultimodalNarrativeService {
   }
 
   // 保存用户进度
-  async saveProgress(narrativeId: string, userId: string, progress: Partial<UserProgress>): Promise<void> {
+  async saveProgress(
+    narrativeId: string,
+    userId: string,
+    progress: Partial<UserProgress>
+  ): Promise<void> {
     const key = `${userId}-${narrativeId}`
     const existingProgress = this.userProgress.get(key) || {
       narrativeId,
@@ -325,13 +339,13 @@ export class MultimodalNarrativeService {
       notes: [],
       startedAt: new Date(),
       lastPlayedAt: new Date(),
-      totalPlayTime: 0
+      totalPlayTime: 0,
     }
 
     const updatedProgress: UserProgress = {
       ...existingProgress,
       ...progress,
-      lastPlayedAt: new Date()
+      lastPlayedAt: new Date(),
     }
 
     this.userProgress.set(key, updatedProgress)
@@ -384,8 +398,8 @@ export class MultimodalNarrativeService {
           interactionRate: 0,
           completionRate: 0,
           replayRate: 0,
-          shareRate: 0
-        }
+          shareRate: 0,
+        },
       }
     }
   }

@@ -211,9 +211,9 @@ const props = defineProps({
       antagonists: [],
       primaryConflict: '',
       conflictIntensity: 5,
-      conflictDescription: ''
-    })
-  }
+      conflictDescription: '',
+    }),
+  },
 })
 
 // Emits
@@ -228,7 +228,7 @@ const basics = ref({
   antagonists: [],
   primaryConflict: '',
   conflictIntensity: 5,
-  conflictDescription: ''
+  conflictDescription: '',
 })
 
 const suggestions = ref([])
@@ -242,7 +242,7 @@ const toneOptions = ref([
   { value: 'hopeful', label: '充满希望', icon: '🌅' },
   { value: 'whimsical', label: '奇幻轻快', icon: '🎪' },
   { value: 'satirical', label: '讽刺幽默', icon: '🎭' },
-  { value: 'optimistic', label: '乐观向上', icon: '☀️' }
+  { value: 'optimistic', label: '乐观向上', icon: '☀️' },
 ])
 
 // 方法
@@ -251,7 +251,7 @@ const addCharacter = (type) => {
     name: '',
     description: '',
     traits: [],
-    background: ''
+    background: '',
   }
 
   if (type === 'protagonists') {
@@ -276,18 +276,18 @@ const generateAISuggestions = () => {
       {
         id: 'theme-expansion',
         type: '主题扩展',
-        content: `基于"${basics.value.theme}"主题，建议添加${getThemeSuggestions()}元素来丰富世界观。`
+        content: `基于"${basics.value.theme}"主题，建议添加${getThemeSuggestions()}元素来丰富世界观。`,
       },
       {
         id: 'tone-consistency',
         type: '基调一致性',
-        content: `当前基调为${getToneLabel(basics.value.tone)}，建议在后续设定中保持这种${getToneConsistency()}氛围。`
+        content: `当前基调为${getToneLabel(basics.value.tone)}，建议在后续设定中保持这种${getToneConsistency()}氛围。`,
       },
       {
         id: 'scale-implications',
         type: '规模影响',
-        content: `${getScaleLabel(basics.value.scale)}的世界规模意味着${getScaleImplications()}。`
-      }
+        content: `${getScaleLabel(basics.value.scale)}的世界规模意味着${getScaleImplications()}。`,
+      },
     ]
   } else {
     suggestions.value = []
@@ -317,7 +317,7 @@ const getToneLabel = (tone) => {
     hopeful: '充满希望',
     whimsical: '奇幻轻快',
     satirical: '讽刺幽默',
-    optimistic: '乐观向上'
+    optimistic: '乐观向上',
   }
   return toneMap[tone] || tone
 }
@@ -342,7 +342,7 @@ const getScaleLabel = (scale) => {
     regional: '地区级',
     continental: '大陆级',
     world: '世界级',
-    universal: '宇宙级'
+    universal: '宇宙级',
   }
   return scaleMap[scale] || scale
 }
@@ -364,17 +364,25 @@ const applySuggestion = (suggestion) => {
 }
 
 // 监听外部数据变化
-watch(() => props.modelValue, (newValue) => {
-  if (newValue) {
-    basics.value = { ...basics.value, ...newValue }
-  }
-}, { deep: true })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      basics.value = { ...basics.value, ...newValue }
+    }
+  },
+  { deep: true }
+)
 
 // 监听内部数据变化
-watch(basics, (newBasics) => {
-  emit('update:modelValue', newBasics)
-  generateAISuggestions()
-}, { deep: true })
+watch(
+  basics,
+  (newBasics) => {
+    emit('update:modelValue', newBasics)
+    generateAISuggestions()
+  },
+  { deep: true }
+)
 
 // 初始化
 onMounted(() => {

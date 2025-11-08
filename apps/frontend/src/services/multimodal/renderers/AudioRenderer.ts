@@ -6,7 +6,7 @@ import {
   MultimodalContent,
   MultimodalType,
   RenderOptions,
-  AudioContent
+  AudioContent,
 } from '../types'
 
 export class AudioRenderer implements MultimodalRenderer {
@@ -17,7 +17,13 @@ export class AudioRenderer implements MultimodalRenderer {
   async render(
     content: MultimodalContent,
     container: HTMLElement,
-    options: RenderOptions = { format: 'html', includeAssets: true, compressAssets: false, optimizeFor: 'web', quality: 'medium' }
+    options: RenderOptions = {
+      format: 'html',
+      includeAssets: true,
+      compressAssets: false,
+      optimizeFor: 'web',
+      quality: 'medium',
+    }
   ): Promise<void> {
     if (!content.audio) {
       throw new Error('No audio content to render')
@@ -67,11 +73,14 @@ export class AudioRenderer implements MultimodalRenderer {
       backgroundColor: '#f8f9fa',
       boxShadow: options.optimizeFor === 'web' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
       maxWidth: '600px',
-      margin: '0 auto'
+      margin: '0 auto',
     })
   }
 
-  private async createAudioPlayer(audio: AudioContent, options: RenderOptions): Promise<HTMLElement> {
+  private async createAudioPlayer(
+    audio: AudioContent,
+    options: RenderOptions
+  ): Promise<HTMLElement> {
     const playerContainer = document.createElement('div')
     playerContainer.className = 'audio-player'
 
@@ -114,7 +123,8 @@ export class AudioRenderer implements MultimodalRenderer {
 
     // 进度条
     const progressContainer = document.createElement('div')
-    progressContainer.style.cssText = 'flex: 1; height: 4px; background: #e0e0e0; border-radius: 2px;'
+    progressContainer.style.cssText =
+      'flex: 1; height: 4px; background: #e0e0e0; border-radius: 2px;'
     const progressBar = document.createElement('div')
     progressBar.style.cssText = 'height: 100%; background: #007bff; border-radius: 2px; width: 0%;'
     progressContainer.appendChild(progressBar)

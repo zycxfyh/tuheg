@@ -90,7 +90,7 @@ export class Publisher extends EventEmitter {
       url: 'https://marketplace.creationring.com',
       type: 'public',
       authRequired: false,
-      plugins: []
+      plugins: [],
     })
 
     // 开发者测试注册表
@@ -100,7 +100,7 @@ export class Publisher extends EventEmitter {
       url: 'http://localhost:3001',
       type: 'private',
       authRequired: false,
-      plugins: []
+      plugins: [],
     })
   }
 
@@ -122,8 +122,7 @@ export class Publisher extends EventEmitter {
       const files = await this.collectPluginFiles(sourcePath, plugin)
 
       // 压缩文件（可选）
-      const processedFiles = options.compress ?
-        await this.compressFiles(files) : files
+      const processedFiles = options.compress ? await this.compressFiles(files) : files
 
       // 生成校验和
       const checksum = this.generateChecksum(processedFiles)
@@ -151,13 +150,12 @@ export class Publisher extends EventEmitter {
         checksum,
         signature,
         createdAt: new Date(),
-        size
+        size,
       }
 
       this.emit('packagingCompleted', { pluginId: plugin.id, package: packageData })
 
       return packageData
-
     } catch (error) {
       this.emit('packagingFailed', { pluginId: plugin.id, error })
       throw error
@@ -174,7 +172,7 @@ export class Publisher extends EventEmitter {
       packageId: pluginPackage.id,
       checksum: pluginPackage.checksum,
       errors: [],
-      warnings: []
+      warnings: [],
     }
 
     this.emit('publishStarted', { packageId: pluginPackage.id, target: options.target })
@@ -196,7 +194,6 @@ export class Publisher extends EventEmitter {
       this.publishedPackages.set(pluginPackage.id, pluginPackage)
 
       this.emit('publishCompleted', { packageId: pluginPackage.id, result })
-
     } catch (error) {
       result.errors.push(error instanceof Error ? error.message : String(error))
       this.emit('publishFailed', { packageId: pluginPackage.id, error })
@@ -255,14 +252,7 @@ export class Publisher extends EventEmitter {
   // 收集插件文件
   private async collectPluginFiles(sourcePath: string, plugin: VCPPlugin): Promise<PluginFile[]> {
     const files: PluginFile[] = []
-    const excludePatterns = [
-      'node_modules',
-      '.git',
-      'dist',
-      '*.log',
-      '.DS_Store',
-      'coverage'
-    ]
+    const excludePatterns = ['node_modules', '.git', 'dist', '*.log', '.DS_Store', 'coverage']
 
     const collectFiles = async (dir: string, relativePath = ''): Promise<void> => {
       const items = await fs.promises.readdir(dir, { withFileTypes: true })
@@ -272,10 +262,13 @@ export class Publisher extends EventEmitter {
         const itemRelativePath = path.join(relativePath, item.name)
 
         // 检查是否应该排除
-        if (excludePatterns.some(pattern =>
-          item.name.includes(pattern.replace('*', '')) ||
-          item.name.endsWith(pattern.replace('*', ''))
-        )) {
+        if (
+          excludePatterns.some(
+            (pattern) =>
+              item.name.includes(pattern.replace('*', '')) ||
+              item.name.endsWith(pattern.replace('*', ''))
+          )
+        ) {
           continue
         }
 
@@ -288,7 +281,7 @@ export class Publisher extends EventEmitter {
           files.push({
             path: itemRelativePath.replace(/\\/g, '/'), // 统一路径分隔符
             content,
-            executable: !!(stat.mode & parseInt('111', 8)) // 检查是否可执行
+            executable: !!(stat.mode & parseInt('111', 8)), // 检查是否可执行
           })
         }
       }
@@ -301,10 +294,10 @@ export class Publisher extends EventEmitter {
   // 压缩文件
   private async compressFiles(files: PluginFile[]): Promise<PluginFile[]> {
     // 简化版本：实际实现应该使用真实的压缩算法
-    return files.map(file => ({
+    return files.map((file) => ({
       ...file,
       compressed: true,
-      content: Buffer.from(file.content).toString('base64') // 简单的base64编码
+      content: Buffer.from(file.content).toString('base64'), // 简单的base64编码
     }))
   }
 
@@ -355,7 +348,10 @@ export class Publisher extends EventEmitter {
   }
 
   // 发布到官方市场
-  private async publishToMarketplace(pluginPackage: PluginPackage, registryId?: string): Promise<string> {
+  private async publishToMarketplace(
+    pluginPackage: PluginPackage,
+    registryId?: string
+  ): Promise<string> {
     const registry = registryId ? this.registries.get(registryId) : this.registries.get('official')
 
     if (!registry) {
@@ -372,7 +368,10 @@ export class Publisher extends EventEmitter {
   }
 
   // 发布到私有注册表
-  private async publishToPrivateRegistry(pluginPackage: PluginPackage, registryId?: string): Promise<string> {
+  private async publishToPrivateRegistry(
+    pluginPackage: PluginPackage,
+    registryId?: string
+  ): Promise<string> {
     // 实现私有注册表发布逻辑
     return `private-registry://plugins/${pluginPackage.id}/${pluginPackage.version}`
   }
@@ -386,7 +385,7 @@ export class Publisher extends EventEmitter {
       'lib/index.js',
       'src/index.ts',
       'src/index.js',
-      'index.js'
+      'index.js',
     ]
 
     for (const mainFile of possibleMains) {
@@ -426,12 +425,12 @@ export class Publisher extends EventEmitter {
     return {
       version,
       changelog,
-      breaking: changelog.some(entry =>
-        entry.toLowerCase().includes('breaking') ||
-        entry.toLowerCase().includes('重大变更')
+      breaking: changelog.some(
+        (entry) =>
+          entry.toLowerCase().includes('breaking') || entry.toLowerCase().includes('重大变更')
       ),
       releaseDate: new Date(),
-      downloads: 0
+      downloads: 0,
     }
   }
 
@@ -464,10 +463,11 @@ export class Publisher extends EventEmitter {
 
     const lowercaseQuery = query.toLowerCase()
 
-    return registry.plugins.filter(plugin =>
-      plugin.name.toLowerCase().includes(lowercaseQuery) ||
-      plugin.description.toLowerCase().includes(lowercaseQuery) ||
-      plugin.metadata.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+    return registry.plugins.filter(
+      (plugin) =>
+        plugin.name.toLowerCase().includes(lowercaseQuery) ||
+        plugin.description.toLowerCase().includes(lowercaseQuery) ||
+        plugin.metadata.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
     )
   }
 
@@ -480,8 +480,8 @@ export class Publisher extends EventEmitter {
       versions: {
         '1.0.0': 800,
         '1.1.0': 300,
-        '1.2.0': 150
-      }
+        '1.2.0': 150,
+      },
     }
   }
 }
@@ -494,7 +494,8 @@ export class PluginInstaller {
     const pluginPackage: PluginPackage = JSON.parse(packageContent)
 
     // 验证包完整性
-    const calculatedChecksum = crypto.createHash('sha256')
+    const calculatedChecksum = crypto
+      .createHash('sha256')
       .update(JSON.stringify(pluginPackage.files))
       .digest('hex')
 

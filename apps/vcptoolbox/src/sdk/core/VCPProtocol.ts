@@ -11,7 +11,7 @@ import {
   VCPFileQuery,
   VCPAsyncTask,
   VCPAsyncTaskStatus,
-  VCPPlugin
+  VCPPlugin,
 } from '../types'
 
 export class VCPProtocol implements VCPProtocolAPI {
@@ -28,7 +28,7 @@ export class VCPProtocol implements VCPProtocolAPI {
     try {
       // 模拟工具执行
       // 在实际实现中，这里会调用真实的工具
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       const result = await this.executeTool(request.toolName, request.parameters)
 
@@ -36,7 +36,7 @@ export class VCPProtocol implements VCPProtocolAPI {
         success: true,
         result,
         executionTime: Date.now() - startTime,
-        toolName: request.toolName
+        toolName: request.toolName,
       }
     } catch (error: any) {
       return {
@@ -44,7 +44,7 @@ export class VCPProtocol implements VCPProtocolAPI {
         result: null,
         error: error.message,
         executionTime: Date.now() - startTime,
-        toolName: request.toolName
+        toolName: request.toolName,
       }
     }
   }
@@ -66,9 +66,10 @@ export class VCPProtocol implements VCPProtocolAPI {
       }
 
       // 简单的文本搜索
-      return agentMemory.filter(entry =>
-        entry.content.toLowerCase().includes(query.toLowerCase()) ||
-        entry.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+      return agentMemory.filter(
+        (entry) =>
+          entry.content.toLowerCase().includes(query.toLowerCase()) ||
+          entry.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
       )
     },
 
@@ -77,7 +78,7 @@ export class VCPProtocol implements VCPProtocolAPI {
       const newEntry = {
         ...entry,
         id: entry.id || `memory-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        timestamp: entry.timestamp || new Date()
+        timestamp: entry.timestamp || new Date(),
       }
 
       agentMemory.push(newEntry)
@@ -89,13 +90,14 @@ export class VCPProtocol implements VCPProtocolAPI {
     search: async (agentId: string, keywords: string[]): Promise<VCPMemoryEntry[]> => {
       const agentMemory = this.memory.get(agentId) || []
 
-      return agentMemory.filter(entry =>
-        keywords.some(keyword =>
-          entry.content.toLowerCase().includes(keyword.toLowerCase()) ||
-          entry.tags.some(tag => tag.toLowerCase().includes(keyword.toLowerCase()))
+      return agentMemory.filter((entry) =>
+        keywords.some(
+          (keyword) =>
+            entry.content.toLowerCase().includes(keyword.toLowerCase()) ||
+            entry.tags.some((tag) => tag.toLowerCase().includes(keyword.toLowerCase()))
         )
       )
-    }
+    },
   }
 
   // 多模态文件API
@@ -107,12 +109,12 @@ export class VCPProtocol implements VCPProtocolAPI {
         size: file.size,
         type: file.type,
         url: `/files/${file.name}`,
-        metadata
+        metadata,
       }
 
       const vcpFile: VCPFile = {
         ...handle,
-        data: file
+        data: file,
       }
 
       this.files.set(handle.id, vcpFile)
@@ -143,17 +145,17 @@ export class VCPProtocol implements VCPProtocolAPI {
 
       if (query) {
         if (query.type) {
-          files = files.filter(f => f.type === query.type)
+          files = files.filter((f) => f.type === query.type)
         }
 
         if (query.tags && query.tags.length > 0) {
-          files = files.filter(f =>
+          files = files.filter((f) =>
             f.metadata?.tags?.some((tag: string) => query.tags!.includes(tag))
           )
         }
 
         if (query.dateRange) {
-          files = files.filter(f => {
+          files = files.filter((f) => {
             // 简化实现，实际应该比较文件创建时间
             return true
           })
@@ -165,7 +167,7 @@ export class VCPProtocol implements VCPProtocolAPI {
       }
 
       return files
-    }
+    },
   }
 
   // WebSocket推送
@@ -184,7 +186,7 @@ export class VCPProtocol implements VCPProtocolAPI {
         id: taskId,
         status: task.status || 'pending',
         createdAt: task.createdAt || new Date(),
-        updatedAt: task.updatedAt || new Date()
+        updatedAt: task.updatedAt || new Date(),
       }
 
       this.asyncTasks.set(taskId, newTask)
@@ -217,7 +219,7 @@ export class VCPProtocol implements VCPProtocolAPI {
         task.updatedAt = new Date()
         console.log(`Async task ${taskId} callback:`, result)
       }
-    }
+    },
   }
 
   // 为插件创建VCP API实例
@@ -228,7 +230,7 @@ export class VCPProtocol implements VCPProtocolAPI {
       memory: this.memory,
       files: this.files,
       push: this.push.bind(this),
-      asyncTasks: this.asyncTasks
+      asyncTasks: this.asyncTasks,
     }
   }
 
@@ -245,14 +247,14 @@ export class VCPProtocol implements VCPProtocolAPI {
         return {
           name: parameters.name || 'Hero',
           traits: parameters.traits || ['brave', 'wise'],
-          background: 'A mysterious figure with a hidden past...'
+          background: 'A mysterious figure with a hidden past...',
         }
 
       case 'world-builder':
         return {
           name: parameters.name || 'Fantasy Realm',
           description: `A vast world filled with ${parameters.theme || 'magic and wonder'}...`,
-          regions: ['Northern Mountains', 'Central Plains', 'Southern Seas']
+          regions: ['Northern Mountains', 'Central Plains', 'Southern Seas'],
         }
 
       case 'calculator':
@@ -272,7 +274,7 @@ export class VCPProtocol implements VCPProtocolAPI {
           location: parameters.location || 'Unknown',
           temperature: Math.floor(Math.random() * 30) + 10,
           condition: 'Sunny',
-          humidity: Math.floor(Math.random() * 50) + 30
+          humidity: Math.floor(Math.random() * 50) + 30,
         }
 
       default:
@@ -290,14 +292,13 @@ export class VCPProtocol implements VCPProtocolAPI {
 
     try {
       // 模拟异步任务执行时间
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000))
+      await new Promise((resolve) => setTimeout(resolve, 2000 + Math.random() * 3000))
 
       // 生成模拟结果
       const result = await this.executeTool(task.toolName, task.parameters)
 
       // 回调结果
       await this.asyncTasks.callback(taskId, result)
-
     } catch (error: any) {
       // 更新任务状态为失败
       const task = this.asyncTasks.get(taskId)

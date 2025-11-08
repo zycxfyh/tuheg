@@ -74,7 +74,7 @@ export class AIServiceManager extends EventEmitter {
     averageLatency: 0,
     totalCost: 0,
     cacheHits: 0,
-    cacheMisses: 0
+    cacheMisses: 0,
   }
 
   constructor() {
@@ -95,12 +95,12 @@ export class AIServiceManager extends EventEmitter {
       retryAttempts: 3,
       rateLimit: {
         requestsPerMinute: 50,
-        tokensPerMinute: 10000
+        tokensPerMinute: 10000,
       },
       costLimit: {
         maxDailyCost: 10,
-        maxMonthlyCost: 200
-      }
+        maxMonthlyCost: 200,
+      },
     })
 
     // Anthropic服务配置
@@ -112,12 +112,12 @@ export class AIServiceManager extends EventEmitter {
       retryAttempts: 3,
       rateLimit: {
         requestsPerMinute: 50,
-        tokensPerMinute: 20000
+        tokensPerMinute: 20000,
       },
       costLimit: {
         maxDailyCost: 15,
-        maxMonthlyCost: 300
-      }
+        maxMonthlyCost: 300,
+      },
     })
 
     // 本地模型服务（备选）
@@ -130,28 +130,29 @@ export class AIServiceManager extends EventEmitter {
       retryAttempts: 2,
       rateLimit: {
         requestsPerMinute: 10,
-        tokensPerMinute: 5000
+        tokensPerMinute: 5000,
       },
       costLimit: {
         maxDailyCost: 0,
-        maxMonthlyCost: 0
-      }
+        maxMonthlyCost: 0,
+      },
     })
   }
 
   // 智能路由选择最佳服务
   private selectBestService(request: AIRequest): AIServiceConfig | null {
-    const availableServices = Array.from(this.services.values())
-      .filter(service => this.isServiceHealthy(service))
+    const availableServices = Array.from(this.services.values()).filter((service) =>
+      this.isServiceHealthy(service)
+    )
 
     if (availableServices.length === 0) {
       return null
     }
 
     // 根据请求类型和优先级选择服务
-    const scoredServices = availableServices.map(service => ({
+    const scoredServices = availableServices.map((service) => ({
       service,
-      score: this.calculateServiceScore(service, request)
+      score: this.calculateServiceScore(service, request),
     }))
 
     scoredServices.sort((a, b) => b.score - a.score)
@@ -183,8 +184,9 @@ export class AIServiceManager extends EventEmitter {
     score += this.calculateModelFitScore(service, request)
 
     // 负载均衡评分
-    const activeRequests = Array.from(this.activeRequests.values())
-      .filter(req => req.type === request.type).length
+    const activeRequests = Array.from(this.activeRequests.values()).filter(
+      (req) => req.type === request.type
+    ).length
     score -= Math.min(15, activeRequests * 2)
 
     return Math.max(0, score)
@@ -197,20 +199,20 @@ export class AIServiceManager extends EventEmitter {
         creation: 95,
         logic: 90,
         narrative: 85,
-        analysis: 80
+        analysis: 80,
       },
       'claude-3-opus-20240229': {
         creation: 85,
         logic: 95,
         narrative: 90,
-        analysis: 85
+        analysis: 85,
       },
       'llama-2-70b-chat': {
         creation: 75,
         logic: 80,
         narrative: 70,
-        analysis: 75
-      }
+        analysis: 75,
+      },
     }
 
     const capabilities = modelCapabilities[service.model as keyof typeof modelCapabilities]
@@ -222,7 +224,7 @@ export class AIServiceManager extends EventEmitter {
     const costPerToken = {
       'openai-gpt4': 0.00003,
       'anthropic-claude': 0.000015,
-      'local-llama': 0
+      'local-llama': 0,
     }
 
     const key = `${service.provider}-${service.model.split('-')[0]}`
@@ -279,7 +281,6 @@ export class AIServiceManager extends EventEmitter {
       this.emit('requestCompleted', { request, response, latency: response.latency })
 
       return response
-
     } catch (error) {
       this.stats.failedRequests++
 
@@ -323,13 +324,13 @@ export class AIServiceManager extends EventEmitter {
       usage: {
         promptTokens: Math.floor(request.prompt.length / 4),
         completionTokens: 150,
-        totalTokens: Math.floor(request.prompt.length / 4) + 150
+        totalTokens: Math.floor(request.prompt.length / 4) + 150,
       },
       cost: this.estimateCost(service, request),
       latency: 2000 + Math.random() * 1000,
       model: service.model,
       finishReason: 'stop',
-      metadata: {}
+      metadata: {},
     }
 
     return response
@@ -345,13 +346,13 @@ export class AIServiceManager extends EventEmitter {
       usage: {
         promptTokens: Math.floor(request.prompt.length / 4),
         completionTokens: 200,
-        totalTokens: Math.floor(request.prompt.length / 4) + 200
+        totalTokens: Math.floor(request.prompt.length / 4) + 200,
       },
       cost: this.estimateCost(service, request),
       latency: 3000 + Math.random() * 1500,
       model: service.model,
       finishReason: 'stop',
-      metadata: {}
+      metadata: {},
     }
 
     return response
@@ -366,13 +367,13 @@ export class AIServiceManager extends EventEmitter {
       usage: {
         promptTokens: Math.floor(request.prompt.length / 4),
         completionTokens: 100,
-        totalTokens: Math.floor(request.prompt.length / 4) + 100
+        totalTokens: Math.floor(request.prompt.length / 4) + 100,
       },
       cost: 0,
       latency: 5000 + Math.random() * 2000,
       model: service.model,
       finishReason: 'stop',
-      metadata: {}
+      metadata: {},
     }
 
     return response
@@ -396,8 +397,10 @@ export class AIServiceManager extends EventEmitter {
     const currentCost = this.costTracker.get(key) || { daily: 0, monthly: 0 }
     const estimatedCost = this.estimateCost(service, request)
 
-    return currentCost.daily + estimatedCost <= service.costLimit.maxDailyCost &&
-           currentCost.monthly + estimatedCost <= service.costLimit.maxMonthlyCost
+    return (
+      currentCost.daily + estimatedCost <= service.costLimit.maxDailyCost &&
+      currentCost.monthly + estimatedCost <= service.costLimit.maxMonthlyCost
+    )
   }
 
   // 更新成本跟踪
@@ -436,7 +439,9 @@ export class AIServiceManager extends EventEmitter {
         latency: Date.now() - startTime,
         errorRate: 0, // 计算错误率
         lastChecked: Date.now(),
-        consecutiveFailures: isHealthy ? 0 : (this.healthStatus.get(key)?.consecutiveFailures || 0) + 1
+        consecutiveFailures: isHealthy
+          ? 0
+          : (this.healthStatus.get(key)?.consecutiveFailures || 0) + 1,
       }
 
       // 如果连续失败太多，标记为不健康
@@ -447,7 +452,6 @@ export class AIServiceManager extends EventEmitter {
       }
 
       this.healthStatus.set(key, health)
-
     } catch (error) {
       const health: ServiceHealth = {
         provider: service.provider,
@@ -456,7 +460,7 @@ export class AIServiceManager extends EventEmitter {
         latency: Date.now() - startTime,
         errorRate: 1,
         lastChecked: Date.now(),
-        consecutiveFailures: (this.healthStatus.get(key)?.consecutiveFailures || 0) + 1
+        consecutiveFailures: (this.healthStatus.get(key)?.consecutiveFailures || 0) + 1,
       }
 
       this.healthStatus.set(key, health)
@@ -472,7 +476,7 @@ export class AIServiceManager extends EventEmitter {
         type: 'analysis',
         prompt: 'Hello',
         priority: 'low',
-        metadata: { sessionId: 'health-check' }
+        metadata: { sessionId: 'health-check' },
       }
 
       await this.executeRequest(service, testRequest)
@@ -506,7 +510,7 @@ export class AIServiceManager extends EventEmitter {
       activeRequests: this.activeRequests.size,
       queuedRequests: this.requestQueue.length,
       serviceHealth: Array.from(this.healthStatus.values()),
-      costTracking: Array.from(this.costTracker.entries())
+      costTracking: Array.from(this.costTracker.entries()),
     }
   }
 
@@ -515,7 +519,7 @@ export class AIServiceManager extends EventEmitter {
     return {
       services: Array.from(this.services.values()),
       health: Array.from(this.healthStatus.values()),
-      activeRequests: Array.from(this.activeRequests.values())
+      activeRequests: Array.from(this.activeRequests.values()),
     }
   }
 }

@@ -324,9 +324,9 @@ const props = defineProps({
     type: Object,
     default: () => ({
       nodes: [],
-      connections: []
-    })
-  }
+      connections: [],
+    }),
+  },
 })
 
 // Emits
@@ -356,10 +356,10 @@ const viewportRect = computed(() => {
   const scaleY = canvasSize.value.height / rect.height
 
   return {
-    x: -panOffset.value.x * scaleX / canvasSize.value.width * 180 + 10,
-    y: -panOffset.value.y * scaleY / canvasSize.value.height * 130 + 10,
+    x: ((-panOffset.value.x * scaleX) / canvasSize.value.width) * 180 + 10,
+    y: ((-panOffset.value.y * scaleY) / canvasSize.value.height) * 130 + 10,
     width: (rect.width / canvasSize.value.width) * 180,
-    height: (rect.height / canvasSize.value.height) * 130
+    height: (rect.height / canvasSize.value.height) * 130,
   }
 })
 
@@ -372,14 +372,14 @@ const addNode = () => {
     content: '',
     position: {
       x: Math.random() * 1000 + 500,
-      y: Math.random() * 800 + 400
+      y: Math.random() * 800 + 400,
     },
     choices: [],
     properties: {
       isCheckpoint: false,
       requiresCondition: false,
-      condition: ''
-    }
+      condition: '',
+    },
   }
 
   storyNodes.value.push(newNode)
@@ -389,7 +389,7 @@ const addNode = () => {
 const selectNode = (nodeId) => {
   selectedNode.value = nodeId
   selectedConnection.value = null
-  const node = storyNodes.value.find(n => n.id === nodeId)
+  const node = storyNodes.value.find((n) => n.id === nodeId)
   if (node) {
     editingNode.value = { ...node }
   }
@@ -407,7 +407,7 @@ const editNode = (node) => {
 const saveNode = () => {
   if (!editingNode.value) return
 
-  const index = storyNodes.value.findIndex(n => n.id === editingNode.value.id)
+  const index = storyNodes.value.findIndex((n) => n.id === editingNode.value.id)
   if (index !== -1) {
     storyNodes.value[index] = { ...editingNode.value }
     emit('update:modelValue', { nodes: storyNodes.value, connections: connections.value })
@@ -420,9 +420,9 @@ const saveNode = () => {
 const deleteNode = () => {
   if (!selectedNode.value) return
 
-  storyNodes.value = storyNodes.value.filter(n => n.id !== selectedNode.value)
-  connections.value = connections.value.filter(c =>
-    c.from !== selectedNode.value && c.to !== selectedNode.value
+  storyNodes.value = storyNodes.value.filter((n) => n.id !== selectedNode.value)
+  connections.value = connections.value.filter(
+    (c) => c.from !== selectedNode.value && c.to !== selectedNode.value
   )
 
   selectedNode.value = null
@@ -436,7 +436,7 @@ const addChoice = () => {
   }
   editingNode.value.choices.push({
     text: '',
-    targetNode: ''
+    targetNode: '',
   })
 }
 
@@ -445,36 +445,51 @@ const removeChoice = (index) => {
 }
 
 const getAvailableTargetNodes = (currentNodeId) => {
-  return storyNodes.value.filter(node => node.id !== currentNodeId)
+  return storyNodes.value.filter((node) => node.id !== currentNodeId)
 }
 
 const getNodeColor = (node) => {
   switch (node.type) {
-    case 'narrative': return '#667eea'
-    case 'choice': return '#48bb78'
-    case 'event': return '#d69e2e'
-    case 'ending': return '#e53e3e'
-    default: return '#a0aec0'
+    case 'narrative':
+      return '#667eea'
+    case 'choice':
+      return '#48bb78'
+    case 'event':
+      return '#d69e2e'
+    case 'ending':
+      return '#e53e3e'
+    default:
+      return '#a0aec0'
   }
 }
 
 const getNodeTypeColor = (type) => {
   switch (type) {
-    case 'narrative': return '#3182ce'
-    case 'choice': return '#38a169'
-    case 'event': return '#d69e2e'
-    case 'ending': return '#e53e3e'
-    default: return '#a0aec0'
+    case 'narrative':
+      return '#3182ce'
+    case 'choice':
+      return '#38a169'
+    case 'event':
+      return '#d69e2e'
+    case 'ending':
+      return '#e53e3e'
+    default:
+      return '#a0aec0'
   }
 }
 
 const getNodeTypeIcon = (type) => {
   switch (type) {
-    case 'narrative': return '📖'
-    case 'choice': return '🔀'
-    case 'event': return '⚡'
-    case 'ending': return '🏁'
-    default: return '❓'
+    case 'narrative':
+      return '📖'
+    case 'choice':
+      return '🔀'
+    case 'event':
+      return '⚡'
+    case 'ending':
+      return '🏁'
+    default:
+      return '❓'
   }
 }
 
@@ -484,8 +499,8 @@ const getConnectionColor = (connection) => {
 }
 
 const getConnectionPath = (connection) => {
-  const fromNode = storyNodes.value.find(n => n.id === connection.from)
-  const toNode = storyNodes.value.find(n => n.id === connection.to)
+  const fromNode = storyNodes.value.find((n) => n.id === connection.from)
+  const toNode = storyNodes.value.find((n) => n.id === connection.to)
 
   if (!fromNode || !toNode) return ''
 
@@ -502,14 +517,14 @@ const getConnectionPath = (connection) => {
 }
 
 const getConnectionLabelPosition = (connection) => {
-  const fromNode = storyNodes.value.find(n => n.id === connection.from)
-  const toNode = storyNodes.value.find(n => n.id === connection.to)
+  const fromNode = storyNodes.value.find((n) => n.id === connection.from)
+  const toNode = storyNodes.value.find((n) => n.id === connection.to)
 
   if (!fromNode || !toNode) return { x: 0, y: 0 }
 
   return {
     x: (fromNode.position.x + toNode.position.x) / 2,
-    y: (fromNode.position.y + toNode.position.y) / 2 - 10
+    y: (fromNode.position.y + toNode.position.y) / 2 - 10,
   }
 }
 
@@ -541,15 +556,15 @@ const truncateText = (text, maxLength) => {
 
 const autoGenerateBranches = () => {
   // 模拟AI生成分支
-  const choiceNodes = storyNodes.value.filter(node => node.type === 'choice')
+  const choiceNodes = storyNodes.value.filter((node) => node.type === 'choice')
 
-  choiceNodes.forEach(node => {
+  choiceNodes.forEach((node) => {
     if (!node.choices || node.choices.length === 0) {
       // 为没有分支的选择节点生成分支
       const branches = [
         { text: '接受挑战', targetNode: '' },
         { text: '寻找替代方案', targetNode: '' },
-        { text: '拒绝提议', targetNode: '' }
+        { text: '拒绝提议', targetNode: '' },
       ]
 
       node.choices = branches
@@ -568,8 +583,8 @@ const exportStoryTree = () => {
       exportedAt: new Date().toISOString(),
       version: '1.0',
       totalNodes: storyNodes.value.length,
-      totalConnections: connections.value.length
-    }
+      totalConnections: connections.value.length,
+    },
   }
 
   // 创建下载
@@ -591,33 +606,33 @@ const generateAISuggestions = () => {
   const suggestions = []
 
   // 检查缺少结局的路径
-  const endingNodes = storyNodes.value.filter(node => node.type === 'ending')
+  const endingNodes = storyNodes.value.filter((node) => node.type === 'ending')
   if (endingNodes.length === 0) {
     suggestions.push({
       id: 'add-endings',
       type: '结构建议',
       impact: 'high',
-      description: '建议添加多个结局节点，为故事提供不同的结束方式'
+      description: '建议添加多个结局节点，为故事提供不同的结束方式',
     })
   }
 
   // 检查选择节点的分支数
-  const choiceNodes = storyNodes.value.filter(node => node.type === 'choice')
-  choiceNodes.forEach(node => {
+  const choiceNodes = storyNodes.value.filter((node) => node.type === 'choice')
+  choiceNodes.forEach((node) => {
     if (!node.choices || node.choices.length < 2) {
       suggestions.push({
         id: `expand-choices-${node.id}`,
         type: '分支建议',
         impact: 'medium',
-        description: `节点"${node.title}"的选择分支较少，建议增加更多选择选项`
+        description: `节点"${node.title}"的选择分支较少，建议增加更多选择选项`,
       })
     }
   })
 
   // 检查孤立节点
-  const isolatedNodes = storyNodes.value.filter(node => {
-    const hasIncoming = connections.value.some(c => c.to === node.id)
-    const hasOutgoing = connections.value.some(c => c.from === node.id)
+  const isolatedNodes = storyNodes.value.filter((node) => {
+    const hasIncoming = connections.value.some((c) => c.to === node.id)
+    const hasOutgoing = connections.value.some((c) => c.from === node.id)
     return !hasIncoming && !hasOutgoing && storyNodes.value.length > 1
   })
 
@@ -626,7 +641,7 @@ const generateAISuggestions = () => {
       id: 'connect-nodes',
       type: '连接建议',
       impact: 'high',
-      description: `${isolatedNodes.length}个节点未与其他节点连接，建议建立故事流`
+      description: `${isolatedNodes.length}个节点未与其他节点连接，建议建立故事流`,
     })
   }
 
@@ -637,7 +652,7 @@ const getImpactLabel = (impact) => {
   const labels = {
     low: '低影响',
     medium: '中影响',
-    high: '高影响'
+    high: '高影响',
   }
   return labels[impact] || impact
 }
@@ -648,24 +663,32 @@ const applySuggestion = (suggestion) => {
 }
 
 const dismissSuggestion = (suggestionId) => {
-  aiSuggestions.value = aiSuggestions.value.filter(s => s.id !== suggestionId)
+  aiSuggestions.value = aiSuggestions.value.filter((s) => s.id !== suggestionId)
 }
 
 // 监听外部数据变化
-watch(() => props.modelValue, (newValue) => {
-  if (newValue) {
-    storyNodes.value = newValue.nodes || []
-    connections.value = newValue.connections || []
-  }
-}, { deep: true })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      storyNodes.value = newValue.nodes || []
+      connections.value = newValue.connections || []
+    }
+  },
+  { deep: true }
+)
 
 // 监听内部数据变化
-watch([storyNodes, connections], () => {
-  emit('update:modelValue', {
-    nodes: storyNodes.value,
-    connections: connections.value
-  })
-}, { deep: true })
+watch(
+  [storyNodes, connections],
+  () => {
+    emit('update:modelValue', {
+      nodes: storyNodes.value,
+      connections: connections.value,
+    })
+  },
+  { deep: true }
+)
 
 // 初始化
 onMounted(() => {

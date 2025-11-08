@@ -33,7 +33,10 @@ export function capitalize(str: string): string {
  * @param charset 字符集
  * @returns 随机字符串
  */
-export function randomString(length: number = 8, charset: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'): string {
+export function randomString(
+  length: number = 8,
+  charset: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+): string {
   let result = ''
   for (let i = 0; i < length; i++) {
     result += charset.charAt(Math.floor(Math.random() * charset.length))
@@ -73,7 +76,7 @@ export function escapeHtml(text: string): string {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#039;'
+    "'": '&#039;',
   }
   return text.replace(/[&<>"']/g, (m) => map[m])
 }
@@ -229,8 +232,8 @@ function levenshteinDistance(str1: string, str2: string): number {
       } else {
         matrix[i][j] = Math.min(
           matrix[i - 1][j - 1] + 1, // 替换
-          matrix[i][j - 1] + 1,     // 插入
-          matrix[i - 1][j] + 1      // 删除
+          matrix[i][j - 1] + 1, // 插入
+          matrix[i - 1][j] + 1 // 删除
         )
       }
     }

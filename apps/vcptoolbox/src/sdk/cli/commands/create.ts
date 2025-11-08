@@ -35,7 +35,6 @@ export class CreateCommand {
       console.log(`✅ 插件项目创建成功: ${projectDir}`)
       console.log(`📖 运行 'cd ${name} && npm install' 安装依赖`)
       console.log(`🚀 运行 'npm run dev' 启动开发服务器`)
-
     } catch (error: any) {
       console.error(`❌ 创建插件失败: ${error.message}`)
       process.exit(1)
@@ -50,7 +49,11 @@ export class CreateCommand {
     fs.mkdirSync(dir, { recursive: true })
   }
 
-  private async createProjectFiles(projectDir: string, name: string, options: CreateOptions): Promise<void> {
+  private async createProjectFiles(
+    projectDir: string,
+    name: string,
+    options: CreateOptions
+  ): Promise<void> {
     const files = [
       '.gitignore',
       'tsconfig.json',
@@ -59,7 +62,7 @@ export class CreateCommand {
       'src/index.ts',
       'src/plugin.ts',
       'src/manifest.json',
-      'tests/plugin.test.ts'
+      'tests/plugin.test.ts',
     ]
 
     for (const file of files) {
@@ -184,40 +187,40 @@ coverage/
   private getPackageJsonContent(name: string, options: CreateOptions): string {
     const packageJson = {
       name: `vcptoolbox-${name}`,
-      version: "1.0.0",
+      version: '1.0.0',
       description: options.description || `VCPToolBox ${options.type} plugin`,
-      main: "dist/index.js",
-      types: "dist/index.d.ts",
+      main: 'dist/index.js',
+      types: 'dist/index.d.ts',
       scripts: {
-        build: "tsc",
-        dev: "tsc --watch",
-        test: "jest",
-        lint: "eslint src/**/*.ts",
-        clean: "rm -rf dist"
+        build: 'tsc',
+        dev: 'tsc --watch',
+        test: 'jest',
+        lint: 'eslint src/**/*.ts',
+        clean: 'rm -rf dist',
       },
-      keywords: ["vcptoolbox", "plugin", options.type],
-      author: options.author || "",
-      license: "MIT",
+      keywords: ['vcptoolbox', 'plugin', options.type],
+      author: options.author || '',
+      license: 'MIT',
       dependencies: {
-        "@creation-ring/vcptoolbox-sdk": "^1.0.0"
+        '@creation-ring/vcptoolbox-sdk': '^1.0.0',
       },
       devDependencies: {
-        "@types/node": "^20.0.0",
-        "typescript": "^5.0.0",
-        "jest": "^29.0.0",
-        "@types/jest": "^29.0.0",
-        "eslint": "^8.0.0",
-        "@typescript-eslint/eslint-plugin": "^6.0.0",
-        "@typescript-eslint/parser": "^6.0.0"
+        '@types/node': '^20.0.0',
+        typescript: '^5.0.0',
+        jest: '^29.0.0',
+        '@types/jest': '^29.0.0',
+        eslint: '^8.0.0',
+        '@typescript-eslint/eslint-plugin': '^6.0.0',
+        '@typescript-eslint/parser': '^6.0.0',
       },
       vcptoolbox: {
         type: options.type,
         compatibility: {
-          minVersion: "1.0.0",
-          vcpProtocolVersion: "1.0.0",
-          platforms: ["web", "desktop"]
-        }
-      }
+          minVersion: '1.0.0',
+          vcpProtocolVersion: '1.0.0',
+          platforms: ['web', 'desktop'],
+        },
+      },
     }
 
     return JSON.stringify(packageJson, null, 2)
@@ -402,26 +405,26 @@ export class ${className}Plugin implements VCPPlugin {
     const manifest = {
       id: name,
       name: this.capitalize(name),
-      version: "1.0.0",
+      version: '1.0.0',
       type: options.type,
       description: options.description || `A ${options.type} plugin for VCPToolBox`,
-      author: options.author || "",
+      author: options.author || '',
       compatibility: {
-        minVersion: "1.0.0",
-        maxVersion: "",
-        vcpProtocolVersion: "1.0.0",
-        platforms: ["web", "desktop", "mobile"],
-        supportedModels: ["gpt-4", "claude-3"],
+        minVersion: '1.0.0',
+        maxVersion: '',
+        vcpProtocolVersion: '1.0.0',
+        platforms: ['web', 'desktop', 'mobile'],
+        supportedModels: ['gpt-4', 'claude-3'],
         memoryRequirements: {
           minRAM: 64,
-          recommendedRAM: 128
-        }
+          recommendedRAM: 128,
+        },
       },
       capabilities: this.getDefaultCapabilities(options.type),
       dependencies: [],
-      keywords: ["vcptoolbox", "plugin", options.type],
-      repository: "",
-      license: "MIT"
+      keywords: ['vcptoolbox', 'plugin', options.type],
+      repository: '',
+      license: 'MIT',
     }
 
     return JSON.stringify(manifest, null, 2)
@@ -475,34 +478,34 @@ describe('${className}Plugin', () => {
       case 'static':
         return {
           providesStaticData: true,
-          dataTypes: ['knowledge', 'context']
+          dataTypes: ['knowledge', 'context'],
         }
       case 'messagePreprocessor':
         return {
           processesMessages: true,
-          supportedFormats: ['text', 'image', 'audio']
+          supportedFormats: ['text', 'image', 'audio'],
         }
       case 'synchronous':
         return {
           providesTools: true,
           executionMode: 'sync',
-          avgExecutionTime: 100
+          avgExecutionTime: 100,
         }
       case 'asynchronous':
         return {
           providesTools: true,
           executionMode: 'async',
-          supportsProgress: true
+          supportsProgress: true,
         }
       case 'service':
         return {
           providesService: true,
-          backgroundProcessing: true
+          backgroundProcessing: true,
         }
       case 'dynamic':
         return {
           dynamicLearning: true,
-          selfImprovement: true
+          selfImprovement: true,
         }
       default:
         return {}
@@ -510,18 +513,30 @@ describe('${className}Plugin', () => {
   }
 
   private capitalize(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1).replace(/-./g, x => x[1].toUpperCase())
+    return str.charAt(0).toUpperCase() + str.slice(1).replace(/-./g, (x) => x[1].toUpperCase())
   }
 
-  private async createPackageJson(projectDir: string, name: string, options: CreateOptions): Promise<void> {
+  private async createPackageJson(
+    projectDir: string,
+    name: string,
+    options: CreateOptions
+  ): Promise<void> {
     // package.json 已经在 createProjectFiles 中创建，这里可以添加额外逻辑
   }
 
-  private async createReadme(projectDir: string, name: string, options: CreateOptions): Promise<void> {
+  private async createReadme(
+    projectDir: string,
+    name: string,
+    options: CreateOptions
+  ): Promise<void> {
     // README.md 已经在 createProjectFiles 中创建，这里可以添加额外逻辑
   }
 
-  private async createExampleCode(projectDir: string, name: string, options: CreateOptions): Promise<void> {
+  private async createExampleCode(
+    projectDir: string,
+    name: string,
+    options: CreateOptions
+  ): Promise<void> {
     // 创建示例代码目录和文件
     const examplesDir = path.join(projectDir, 'examples')
     fs.mkdirSync(examplesDir, { recursive: true })

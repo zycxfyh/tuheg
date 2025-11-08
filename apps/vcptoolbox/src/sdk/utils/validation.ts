@@ -64,19 +64,22 @@ export function isValidIdCard(idCard: string): boolean {
  * @param options 验证选项
  * @returns 验证结果
  */
-export function validatePassword(password: string, options: {
-  minLength?: number
-  requireUppercase?: boolean
-  requireLowercase?: boolean
-  requireNumbers?: boolean
-  requireSpecialChars?: boolean
-} = {}): { valid: boolean; errors: string[] } {
+export function validatePassword(
+  password: string,
+  options: {
+    minLength?: number
+    requireUppercase?: boolean
+    requireLowercase?: boolean
+    requireNumbers?: boolean
+    requireSpecialChars?: boolean
+  } = {}
+): { valid: boolean; errors: string[] } {
   const {
     minLength = 8,
     requireUppercase = true,
     requireLowercase = true,
     requireNumbers = true,
-    requireSpecialChars = false
+    requireSpecialChars = false,
   } = options
 
   const errors: string[] = []
@@ -103,7 +106,7 @@ export function validatePassword(password: string, options: {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   }
 }
 
@@ -186,9 +189,9 @@ export function isValidDate(date: string, format: string = 'YYYY-MM-DD'): boolea
   const [year, month, day] = date.split('-').map(Number)
   const dateObj = new Date(year, month - 1, day)
 
-  return dateObj.getFullYear() === year &&
-         dateObj.getMonth() === month - 1 &&
-         dateObj.getDate() === day
+  return (
+    dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day
+  )
 }
 
 /**
@@ -219,11 +222,16 @@ export function isValidArrayLength(array: any[], minLength: number, maxLength: n
  * @param requiredProps 必需属性
  * @returns 验证结果
  */
-export function validateObject(obj: any, requiredProps: string[]): { valid: boolean; missing: string[] } {
-  const missing = requiredProps.filter(prop => !(prop in obj) || obj[prop] === undefined || obj[prop] === null)
+export function validateObject(
+  obj: any,
+  requiredProps: string[]
+): { valid: boolean; missing: string[] } {
+  const missing = requiredProps.filter(
+    (prop) => !(prop in obj) || obj[prop] === undefined || obj[prop] === null
+  )
   return {
     valid: missing.length === 0,
-    missing
+    missing,
   }
 }
 

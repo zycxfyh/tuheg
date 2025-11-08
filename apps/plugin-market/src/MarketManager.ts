@@ -178,7 +178,7 @@ export class MarketManager extends EventEmitter {
         color: '#667eea',
         pluginCount: 0,
         featured: true,
-        subcategories: ['fantasy', 'sci-fi', 'mystery', 'romance']
+        subcategories: ['fantasy', 'sci-fi', 'mystery', 'romance'],
       },
       {
         id: 'character-creation',
@@ -188,7 +188,7 @@ export class MarketManager extends EventEmitter {
         color: '#764ba2',
         pluginCount: 0,
         featured: true,
-        subcategories: ['personality', 'appearance', 'relationships']
+        subcategories: ['personality', 'appearance', 'relationships'],
       },
       {
         id: 'world-building',
@@ -198,7 +198,7 @@ export class MarketManager extends EventEmitter {
         color: '#f093fb',
         pluginCount: 0,
         featured: true,
-        subcategories: ['geography', 'culture', 'magic', 'technology']
+        subcategories: ['geography', 'culture', 'magic', 'technology'],
       },
       {
         id: 'narrative-tools',
@@ -208,7 +208,7 @@ export class MarketManager extends EventEmitter {
         color: '#4facfe',
         pluginCount: 0,
         featured: false,
-        subcategories: ['plot', 'dialogue', 'pacing', 'structure']
+        subcategories: ['plot', 'dialogue', 'pacing', 'structure'],
       },
       {
         id: 'ui-themes',
@@ -218,7 +218,7 @@ export class MarketManager extends EventEmitter {
         color: '#43e97b',
         pluginCount: 0,
         featured: false,
-        subcategories: ['dark', 'light', 'custom', 'animated']
+        subcategories: ['dark', 'light', 'custom', 'animated'],
       },
       {
         id: 'integrations',
@@ -228,11 +228,11 @@ export class MarketManager extends EventEmitter {
         color: '#fa709a',
         pluginCount: 0,
         featured: false,
-        subcategories: ['social', 'cloud', 'ai-services', 'export']
-      }
+        subcategories: ['social', 'cloud', 'ai-services', 'export'],
+      },
     ]
 
-    categories.forEach(category => {
+    categories.forEach((category) => {
       this.categories.set(category.id, category)
     })
   }
@@ -252,7 +252,7 @@ export class MarketManager extends EventEmitter {
           type: 'world-builder',
           compatibility: {
             minVersion: '1.0.0',
-            platforms: ['web', 'desktop']
+            platforms: ['web', 'desktop'],
           },
           files: [],
           dependencies: ['@vcptoolbox/core'],
@@ -263,11 +263,11 @@ export class MarketManager extends EventEmitter {
             rating: 0,
             tags: ['fantasy', 'world-building', 'magic'],
             license: 'MIT',
-            changelog: []
+            changelog: [],
           },
           checksum: 'abc123',
           createdAt: new Date('2024-10-01'),
-          size: 15.2 * 1024 * 1024
+          size: 15.2 * 1024 * 1024,
         },
         status: 'approved',
         featured: true,
@@ -277,7 +277,7 @@ export class MarketManager extends EventEmitter {
         categories: ['world-building'],
         screenshots: [
           '/plugins/fantasy-world-builder-pro/screenshot1.jpg',
-          '/plugins/fantasy-world-builder-pro/screenshot2.jpg'
+          '/plugins/fantasy-world-builder-pro/screenshot2.jpg',
         ],
         videos: ['/plugins/fantasy-world-builder-pro/demo.mp4'],
         documentationUrl: '/docs/plugins/fantasy-world-builder-pro',
@@ -293,7 +293,7 @@ export class MarketManager extends EventEmitter {
           popularityRank: 1,
           weeklyDownloads: 1250,
           monthlyDownloads: 5200,
-          lastUpdated: new Date('2024-11-01')
+          lastUpdated: new Date('2024-11-01'),
         },
         reviews: [],
         pricing: {
@@ -302,19 +302,19 @@ export class MarketManager extends EventEmitter {
           basePrice: 199,
           features: {
             free: ['基础模板'],
-            premium: ['高级魔法体系', '自定义种族', '复杂地形', '天气系统', '导出功能']
-          }
+            premium: ['高级魔法体系', '自定义种族', '复杂地形', '天气系统', '导出功能'],
+          },
         },
         createdAt: new Date('2024-10-01'),
         updatedAt: new Date('2024-11-01'),
-        publishedAt: new Date('2024-10-15')
-      }
+        publishedAt: new Date('2024-10-15'),
+      },
     ]
 
-    samplePlugins.forEach(plugin => {
+    samplePlugins.forEach((plugin) => {
       this.plugins.set(plugin.id, plugin)
       // 更新分类计数
-      plugin.categories.forEach(catId => {
+      plugin.categories.forEach((catId) => {
         const category = this.categories.get(catId)
         if (category) {
           category.pluginCount++
@@ -327,15 +327,18 @@ export class MarketManager extends EventEmitter {
   }
 
   // 发布插件到市场
-  async publishPlugin(pluginPackage: PluginPackage, metadata: {
-    screenshots?: string[]
-    videos?: string[]
-    demoUrl?: string
-    documentationUrl?: string
-    supportUrl?: string
-    categories: string[]
-    tags: string[]
-  }): Promise<MarketPlugin> {
+  async publishPlugin(
+    pluginPackage: PluginPackage,
+    metadata: {
+      screenshots?: string[]
+      videos?: string[]
+      demoUrl?: string
+      documentationUrl?: string
+      supportUrl?: string
+      categories: string[]
+      tags: string[]
+    }
+  ): Promise<MarketPlugin> {
     const marketPlugin: MarketPlugin = {
       id: pluginPackage.id,
       package: pluginPackage,
@@ -361,7 +364,7 @@ export class MarketManager extends EventEmitter {
         popularityRank: 0,
         weeklyDownloads: 0,
         monthlyDownloads: 0,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       },
       reviews: [],
       pricing: {
@@ -369,11 +372,11 @@ export class MarketManager extends EventEmitter {
         currency: 'CNY',
         features: {
           free: ['基础功能'],
-          premium: []
-        }
+          premium: [],
+        },
       },
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     this.plugins.set(marketPlugin.id, marketPlugin)
@@ -430,14 +433,17 @@ export class MarketManager extends EventEmitter {
   }
 
   // 添加评价
-  async addReview(pluginId: string, review: Omit<PluginReview, 'id' | 'createdAt'>): Promise<PluginReview> {
+  async addReview(
+    pluginId: string,
+    review: Omit<PluginReview, 'id' | 'createdAt'>
+  ): Promise<PluginReview> {
     const plugin = this.plugins.get(pluginId)
     if (!plugin) return null as any
 
     const newReview: PluginReview = {
       ...review,
       id: `review-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
     plugin.reviews.push(newReview)
@@ -454,7 +460,11 @@ export class MarketManager extends EventEmitter {
   }
 
   // 搜索插件
-  searchPlugins(filters: MarketSearchFilters, limit = 20, offset = 0): {
+  searchPlugins(
+    filters: MarketSearchFilters,
+    limit = 20,
+    offset = 0
+  ): {
     plugins: MarketPlugin[]
     total: number
     hasMore: boolean
@@ -464,53 +474,52 @@ export class MarketManager extends EventEmitter {
     // 应用过滤器
     if (filters.query) {
       const query = filters.query.toLowerCase()
-      plugins = plugins.filter(p =>
-        p.package.name.toLowerCase().includes(query) ||
-        p.package.description.toLowerCase().includes(query) ||
-        p.tags.some(tag => tag.toLowerCase().includes(query))
+      plugins = plugins.filter(
+        (p) =>
+          p.package.name.toLowerCase().includes(query) ||
+          p.package.description.toLowerCase().includes(query) ||
+          p.tags.some((tag) => tag.toLowerCase().includes(query))
       )
     }
 
     if (filters.category) {
-      plugins = plugins.filter(p => p.categories.includes(filters.category!))
+      plugins = plugins.filter((p) => p.categories.includes(filters.category!))
     }
 
     if (filters.type) {
-      plugins = plugins.filter(p => p.package.type === filters.type)
+      plugins = plugins.filter((p) => p.package.type === filters.type)
     }
 
     if (filters.pricing) {
-      plugins = plugins.filter(p => p.pricing.model === filters.pricing)
+      plugins = plugins.filter((p) => p.pricing.model === filters.pricing)
     }
 
     if (filters.rating) {
-      plugins = plugins.filter(p => p.stats.rating >= filters.rating!)
+      plugins = plugins.filter((p) => p.stats.rating >= filters.rating!)
     }
 
     if (filters.verified !== undefined) {
-      plugins = plugins.filter(p => p.verified === filters.verified)
+      plugins = plugins.filter((p) => p.verified === filters.verified)
     }
 
     if (filters.featured !== undefined) {
-      plugins = plugins.filter(p => p.featured === filters.featured)
+      plugins = plugins.filter((p) => p.featured === filters.featured)
     }
 
     if (filters.trending !== undefined) {
-      plugins = plugins.filter(p => p.trending === filters.trending)
+      plugins = plugins.filter((p) => p.trending === filters.trending)
     }
 
     if (filters.author) {
-      plugins = plugins.filter(p => p.package.author === filters.author)
+      plugins = plugins.filter((p) => p.package.author === filters.author)
     }
 
     if (filters.tags && filters.tags.length > 0) {
-      plugins = plugins.filter(p =>
-        filters.tags!.some(tag => p.tags.includes(tag))
-      )
+      plugins = plugins.filter((p) => filters.tags!.some((tag) => p.tags.includes(tag)))
     }
 
     // 只返回已批准的插件
-    plugins = plugins.filter(p => p.status === 'approved')
+    plugins = plugins.filter((p) => p.status === 'approved')
 
     const total = plugins.length
 
@@ -561,7 +570,7 @@ export class MarketManager extends EventEmitter {
     return {
       plugins: paginatedPlugins,
       total,
-      hasMore: endIndex < total
+      hasMore: endIndex < total,
     }
   }
 
@@ -570,7 +579,7 @@ export class MarketManager extends EventEmitter {
     // 简化版推荐算法
     // 实际实现应该基于用户行为、偏好等
     const plugins = Array.from(this.plugins.values())
-      .filter(p => p.status === 'approved')
+      .filter((p) => p.status === 'approved')
       .sort((a, b) => b.stats.rating - a.stats.rating)
       .slice(0, limit)
 
@@ -580,16 +589,16 @@ export class MarketManager extends EventEmitter {
   // 获取热门插件
   getTrendingPlugins(limit = 10): MarketPlugin[] {
     return this.trendingPlugins
-      .map(id => this.plugins.get(id))
-      .filter(p => p !== undefined)
+      .map((id) => this.plugins.get(id))
+      .filter((p) => p !== undefined)
       .slice(0, limit) as MarketPlugin[]
   }
 
   // 获取精选插件
   getFeaturedPlugins(limit = 10): MarketPlugin[] {
     return this.featuredPlugins
-      .map(id => this.plugins.get(id))
-      .filter(p => p !== undefined)
+      .map((id) => this.plugins.get(id))
+      .filter((p) => p !== undefined)
       .slice(0, limit) as MarketPlugin[]
   }
 
@@ -606,15 +615,15 @@ export class MarketManager extends EventEmitter {
   // 获取市场分析
   getMarketAnalytics(): MarketAnalytics {
     const plugins = Array.from(this.plugins.values())
-    const approvedPlugins = plugins.filter(p => p.status === 'approved')
+    const approvedPlugins = plugins.filter((p) => p.status === 'approved')
 
     const totalDownloads = approvedPlugins.reduce((sum, p) => sum + p.stats.downloads, 0)
     const totalRevenue = approvedPlugins.reduce((sum, p) => sum + p.stats.revenue, 0)
 
     // 分类统计
     const categoryStats = new Map<string, { downloads: number; revenue: number }>()
-    approvedPlugins.forEach(plugin => {
-      plugin.categories.forEach(catId => {
+    approvedPlugins.forEach((plugin) => {
+      plugin.categories.forEach((catId) => {
         const stats = categoryStats.get(catId) || { downloads: 0, revenue: 0 }
         stats.downloads += plugin.stats.downloads
         stats.revenue += plugin.stats.revenue
@@ -641,11 +650,11 @@ export class MarketManager extends EventEmitter {
       const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000)
       downloadTrends.push({
         date: date.toISOString().split('T')[0],
-        downloads: Math.floor(totalDownloads * (0.5 + Math.random() * 0.5) / 30)
+        downloads: Math.floor((totalDownloads * (0.5 + Math.random() * 0.5)) / 30),
       })
       userGrowth.push({
         date: date.toISOString().split('T')[0],
-        users: Math.floor(1000 + Math.random() * 500)
+        users: Math.floor(1000 + Math.random() * 500),
       })
     }
 
@@ -653,8 +662,10 @@ export class MarketManager extends EventEmitter {
       .sort((a, b) => b.stats.downloads - a.stats.downloads)
       .slice(0, 10)
 
-    const averageRating = approvedPlugins.length > 0 ?
-      approvedPlugins.reduce((sum, p) => sum + p.stats.rating, 0) / approvedPlugins.length : 0
+    const averageRating =
+      approvedPlugins.length > 0
+        ? approvedPlugins.reduce((sum, p) => sum + p.stats.rating, 0) / approvedPlugins.length
+        : 0
 
     return {
       totalPlugins: approvedPlugins.length,
@@ -670,8 +681,8 @@ export class MarketManager extends EventEmitter {
         averageRating,
         reviewRate: 0.15, // 15%的插件有评价
         updateFrequency: 7, // 平均7天更新一次
-        supportResponseTime: 4 // 平均4小时回复
-      }
+        supportResponseTime: 4, // 平均4小时回复
+      },
     }
   }
 
@@ -688,7 +699,7 @@ export class MarketManager extends EventEmitter {
 
   private updatePopularityRankings(): void {
     const plugins = Array.from(this.plugins.values())
-      .filter(p => p.status === 'approved')
+      .filter((p) => p.status === 'approved')
       .sort((a, b) => b.stats.downloads - a.stats.downloads)
 
     plugins.forEach((plugin, index) => {
@@ -698,10 +709,10 @@ export class MarketManager extends EventEmitter {
 
   private updateTrendingPlugins(): void {
     const plugins = Array.from(this.plugins.values())
-      .filter(p => p.status === 'approved')
+      .filter((p) => p.status === 'approved')
       .sort((a, b) => b.stats.trendingScore - a.stats.trendingScore)
 
-    this.trendingPlugins = plugins.slice(0, 20).map(p => p.id)
+    this.trendingPlugins = plugins.slice(0, 20).map((p) => p.id)
   }
 
   private updateTrendingScore(plugin: MarketPlugin): void {
@@ -711,7 +722,8 @@ export class MarketManager extends EventEmitter {
     const ratingWeight = 0.3
     const recencyWeight = 0.3
 
-    const daysSinceUpdate = (Date.now() - plugin.stats.lastUpdated.getTime()) / (1000 * 60 * 60 * 24)
+    const daysSinceUpdate =
+      (Date.now() - plugin.stats.lastUpdated.getTime()) / (1000 * 60 * 60 * 24)
     const recencyScore = Math.max(0, 30 - daysSinceUpdate) / 30 // 30天内更新有加成
 
     plugin.stats.trendingScore =

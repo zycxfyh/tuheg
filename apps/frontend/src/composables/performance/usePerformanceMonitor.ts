@@ -46,7 +46,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
     enableMemoryMonitoring: true,
     enableNetworkMonitoring: true,
     reportInterval: 30000, // 30秒
-    sampleRate: 1.0 // 100%采样
+    sampleRate: 1.0, // 100%采样
   }
 
   const finalConfig = { ...defaultConfig, ...config }
@@ -61,7 +61,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
     domContentLoaded: 0,
     loadComplete: 0,
     memoryUsage: 0,
-    networkRequests: []
+    networkRequests: [],
   })
 
   const isMonitoring = ref(false)
@@ -142,7 +142,8 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
         entries.forEach((entry: any) => {
           if (entry.entryType === 'navigation') {
             metrics.value.ttfb = entry.responseStart - entry.requestStart
-            metrics.value.domContentLoaded = entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart
+            metrics.value.domContentLoaded =
+              entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart
             metrics.value.loadComplete = entry.loadEventEnd - entry.loadEventStart
           }
         })
@@ -166,7 +167,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
                 duration: entry.responseEnd - entry.requestStart,
                 status: 200, // Performance API 不提供状态码
                 size: entry.transferSize || 0,
-                timestamp: entry.requestStart
+                timestamp: entry.requestStart,
               }
               metrics.value.networkRequests.push(request)
 
@@ -215,7 +216,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
   const stopMonitoring = () => {
     if (!isMonitoring.value) return
 
-    observers.value.forEach(observer => {
+    observers.value.forEach((observer) => {
       if (observer.disconnect) {
         observer.disconnect()
       }
@@ -239,7 +240,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       timestamp: Date.now(),
       url: window.location.href,
       userAgent: navigator.userAgent,
-      metrics: { ...metrics.value }
+      metrics: { ...metrics.value },
     }
 
     // 发送到分析服务
@@ -255,7 +256,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       name,
       value,
       category,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }
 
     // 存储自定义指标
@@ -304,7 +305,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       insights.push({
         type: 'warning',
         message: 'Largest Contentful Paint 过慢，影响用户体验',
-        suggestion: '优化最大内容绘制时间，考虑图片懒加载和关键资源优先加载'
+        suggestion: '优化最大内容绘制时间，考虑图片懒加载和关键资源优先加载',
       })
     }
 
@@ -312,7 +313,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       insights.push({
         type: 'warning',
         message: 'First Input Delay 过高，页面响应不流畅',
-        suggestion: '减少JavaScript执行时间，优化事件处理程序'
+        suggestion: '减少JavaScript执行时间，优化事件处理程序',
       })
     }
 
@@ -320,16 +321,16 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       insights.push({
         type: 'error',
         message: 'Cumulative Layout Shift 严重，页面布局不稳定',
-        suggestion: '为图像和动态内容设置明确的尺寸，避免布局偏移'
+        suggestion: '为图像和动态内容设置明确的尺寸，避免布局偏移',
       })
     }
 
-    const slowRequests = networkRequests.filter(req => req.duration > 1000)
+    const slowRequests = networkRequests.filter((req) => req.duration > 1000)
     if (slowRequests.length > 0) {
       insights.push({
         type: 'info',
         message: `发现${slowRequests.length}个慢速网络请求`,
-        suggestion: '考虑启用压缩、CDN加速或资源缓存优化'
+        suggestion: '考虑启用压缩、CDN加速或资源缓存优化',
       })
     }
 
@@ -362,6 +363,6 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
     recordInteraction,
     getPerformanceScore,
     getPerformanceInsights,
-    reportMetrics
+    reportMetrics,
   }
 }

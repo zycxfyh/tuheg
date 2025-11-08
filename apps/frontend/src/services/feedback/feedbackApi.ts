@@ -115,15 +115,11 @@ class FeedbackApiService {
         })
       }
 
-      const response = await axios.post<FeedbackResponse>(
-        `${this.baseURL}/submit`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      )
+      const response = await axios.post<FeedbackResponse>(`${this.baseURL}/submit`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
 
       return response.data
     } catch (error) {
@@ -134,7 +130,7 @@ class FeedbackApiService {
         id: 'feedback-' + Date.now(),
         status: 'received',
         estimatedResponseTime: '24小时内',
-        trackingId: 'TRK-' + Math.random().toString(36).substr(2, 6).toUpperCase()
+        trackingId: 'TRK-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
       }
     }
   }
@@ -142,10 +138,9 @@ class FeedbackApiService {
   // 获取反馈历史
   async getFeedbackHistory(limit = 10): Promise<FeedbackSubmission[]> {
     try {
-      const response = await axios.get<FeedbackSubmission[]>(
-        `${this.baseURL}/history`,
-        { params: { limit } }
-      )
+      const response = await axios.get<FeedbackSubmission[]>(`${this.baseURL}/history`, {
+        params: { limit },
+      })
       return response.data
     } catch (error) {
       console.error('Failed to get feedback history:', error)
@@ -173,8 +168,8 @@ class FeedbackApiService {
         preparationMaterials: [
           '请准备您使用创世星环的体验分享',
           '可以包含您遇到的问题或建议',
-          '访谈时长约30分钟'
-        ]
+          '访谈时长约30分钟',
+        ],
       }
     }
   }
@@ -214,7 +209,7 @@ class FeedbackApiService {
         totalFeedback: 0,
         averageRating: 0,
         lastFeedbackDate: null,
-        interviewRequested: false
+        interviewRequested: false,
       }
     }
   }
@@ -226,13 +221,13 @@ class FeedbackApiService {
       eventData: {
         page,
         referrer: document.referrer,
-        ...additionalData
+        ...additionalData,
       },
       timestamp: new Date().toISOString(),
       sessionId: this.getSessionId(),
       userId: this.getUserId() || undefined,
       page,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     })
   }
 
@@ -243,13 +238,13 @@ class FeedbackApiService {
       eventData: {
         elementId,
         action,
-        ...additionalData
+        ...additionalData,
       },
       timestamp: new Date().toISOString(),
       sessionId: this.getSessionId(),
       userId: this.getUserId() || undefined,
       page: window.location.pathname,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     })
   }
 
@@ -260,13 +255,13 @@ class FeedbackApiService {
       eventData: {
         message: error.message,
         stack: error.stack,
-        ...context
+        ...context,
       },
       timestamp: new Date().toISOString(),
       sessionId: this.getSessionId(),
       userId: this.getUserId() || undefined,
       page: window.location.pathname,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     })
   }
 
@@ -279,13 +274,13 @@ class FeedbackApiService {
         promptLength: prompt.length,
         responseLength: response.length,
         duration,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       },
       timestamp: new Date().toISOString(),
       sessionId: this.getSessionId(),
       userId: this.getUserId() || undefined,
       page: window.location.pathname,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     })
   }
 
@@ -296,13 +291,13 @@ class FeedbackApiService {
       eventData: {
         metric,
         value,
-        ...additionalData
+        ...additionalData,
       },
       timestamp: new Date().toISOString(),
       sessionId: this.getSessionId(),
       userId: this.getUserId() || undefined,
       page: window.location.pathname,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     })
   }
 }

@@ -234,33 +234,33 @@ const props = defineProps({
       title: '',
       chapters: [],
       currentChapter: 1,
-      currentSection: 0
-    })
+      currentSection: 0,
+    }),
   },
   narrative: {
     type: Object,
-    default: () => null
+    default: () => null,
   },
   dialogue: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   choices: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   scene: {
     type: Object,
-    default: () => null
+    default: () => null,
   },
   aiThinking: {
     type: Boolean,
-    default: false
+    default: false,
   },
   thinkingStep: {
     type: String,
-    default: 'AI正在思考...'
-  }
+    default: 'AI正在思考...',
+  },
 })
 
 // Emits
@@ -270,7 +270,7 @@ const emit = defineEmits([
   'previous-section',
   'save-progress',
   'toggle-immersive',
-  'settings-changed'
+  'settings-changed',
 ])
 
 // 响应式数据
@@ -284,7 +284,7 @@ const thinkingSteps = ref([
   'AI正在分析你的选择...',
   'AI正在构建故事逻辑...',
   'AI正在生成叙事内容...',
-  'AI正在润色文字表达...'
+  'AI正在润色文字表达...',
 ])
 
 // 阅读设置
@@ -294,7 +294,7 @@ const settings = ref({
   textReveal: true,
   autoPlay: false,
   autoPlaySpeed: 3,
-  soundEnabled: false
+  soundEnabled: false,
 })
 
 // 计算属性
@@ -309,10 +309,14 @@ const currentThinkingStep = computed(() => props.thinkingStep || thinkingSteps.v
 const currentChapter = computed(() => props.story.currentChapter || 1)
 const storyProgress = computed(() => {
   if (!props.story.chapters || props.story.chapters.length === 0) return 0
-  const totalSections = props.story.chapters.reduce((sum, chapter) => sum + chapter.sections.length, 0)
-  const completedSections = props.story.chapters
-    .slice(0, props.story.currentChapter - 1)
-    .reduce((sum, chapter) => sum + chapter.sections.length, 0) + props.story.currentSection
+  const totalSections = props.story.chapters.reduce(
+    (sum, chapter) => sum + chapter.sections.length,
+    0
+  )
+  const completedSections =
+    props.story.chapters
+      .slice(0, props.story.currentChapter - 1)
+      .reduce((sum, chapter) => sum + chapter.sections.length, 0) + props.story.currentSection
   return Math.round((completedSections / totalSections) * 100)
 })
 
@@ -363,7 +367,7 @@ const nextSection = () => {
   if (hasNext.value) {
     emit('next-section')
     contentTransition.value = true
-    setTimeout(() => contentTransition.value = false, 500)
+    setTimeout(() => (contentTransition.value = false), 500)
   }
 }
 
@@ -371,7 +375,7 @@ const previousSection = () => {
   if (hasPrevious.value) {
     emit('previous-section')
     contentTransition.value = true
-    setTimeout(() => contentTransition.value = false, 500)
+    setTimeout(() => (contentTransition.value = false), 500)
   }
 }
 
@@ -396,7 +400,7 @@ const resetSettings = () => {
     textReveal: true,
     autoPlay: false,
     autoPlaySpeed: 3,
-    soundEnabled: false
+    soundEnabled: false,
   }
   applySettings()
 }
@@ -436,15 +440,19 @@ const revealText = (text, elementId, speed = 50) => {
 }
 
 // 监听对话变化，开始文字渐显
-watch(() => currentDialogue.value, (newDialogue) => {
-  if (newDialogue && textRevealEffect.value) {
-    newDialogue.forEach(line => {
-      if (line.text) {
-        revealText(line.text, line.id, 30)
-      }
-    })
-  }
-}, { deep: true })
+watch(
+  () => currentDialogue.value,
+  (newDialogue) => {
+    if (newDialogue && textRevealEffect.value) {
+      newDialogue.forEach((line) => {
+        if (line.text) {
+          revealText(line.text, line.id, 30)
+        }
+      })
+    }
+  },
+  { deep: true }
+)
 
 // 键盘快捷键
 const handleKeydown = (event) => {
@@ -506,9 +514,13 @@ onUnmounted(() => {
 })
 
 // 保存设置到localStorage
-watch(settings, (newSettings) => {
-  localStorage.setItem('narrative-settings', JSON.stringify(newSettings))
-}, { deep: true })
+watch(
+  settings,
+  (newSettings) => {
+    localStorage.setItem('narrative-settings', JSON.stringify(newSettings))
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped>

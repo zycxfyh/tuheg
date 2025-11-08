@@ -137,13 +137,16 @@ export interface CampaignPerformance {
   totalConversions: number
   totalSpent: number
   roi: number
-  platformBreakdown: Record<SocialPlatform, {
-    reach: number
-    engagement: number
-    conversions: number
-    spent: number
-    roi: number
-  }>
+  platformBreakdown: Record<
+    SocialPlatform,
+    {
+      reach: number
+      engagement: number
+      conversions: number
+      spent: number
+      roi: number
+    }
+  >
 }
 
 // 受众洞察
@@ -200,8 +203,8 @@ export class SocialMediaManager extends EventEmitter {
           autoSchedule: true,
           contentGuidelines: ['技术分享', '产品更新', '社区互动'],
           postingTimes: ['09:00', '14:00', '19:00'],
-          targetEngagementRate: 3.5
-        }
+          targetEngagementRate: 3.5,
+        },
       },
       {
         platform: 'linkedin',
@@ -218,8 +221,8 @@ export class SocialMediaManager extends EventEmitter {
           autoSchedule: false,
           contentGuidelines: ['行业洞察', '技术深度', '团队介绍'],
           postingTimes: ['10:00', '15:00'],
-          targetEngagementRate: 2.8
-        }
+          targetEngagementRate: 2.8,
+        },
       },
       {
         platform: 'youtube',
@@ -236,8 +239,8 @@ export class SocialMediaManager extends EventEmitter {
           autoSchedule: true,
           contentGuidelines: ['教程视频', '产品演示', '访谈节目'],
           postingTimes: ['18:00'],
-          targetEngagementRate: 5.2
-        }
+          targetEngagementRate: 5.2,
+        },
       },
       {
         platform: 'discord',
@@ -254,8 +257,8 @@ export class SocialMediaManager extends EventEmitter {
           autoSchedule: false,
           contentGuidelines: ['社区讨论', '技术支持', '活动通知'],
           postingTimes: ['12:00', '20:00'],
-          targetEngagementRate: 8.5
-        }
+          targetEngagementRate: 8.5,
+        },
       },
       {
         platform: 'bilibili',
@@ -272,12 +275,12 @@ export class SocialMediaManager extends EventEmitter {
           autoSchedule: true,
           contentGuidelines: ['技术教程', '产品介绍', '行业讨论'],
           postingTimes: ['12:00', '19:00'],
-          targetEngagementRate: 4.1
-        }
-      }
+          targetEngagementRate: 4.1,
+        },
+      },
     ]
 
-    accounts.forEach(account => this.accounts.set(account.platform, account))
+    accounts.forEach((account) => this.accounts.set(account.platform, account))
   }
 
   // 初始化内容策略
@@ -293,18 +296,18 @@ export class SocialMediaManager extends EventEmitter {
         brandVoice: {
           tone: 'professional',
           language: 'conversational',
-          personality: ['创新', '专业', '友好', '技术驱动']
+          personality: ['创新', '专业', '友好', '技术驱动'],
         },
         hashtags: {
           primary: ['#AI', '#GameDev', '#MultiAgent', '#CreationRing'],
           secondary: ['#ArtificialIntelligence', '#IndieGame', '#TechInnovation'],
-          trending: ['#AI艺术', '#游戏开发', '#创业']
+          trending: ['#AI艺术', '#游戏开发', '#创业'],
         },
         engagementStrategy: {
           responseTime: '<2小时',
           interactionTypes: ['回复', '转发', '点赞', '话题讨论'],
-          communityGuidelines: '积极、专业、建设性反馈'
-        }
+          communityGuidelines: '积极、专业、建设性反馈',
+        },
       },
       linkedin: {
         platform: 'linkedin',
@@ -316,18 +319,18 @@ export class SocialMediaManager extends EventEmitter {
         brandVoice: {
           tone: 'professional',
           language: 'formal',
-          personality: ['权威', '创新', '协作', '专业']
+          personality: ['权威', '创新', '协作', '专业'],
         },
         hashtags: {
           primary: ['#AI', '#Enterprise', '#Innovation', '#TechLeadership'],
           secondary: ['#ArtificialIntelligence', '#DigitalTransformation', '#FutureOfWork'],
-          trending: ['#AI伦理', '#企业创新', '#技术领导力']
+          trending: ['#AI伦理', '#企业创新', '#技术领导力'],
         },
         engagementStrategy: {
           responseTime: '<4小时',
           interactionTypes: ['评论回复', '内容转发', '专业讨论'],
-          communityGuidelines: '专业、尊重、建设性对话'
-        }
+          communityGuidelines: '专业、尊重、建设性对话',
+        },
       },
       youtube: {
         platform: 'youtube',
@@ -339,19 +342,19 @@ export class SocialMediaManager extends EventEmitter {
         brandVoice: {
           tone: 'educational',
           language: 'conversational',
-          personality: ['专业', '易懂', '实用', '创新']
+          personality: ['专业', '易懂', '实用', '创新'],
         },
         hashtags: {
           primary: ['#教程', '#AI教程', '#游戏开发教程', '#创世星环'],
           secondary: ['#编程教学', '#AI学习', '#游戏制作'],
-          trending: ['#AI入门', '#独立游戏', '#创意编程']
+          trending: ['#AI入门', '#独立游戏', '#创意编程'],
         },
         engagementStrategy: {
           responseTime: '<24小时',
           interactionTypes: ['评论回复', '问题解答', '社区讨论'],
-          communityGuidelines: '友好、耐心、专业解答'
-        }
-      }
+          communityGuidelines: '友好、耐心、专业解答',
+        },
+      },
     }
 
     Object.entries(strategies).forEach(([platform, strategy]) => {
@@ -360,7 +363,9 @@ export class SocialMediaManager extends EventEmitter {
   }
 
   // 创建社交媒体帖子
-  async createPost(postData: Omit<SocialPost, 'id' | 'createdAt' | 'performance'>): Promise<SocialPost> {
+  async createPost(
+    postData: Omit<SocialPost, 'id' | 'createdAt' | 'performance'>
+  ): Promise<SocialPost> {
     const post: SocialPost = {
       ...postData,
       id: `post-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -374,8 +379,8 @@ export class SocialMediaManager extends EventEmitter {
         comments: 0,
         clicks: 0,
         saves: 0,
-        engagementRate: 0
-      }
+        engagementRate: 0,
+      },
     }
 
     this.posts.set(post.id, post)
@@ -431,7 +436,7 @@ export class SocialMediaManager extends EventEmitter {
         scheduledAt,
         status: scheduledAt ? 'scheduled' : 'draft',
         targetAudience: strategy.targetAudience,
-        campaignId: undefined
+        campaignId: undefined,
       })
 
       posts.push(post)
@@ -454,7 +459,7 @@ export class SocialMediaManager extends EventEmitter {
       facebook: 63206,
       instagram: 2200,
       tiktok: 150,
-      youtube: 5000
+      youtube: 5000,
     }
 
     const maxLength = maxLengths[platform] || 1000
@@ -513,7 +518,9 @@ export class SocialMediaManager extends EventEmitter {
   }
 
   // 创建社交媒体活动
-  async createCampaign(campaignData: Omit<SocialCampaign, 'id' | 'performance'>): Promise<SocialCampaign> {
+  async createCampaign(
+    campaignData: Omit<SocialCampaign, 'id' | 'performance'>
+  ): Promise<SocialCampaign> {
     const campaign: SocialCampaign = {
       ...campaignData,
       id: `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -523,18 +530,18 @@ export class SocialMediaManager extends EventEmitter {
         totalConversions: 0,
         totalSpent: 0,
         roi: 0,
-        platformBreakdown: {} as any
-      }
+        platformBreakdown: {} as any,
+      },
     }
 
     // 初始化平台数据
-    campaign.platforms.forEach(platform => {
+    campaign.platforms.forEach((platform) => {
       campaign.performance.platformBreakdown[platform] = {
         reach: 0,
         engagement: 0,
         conversions: 0,
         spent: 0,
-        roi: 0
+        roi: 0,
       }
     })
 
@@ -555,19 +562,19 @@ export class SocialMediaManager extends EventEmitter {
 
     if (filters) {
       if (filters.platform) {
-        posts = posts.filter(p => p.platform === filters.platform)
+        posts = posts.filter((p) => p.platform === filters.platform)
       }
 
       if (filters.status) {
-        posts = posts.filter(p => p.status === filters.status)
+        posts = posts.filter((p) => p.status === filters.status)
       }
 
       if (filters.campaignId) {
-        posts = posts.filter(p => p.campaignId === filters.campaignId)
+        posts = posts.filter((p) => p.campaignId === filters.campaignId)
       }
 
       if (filters.dateRange) {
-        posts = posts.filter(p => {
+        posts = posts.filter((p) => {
           const postDate = p.publishedAt || p.scheduledAt || p.createdAt
           return postDate >= filters.dateRange!.start && postDate <= filters.dateRange!.end
         })
@@ -599,7 +606,10 @@ export class SocialMediaManager extends EventEmitter {
   }
 
   // 获取平台分析报告
-  getPlatformAnalytics(platform: SocialPlatform, dateRange?: { start: Date; end: Date }): {
+  getPlatformAnalytics(
+    platform: SocialPlatform,
+    dateRange?: { start: Date; end: Date }
+  ): {
     totalPosts: number
     totalReach: number
     totalEngagement: number
@@ -611,7 +621,7 @@ export class SocialMediaManager extends EventEmitter {
     const posts = this.getPosts({
       platform,
       status: 'published',
-      dateRange
+      dateRange,
     })
 
     const totalReach = posts.reduce((sum, p) => sum + p.performance.reach, 0)
@@ -625,7 +635,7 @@ export class SocialMediaManager extends EventEmitter {
 
     // 发布时间分析
     const postingSchedule: Record<number, number> = {}
-    posts.forEach(post => {
+    posts.forEach((post) => {
       if (post.publishedAt) {
         const hour = post.publishedAt.getHours()
         postingSchedule[hour] = (postingSchedule[hour] || 0) + 1
@@ -634,12 +644,12 @@ export class SocialMediaManager extends EventEmitter {
 
     const scheduleData = Object.entries(postingSchedule).map(([hour, count]) => ({
       hour: parseInt(hour),
-      count
+      count,
     }))
 
     // 内容类型分析
     const contentTypeBreakdown: Record<string, number> = {}
-    posts.forEach(post => {
+    posts.forEach((post) => {
       const hasMedia = post.media && post.media.length > 0
       const type = hasMedia ? 'media' : 'text'
       contentTypeBreakdown[type] = (contentTypeBreakdown[type] || 0) + 1
@@ -652,7 +662,7 @@ export class SocialMediaManager extends EventEmitter {
       averageEngagementRate,
       bestPerformingPosts,
       postingSchedule: scheduleData,
-      contentTypeBreakdown
+      contentTypeBreakdown,
     }
   }
 
@@ -675,8 +685,8 @@ export class SocialMediaManager extends EventEmitter {
         '添加相关表情符号',
         '包含号召性用语',
         '分享用户故事',
-        '提供实用价值'
-      ]
+        '提供实用价值',
+      ],
     }
 
     return suggestions
@@ -721,7 +731,7 @@ ${topic}是AI创作领域的重要突破。通过多Agent协作技术，我们�
 
 完整指南：link.to/video
 
-#教程 #教学 #AI`
+#教程 #教学 #AI`,
     }
 
     return templates[contentType] || templates.text

@@ -6,7 +6,7 @@ import {
   MultimodalContent,
   MultimodalType,
   GenerationOptions,
-  AudioContent
+  AudioContent,
 } from '../types'
 
 export class AudioGenerator implements MultimodalGenerator {
@@ -15,11 +15,7 @@ export class AudioGenerator implements MultimodalGenerator {
   }
 
   async generate(prompt: string, options: GenerationOptions = {}): Promise<MultimodalContent> {
-    const {
-      style = 'narrative',
-      mood,
-      voice = 'default'
-    } = options
+    const { style = 'narrative', mood, voice = 'default' } = options
 
     // 构建音频生成提示词
     const enhancedPrompt = this.buildAudioPrompt(prompt, style, mood)
@@ -33,7 +29,7 @@ export class AudioGenerator implements MultimodalGenerator {
       transcript: prompt, // 原始文本作为转录
       generated: true,
       voice,
-      language: 'zh-CN'
+      language: 'zh-CN',
     }
 
     return { audio: audioContent }
@@ -41,16 +37,16 @@ export class AudioGenerator implements MultimodalGenerator {
 
   getSupportedStyles(): string[] {
     return [
-      'narrative',      // 叙事语音
-      'dialogue',       // 对话语音
-      'music',          // 背景音乐
-      'sound-effect',   // 音效
-      'ambient',        // 环境音
-      'poetry',         // 诗歌朗诵
-      'instructional',  // 教学语音
-      'dramatic',       // 戏剧化
-      'calm',           // 安静舒缓
-      'energetic'       // 活力四射
+      'narrative', // 叙事语音
+      'dialogue', // 对话语音
+      'music', // 背景音乐
+      'sound-effect', // 音效
+      'ambient', // 环境音
+      'poetry', // 诗歌朗诵
+      'instructional', // 教学语音
+      'dramatic', // 戏剧化
+      'calm', // 安静舒缓
+      'energetic', // 活力四射
     ]
   }
 
@@ -59,16 +55,16 @@ export class AudioGenerator implements MultimodalGenerator {
 
     // 添加风格描述
     const stylePrompts: Record<string, string> = {
-      'narrative': '故事叙述风格，自然流畅的语调',
-      'dialogue': '对话风格，生动传神的表达',
-      'music': '音乐伴奏，轻柔和谐的旋律',
+      narrative: '故事叙述风格，自然流畅的语调',
+      dialogue: '对话风格，生动传神的表达',
+      music: '音乐伴奏，轻柔和谐的旋律',
       'sound-effect': '音效设计，逼真的环境声音',
-      'ambient': '环境音效，营造氛围的背景声音',
-      'poetry': '诗歌朗诵，富有韵律和情感的表达',
-      'instructional': '教学语音，清晰准确的讲解',
-      'dramatic': '戏剧化表达，富有张力的表演',
-      'calm': '平静舒缓，放松心情的语调',
-      'energetic': '活力四射，充满激情的表达'
+      ambient: '环境音效，营造氛围的背景声音',
+      poetry: '诗歌朗诵，富有韵律和情感的表达',
+      instructional: '教学语音，清晰准确的讲解',
+      dramatic: '戏剧化表达，富有张力的表演',
+      calm: '平静舒缓，放松心情的语调',
+      energetic: '活力四射，充满激情的表达',
     }
 
     if (stylePrompts[style]) {
@@ -78,13 +74,13 @@ export class AudioGenerator implements MultimodalGenerator {
     // 添加情绪描述
     if (mood) {
       const moodPrompts: Record<string, string> = {
-        'joyful': '欢快愉悦的情绪',
-        'mysterious': '神秘莫测的氛围',
-        'peaceful': '宁静平和的基调',
-        'dramatic': '戏剧性张力的表达',
-        'romantic': '浪漫温馨的语调',
-        'adventurous': '冒险刺激的节奏',
-        'melancholic': '忧郁伤感的表达'
+        joyful: '欢快愉悦的情绪',
+        mysterious: '神秘莫测的氛围',
+        peaceful: '宁静平和的基调',
+        dramatic: '戏剧性张力的表达',
+        romantic: '浪漫温馨的语调',
+        adventurous: '冒险刺激的节奏',
+        melancholic: '忧郁伤感的表达',
       }
 
       if (moodPrompts[mood]) {
@@ -103,18 +99,16 @@ export class AudioGenerator implements MultimodalGenerator {
   }
 
   // 生成语音合成
-  async generateSpeech(text: string, voiceOptions: {
-    voice?: string
-    speed?: number
-    pitch?: number
-    volume?: number
-  } = {}): Promise<AudioContent> {
-    const {
-      voice = 'default',
-      speed = 1.0,
-      pitch = 1.0,
-      volume = 1.0
-    } = voiceOptions
+  async generateSpeech(
+    text: string,
+    voiceOptions: {
+      voice?: string
+      speed?: number
+      pitch?: number
+      volume?: number
+    } = {}
+  ): Promise<AudioContent> {
+    const { voice = 'default', speed = 1.0, pitch = 1.0, volume = 1.0 } = voiceOptions
 
     const audioContent: AudioContent = {
       url: `https://via.placeholder.com/speech?text=${encodeURIComponent(text.substring(0, 50))}`,
@@ -123,25 +117,22 @@ export class AudioGenerator implements MultimodalGenerator {
       transcript: text,
       generated: true,
       voice,
-      language: 'zh-CN'
+      language: 'zh-CN',
     }
 
     return audioContent
   }
 
   // 生成背景音乐
-  async generateBackgroundMusic(options: {
-    genre?: string
-    mood?: string
-    duration?: number
-    intensity?: 'low' | 'medium' | 'high'
-  } = {}): Promise<AudioContent> {
-    const {
-      genre = 'ambient',
-      mood = 'calm',
-      duration = 60,
-      intensity = 'medium'
-    } = options
+  async generateBackgroundMusic(
+    options: {
+      genre?: string
+      mood?: string
+      duration?: number
+      intensity?: 'low' | 'medium' | 'high'
+    } = {}
+  ): Promise<AudioContent> {
+    const { genre = 'ambient', mood = 'calm', duration = 60, intensity = 'medium' } = options
 
     const prompt = `生成${genre}风格的背景音乐，${mood}情绪，强度${intensity}，时长${duration}秒`
 
@@ -151,23 +142,22 @@ export class AudioGenerator implements MultimodalGenerator {
       format: 'mp3',
       generated: true,
       voice: 'instrumental',
-      language: 'instrumental'
+      language: 'instrumental',
     }
 
     return audioContent
   }
 
   // 生成音效
-  async generateSoundEffect(effectType: string, options: {
-    intensity?: number
-    duration?: number
-    variation?: string
-  } = {}): Promise<AudioContent> {
-    const {
-      intensity = 1.0,
-      duration = 3,
-      variation = 'default'
-    } = options
+  async generateSoundEffect(
+    effectType: string,
+    options: {
+      intensity?: number
+      duration?: number
+      variation?: string
+    } = {}
+  ): Promise<AudioContent> {
+    const { intensity = 1.0, duration = 3, variation = 'default' } = options
 
     const prompt = `${effectType}音效，强度${intensity}，时长${duration}秒，变体${variation}`
 
@@ -177,7 +167,7 @@ export class AudioGenerator implements MultimodalGenerator {
       format: 'wav',
       generated: true,
       voice: 'effect',
-      language: 'effect'
+      language: 'effect',
     }
 
     return audioContent
@@ -186,13 +176,13 @@ export class AudioGenerator implements MultimodalGenerator {
   // 生成环境音效
   async generateAmbientSound(scene: string, duration: number = 30): Promise<AudioContent> {
     const ambientSounds: Record<string, string> = {
-      'forest': '森林环境音：鸟鸣、风声、树叶沙沙',
-      'ocean': '海洋环境音：海浪声、海鸥叫',
-      'city': '城市环境音：车辆声、人群喧闹',
-      'rain': '雨声：淅淅沥沥的雨点',
-      'fireplace': '壁炉音：燃烧的噼啪声',
-      'wind': '风声：呼啸的风声',
-      'night': '夜晚环境音：虫鸣、远处狗叫'
+      forest: '森林环境音：鸟鸣、风声、树叶沙沙',
+      ocean: '海洋环境音：海浪声、海鸥叫',
+      city: '城市环境音：车辆声、人群喧闹',
+      rain: '雨声：淅淅沥沥的雨点',
+      fireplace: '壁炉音：燃烧的噼啪声',
+      wind: '风声：呼啸的风声',
+      night: '夜晚环境音：虫鸣、远处狗叫',
     }
 
     const prompt = ambientSounds[scene] || `${scene}环境音效`
@@ -204,17 +194,20 @@ export class AudioGenerator implements MultimodalGenerator {
       transcript: prompt,
       generated: true,
       voice: 'ambient',
-      language: 'ambient'
+      language: 'ambient',
     }
 
     return audioContent
   }
 
   // 生成配乐（为文本内容生成伴奏音乐）
-  async generateAccompaniment(text: string, options: {
-    genre?: string
-    intensity?: 'low' | 'medium' | 'high'
-  } = {}): Promise<AudioContent> {
+  async generateAccompaniment(
+    text: string,
+    options: {
+      genre?: string
+      intensity?: 'low' | 'medium' | 'high'
+    } = {}
+  ): Promise<AudioContent> {
     const { genre = 'classical', intensity = 'medium' } = options
 
     // 分析文本情绪和主题
@@ -230,7 +223,7 @@ export class AudioGenerator implements MultimodalGenerator {
       transcript: `为文本"${text.substring(0, 30)}..."生成的${genre}风格伴奏`,
       generated: true,
       voice: 'instrumental',
-      language: 'instrumental'
+      language: 'instrumental',
     }
 
     return audioContent

@@ -1,0 +1,467 @@
+/* 跨平台响应式设计样式 */
+/* 支持Web、移动端、桌面端的统一体验 */
+
+/* ===== 基础响应式断点 ===== */
+:root {
+  /* 移动端优先断点 */
+  --mobile-max: 767px;
+  --tablet-min: 768px;
+  --tablet-max: 1023px;
+  --desktop-min: 1024px;
+  --large-desktop-min: 1440px;
+
+  /* 安全区域变量（用于刘海屏适配） */
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+}
+
+/* ===== 移动端优先设计 ===== */
+@media (max-width: 767px) {
+  /* 移动端基础样式 */
+  .app-container {
+    padding: 16px;
+    padding-top: calc(16px + var(--safe-area-inset-top));
+    padding-bottom: calc(16px + var(--safe-area-inset-bottom));
+    padding-left: calc(16px + var(--safe-area-inset-left));
+    padding-right: calc(16px + var(--safe-area-inset-right));
+  }
+
+  /* 隐藏桌面端侧边栏 */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* 移动端导航栏 */
+  .mobile-navbar {
+    position: fixed;
+    bottom: calc(20px + var(--safe-area-inset-bottom));
+    left: calc(20px + var(--safe-area-inset-left));
+    right: calc(20px + var(--safe-area-inset-right));
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  /* 移动端卡片优化 */
+  .card {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* 移动端按钮优化 */
+  .btn {
+    min-height: 44px; /* iOS人机界面指南推荐最小触摸目标 */
+    padding: 12px 16px;
+    font-size: 16px; /* 防止iOS缩放 */
+  }
+
+  /* 移动端表单优化 */
+  .form-input {
+    font-size: 16px; /* 防止iOS缩放 */
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  /* 移动端模态框优化 */
+  .modal {
+    margin: 20px;
+    max-height: calc(100vh - 40px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+    border-radius: 12px;
+  }
+
+  /* 触摸友好的交互元素 */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ===== 平板端样式 ===== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* 平板端双栏布局 */
+  .tablet-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+  }
+
+  /* 平板端导航 */
+  .tablet-nav {
+    position: sticky;
+    top: 20px;
+  }
+
+  /* 平板端卡片 */
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ===== 桌面端样式 ===== */
+@media (min-width: 1024px) {
+  .app-container {
+    padding: 32px;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* 桌面端侧边栏 */
+  .desktop-sidebar {
+    width: 280px;
+    background: #f8f9fa;
+    border-right: 1px solid #e9ecef;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  /* 桌面端主内容区 */
+  .desktop-main {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+  }
+
+  /* 桌面端工具栏 */
+  .desktop-toolbar {
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid #e9ecef;
+    padding: 12px 32px;
+    z-index: 100;
+  }
+
+  .desktop-main {
+    margin-top: 60px;
+  }
+}
+
+/* ===== 大屏桌面端样式 ===== */
+@media (min-width: 1440px) {
+  .app-container {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .desktop-sidebar {
+    width: 320px;
+  }
+
+  .desktop-toolbar {
+    left: 320px;
+  }
+
+  /* 大屏网格布局 */
+  .large-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+}
+
+/* ===== 深色模式支持 ===== */
+@media (prefers-color-scheme: dark) {
+  .app-container {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .desktop-sidebar {
+    background: #2d2d2d;
+    border-right-color: #404040;
+  }
+
+  .desktop-toolbar {
+    background: #2d2d2d;
+    border-bottom-color: #404040;
+  }
+
+  .card {
+    background: #2d2d2d;
+    border-color: #404040;
+  }
+
+  .mobile-navbar {
+    background: rgba(45, 45, 45, 0.95);
+  }
+}
+
+/* ===== 减少动画模式支持 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== 高对比度模式支持 ===== */
+@media (prefers-contrast: high) {
+  .btn-primary {
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+  }
+
+  .card {
+    border: 2px solid #000000;
+  }
+
+  .form-input {
+    border: 2px solid #000000;
+  }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .app-container {
+    padding: 0;
+    background: white !important;
+    color: black !important;
+  }
+
+  .desktop-sidebar,
+  .mobile-navbar,
+  .desktop-toolbar {
+    display: none !important;
+  }
+
+  .btn,
+  .modal,
+  .notification {
+    display: none !important;
+  }
+
+  .card {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    border: 1px solid #ccc !important;
+  }
+}
+
+/* ===== 横屏模式优化 ===== */
+@media (orientation: landscape) and (max-height: 500px) {
+  .mobile-navbar {
+    bottom: 10px;
+    padding: 8px 16px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+/* ===== 触摸设备优化 ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* 触摸设备：增大点击目标，移除悬停效果 */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .nav-item:hover {
+    background: none;
+  }
+
+  /* 触摸友好的滚动条 */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+  }
+}
+
+/* ===== 精确指针设备优化 ===== */
+@media (hover: hover) and (pointer: fine) {
+  /* 鼠标设备：精细的悬停效果 */
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
+  /* 精确的工具提示 */
+  .tooltip {
+    pointer-events: none;
+  }
+}
+
+/* ===== Flexbox和Grid兼容性 ===== */
+@supports not (display: grid) {
+  /* Grid不支持时的降级方案 */
+  .large-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .large-grid > * {
+    flex: 0 0 calc(33.333% - 32px);
+    margin-bottom: 32px;
+  }
+}
+
+@supports not (display: flex) {
+  /* Flex不支持时的降级方案 */
+  .mobile-navbar {
+    text-align: center;
+  }
+
+  .mobile-navbar > * {
+    display: inline-block;
+    margin: 0 10px;
+  }
+}
+
+/* ===== WebP图片格式支持检测 ===== */
+.webp-supported .image-container {
+  background-image: url('image.webp');
+}
+
+.webp-not-supported .image-container {
+  background-image: url('image.jpg');
+}
+
+/* ===== 容器查询支持 ===== */
+@container (min-width: 400px) {
+  .responsive-card {
+    display: flex;
+    align-items: center;
+  }
+
+  .responsive-card .content {
+    margin-left: 16px;
+  }
+}
+
+/* ===== 动态视口单位支持 ===== */
+@supports (height: 100dvh) {
+  .full-height {
+    height: 100dvh;
+  }
+}
+
+@supports not (height: 100dvh) {
+  .full-height {
+    height: 100vh;
+  }
+}
+
+/* ===== CSS自定义属性支持 ===== */
+@supports (--custom-property: value) {
+  .css-variables-supported {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    color: var(--primary-color);
+  }
+}
+
+/* ===== 滚动捕捉支持 ===== */
+@supports (scroll-snap-type: x mandatory) {
+  .horizontal-scroll {
+    scroll-snap-type: x mandatory;
+  }
+
+  .horizontal-scroll > * {
+    scroll-snap-align: start;
+  }
+}
+
+/* ===== 平台特定的样式 ===== */
+
+/* iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .ios-specific {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* macOS Safari */
+@supports (-webkit-hyphens: none) {
+  .safari-specific {
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Windows Edge */
+@supports (-ms-ime-align: auto) {
+  .edge-specific {
+    /* Edge特定的样式 */
+  }
+}
+
+/* ===== 无障碍增强 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .animated-element {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* 屏幕阅读器专用内容 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 焦点可见性增强 */
+.focus-visible:focus-visible {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* ===== 性能优化 ===== */
+
+/* 减少重绘的CSS */
+.optimized-rendering {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* GPU加速 */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* 减少布局抖动的样式 */
+.stable-layout {
+  contain: layout style paint;
+}

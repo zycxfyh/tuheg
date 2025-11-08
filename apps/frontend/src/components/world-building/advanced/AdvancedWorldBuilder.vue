@@ -175,8 +175,8 @@ import RulesEditor from './editors/RulesEditor.vue'
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 
 // Emits
@@ -197,41 +197,41 @@ const worldData = ref({
     tone: 'balanced',
     scale: 'regional',
     protagonists: [],
-    antagonists: []
+    antagonists: [],
   },
   geography: {
     regions: [],
     landmarks: [],
     climate: '',
-    terrain: []
+    terrain: [],
   },
   society: {
     classes: [],
     cultures: [],
     religions: [],
-    governments: []
+    governments: [],
   },
   magicTech: {
     systems: [],
     artifacts: [],
-    limitations: []
+    limitations: [],
   },
   history: {
     timeline: [],
     events: [],
-    eras: []
+    eras: [],
   },
   rules: {
     physics: [],
     magic: [],
     society: [],
-    custom: []
+    custom: [],
   },
   metadata: {
     createdAt: null,
     updatedAt: null,
-    version: '1.0'
-  }
+    version: '1.0',
+  },
 })
 
 // 选项卡配置
@@ -241,7 +241,7 @@ const tabs = ref([
   { id: 'society', label: '社会结构', icon: '👥' },
   { id: 'magic', label: '魔法/科技', icon: '⚡' },
   { id: 'history', label: '历史背景', icon: '📜' },
-  { id: 'rules', label: '自定义规则', icon: '⚖️' }
+  { id: 'rules', label: '自定义规则', icon: '⚖️' },
 ])
 
 // AI Agent状态
@@ -253,7 +253,7 @@ const agents = ref([
     icon: '🌍',
     status: 'active',
     statusText: '正在构建世界框架',
-    progress: 85
+    progress: 85,
   },
   {
     id: 'logic-agent',
@@ -262,7 +262,7 @@ const agents = ref([
     icon: '🧠',
     status: 'active',
     statusText: '检查世界一致性',
-    progress: 72
+    progress: 72,
   },
   {
     id: 'narrative-agent',
@@ -271,15 +271,17 @@ const agents = ref([
     icon: '📚',
     status: 'waiting',
     statusText: '等待世界设定完成',
-    progress: 0
-  }
+    progress: 0,
+  },
 ])
 
 // 计算属性
 const isWorldComplete = computed(() => {
-  return worldData.value.name &&
-         worldData.value.basics.theme &&
-         worldData.value.geography.regions.length > 0
+  return (
+    worldData.value.name &&
+    worldData.value.basics.theme &&
+    worldData.value.geography.regions.length > 0
+  )
 })
 
 // 方法
@@ -299,11 +301,10 @@ const saveWorld = async () => {
     emit('save', worldData.value)
 
     // 模拟保存过程
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // 显示成功消息
     console.log('World saved successfully')
-
   } catch (error) {
     console.error('Failed to save world:', error)
   } finally {
@@ -322,9 +323,15 @@ const generateWorldSummary = () => {
   const geography = worldData.value.geography
   const society = worldData.value.society
 
-  let summary = `一个${worldData.value.type === 'fantasy' ? '奇幻' :
-                   worldData.value.type === 'scifi' ? '科幻' :
-                   worldData.value.type === 'modern' ? '现代' : '自定义'}世界，`
+  let summary = `一个${
+    worldData.value.type === 'fantasy'
+      ? '奇幻'
+      : worldData.value.type === 'scifi'
+        ? '科幻'
+        : worldData.value.type === 'modern'
+          ? '现代'
+          : '自定义'
+  }世界，`
 
   if (basics.theme) {
     summary += `主题围绕${basics.theme}，`
@@ -347,16 +354,24 @@ const interactWithAgent = (agent) => {
 }
 
 // 监听外部数据变化
-watch(() => props.modelValue, (newValue) => {
-  if (newValue) {
-    worldData.value = { ...worldData.value, ...newValue }
-  }
-}, { deep: true })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      worldData.value = { ...worldData.value, ...newValue }
+    }
+  },
+  { deep: true }
+)
 
 // 监听内部数据变化
-watch(worldData, (newData) => {
-  emit('update:modelValue', newData)
-}, { deep: true })
+watch(
+  worldData,
+  (newData) => {
+    emit('update:modelValue', newData)
+  },
+  { deep: true }
+)
 
 // 初始化
 if (props.modelValue) {

@@ -1,11 +1,7 @@
 // 文本处理器
 // 处理文本内容的分析、转换和增强
 
-import {
-  MultimodalProcessor,
-  MultimodalContent,
-  MultimodalType
-} from '../types'
+import { MultimodalProcessor, MultimodalContent, MultimodalType } from '../types'
 
 export class TextProcessor implements MultimodalProcessor {
   canProcess(type: MultimodalType): boolean {
@@ -30,7 +26,7 @@ export class TextProcessor implements MultimodalProcessor {
 
   private async processText(text: string, options: any): Promise<MultimodalContent> {
     const processed: MultimodalContent = {
-      text: this.cleanText(text)
+      text: this.cleanText(text),
     }
 
     // 分析文本情感
@@ -62,16 +58,18 @@ export class TextProcessor implements MultimodalProcessor {
   }
 
   private cleanText(text: string): string {
-    return text
-      // 移除多余空白字符
-      .replace(/\s+/g, ' ')
-      // 移除控制字符
-      .replace(/[\x00-\x1F\x7F]/g, '')
-      // 标准化引号
-      .replace(/["""]/g, '"')
-      .replace(/[''']/g, "'")
-      // 移除首尾空白
-      .trim()
+    return (
+      text
+        // 移除多余空白字符
+        .replace(/\s+/g, ' ')
+        // 移除控制字符
+        .replace(/[\x00-\x1F\x7F]/g, '')
+        // 标准化引号
+        .replace(/["""]/g, '"')
+        .replace(/[''']/g, "'")
+        // 移除首尾空白
+        .trim()
+    )
   }
 
   private async analyzeSentiment(text: string): Promise<{
@@ -89,9 +87,9 @@ export class TextProcessor implements MultimodalProcessor {
     let positiveCount = 0
     let negativeCount = 0
 
-    words.forEach(word => {
-      if (positiveWords.some(pw => word.includes(pw))) positiveCount++
-      if (negativeWords.some(nw => word.includes(nw))) negativeCount++
+    words.forEach((word) => {
+      if (positiveWords.some((pw) => word.includes(pw))) positiveCount++
+      if (negativeWords.some((nw) => word.includes(nw))) negativeCount++
     })
 
     const total = positiveCount + negativeCount
@@ -113,15 +111,36 @@ export class TextProcessor implements MultimodalProcessor {
   private extractKeywords(text: string): string[] {
     // 简化的关键词提取
     const words = text.toLowerCase().split(/\s+/)
-    const stopWords = ['的', '了', '和', '是', '在', '有', '为', '这', '那', '一个', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']
+    const stopWords = [
+      '的',
+      '了',
+      '和',
+      '是',
+      '在',
+      '有',
+      '为',
+      '这',
+      '那',
+      '一个',
+      'the',
+      'and',
+      'or',
+      'but',
+      'in',
+      'on',
+      'at',
+      'to',
+      'for',
+      'of',
+      'with',
+      'by',
+    ]
 
-    const filteredWords = words.filter(word =>
-      word.length > 1 && !stopWords.includes(word)
-    )
+    const filteredWords = words.filter((word) => word.length > 1 && !stopWords.includes(word))
 
     // 计算词频
     const wordCount: Record<string, number> = {}
-    filteredWords.forEach(word => {
+    filteredWords.forEach((word) => {
       wordCount[word] = (wordCount[word] || 0) + 1
     })
 
@@ -153,7 +172,7 @@ export class TextProcessor implements MultimodalProcessor {
     // 简化的摘要生成
     // 在实际应用中，应该调用AI服务生成摘要
 
-    const sentences = text.split(/[.!?。！？]/).filter(s => s.trim().length > 0)
+    const sentences = text.split(/[.!?。！？]/).filter((s) => s.trim().length > 0)
     const importantSentences = sentences.slice(0, Math.min(3, sentences.length))
 
     let summary = importantSentences.join('. ').substring(0, maxLength)
@@ -185,7 +204,7 @@ export class TextProcessor implements MultimodalProcessor {
     return {
       cleanText,
       estimatedDuration,
-      ssml: this.generateSSML(cleanText)
+      ssml: this.generateSSML(cleanText),
     }
   }
 

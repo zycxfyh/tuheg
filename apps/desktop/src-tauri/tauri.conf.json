@@ -1,0 +1,212 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run dev",
+    "devPath": "http://localhost:5173",
+    "distDir": "../dist",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "创世星环",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "dialog": {
+        "all": false,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
+      },
+      "fs": {
+        "all": true,
+        "readFile": true,
+        "readTextFile": true,
+        "writeFile": true,
+        "writeTextFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true,
+        "scope": ["$APPDATA", "$DESKTOP", "$DOCUMENT", "$DOWNLOAD", "$HOME"]
+      },
+      "path": {
+        "all": true
+      },
+      "os": {
+        "all": true
+      },
+      "notification": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
+      },
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://api.creation-ring.com", "https://registry.creation-ring.com"]
+      },
+      "window": {
+        "all": true,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.creationring.app",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "category": "Productivity",
+      "shortDescription": "AI驱动的多Agent协作叙事创作平台",
+      "longDescription": "创世星环是一款革命性的AI叙事创作平台，通过多Agent协作和VCPToolBox插件生态，为创作者提供全模态的沉浸式创作体验。",
+      "copyright": "Copyright © 2024 Creation Ring. All rights reserved.",
+      "deb": {
+        "depends": []
+      },
+      "macOS": {
+        "frameworks": [],
+        "minimumSystemVersion": "10.15"
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": null
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "创世星环 - AI叙事创作平台",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1000,
+        "minHeight": 700,
+        "center": true,
+        "decorations": true,
+        "transparent": false,
+        "alwaysOnTop": false,
+        "skipTaskbar": false,
+        "titleBarStyle": "Visible",
+        "hiddenTitle": false,
+        "contentProtected": false,
+        "userAgent": null,
+        "webviewData": {}
+      }
+    ],
+    "systemTray": {
+      "iconPath": "icons/tray-icon.png",
+      "iconAsTemplate": true
+    },
+    "menu": {
+      "submenu": [
+        {
+          "label": "文件",
+          "submenu": [
+            {
+              "label": "新建叙事",
+              "action": "new_narrative"
+            },
+            {
+              "label": "打开叙事",
+              "action": "open_narrative"
+            },
+            {
+              "label": "保存叙事",
+              "action": "save_narrative"
+            },
+            {
+              "label": "导出叙事",
+              "action": "export_narrative"
+            },
+            { "type": "Separator" },
+            {
+              "label": "退出",
+              "action": "quit"
+            }
+          ]
+        },
+        {
+          "label": "编辑",
+          "submenu": [
+            {
+              "label": "撤销",
+              "action": "undo"
+            },
+            {
+              "label": "重做",
+              "action": "redo"
+            },
+            { "type": "Separator" },
+            {
+              "label": "剪切",
+              "action": "cut"
+            },
+            {
+              "label": "复制",
+              "action": "copy"
+            },
+            {
+              "label": "粘贴",
+              "action": "paste"
+            }
+          ]
+        },
+        {
+          "label": "视图",
+          "submenu": [
+            {
+              "label": "全屏",
+              "action": "toggle_fullscreen"
+            },
+            {
+              "label": "开发者工具",
+              "action": "toggle_devtools"
+            }
+          ]
+        },
+        {
+          "label": "帮助",
+          "submenu": [
+            {
+              "label": "文档",
+              "action": "open_docs"
+            },
+            {
+              "label": "关于",
+              "action": "show_about"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -319,12 +319,12 @@ import { ref, computed } from 'vue'
 const props = defineProps({
   plugin: {
     type: Object,
-    required: true
+    required: true,
   },
   visible: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['close', 'install'])
@@ -348,7 +348,7 @@ const getCategoryIcon = (categoryId) => {
     'world-building': '🌍',
     'narrative-tools': '🎭',
     'ui-themes': '🎨',
-    'integrations': '🔗'
+    integrations: '🔗',
   }
   return icons[categoryId] || '🔧'
 }
@@ -357,7 +357,7 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 

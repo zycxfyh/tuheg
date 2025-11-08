@@ -45,7 +45,6 @@ export class TestCommand {
       } else {
         console.log('✅ 所有测试通过')
       }
-
     } catch (error: any) {
       console.error(`❌ 测试失败: ${error.message}`)
       process.exit(1)
@@ -129,7 +128,7 @@ export class TestCommand {
 
   private checkAllTestsPassed(results: any): boolean {
     const checkSuite = (tests: any[]): boolean => {
-      return tests.every(test => test.success)
+      return tests.every((test) => test.success)
     }
 
     if (results.unitTests && !checkSuite(results.unitTests)) return false

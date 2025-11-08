@@ -260,12 +260,12 @@ import LatencyTrendChart from './charts/LatencyTrendChart.vue'
 const props = defineProps({
   autoRefresh: {
     type: Boolean,
-    default: true
+    default: true,
   },
   refreshInterval: {
     type: Number,
-    default: 30000 // 30秒
-  }
+    default: 30000, // 30秒
+  },
 })
 
 // 响应式数据
@@ -278,12 +278,12 @@ const performanceStats = ref({
   averageLatency: 0,
   latencyTrend: 0,
   totalCost: 0,
-  monthlyCost: 0
+  monthlyCost: 0,
 })
 const cacheStats = ref({
   hitRate: 0,
   hits: 0,
-  misses: 0
+  misses: 0,
 })
 const requestTypeData = ref([])
 const serviceUsageData = ref([])
@@ -295,11 +295,11 @@ const maxCost = ref(0)
 
 // 计算属性
 const activeServices = computed(() => {
-  return serviceHealth.value.filter(service => service.status === 'healthy')
+  return serviceHealth.value.filter((service) => service.status === 'healthy')
 })
 
 const unhealthyServices = computed(() => {
-  return serviceHealth.value.filter(service => service.status !== 'healthy')
+  return serviceHealth.value.filter((service) => service.status !== 'healthy')
 })
 
 // 方法
@@ -308,7 +308,7 @@ const refreshData = async () => {
     isLoading.value = true
 
     // 模拟数据获取
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // 更新服务健康状态
     serviceHealth.value = [
@@ -319,7 +319,7 @@ const refreshData = async () => {
         latency: 1250,
         errorRate: 0.02,
         lastChecked: Date.now() - 30000,
-        consecutiveFailures: 0
+        consecutiveFailures: 0,
       },
       {
         provider: 'anthropic',
@@ -328,7 +328,7 @@ const refreshData = async () => {
         latency: 1800,
         errorRate: 0.01,
         lastChecked: Date.now() - 45000,
-        consecutiveFailures: 0
+        consecutiveFailures: 0,
       },
       {
         provider: 'local',
@@ -337,8 +337,8 @@ const refreshData = async () => {
         latency: 3200,
         errorRate: 0.05,
         lastChecked: Date.now() - 20000,
-        consecutiveFailures: 1
-      }
+        consecutiveFailures: 1,
+      },
     ]
 
     // 更新性能统计
@@ -347,15 +347,15 @@ const refreshData = async () => {
       successRate: 98.5,
       averageLatency: 1650,
       latencyTrend: -120,
-      totalCost: 45.50,
-      monthlyCost: 45.50
+      totalCost: 45.5,
+      monthlyCost: 45.5,
     }
 
     // 更新缓存统计
     cacheStats.value = {
       hitRate: 73.2,
       hits: 912,
-      misses: 335
+      misses: 335,
     }
 
     // 更新图表数据
@@ -363,13 +363,13 @@ const refreshData = async () => {
       { type: 'creation', count: 450, percentage: 36.1 },
       { type: 'logic', count: 380, percentage: 30.5 },
       { type: 'narrative', count: 320, percentage: 25.7 },
-      { type: 'analysis', count: 97, percentage: 7.7 }
+      { type: 'analysis', count: 97, percentage: 7.7 },
     ]
 
     serviceUsageData.value = [
-      { service: 'OpenAI GPT-4', requests: 780, cost: 28.50 },
-      { service: 'Anthropic Claude', requests: 320, cost: 15.20 },
-      { service: 'Local LLaMA', requests: 147, cost: 1.80 }
+      { service: 'OpenAI GPT-4', requests: 780, cost: 28.5 },
+      { service: 'Anthropic Claude', requests: 320, cost: 15.2 },
+      { service: 'Local LLaMA', requests: 147, cost: 1.8 },
     ]
 
     latencyTrendData.value = generateLatencyTrendData()
@@ -382,7 +382,6 @@ const refreshData = async () => {
 
     // 检查告警
     checkAlerts()
-
   } catch (error) {
     console.error('Failed to refresh data:', error)
   } finally {
@@ -395,10 +394,10 @@ const generateLatencyTrendData = () => {
   const now = Date.now()
 
   for (let i = 23; i >= 0; i--) {
-    const time = now - (i * 60 * 60 * 1000) // 每小时
+    const time = now - i * 60 * 60 * 1000 // 每小时
     data.push({
       time,
-      latency: 1500 + Math.random() * 500 + Math.sin(i / 4) * 200
+      latency: 1500 + Math.random() * 500 + Math.sin(i / 4) * 200,
     })
   }
 
@@ -414,12 +413,12 @@ const generateRecentLogs = () => {
   for (let i = 0; i < 20; i++) {
     logs.push({
       id: `log-${i}`,
-      timestamp: Date.now() - (i * 60000), // 每分钟一条
+      timestamp: Date.now() - i * 60000, // 每分钟一条
       type: types[Math.floor(Math.random() * types.length)],
       service: services[Math.floor(Math.random() * services.length)],
       latency: 800 + Math.random() * 2000,
       cost: Math.random() * 0.01,
-      status: statuses[Math.floor(Math.random() * statuses.length)]
+      status: statuses[Math.floor(Math.random() * statuses.length)],
     })
   }
 
@@ -428,24 +427,24 @@ const generateRecentLogs = () => {
 
 const updateCostBreakdown = () => {
   costBreakdown.value = [
-    { service: 'OpenAI GPT-4', amount: 28.50, percentage: 62.6 },
-    { service: 'Anthropic Claude', amount: 15.20, percentage: 33.4 },
-    { service: 'Local LLaMA', amount: 1.80, percentage: 4.0 }
+    { service: 'OpenAI GPT-4', amount: 28.5, percentage: 62.6 },
+    { service: 'Anthropic Claude', amount: 15.2, percentage: 33.4 },
+    { service: 'Local LLaMA', amount: 1.8, percentage: 4.0 },
   ]
-  maxCost.value = Math.max(...costBreakdown.value.map(c => c.amount))
+  maxCost.value = Math.max(...costBreakdown.value.map((c) => c.amount))
 }
 
 const checkAlerts = () => {
   const newAlerts = []
 
   // 检查服务健康
-  unhealthyServices.value.forEach(service => {
+  unhealthyServices.value.forEach((service) => {
     newAlerts.push({
       id: `alert-${service.provider}-${service.model}`,
       severity: service.status === 'unhealthy' ? 'critical' : 'warning',
       title: `${service.provider} ${service.model} 服务异常`,
       description: `延迟: ${service.latency}ms, 错误率: ${(service.errorRate * 100).toFixed(1)}%`,
-      timestamp: service.lastChecked
+      timestamp: service.lastChecked,
     })
   })
 
@@ -456,7 +455,7 @@ const checkAlerts = () => {
       severity: 'warning',
       title: '月度成本接近限制',
       description: `当前消耗: $${performanceStats.value.monthlyCost.toFixed(2)} / $200.00`,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 
@@ -467,7 +466,7 @@ const checkAlerts = () => {
       severity: 'warning',
       title: '平均延迟过高',
       description: `当前延迟: ${performanceStats.value.averageLatency}ms`,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
   }
 
@@ -478,7 +477,7 @@ const getStatusText = (status) => {
   const statusMap = {
     healthy: '正常',
     degraded: '降级',
-    unhealthy: '异常'
+    unhealthy: '异常',
   }
   return statusMap[status] || status
 }
@@ -488,7 +487,7 @@ const formatTime = (timestamp) => {
     hour12: false,
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
   })
 }
 
@@ -500,7 +499,7 @@ const exportReport = () => {
     performanceStats: performanceStats.value,
     cacheStats: cacheStats.value,
     costBreakdown: costBreakdown.value,
-    alerts: alerts.value
+    alerts: alerts.value,
   }
 
   const dataStr = JSON.stringify(reportData, null, 2)
@@ -518,7 +517,7 @@ const exportReport = () => {
 }
 
 const dismissAlert = (alertId) => {
-  alerts.value = alerts.value.filter(alert => alert.id !== alertId)
+  alerts.value = alerts.value.filter((alert) => alert.id !== alertId)
 }
 
 // 自动刷新定时器

@@ -165,8 +165,8 @@ const props = defineProps({
   position: {
     type: String,
     default: 'bottom-right',
-    validator: (value) => ['bottom-right', 'bottom-left', 'top-right', 'top-left'].includes(value)
-  }
+    validator: (value) => ['bottom-right', 'bottom-left', 'top-right', 'top-left'].includes(value),
+  },
 })
 
 // Emits
@@ -192,26 +192,26 @@ const feedbackTypes = ref([
     value: 'experience',
     label: '使用体验',
     icon: '😊',
-    description: '分享您的使用体验和建议'
+    description: '分享您的使用体验和建议',
   },
   {
     value: 'bug',
     label: '发现问题',
     icon: '🐛',
-    description: '报告应用中的问题或错误'
+    description: '报告应用中的问题或错误',
   },
   {
     value: 'feature',
     label: '功能建议',
     icon: '💡',
-    description: '提出新功能或改进建议'
-  }
+    description: '提出新功能或改进建议',
+  },
 ])
 
 // 计算属性
 const widgetClasses = computed(() => ({
   'feedback-widget': true,
-  [`position-${props.position}`]: true
+  [`position-${props.position}`]: true,
 }))
 
 // 方法
@@ -240,14 +240,14 @@ const resetForm = () => {
 const handleScreenshotUpload = (event) => {
   const files = Array.from(event.target.files)
 
-  files.forEach(file => {
+  files.forEach((file) => {
     if (file.type.startsWith('image/')) {
       const reader = new FileReader()
       reader.onload = (e) => {
         screenshots.value.push({
           file,
           preview: e.target.result,
-          name: file.name
+          name: file.name,
         })
       }
       reader.readAsDataURL(file)
@@ -275,27 +275,26 @@ const submitFeedback = async () => {
       description: description.value.trim(),
       rating: selectedType.value === 'experience' ? rating.value : null,
       contact: contact.value.trim() || null,
-      screenshots: screenshots.value.map(s => s.file),
+      screenshots: screenshots.value.map((s) => s.file),
       metadata: {
         url: window.location.href,
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
-        screenSize: `${window.innerWidth}x${window.innerHeight}`
-      }
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+      },
     }
 
     // 这里应该调用API提交反馈
     // await feedbackApi.submitFeedback(feedbackData)
 
     // 模拟提交
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     success('感谢您的反馈！我们会认真考虑您的建议。')
 
     emit('feedback-submitted', feedbackData)
 
     closeFeedback()
-
   } catch (err) {
     console.error('Failed to submit feedback:', err)
     error('提交反馈失败，请稍后重试')

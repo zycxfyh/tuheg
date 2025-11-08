@@ -246,15 +246,15 @@ const tagsInput = ref('')
 const tabs = [
   { id: 'content', label: '内容' },
   { id: 'settings', label: '设置' },
-  { id: 'interactions', label: '互动' }
+  { id: 'interactions', label: '互动' },
 ]
 
 const textContent = computed({
-  get: () => typeof props.segment.content === 'string' ? props.segment.content : '',
+  get: () => (typeof props.segment.content === 'string' ? props.segment.content : ''),
   set: (value) => {
     props.segment.content = value
     emit('update', props.segment)
-  }
+  },
 })
 
 const imageContent = computed(() => {
@@ -285,13 +285,13 @@ onMounted(() => {
   if (!props.segment.timing) {
     props.segment.timing = {
       duration: 3000,
-      autoAdvance: true
+      autoAdvance: true,
     }
   }
   if (!props.segment.timing.transition) {
     props.segment.timing.transition = {
       type: 'fade',
-      duration: 500
+      duration: 500,
     }
   }
 
@@ -302,14 +302,18 @@ onMounted(() => {
   if (props.segment.interactions && props.segment.interactions.length > 0) {
     const interaction = props.segment.interactions[0]
     if (interaction.type === 'choice' && interaction.options) {
-      choices.value = interaction.options.map(opt => ({ text: opt.text }))
+      choices.value = interaction.options.map((opt) => ({ text: opt.text }))
     }
   }
 })
 
-watch(() => props.segment.metadata.tags, (newTags) => {
-  tagsInput.value = (newTags || []).join(', ')
-}, { immediate: true })
+watch(
+  () => props.segment.metadata.tags,
+  (newTags) => {
+    tagsInput.value = (newTags || []).join(', ')
+  },
+  { immediate: true }
+)
 
 const generateText = () => {
   const prompt = generationPrompt.value || '生成一段引人入胜的叙事文本'
@@ -343,21 +347,23 @@ const saveSegment = () => {
   // 更新标签
   props.segment.metadata.tags = tagsInput.value
     .split(',')
-    .map(tag => tag.trim())
-    .filter(tag => tag.length > 0)
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0)
 
   // 更新互动
   if (interactionType.value === 'choice') {
-    props.segment.interactions = [{
-      id: `interaction-${Date.now()}`,
-      type: 'choice',
-      target: '#choices',
-      action: { type: 'navigate' },
-      options: choices.value.map(choice => ({
-        id: `choice-${Date.now()}-${Math.random()}`,
-        text: choice.text
-      }))
-    }]
+    props.segment.interactions = [
+      {
+        id: `interaction-${Date.now()}`,
+        type: 'choice',
+        target: '#choices',
+        action: { type: 'navigate' },
+        options: choices.value.map((choice) => ({
+          id: `choice-${Date.now()}-${Math.random()}`,
+          text: choice.text,
+        })),
+      },
+    ]
   }
 
   emit('update', props.segment)

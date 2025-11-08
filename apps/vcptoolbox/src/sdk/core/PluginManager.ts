@@ -75,12 +75,14 @@ export class SDKPluginManager {
     if (!plugin) {
       return {
         valid: false,
-        errors: [{
-          code: 'PLUGIN_NOT_FOUND',
-          message: `Plugin ${pluginId} not found`,
-          severity: 'error'
-        }],
-        warnings: []
+        errors: [
+          {
+            code: 'PLUGIN_NOT_FOUND',
+            message: `Plugin ${pluginId} not found`,
+            severity: 'error',
+          },
+        ],
+        warnings: [],
       }
     }
 
@@ -92,7 +94,7 @@ export class SDKPluginManager {
       errors.push({
         code: 'INVALID_ID',
         message: 'Plugin ID must be a non-empty string',
-        severity: 'error'
+        severity: 'error',
       })
     }
 
@@ -100,7 +102,7 @@ export class SDKPluginManager {
       errors.push({
         code: 'INVALID_NAME',
         message: 'Plugin name must be a non-empty string',
-        severity: 'error'
+        severity: 'error',
       })
     }
 
@@ -108,21 +110,25 @@ export class SDKPluginManager {
       errors.push({
         code: 'INVALID_VERSION',
         message: 'Plugin version must be a non-empty string',
-        severity: 'error'
+        severity: 'error',
       })
     }
 
     // 类型验证
     const validTypes: PluginType[] = [
-      'static', 'messagePreprocessor', 'synchronous',
-      'asynchronous', 'service', 'dynamic'
+      'static',
+      'messagePreprocessor',
+      'synchronous',
+      'asynchronous',
+      'service',
+      'dynamic',
     ]
 
     if (!validTypes.includes(plugin.type)) {
       errors.push({
         code: 'INVALID_TYPE',
         message: `Plugin type must be one of: ${validTypes.join(', ')}`,
-        severity: 'error'
+        severity: 'error',
       })
     }
 
@@ -134,7 +140,7 @@ export class SDKPluginManager {
         warnings.push({
           code: 'MISSING_VCP_VERSION',
           message: 'VCP protocol version not specified',
-          severity: 'warning'
+          severity: 'warning',
         })
       }
 
@@ -142,7 +148,7 @@ export class SDKPluginManager {
         warnings.push({
           code: 'MISSING_PLATFORMS',
           message: 'Supported platforms not specified',
-          severity: 'warning'
+          severity: 'warning',
         })
       }
     }
@@ -156,7 +162,7 @@ export class SDKPluginManager {
         errors.push({
           code: 'MISSING_ACTIVATE',
           message: 'Plugin must implement activate method',
-          severity: 'error'
+          severity: 'error',
         })
       }
     }
@@ -168,7 +174,7 @@ export class SDKPluginManager {
           errors.push({
             code: 'MISSING_DEPENDENCY',
             message: `Required dependency ${dep.name} not found`,
-            severity: 'error'
+            severity: 'error',
           })
         }
       }
@@ -177,7 +183,7 @@ export class SDKPluginManager {
     return {
       valid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     }
   }
 
@@ -210,7 +216,7 @@ export class SDKPluginManager {
       storage: this.createPluginStorage(plugin),
       ui: this.createPluginUI(plugin),
       logger: this.createPluginLogger(plugin),
-      vcp: this.vcpProtocol.createAPI(plugin)
+      vcp: this.vcpProtocol.createAPI(plugin),
     }
   }
 
@@ -222,34 +228,34 @@ export class SDKPluginManager {
         update: async (id: string, data: any) => {},
         get: async (id: string) => ({}),
         list: async (filters: any) => [],
-        delete: async (id: string) => {}
+        delete: async (id: string) => {},
       },
       characters: {
         create: async (data: any) => `character-${Date.now()}`,
         update: async (id: string, data: any) => {},
         get: async (id: string) => ({}),
         list: async (filters: any) => [],
-        delete: async (id: string) => {}
+        delete: async (id: string) => {},
       },
       worlds: {
         create: async (data: any) => `world-${Date.now()}`,
         update: async (id: string, data: any) => {},
         get: async (id: string) => ({}),
         list: async (filters: any) => [],
-        delete: async (id: string) => {}
+        delete: async (id: string) => {},
       },
       ai: {
         generateStory: async (prompt: string, options: any) => `Generated story for: ${prompt}`,
         generateCharacter: async (traits: any, options: any) => ({}),
         generateWorld: async (theme: string, options: any) => ({}),
-        analyzeText: async (text: string, type: string) => ({})
+        analyzeText: async (text: string, type: string) => ({}),
       },
       utils: {
         validateJSON: (data: any) => true,
         sanitizeHTML: (html: string) => html,
         generateUUID: () => `uuid-${Date.now()}`,
-        formatDate: (date: Date, format: string) => date.toISOString()
-      }
+        formatDate: (date: Date, format: string) => date.toISOString(),
+      },
     }
   }
 
@@ -261,7 +267,7 @@ export class SDKPluginManager {
       update: (updates: any) => {},
       reset: () => {},
       export: () => ({}),
-      import: (config: any) => {}
+      import: (config: any) => {},
     }
   }
 
@@ -271,7 +277,7 @@ export class SDKPluginManager {
       emit: (event: string, data: any) => {},
       on: (event: string, handler: Function) => {},
       off: (event: string, handler: Function) => {},
-      once: (event: string, handler: Function) => {}
+      once: (event: string, handler: Function) => {},
     }
   }
 
@@ -284,7 +290,7 @@ export class SDKPluginManager {
       clear: () => {},
       keys: () => [],
       export: () => ({}),
-      import: (data: any) => {}
+      import: (data: any) => {},
     }
   }
 
@@ -298,7 +304,7 @@ export class SDKPluginManager {
       addToolbarButton: (button: any) => {},
       removeToolbarButton: (buttonId: string) => {},
       showModal: (modal: any) => {},
-      showNotification: (notification: any) => {}
+      showNotification: (notification: any) => {},
     }
   }
 
@@ -308,7 +314,7 @@ export class SDKPluginManager {
       debug: (message: string, meta?: any) => console.debug(`[${plugin.id}] ${message}`, meta),
       info: (message: string, meta?: any) => console.info(`[${plugin.id}] ${message}`, meta),
       warn: (message: string, meta?: any) => console.warn(`[${plugin.id}] ${message}`, meta),
-      error: (message: string, meta?: any) => console.error(`[${plugin.id}] ${message}`, meta)
+      error: (message: string, meta?: any) => console.error(`[${plugin.id}] ${message}`, meta),
     }
   }
 }

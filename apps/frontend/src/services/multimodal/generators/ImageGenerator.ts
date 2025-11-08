@@ -6,7 +6,7 @@ import {
   MultimodalContent,
   MultimodalType,
   GenerationOptions,
-  ImageContent
+  ImageContent,
 } from '../types'
 
 export class ImageGenerator implements MultimodalGenerator {
@@ -15,11 +15,7 @@ export class ImageGenerator implements MultimodalGenerator {
   }
 
   async generate(prompt: string, options: GenerationOptions = {}): Promise<MultimodalContent> {
-    const {
-      style = 'realistic',
-      mood,
-      quality = 'high'
-    } = options
+    const { style = 'realistic', mood, quality = 'high' } = options
 
     // 构建图像生成提示词
     const enhancedPrompt = this.buildImagePrompt(prompt, style, mood)
@@ -34,7 +30,7 @@ export class ImageGenerator implements MultimodalGenerator {
       prompt: enhancedPrompt,
       style,
       width: 800,
-      height: 600
+      height: 600,
     }
 
     return { image: imageContent }
@@ -42,21 +38,21 @@ export class ImageGenerator implements MultimodalGenerator {
 
   getSupportedStyles(): string[] {
     return [
-      'realistic',        // 写实风格
-      'fantasy',          // 奇幻风格
-      'anime',            // 动漫风格
-      'cartoon',          // 卡通风格
-      'abstract',         // 抽象风格
-      'oil-painting',     // 油画风格
-      'watercolor',       // 水彩风格
-      'sketch',           // 素描风格
-      'photorealistic',   // 照片级写实
-      'vintage',          // 复古风格
-      'cyberpunk',        // 赛博朋克
-      'steampunk',        // 蒸汽朋克
-      'minimalist',       // 极简风格
-      'surreal',          // 超现实主义
-      'impressionist'     // 印象派
+      'realistic', // 写实风格
+      'fantasy', // 奇幻风格
+      'anime', // 动漫风格
+      'cartoon', // 卡通风格
+      'abstract', // 抽象风格
+      'oil-painting', // 油画风格
+      'watercolor', // 水彩风格
+      'sketch', // 素描风格
+      'photorealistic', // 照片级写实
+      'vintage', // 复古风格
+      'cyberpunk', // 赛博朋克
+      'steampunk', // 蒸汽朋克
+      'minimalist', // 极简风格
+      'surreal', // 超现实主义
+      'impressionist', // 印象派
     ]
   }
 
@@ -65,21 +61,21 @@ export class ImageGenerator implements MultimodalGenerator {
 
     // 添加风格描述
     const stylePrompts: Record<string, string> = {
-      'realistic': 'photorealistic, highly detailed, realistic lighting',
-      'fantasy': 'fantasy art, magical, ethereal, mystical atmosphere',
-      'anime': 'anime style, vibrant colors, expressive characters',
-      'cartoon': 'cartoon style, bright and cheerful, exaggerated features',
-      'abstract': 'abstract art, geometric shapes, color fields',
+      realistic: 'photorealistic, highly detailed, realistic lighting',
+      fantasy: 'fantasy art, magical, ethereal, mystical atmosphere',
+      anime: 'anime style, vibrant colors, expressive characters',
+      cartoon: 'cartoon style, bright and cheerful, exaggerated features',
+      abstract: 'abstract art, geometric shapes, color fields',
       'oil-painting': 'oil painting, textured canvas, classical art style',
-      'watercolor': 'watercolor painting, soft edges, artistic',
-      'sketch': 'pencil sketch, hand-drawn, monochrome',
-      'photorealistic': 'hyperrealistic, photographic quality, extreme detail',
-      'vintage': 'vintage photography, aged, retro style',
-      'cyberpunk': 'cyberpunk, neon lights, futuristic, high-tech',
-      'steampunk': 'steampunk, Victorian era, steam-powered machinery',
-      'minimalist': 'minimalist, clean lines, simple composition',
-      'surreal': 'surreal, dreamlike, impossible perspectives',
-      'impressionist': 'impressionist painting, light and color, brush strokes'
+      watercolor: 'watercolor painting, soft edges, artistic',
+      sketch: 'pencil sketch, hand-drawn, monochrome',
+      photorealistic: 'hyperrealistic, photographic quality, extreme detail',
+      vintage: 'vintage photography, aged, retro style',
+      cyberpunk: 'cyberpunk, neon lights, futuristic, high-tech',
+      steampunk: 'steampunk, Victorian era, steam-powered machinery',
+      minimalist: 'minimalist, clean lines, simple composition',
+      surreal: 'surreal, dreamlike, impossible perspectives',
+      impressionist: 'impressionist painting, light and color, brush strokes',
     }
 
     if (stylePrompts[style]) {
@@ -89,13 +85,13 @@ export class ImageGenerator implements MultimodalGenerator {
     // 添加情绪描述
     if (mood) {
       const moodPrompts: Record<string, string> = {
-        'joyful': 'bright and cheerful atmosphere',
-        'mysterious': 'dark and enigmatic mood',
-        'peaceful': 'calm and serene environment',
-        'dramatic': 'intense and powerful composition',
-        'romantic': 'soft and intimate lighting',
-        'adventurous': 'exciting and dynamic scene',
-        'melancholic': 'soft and nostalgic atmosphere'
+        joyful: 'bright and cheerful atmosphere',
+        mysterious: 'dark and enigmatic mood',
+        peaceful: 'calm and serene environment',
+        dramatic: 'intense and powerful composition',
+        romantic: 'soft and intimate lighting',
+        adventurous: 'exciting and dynamic scene',
+        melancholic: 'soft and nostalgic atmosphere',
       }
 
       if (moodPrompts[mood]) {
@@ -114,21 +110,21 @@ export class ImageGenerator implements MultimodalGenerator {
     const baseCaption = prompt.length > 100 ? prompt.substring(0, 97) + '...' : prompt
 
     const styleDescriptions: Record<string, string> = {
-      'realistic': '写实风格',
-      'fantasy': '奇幻风格',
-      'anime': '动漫风格',
-      'cartoon': '卡通风格',
-      'abstract': '抽象艺术',
+      realistic: '写实风格',
+      fantasy: '奇幻风格',
+      anime: '动漫风格',
+      cartoon: '卡通风格',
+      abstract: '抽象艺术',
       'oil-painting': '油画作品',
-      'watercolor': '水彩画作',
-      'sketch': '素描作品',
-      'photorealistic': '照片级写实',
-      'vintage': '复古风格',
-      'cyberpunk': '赛博朋克',
-      'steampunk': '蒸汽朋克',
-      'minimalist': '极简设计',
-      'surreal': '超现实主义',
-      'impressionist': '印象派'
+      watercolor: '水彩画作',
+      sketch: '素描作品',
+      photorealistic: '照片级写实',
+      vintage: '复古风格',
+      cyberpunk: '赛博朋克',
+      steampunk: '蒸汽朋克',
+      minimalist: '极简设计',
+      surreal: '超现实主义',
+      impressionist: '印象派',
     }
 
     const styleDesc = styleDescriptions[style] || '艺术作品'
@@ -136,7 +132,11 @@ export class ImageGenerator implements MultimodalGenerator {
   }
 
   // 生成图像变体
-  async generateVariants(prompt: string, count: number = 4, options: GenerationOptions = {}): Promise<ImageContent[]> {
+  async generateVariants(
+    prompt: string,
+    count: number = 4,
+    options: GenerationOptions = {}
+  ): Promise<ImageContent[]> {
     const variants: ImageContent[] = []
 
     for (let i = 0; i < count; i++) {
@@ -154,7 +154,11 @@ export class ImageGenerator implements MultimodalGenerator {
   }
 
   // 生成图像序列（用于动画或故事板）
-  async generateSequence(basePrompt: string, sequenceLength: number = 5, options: GenerationOptions = {}): Promise<ImageContent[]> {
+  async generateSequence(
+    basePrompt: string,
+    sequenceLength: number = 5,
+    options: GenerationOptions = {}
+  ): Promise<ImageContent[]> {
     const sequence: ImageContent[] = []
 
     for (let i = 0; i < sequenceLength; i++) {
@@ -171,7 +175,10 @@ export class ImageGenerator implements MultimodalGenerator {
   }
 
   // 根据文本描述生成配图
-  async generateIllustrationForText(text: string, options: GenerationOptions = {}): Promise<ImageContent> {
+  async generateIllustrationForText(
+    text: string,
+    options: GenerationOptions = {}
+  ): Promise<ImageContent> {
     // 从文本中提取关键视觉元素
     const visualPrompt = this.extractVisualElements(text)
 
@@ -184,15 +191,33 @@ export class ImageGenerator implements MultimodalGenerator {
 
     // 查找常见的视觉描述词
     const visualKeywords = [
-      '森林', '山脉', '河流', '海洋', '城市', '建筑',
-      '精灵', '龙', '骑士', '法师', '公主', '城堡',
-      '魔法', '水晶', '宝藏', '冒险', '战斗', '和平',
-      '光明', '黑暗', '风暴', '彩虹', '星星', '月亮'
+      '森林',
+      '山脉',
+      '河流',
+      '海洋',
+      '城市',
+      '建筑',
+      '精灵',
+      '龙',
+      '骑士',
+      '法师',
+      '公主',
+      '城堡',
+      '魔法',
+      '水晶',
+      '宝藏',
+      '冒险',
+      '战斗',
+      '和平',
+      '光明',
+      '黑暗',
+      '风暴',
+      '彩虹',
+      '星星',
+      '月亮',
     ]
 
-    const foundKeywords = visualKeywords.filter(keyword =>
-      text.includes(keyword)
-    )
+    const foundKeywords = visualKeywords.filter((keyword) => text.includes(keyword))
 
     if (foundKeywords.length > 0) {
       return `场景描绘：${foundKeywords.join('、')}，艺术插图`

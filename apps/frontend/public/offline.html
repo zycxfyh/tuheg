@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>离线模式 - 创世星环</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .offline-container {
+      text-align: center;
+      max-width: 500px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .offline-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      background: linear-gradient(45deg, #00d4ff, #09c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .retry-btn {
+      background: linear-gradient(45deg, #00d4ff, #09c);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .retry-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .features {
+      margin-top: 40px;
+      text-align: left;
+    }
+
+    .features h3 {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      color: #00d4ff;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-list li:before {
+      content: "✨";
+      margin-right: 12px;
+      font-size: 1.1rem;
+    }
+
+    .status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #00d4ff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+
+    @media (max-width: 600px) {
+      .offline-container {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .offline-icon {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">🌟</div>
+    <h1>网络连接已断开</h1>
+    <p>
+      看起来您暂时失去了网络连接。不过不用担心！创世星环的大部分功能都可以在离线状态下使用。
+    </p>
+
+    <button class="retry-btn" onclick="window.location.reload()">
+      🔄 重新连接
+    </button>
+
+    <div class="features">
+      <h3>离线可用功能：</h3>
+      <ul class="feature-list">
+        <li>查看已缓存的叙事作品</li>
+        <li>编辑本地保存的草稿</li>
+        <li>使用已下载的插件</li>
+        <li>浏览本地帮助文档</li>
+        <li>访问最近的历史记录</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="status" id="connection-status">
+    正在检测网络连接...
+  </div>
+
+  <script>
+    // 检测网络连接状态
+    function updateConnectionStatus() {
+      const statusElement = document.getElementById('connection-status')
+
+      if (navigator.onLine) {
+        statusElement.textContent = '🟢 网络已连接'
+        statusElement.style.color = '#4caf50'
+      } else {
+        statusElement.textContent = '🔴 网络已断开'
+        statusElement.style.color = '#f44336'
+      }
+    }
+
+    // 监听网络状态变化
+    window.addEventListener('online', updateConnectionStatus)
+    window.addEventListener('offline', updateConnectionStatus)
+
+    // 初始检测
+    updateConnectionStatus()
+
+    // 定期检查连接
+    setInterval(() => {
+      if (navigator.onLine) {
+        // 尝试ping服务器
+        fetch('/api/health', {
+          method: 'HEAD',
+          cache: 'no-cache'
+        })
+        .then(() => {
+          document.getElementById('connection-status').textContent = '🟢 服务器连接正常'
+        })
+        .catch(() => {
+          document.getElementById('connection-status').textContent = '🟡 本地网络正常，服务器无响应'
+        })
+      }
+    }, 30000) // 每30秒检查一次
+
+    // 注册Service Worker更新监听
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+          const updateBtn = document.createElement('button')
+          updateBtn.textContent = '📦 更新应用'
+          updateBtn.className = 'retry-btn'
+          updateBtn.style.marginLeft = '10px'
+          updateBtn.onclick = () => window.location.reload()
+
+          const container = document.querySelector('.offline-container p')
+          container.appendChild(updateBtn)
+        }
+      })
+    }
+
+    // 添加一些交互效果
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.querySelector('.offline-container')
+
+      // 添加鼠标悬停效果
+      container.addEventListener('mouseenter', () => {
+        container.style.transform = 'translateY(-5px)'
+        container.style.transition = 'transform 0.3s ease'
+      })
+
+      container.addEventListener('mouseleave', () => {
+        container.style.transform = 'translateY(0)'
+      })
+
+      // 添加键盘快捷键
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'r' || event.key === 'R') {
+          window.location.reload()
+        }
+        if (event.key === 'Escape') {
+          // 可以添加其他快捷操作
+        }
+      })
+    })
+  </script>
+</body>
+</html>

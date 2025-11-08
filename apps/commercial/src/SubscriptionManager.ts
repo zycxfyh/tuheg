@@ -142,13 +142,28 @@ export class SubscriptionManager extends EventEmitter {
         price: {
           monthly: 0,
           yearly: 0,
-          currency: 'CNY'
+          currency: 'CNY',
         },
         features: [
-          { id: 'basic_world', name: '基础世界构建', description: '创建简单的游戏世界', included: true },
-          { id: 'basic_story', name: '基础故事生成', description: '生成简短的故事', included: true },
-          { id: 'character_basic', name: '基础角色创建', description: '创建简单角色', included: true },
-          { id: 'export_basic', name: '基础导出', description: '导出为JSON格式', included: true }
+          {
+            id: 'basic_world',
+            name: '基础世界构建',
+            description: '创建简单的游戏世界',
+            included: true,
+          },
+          {
+            id: 'basic_story',
+            name: '基础故事生成',
+            description: '生成简短的故事',
+            included: true,
+          },
+          {
+            id: 'character_basic',
+            name: '基础角色创建',
+            description: '创建简单角色',
+            included: true,
+          },
+          { id: 'export_basic', name: '基础导出', description: '导出为JSON格式', included: true },
         ],
         limits: {
           worldsPerMonth: 3,
@@ -158,9 +173,9 @@ export class SubscriptionManager extends EventEmitter {
           storageGB: 1,
           collaborators: 0,
           prioritySupport: false,
-          customPlugins: false
+          customPlugins: false,
         },
-        trialDays: 0
+        trialDays: 0,
       },
       {
         id: 'creator',
@@ -169,15 +184,36 @@ export class SubscriptionManager extends EventEmitter {
         price: {
           monthly: 29,
           yearly: 290,
-          currency: 'CNY'
+          currency: 'CNY',
         },
         features: [
-          { id: 'advanced_world', name: '高级世界构建', description: '复杂的世界设定和规则', included: true },
-          { id: 'branching_story', name: '分支叙事', description: '创建多结局故事', included: true },
-          { id: 'character_advanced', name: '高级角色系统', description: '复杂角色关系和背景', included: true },
+          {
+            id: 'advanced_world',
+            name: '高级世界构建',
+            description: '复杂的世界设定和规则',
+            included: true,
+          },
+          {
+            id: 'branching_story',
+            name: '分支叙事',
+            description: '创建多结局故事',
+            included: true,
+          },
+          {
+            id: 'character_advanced',
+            name: '高级角色系统',
+            description: '复杂角色关系和背景',
+            included: true,
+          },
           { id: 'export_advanced', name: '高级导出', description: '多种格式导出', included: true },
-          { id: 'collaboration', name: '协作功能', description: '多人协作创作', included: true, limit: 2 },
-          { id: 'priority_support', name: '优先支持', description: '快速技术支持', included: true }
+          {
+            id: 'collaboration',
+            name: '协作功能',
+            description: '多人协作创作',
+            included: true,
+            limit: 2,
+          },
+          { id: 'priority_support', name: '优先支持', description: '快速技术支持', included: true },
         ],
         limits: {
           worldsPerMonth: 50,
@@ -187,9 +223,9 @@ export class SubscriptionManager extends EventEmitter {
           storageGB: 10,
           collaborators: 2,
           prioritySupport: true,
-          customPlugins: false
+          customPlugins: false,
         },
-        trialDays: 14
+        trialDays: 14,
       },
       {
         id: 'studio',
@@ -198,16 +234,42 @@ export class SubscriptionManager extends EventEmitter {
         price: {
           monthly: 99,
           yearly: 990,
-          currency: 'CNY'
+          currency: 'CNY',
         },
         features: [
-          { id: 'unlimited_worlds', name: '无限世界', description: '不受限制的世界创建', included: true },
-          { id: 'unlimited_stories', name: '无限故事', description: '不受限制的故事生成', included: true },
-          { id: 'advanced_collaboration', name: '高级协作', description: '完整团队协作功能', included: true, limit: 10 },
-          { id: 'custom_plugins', name: '自定义插件', description: '开发和使用自定义插件', included: true },
+          {
+            id: 'unlimited_worlds',
+            name: '无限世界',
+            description: '不受限制的世界创建',
+            included: true,
+          },
+          {
+            id: 'unlimited_stories',
+            name: '无限故事',
+            description: '不受限制的故事生成',
+            included: true,
+          },
+          {
+            id: 'advanced_collaboration',
+            name: '高级协作',
+            description: '完整团队协作功能',
+            included: true,
+            limit: 10,
+          },
+          {
+            id: 'custom_plugins',
+            name: '自定义插件',
+            description: '开发和使用自定义插件',
+            included: true,
+          },
           { id: 'api_access', name: 'API访问', description: '完整的API访问权限', included: true },
           { id: 'white_label', name: '白牌服务', description: '去除品牌标识', included: true },
-          { id: 'premium_support', name: '高级支持', description: '7*24小时专属支持', included: true }
+          {
+            id: 'premium_support',
+            name: '高级支持',
+            description: '7*24小时专属支持',
+            included: true,
+          },
         ],
         limits: {
           worldsPerMonth: 'unlimited',
@@ -217,10 +279,10 @@ export class SubscriptionManager extends EventEmitter {
           storageGB: 100,
           collaborators: 10,
           prioritySupport: true,
-          customPlugins: true
+          customPlugins: true,
         },
         trialDays: 30,
-        popular: true
+        popular: true,
       },
       {
         id: 'enterprise',
@@ -229,15 +291,30 @@ export class SubscriptionManager extends EventEmitter {
         price: {
           monthly: 299,
           yearly: 2990,
-          currency: 'CNY'
+          currency: 'CNY',
         },
         features: [
           { id: 'all_features', name: '全部功能', description: '所有可用功能', included: true },
-          { id: 'unlimited_everything', name: '完全无限', description: '无任何使用限制', included: true },
-          { id: 'custom_integrations', name: '自定义集成', description: '定制系统集成', included: true },
-          { id: 'dedicated_instance', name: '专属实例', description: '独立的云实例', included: true },
+          {
+            id: 'unlimited_everything',
+            name: '完全无限',
+            description: '无任何使用限制',
+            included: true,
+          },
+          {
+            id: 'custom_integrations',
+            name: '自定义集成',
+            description: '定制系统集成',
+            included: true,
+          },
+          {
+            id: 'dedicated_instance',
+            name: '专属实例',
+            description: '独立的云实例',
+            included: true,
+          },
           { id: 'sla_guarantee', name: 'SLA保证', description: '99.9%可用性保证', included: true },
-          { id: 'custom_training', name: '定制培训', description: '专属团队培训', included: true }
+          { id: 'custom_training', name: '定制培训', description: '专属团队培训', included: true },
         ],
         limits: {
           worldsPerMonth: 'unlimited',
@@ -247,12 +324,12 @@ export class SubscriptionManager extends EventEmitter {
           storageGB: 1000,
           collaborators: 100,
           prioritySupport: true,
-          customPlugins: true
-        }
-      }
+          customPlugins: true,
+        },
+      },
     ]
 
-    plans.forEach(plan => this.plans.set(plan.id, plan))
+    plans.forEach((plan) => this.plans.set(plan.id, plan))
   }
 
   // 获取所有订阅计划
@@ -291,14 +368,16 @@ export class SubscriptionManager extends EventEmitter {
       status: plan.trialDays ? 'trialing' : 'active',
       currentPeriodStart: now,
       currentPeriodEnd: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000), // 30天
-      trialEnd: plan.trialDays ? new Date(now.getTime() + plan.trialDays * 24 * 60 * 60 * 1000) : undefined,
+      trialEnd: plan.trialDays
+        ? new Date(now.getTime() + plan.trialDays * 24 * 60 * 60 * 1000)
+        : undefined,
       cancelAtPeriodEnd: false,
       usage: this.initializeUsage(),
       paymentMethod,
       metadata: {
         couponApplied: coupon?.id,
-        createdAt: now.toISOString()
-      }
+        createdAt: now.toISOString(),
+      },
     }
 
     this.subscriptions.set(subscription.id, subscription)
@@ -310,7 +389,10 @@ export class SubscriptionManager extends EventEmitter {
   }
 
   // 更新订阅
-  async updateSubscription(subscriptionId: string, updates: Partial<UserSubscription>): Promise<UserSubscription> {
+  async updateSubscription(
+    subscriptionId: string,
+    updates: Partial<UserSubscription>
+  ): Promise<UserSubscription> {
     const subscription = this.subscriptions.get(subscriptionId)
     if (!subscription) {
       throw new Error(`Subscription ${subscriptionId} not found`)
@@ -325,7 +407,10 @@ export class SubscriptionManager extends EventEmitter {
   }
 
   // 取消订阅
-  async cancelSubscription(subscriptionId: string, cancelAtPeriodEnd = true): Promise<UserSubscription> {
+  async cancelSubscription(
+    subscriptionId: string,
+    cancelAtPeriodEnd = true
+  ): Promise<UserSubscription> {
     const subscription = this.subscriptions.get(subscriptionId)
     if (!subscription) {
       throw new Error(`Subscription ${subscriptionId} not found`)
@@ -342,24 +427,27 @@ export class SubscriptionManager extends EventEmitter {
   }
 
   // 检查用户权限
-  checkPermission(userId: string, featureId: string): { allowed: boolean; limit?: number; remaining?: number } {
+  checkPermission(
+    userId: string,
+    featureId: string
+  ): { allowed: boolean; limit?: number; remaining?: number } {
     const subscription = this.getUserActiveSubscription(userId)
     if (!subscription) {
       // 免费用户
       const freePlan = this.getPlan('free')
       if (!freePlan) return { allowed: false }
 
-      const feature = freePlan.features.find(f => f.id === featureId)
+      const feature = freePlan.features.find((f) => f.id === featureId)
       return {
         allowed: feature?.included || false,
-        limit: typeof feature?.limit === 'number' ? feature.limit : undefined
+        limit: typeof feature?.limit === 'number' ? feature.limit : undefined,
       }
     }
 
     const plan = this.getPlan(subscription.planId)
     if (!plan) return { allowed: false }
 
-    const feature = plan.features.find(f => f.id === featureId)
+    const feature = plan.features.find((f) => f.id === featureId)
     if (!feature?.included) return { allowed: false }
 
     const usage = this.getCurrentUsage(userId)
@@ -375,7 +463,7 @@ export class SubscriptionManager extends EventEmitter {
     return {
       allowed: remaining > 0,
       limit,
-      remaining
+      remaining,
     }
   }
 
@@ -413,8 +501,10 @@ export class SubscriptionManager extends EventEmitter {
   // 获取用户活跃订阅
   getUserActiveSubscription(userId: string): UserSubscription | null {
     for (const subscription of this.subscriptions.values()) {
-      if (subscription.userId === userId &&
-          (subscription.status === 'active' || subscription.status === 'trialing')) {
+      if (
+        subscription.userId === userId &&
+        (subscription.status === 'active' || subscription.status === 'trialing')
+      ) {
         return subscription
       }
     }
@@ -431,7 +521,7 @@ export class SubscriptionManager extends EventEmitter {
     const newCoupon: Coupon = {
       ...coupon,
       id: `coupon-${Date.now()}`,
-      redemptionsCount: 0
+      redemptionsCount: 0,
     }
 
     this.coupons.set(newCoupon.code, newCoupon)
@@ -497,19 +587,21 @@ export class SubscriptionManager extends EventEmitter {
       status: 'draft',
       billingPeriod: {
         start: subscription.currentPeriodStart,
-        end: subscription.currentPeriodEnd
+        end: subscription.currentPeriodEnd,
       },
       dueDate: new Date(subscription.currentPeriodEnd.getTime() + 7 * 24 * 60 * 60 * 1000), // 7天宽限期
-      items: [{
-        id: `item-${Date.now()}`,
-        description: `${plan.name}订阅费用`,
-        amount: plan.price.monthly,
-        quantity: 1,
-        period: {
-          start: subscription.currentPeriodStart,
-          end: subscription.currentPeriodEnd
-        }
-      }]
+      items: [
+        {
+          id: `item-${Date.now()}`,
+          description: `${plan.name}订阅费用`,
+          amount: plan.price.monthly,
+          quantity: 1,
+          period: {
+            start: subscription.currentPeriodStart,
+            end: subscription.currentPeriodEnd,
+          },
+        },
+      ],
     }
 
     return invoice
@@ -523,30 +615,43 @@ export class SubscriptionManager extends EventEmitter {
       charactersUsed: 0,
       aiRequestsMade: 0,
       storageUsedGB: 0,
-      lastResetDate: new Date()
+      lastResetDate: new Date(),
     }
   }
 
   private getFeatureLimit(limits: SubscriptionLimits, featureId: string): number | 'unlimited' {
     switch (featureId) {
-      case 'world_created': return limits.worldsPerMonth
-      case 'story_generated': return limits.storiesPerMonth
-      case 'character_used': return limits.charactersPerWorld
-      case 'ai_request': return limits.aiRequestsPerDay
-      case 'storage_used': return limits.storageGB
-      case 'collaboration': return limits.collaborators
-      default: return 0
+      case 'world_created':
+        return limits.worldsPerMonth
+      case 'story_generated':
+        return limits.storiesPerMonth
+      case 'character_used':
+        return limits.charactersPerWorld
+      case 'ai_request':
+        return limits.aiRequestsPerDay
+      case 'storage_used':
+        return limits.storageGB
+      case 'collaboration':
+        return limits.collaborators
+      default:
+        return 0
     }
   }
 
   private getFeatureUsage(usage: SubscriptionUsage, featureId: string): number {
     switch (featureId) {
-      case 'world_created': return usage.worldsCreated
-      case 'story_generated': return usage.storiesGenerated
-      case 'character_used': return usage.charactersUsed
-      case 'ai_request': return usage.aiRequestsMade
-      case 'storage_used': return usage.storageUsedGB
-      default: return 0
+      case 'world_created':
+        return usage.worldsCreated
+      case 'story_generated':
+        return usage.storiesGenerated
+      case 'character_used':
+        return usage.charactersUsed
+      case 'ai_request':
+        return usage.aiRequestsMade
+      case 'storage_used':
+        return usage.storageUsedGB
+      default:
+        return 0
     }
   }
 }

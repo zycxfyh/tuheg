@@ -161,7 +161,7 @@ const analyticsData = ref({
   topTopics: [],
   satisfactionTrend: [],
   recentFeedback: [],
-  insights: []
+  insights: [],
 })
 
 // 方法
@@ -170,7 +170,7 @@ const loadAnalytics = async () => {
     isLoading.value = true
 
     // 模拟加载分析数据
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // 模拟数据
     analyticsData.value = {
@@ -186,20 +186,19 @@ const loadAnalytics = async () => {
       feedbackTypes: [
         { type: 'experience', count: 120, percentage: 48.6 },
         { type: 'bug', count: 85, percentage: 34.4 },
-        { type: 'feature', count: 42, percentage: 17.0 }
+        { type: 'feature', count: 42, percentage: 17.0 },
       ],
       topTopics: [
         { name: 'AI响应速度', count: 45 },
         { name: '界面操作', count: 38 },
         { name: '世界构建', count: 32 },
         { name: '角色创建', count: 28 },
-        { name: '故事生成', count: 25 }
+        { name: '故事生成', count: 25 },
       ],
       satisfactionTrend: generateSatisfactionData(30),
       recentFeedback: generateRecentFeedback(),
-      insights: generateInsights()
+      insights: generateInsights(),
     }
-
   } catch (error) {
     console.error('Failed to load analytics:', error)
   } finally {
@@ -215,7 +214,7 @@ const getTypeLabel = (type) => {
   const labels = {
     experience: '体验反馈',
     bug: '问题报告',
-    feature: '功能建议'
+    feature: '功能建议',
   }
   return labels[type] || type
 }
@@ -225,7 +224,7 @@ const getStatusLabel = (status) => {
     open: '待处理',
     in_progress: '处理中',
     resolved: '已解决',
-    closed: '已关闭'
+    closed: '已关闭',
   }
   return labels[status] || status
 }
@@ -270,7 +269,7 @@ const generateTrendData = (days) => {
 
     data.push({
       date: date.toISOString().split('T')[0],
-      count: Math.floor(baseValue + Math.random() * 10 + i * 0.5)
+      count: Math.floor(baseValue + Math.random() * 10 + i * 0.5),
     })
   }
 
@@ -286,7 +285,7 @@ const generateSatisfactionData = (days) => {
 
     data.push({
       date: date.toISOString().split('T')[0],
-      rating: 3.8 + Math.random() * 1.2
+      rating: 3.8 + Math.random() * 1.2,
     })
   }
 
@@ -302,7 +301,7 @@ const generateRecentFeedback = () => {
       description: 'AI能够快速理解我的想法并生成丰富多彩的世界设定，非常 impressed！',
       rating: 5,
       status: 'resolved',
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     },
     {
       id: '2',
@@ -311,7 +310,7 @@ const generateRecentFeedback = () => {
       description: '在创建复杂角色时，界面会偶尔无响应，需要刷新页面',
       rating: null,
       status: 'in_progress',
-      createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
+      createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
     },
     {
       id: '3',
@@ -320,8 +319,8 @@ const generateRecentFeedback = () => {
       description: '如果能让用户选择不同的故事发展方向会很有趣',
       rating: 4,
       status: 'open',
-      createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString()
-    }
+      createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+    },
   ]
 }
 
@@ -334,7 +333,7 @@ const generateInsights = () => {
       impact: 'high',
       confidence: 0.85,
       recommendation: '实施响应时间优化策略',
-      status: 'pending'
+      status: 'pending',
     },
     {
       id: '2',
@@ -343,7 +342,7 @@ const generateInsights = () => {
       impact: 'medium',
       confidence: 0.78,
       recommendation: '添加交互式引导教程',
-      status: 'pending'
+      status: 'pending',
     },
     {
       id: '3',
@@ -352,8 +351,8 @@ const generateInsights = () => {
       impact: 'medium',
       confidence: 0.72,
       recommendation: '优化移动端界面和功能',
-      status: 'pending'
-    }
+      status: 'pending',
+    },
   ]
 }
 

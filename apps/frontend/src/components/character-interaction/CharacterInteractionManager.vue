@@ -243,8 +243,8 @@ import { ref, computed, watch, onMounted } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 // Emits
@@ -266,12 +266,12 @@ const relationshipTypes = ref([
   { value: 'rival', label: '对手', color: '#805ad5' },
   { value: 'love', label: '爱情', color: '#e91e63' },
   { value: 'friend', label: '朋友', color: '#00bcd4' },
-  { value: 'neutral', label: '中立', color: '#9e9e9e' }
+  { value: 'neutral', label: '中立', color: '#9e9e9e' },
 ])
 
 // 计算属性
 const availableCharacters = computed(() => {
-  return characters.value.filter(char => char.id !== selectedCharacter.value)
+  return characters.value.filter((char) => char.id !== selectedCharacter.value)
 })
 
 // 方法
@@ -283,7 +283,7 @@ const addCharacter = () => {
     description: '',
     avatar: '👤',
     traits: [],
-    position: { x: Math.random() * 600 + 100, y: Math.random() * 400 + 100 }
+    position: { x: Math.random() * 600 + 100, y: Math.random() * 400 + 100 },
   }
 
   characters.value.push(newCharacter)
@@ -291,9 +291,9 @@ const addCharacter = () => {
 }
 
 const removeCharacter = (characterId) => {
-  characters.value = characters.value.filter(char => char.id !== characterId)
-  relationships.value = relationships.value.filter(rel =>
-    rel.from !== characterId && rel.to !== characterId
+  characters.value = characters.value.filter((char) => char.id !== characterId)
+  relationships.value = relationships.value.filter(
+    (rel) => rel.from !== characterId && rel.to !== characterId
   )
   if (selectedCharacter.value === characterId) {
     selectedCharacter.value = null
@@ -311,29 +311,29 @@ const editCharacter = (character) => {
 }
 
 const getSelectedCharacter = () => {
-  return characters.value.find(char => char.id === selectedCharacter.value)
+  return characters.value.find((char) => char.id === selectedCharacter.value)
 }
 
 const getCharacterById = (id) => {
-  return characters.value.find(char => char.id === id)
+  return characters.value.find((char) => char.id === id)
 }
 
 const getCharacterPosition = (characterId) => {
-  const character = characters.value.find(char => char.id === characterId)
+  const character = characters.value.find((char) => char.id === characterId)
   return character?.position || { x: 0, y: 0 }
 }
 
 const getCharacterRelationships = (characterId) => {
-  return relationships.value.filter(rel =>
-    rel.from === characterId || rel.to === characterId
-  )
+  return relationships.value.filter((rel) => rel.from === characterId || rel.to === characterId)
 }
 
 const getAvailableCharacters = () => {
-  return characters.value.filter(char => {
+  return characters.value.filter((char) => {
     const existingRelationships = getCharacterRelationships(selectedCharacter.value)
-    return char.id !== selectedCharacter.value &&
-           !existingRelationships.some(rel => rel.to === char.id || rel.from === char.id)
+    return (
+      char.id !== selectedCharacter.value &&
+      !existingRelationships.some((rel) => rel.to === char.id || rel.from === char.id)
+    )
   })
 }
 
@@ -345,7 +345,7 @@ const addRelationship = () => {
     from: selectedCharacter.value,
     to: newRelationshipTarget.value,
     type: 'neutral',
-    description: ''
+    description: '',
   }
 
   relationships.value.push(newRelationship)
@@ -356,18 +356,18 @@ const addRelationship = () => {
 }
 
 const updateRelationship = (relationship) => {
-  const index = relationships.value.findIndex(rel => rel.id === relationship.id)
+  const index = relationships.value.findIndex((rel) => rel.id === relationship.id)
   if (index !== -1) {
     relationships.value[index] = relationship
   }
 }
 
 const removeRelationship = (relationshipId) => {
-  relationships.value = relationships.value.filter(rel => rel.id !== relationshipId)
+  relationships.value = relationships.value.filter((rel) => rel.id !== relationshipId)
 }
 
 const getRelationshipColor = (type) => {
-  const typeObj = relationshipTypes.value.find(t => t.value === type)
+  const typeObj = relationshipTypes.value.find((t) => t.value === type)
   return typeObj?.color || '#9e9e9e'
 }
 
@@ -386,32 +386,32 @@ const generateInteractions = () => {
   const suggestions = []
 
   // 生成潜在的盟友关系
-  const protagonist = characters.value.find(c => c.role?.includes('主角'))
-  const potentialAllies = characters.value.filter(c =>
-    c.id !== protagonist?.id && !c.role?.includes('反派')
+  const protagonist = characters.value.find((c) => c.role?.includes('主角'))
+  const potentialAllies = characters.value.filter(
+    (c) => c.id !== protagonist?.id && !c.role?.includes('反派')
   )
 
   if (protagonist && potentialAllies.length > 0) {
     suggestions.push({
       type: '盟友关系',
       content: `${protagonist.name}可能与${potentialAllies[0].name}建立盟友关系`,
-      confidence: 75
+      confidence: 75,
     })
   }
 
   // 生成冲突关系
-  const antagonist = characters.value.find(c => c.role?.includes('反派'))
+  const antagonist = characters.value.find((c) => c.role?.includes('反派'))
   if (protagonist && antagonist) {
     suggestions.push({
       type: '冲突关系',
       content: `${protagonist.name}与${antagonist.name}之间存在核心冲突`,
-      confidence: 90
+      confidence: 90,
     })
   }
 
   interactionSuggestions.value = suggestions.map((suggestion, index) => ({
     id: `suggestion-${index}`,
-    ...suggestion
+    ...suggestion,
   }))
 }
 
@@ -425,11 +425,11 @@ const generateInteractionSuggestions = () => {
       id: 'detail-relationships',
       type: '关系细节',
       content: '考虑为现有关系添加更详细的背景故事和互动历史',
-      confidence: 80
+      confidence: 80,
     })
 
     // 建议创建关系网络
-    const isolatedCharacters = characters.value.filter(char => {
+    const isolatedCharacters = characters.value.filter((char) => {
       const relationships = getCharacterRelationships(char.id)
       return relationships.length === 0
     })
@@ -439,7 +439,7 @@ const generateInteractionSuggestions = () => {
         id: 'expand-network',
         type: '关系网络',
         content: `${isolatedCharacters[0].name}目前没有与其他角色建立关系，考虑将其融入故事网络`,
-        confidence: 70
+        confidence: 70,
       })
     }
   }
@@ -453,16 +453,24 @@ const applySuggestion = (suggestion) => {
 }
 
 // 监听外部数据变化
-watch(() => props.modelValue, (newValue) => {
-  if (newValue) {
-    characters.value = newValue
-  }
-}, { deep: true })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      characters.value = newValue
+    }
+  },
+  { deep: true }
+)
 
 // 监听内部数据变化
-watch(characters, (newCharacters) => {
-  emit('update:modelValue', newCharacters)
-}, { deep: true })
+watch(
+  characters,
+  (newCharacters) => {
+    emit('update:modelValue', newCharacters)
+  },
+  { deep: true }
+)
 
 // 初始化
 onMounted(() => {

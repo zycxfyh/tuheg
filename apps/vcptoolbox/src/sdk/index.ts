@@ -24,7 +24,7 @@ export const defaultConfig: SDKConfig = {
   registry: 'https://registry.creation-ring.com',
   apiEndpoint: 'https://api.creation-ring.com/v1',
   timeout: 30000,
-  debug: false
+  debug: false,
 }
 
 // SDK初始化
@@ -52,14 +52,7 @@ export class VCPToolBoxSDK {
 
   // 获取插件模板
   getPluginTemplates(): string[] {
-    return [
-      'static',
-      'messagePreprocessor',
-      'synchronous',
-      'asynchronous',
-      'service',
-      'dynamic'
-    ]
+    return ['static', 'messagePreprocessor', 'synchronous', 'asynchronous', 'service', 'dynamic']
   }
 
   // 创建插件项目

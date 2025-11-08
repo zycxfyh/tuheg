@@ -1,12 +1,7 @@
 // 文本生成器
 // 使用AI生成各种类型的文本内容
 
-import {
-  MultimodalGenerator,
-  MultimodalContent,
-  MultimodalType,
-  GenerationOptions
-} from '../types'
+import { MultimodalGenerator, MultimodalContent, MultimodalType, GenerationOptions } from '../types'
 
 export class TextGenerator implements MultimodalGenerator {
   canGenerate(type: MultimodalType): boolean {
@@ -19,7 +14,7 @@ export class TextGenerator implements MultimodalGenerator {
       mood,
       length = 'medium',
       complexity = 'moderate',
-      targetAudience = 'general'
+      targetAudience = 'general',
     } = options
 
     let generatedText = ''
@@ -51,23 +46,23 @@ export class TextGenerator implements MultimodalGenerator {
         complexity,
         targetAudience,
         aiModel: 'creation-ring-narrative-agent',
-        generationParams: options
-      }
+        generationParams: options,
+      },
     }
   }
 
   getSupportedStyles(): string[] {
     return [
-      'narrative',    // 叙事
-      'dialogue',     // 对话
-      'description',  // 描述
-      'poetry',       // 诗歌
-      'letter',       // 信件
-      'journal',      // 日记
-      'script',       // 剧本
-      'essay',        // 散文
-      'news',         // 新闻
-      'technical'     // 技术文档
+      'narrative', // 叙事
+      'dialogue', // 对话
+      'description', // 描述
+      'poetry', // 诗歌
+      'letter', // 信件
+      'journal', // 日记
+      'script', // 剧本
+      'essay', // 散文
+      'news', // 新闻
+      'technical', // 技术文档
     ]
   }
 
@@ -181,10 +176,14 @@ export class TextGenerator implements MultimodalGenerator {
 
   private getLengthDescription(length?: string): string {
     switch (length) {
-      case 'short': return '简短（200-500字）'
-      case 'medium': return '中等长度（800-1500字）'
-      case 'long': return '详细完整（2000字以上）'
-      default: return '中等长度（800-1500字）'
+      case 'short':
+        return '简短（200-500字）'
+      case 'medium':
+        return '中等长度（800-1500字）'
+      case 'long':
+        return '详细完整（2000字以上）'
+      default:
+        return '中等长度（800-1500字）'
     }
   }
 }
