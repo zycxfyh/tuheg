@@ -61,9 +61,6 @@
     },
     "globals": ["console", "process", "Buffer", "__dirname", "__filename"]
   },
-  "js": {
-    "unsafeParameterDecoratorsEnabled": true
-  },
   "json": {
     "formatter": {
       "enabled": true
