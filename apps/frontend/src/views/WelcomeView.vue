@@ -20,9 +20,9 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
 
 function triggerFrontendError() {
-  throw new Error('Sentry Frontend Test - ' + new Date().toISOString());
+  throw new Error('Sentry Frontend Test - ' + new Date().toISOString())
 }
 </script>

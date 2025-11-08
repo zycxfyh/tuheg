@@ -1,0 +1,32 @@
+# Global owners
+* @your-org/maintainers
+
+# Frontend
+/apps/frontend/ @your-org/frontend-team
+/packages/*/src/components/ @your-org/frontend-team
+
+# Backend
+/apps/backend-gateway/ @your-org/backend-team
+/apps/*/ @your-org/backend-team
+/packages/common-backend/ @your-org/backend-team
+
+# AI Services
+/packages/ai-services/ @your-org/ai-team
+/apps/*-agent/ @your-org/ai-team
+
+# DevOps & Infrastructure
+/deployment/ @your-org/devops-team
+/.github/ @your-org/devops-team
+/scripts/ @your-org/devops-team
+
+# Documentation
+/docs/ @your-org/docs-team
+*.md @your-org/docs-team
+
+# SDK & Tools
+/packages/vcptoolbox-sdk/ @your-org/sdk-team
+/tools/ @your-org/tools-team
+
+# Security
+SECURITY.md @your-org/security-team
+.github/workflows/security* @your-org/security-team

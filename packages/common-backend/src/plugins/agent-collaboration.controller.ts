@@ -10,14 +10,14 @@ import {
   UseGuards,
   Request,
   BadRequestException,
-  NotFoundException
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../security/jwt-auth.guard';
-import { AgentService } from './agent.service';
-import { TaskService } from './task.service';
-import { CollaborationService } from './collaboration.service';
-import { AgentLearningService } from './agent-learning.service';
-import { AgentCommunicationService } from './agent-communication.service';
+  NotFoundException,
+} from '@nestjs/common'
+import { JwtAuthGuard } from '../security/jwt-auth.guard'
+import { AgentService } from './agent.service'
+import { TaskService } from './task.service'
+import { CollaborationService } from './collaboration.service'
+import { AgentLearningService } from './agent-learning.service'
+import { AgentCommunicationService } from './agent-communication.service'
 
 @Controller('agents')
 export class AgentCollaborationController {
@@ -26,7 +26,7 @@ export class AgentCollaborationController {
     private readonly taskService: TaskService,
     private readonly collaborationService: CollaborationService,
     private readonly learningService: AgentLearningService,
-    private readonly communicationService: AgentCommunicationService,
+    private readonly communicationService: AgentCommunicationService
   ) {}
 
   // ==================== Agent 管理 ====================
@@ -37,7 +37,7 @@ export class AgentCollaborationController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createAgent(@Body() data: any) {
-    return this.agentService.createAgent(data);
+    return this.agentService.createAgent(data)
   }
 
   /**
@@ -45,7 +45,7 @@ export class AgentCollaborationController {
    */
   @Get()
   async getAgents(@Query() filters: any) {
-    return this.agentService.getAgents(filters);
+    return this.agentService.getAgents(filters)
   }
 
   /**
@@ -53,7 +53,7 @@ export class AgentCollaborationController {
    */
   @Get(':id')
   async getAgent(@Param('id') id: string) {
-    return this.agentService.getAgent(id);
+    return this.agentService.getAgent(id)
   }
 
   /**
@@ -62,7 +62,7 @@ export class AgentCollaborationController {
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   async updateAgent(@Param('id') id: string, @Body() data: any) {
-    return this.agentService.updateAgent(id, data);
+    return this.agentService.updateAgent(id, data)
   }
 
   /**
@@ -71,8 +71,8 @@ export class AgentCollaborationController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deleteAgent(@Param('id') id: string) {
-    await this.agentService.deleteAgent(id);
-    return { message: 'Agent deleted successfully' };
+    await this.agentService.deleteAgent(id)
+    return { message: 'Agent deleted successfully' }
   }
 
   /**
@@ -80,7 +80,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/workload')
   async getAgentWorkload(@Param('id') id: string) {
-    return this.agentService.getAgentWorkload(id);
+    return this.agentService.getAgentWorkload(id)
   }
 
   /**
@@ -91,7 +91,7 @@ export class AgentCollaborationController {
     @Param('id') id: string,
     @Query('period') period?: 'day' | 'week' | 'month'
   ) {
-    return this.agentService.getAgentMetrics(id, period);
+    return this.agentService.getAgentMetrics(id, period)
   }
 
   /**
@@ -99,7 +99,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/health')
   async checkAgentHealth(@Param('id') id: string) {
-    return this.agentService.healthCheck(id);
+    return this.agentService.healthCheck(id)
   }
 
   /**
@@ -107,10 +107,8 @@ export class AgentCollaborationController {
    */
   @Put('batch/status')
   @UseGuards(JwtAuthGuard)
-  async bulkUpdateStatus(
-    @Body() data: { agentIds: string[]; status: string }
-  ) {
-    return this.agentService.bulkUpdateStatus(data.agentIds, data.status as any);
+  async bulkUpdateStatus(@Body() data: { agentIds: string[]; status: string }) {
+    return this.agentService.bulkUpdateStatus(data.agentIds, data.status as any)
   }
 
   // ==================== 任务管理 ====================
@@ -121,7 +119,7 @@ export class AgentCollaborationController {
   @Post('tasks')
   @UseGuards(JwtAuthGuard)
   async createTask(@Body() data: any) {
-    return this.taskService.createTask(data);
+    return this.taskService.createTask(data)
   }
 
   /**
@@ -129,7 +127,7 @@ export class AgentCollaborationController {
    */
   @Get('tasks')
   async getTasks(@Query() filters: any) {
-    return this.taskService.getTaskQueue(filters);
+    return this.taskService.getTaskQueue(filters)
   }
 
   /**
@@ -137,7 +135,7 @@ export class AgentCollaborationController {
    */
   @Get('tasks/:id')
   async getTask(@Param('id') id: string) {
-    return this.taskService.getTask(id);
+    return this.taskService.getTask(id)
   }
 
   /**
@@ -146,7 +144,7 @@ export class AgentCollaborationController {
   @Put('tasks/:id')
   @UseGuards(JwtAuthGuard)
   async updateTask(@Param('id') id: string, @Body() data: any) {
-    return this.taskService.updateTask(id, data);
+    return this.taskService.updateTask(id, data)
   }
 
   /**
@@ -155,8 +153,8 @@ export class AgentCollaborationController {
   @Delete('tasks/:id')
   @UseGuards(JwtAuthGuard)
   async deleteTask(@Param('id') id: string) {
-    await this.taskService.deleteTask(id);
-    return { message: 'Task deleted successfully' };
+    await this.taskService.deleteTask(id)
+    return { message: 'Task deleted successfully' }
   }
 
   /**
@@ -164,16 +162,13 @@ export class AgentCollaborationController {
    */
   @Post('tasks/:id/assign')
   @UseGuards(JwtAuthGuard)
-  async assignTask(
-    @Param('id') id: string,
-    @Body() data: { agentId: string; priority?: number }
-  ) {
+  async assignTask(@Param('id') id: string, @Body() data: { agentId: string; priority?: number }) {
     await this.taskService.assignTask({
       taskId: id,
       agentId: data.agentId,
-      priority: data.priority
-    });
-    return { message: 'Task assigned successfully' };
+      priority: data.priority,
+    })
+    return { message: 'Task assigned successfully' }
   }
 
   /**
@@ -182,8 +177,8 @@ export class AgentCollaborationController {
   @Delete('tasks/:id/assign/:agentId')
   @UseGuards(JwtAuthGuard)
   async unassignTask(@Param('id') id: string, @Param('agentId') agentId: string) {
-    await this.taskService.unassignTask(id, agentId);
-    return { message: 'Task unassigned successfully' };
+    await this.taskService.unassignTask(id, agentId)
+    return { message: 'Task unassigned successfully' }
   }
 
   /**
@@ -193,12 +188,13 @@ export class AgentCollaborationController {
   @UseGuards(JwtAuthGuard)
   async updateTaskProgress(
     @Param('id') id: string,
-    @Body() data: {
-      agentId: string;
-      progress: number;
-      status?: string;
-      result?: any;
-      error?: string;
+    @Body()
+    data: {
+      agentId: string
+      progress: number
+      status?: string
+      result?: any
+      error?: string
     }
   ) {
     await this.taskService.updateTaskProgress(
@@ -208,19 +204,16 @@ export class AgentCollaborationController {
       data.status as any,
       data.result,
       data.error
-    );
-    return { message: 'Task progress updated successfully' };
+    )
+    return { message: 'Task progress updated successfully' }
   }
 
   /**
    * 获取Agent的任务列表
    */
   @Get(':id/tasks')
-  async getAgentTasks(
-    @Param('id') id: string,
-    @Query() filters: any
-  ) {
-    return this.taskService.getAgentTasks(id, filters);
+  async getAgentTasks(@Param('id') id: string, @Query() filters: any) {
+    return this.taskService.getAgentTasks(id, filters)
   }
 
   // ==================== 协作管理 ====================
@@ -235,7 +228,7 @@ export class AgentCollaborationController {
       req.user.id,
       data.participantIds,
       data.config
-    );
+    )
   }
 
   /**
@@ -243,7 +236,7 @@ export class AgentCollaborationController {
    */
   @Get('collaborations/:id')
   async getCollaboration(@Param('id') id: string) {
-    return this.collaborationService.getCollaboration(id);
+    return this.collaborationService.getCollaboration(id)
   }
 
   /**
@@ -255,11 +248,7 @@ export class AgentCollaborationController {
     @Param('id') id: string,
     @Body() data: { status: string; outcome?: any }
   ) {
-    return this.collaborationService.updateCollaborationStatus(
-      id,
-      data.status as any,
-      data.outcome
-    );
+    return this.collaborationService.updateCollaborationStatus(id, data.status as any, data.outcome)
   }
 
   /**
@@ -267,12 +256,9 @@ export class AgentCollaborationController {
    */
   @Post('collaborations/:id/participants')
   @UseGuards(JwtAuthGuard)
-  async addParticipant(
-    @Param('id') id: string,
-    @Body() data: { agentId: string }
-  ) {
-    await this.collaborationService.addParticipant(id, data.agentId);
-    return { message: 'Participant added successfully' };
+  async addParticipant(@Param('id') id: string, @Body() data: { agentId: string }) {
+    await this.collaborationService.addParticipant(id, data.agentId)
+    return { message: 'Participant added successfully' }
   }
 
   /**
@@ -280,12 +266,9 @@ export class AgentCollaborationController {
    */
   @Delete('collaborations/:id/participants/:agentId')
   @UseGuards(JwtAuthGuard)
-  async removeParticipant(
-    @Param('id') id: string,
-    @Param('agentId') agentId: string
-  ) {
-    await this.collaborationService.removeParticipant(id, agentId);
-    return { message: 'Participant removed successfully' };
+  async removeParticipant(@Param('id') id: string, @Param('agentId') agentId: string) {
+    await this.collaborationService.removeParticipant(id, agentId)
+    return { message: 'Participant removed successfully' }
   }
 
   /**
@@ -302,7 +285,7 @@ export class AgentCollaborationController {
       data.taskId,
       data.agentId,
       data.contribution
-    );
+    )
   }
 
   /**
@@ -321,8 +304,8 @@ export class AgentCollaborationController {
       data.agentId,
       data.status,
       data.contribution
-    );
-    return { message: 'Task progress updated successfully' };
+    )
+    return { message: 'Task progress updated successfully' }
   }
 
   /**
@@ -330,11 +313,7 @@ export class AgentCollaborationController {
    */
   @Post('collaborations/:id/messages')
   @UseGuards(JwtAuthGuard)
-  async sendCollaborationMessage(
-    @Param('id') id: string,
-    @Request() req,
-    @Body() data: any
-  ) {
+  async sendCollaborationMessage(@Param('id') id: string, @Request() req, @Body() data: any) {
     return this.collaborationService.sendCollaborationMessage(
       id,
       req.user.id,
@@ -342,22 +321,15 @@ export class AgentCollaborationController {
       data.messageType,
       data.receiverId,
       data.metadata
-    );
+    )
   }
 
   /**
    * 获取协作消息历史
    */
   @Get('collaborations/:id/messages')
-  async getCollaborationMessages(
-    @Param('id') id: string,
-    @Query() query: any
-  ) {
-    return this.collaborationService.getCollaborationMessages(
-      id,
-      query.limit,
-      query.offset
-    );
+  async getCollaborationMessages(@Param('id') id: string, @Query() query: any) {
+    return this.collaborationService.getCollaborationMessages(id, query.limit, query.offset)
   }
 
   /**
@@ -365,7 +337,7 @@ export class AgentCollaborationController {
    */
   @Get('collaborations/:id/results')
   async getCollaborationResult(@Param('id') id: string) {
-    return this.collaborationService.getCollaborationResult(id);
+    return this.collaborationService.getCollaborationResult(id)
   }
 
   /**
@@ -373,7 +345,7 @@ export class AgentCollaborationController {
    */
   @Get('collaborations/active')
   async getActiveCollaborations() {
-    return this.collaborationService.getActiveCollaborations();
+    return this.collaborationService.getActiveCollaborations()
   }
 
   /**
@@ -381,7 +353,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/collaborations')
   async getAgentCollaborations(@Param('id') id: string, @Query('limit') limit?: number) {
-    return this.collaborationService.getAgentCollaborations(id, limit);
+    return this.collaborationService.getAgentCollaborations(id, limit)
   }
 
   // ==================== 学习和优化 ====================
@@ -400,22 +372,15 @@ export class AgentCollaborationController {
       data.pattern,
       data.learningData,
       data.performance
-    );
+    )
   }
 
   /**
    * 获取Agent学习历史
    */
   @Get(':id/learning')
-  async getAgentLearningHistory(
-    @Param('id') id: string,
-    @Query() query: any
-  ) {
-    return this.learningService.getAgentLearningHistory(
-      id,
-      query.pattern,
-      query.limit
-    );
+  async getAgentLearningHistory(@Param('id') id: string, @Query() query: any) {
+    return this.learningService.getAgentLearningHistory(id, query.pattern, query.limit)
   }
 
   /**
@@ -423,7 +388,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/learning/patterns')
   async analyzeLearningPatterns(@Param('id') id: string) {
-    return this.learningService.analyzeLearningPatterns(id);
+    return this.learningService.analyzeLearningPatterns(id)
   }
 
   /**
@@ -436,8 +401,8 @@ export class AgentCollaborationController {
     @Param('patternId') patternId: string,
     @Body() context: any
   ) {
-    const success = await this.learningService.applyLearnedPattern(id, patternId, context);
-    return { success };
+    const success = await this.learningService.applyLearnedPattern(id, patternId, context)
+    return { success }
   }
 
   /**
@@ -448,7 +413,7 @@ export class AgentCollaborationController {
     @Param('id') id: string,
     @Query('period') period?: 'day' | 'week' | 'month'
   ) {
-    return this.learningService.calculateAgentPerformance(id, period);
+    return this.learningService.calculateAgentPerformance(id, period)
   }
 
   /**
@@ -456,7 +421,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/performance/report')
   async generatePerformanceReport(@Param('id') id: string) {
-    return this.learningService.generatePerformanceReport(id);
+    return this.learningService.generatePerformanceReport(id)
   }
 
   /**
@@ -464,7 +429,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/optimize')
   async optimizeAgent(@Param('id') id: string) {
-    return this.learningService.optimizeAgent(id);
+    return this.learningService.optimizeAgent(id)
   }
 
   /**
@@ -476,8 +441,8 @@ export class AgentCollaborationController {
     @Param('id') id: string,
     @Param('optimizationType') optimizationType: string
   ) {
-    const success = await this.learningService.applyOptimization(id, optimizationType);
-    return { success };
+    const success = await this.learningService.applyOptimization(id, optimizationType)
+    return { success }
   }
 
   // ==================== 通信 ====================
@@ -497,7 +462,7 @@ export class AgentCollaborationController {
       id,
       data.payload,
       data.collaborationId
-    );
+    )
   }
 
   /**
@@ -514,7 +479,7 @@ export class AgentCollaborationController {
       data.receiverIds,
       data.payload,
       data.collaborationId
-    );
+    )
   }
 
   /**
@@ -522,7 +487,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/messages')
   async getAgentMessages(@Param('id') id: string, @Query() filters: any) {
-    return this.communicationService.getAgentMessages(id, filters);
+    return this.communicationService.getAgentMessages(id, filters)
   }
 
   /**
@@ -531,11 +496,7 @@ export class AgentCollaborationController {
   @Post('channels')
   @UseGuards(JwtAuthGuard)
   async createChannel(@Body() data: { name: string; type: string; participants: string[] }) {
-    return this.communicationService.createChannel(
-      data.name,
-      data.type as any,
-      data.participants
-    );
+    return this.communicationService.createChannel(data.name, data.type as any, data.participants)
   }
 
   /**
@@ -543,12 +504,9 @@ export class AgentCollaborationController {
    */
   @Post('channels/:channelId/join')
   @UseGuards(JwtAuthGuard)
-  async joinChannel(
-    @Param('channelId') channelId: string,
-    @Request() req
-  ) {
-    const success = this.communicationService.joinChannel(channelId, req.user.id);
-    return { success };
+  async joinChannel(@Param('channelId') channelId: string, @Request() req) {
+    const success = this.communicationService.joinChannel(channelId, req.user.id)
+    return { success }
   }
 
   /**
@@ -561,7 +519,7 @@ export class AgentCollaborationController {
     @Request() req,
     @Body() payload: any
   ) {
-    return this.communicationService.sendChannelMessage(channelId, req.user.id, payload);
+    return this.communicationService.sendChannelMessage(channelId, req.user.id, payload)
   }
 
   /**
@@ -569,10 +527,7 @@ export class AgentCollaborationController {
    */
   @Get('communication/stats')
   async getCommunicationStats(@Query() query: any) {
-    return this.communicationService.getCommunicationStats(
-      query.agentId,
-      query.period
-    );
+    return this.communicationService.getCommunicationStats(query.agentId, query.period)
   }
 
   /**
@@ -580,7 +535,7 @@ export class AgentCollaborationController {
    */
   @Get(':id/communication/quality')
   async monitorCommunicationQuality(@Param('id') id: string) {
-    return this.communicationService.monitorCommunicationQuality(id);
+    return this.communicationService.monitorCommunicationQuality(id)
   }
 
   // ==================== 系统状态 ====================
@@ -590,7 +545,7 @@ export class AgentCollaborationController {
    */
   @Get('stats/types')
   async getAgentTypeStats() {
-    return this.agentService.getAgentTypeStats();
+    return this.agentService.getAgentTypeStats()
   }
 
   /**
@@ -607,8 +562,8 @@ export class AgentCollaborationController {
         tasks: 'operational',
         collaborations: 'operational',
         learning: 'operational',
-        communication: 'operational'
-      }
-    };
+        communication: 'operational',
+      },
+    }
   }
 }

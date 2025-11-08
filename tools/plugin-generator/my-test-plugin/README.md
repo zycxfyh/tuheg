@@ -28,18 +28,18 @@ yarn add my-test-plugin
 ### Basic Usage
 
 ```typescript
-import { MyTestPluginPlugin } from 'my-test-plugin';
+import { MyTestPluginPlugin } from 'my-test-plugin'
 
 // Create and activate the plugin
-const plugin = new MyTestPluginPlugin();
-await plugin.activate(context);
+const plugin = new MyTestPluginPlugin()
+await plugin.activate(context)
 
 // Use the AI tool
 const result = await plugin.executeMyTestPluginTool({
-  input: 'your input here'
-});
+  input: 'your input here',
+})
 
-console.log(result);
+console.log(result)
 ```
 
 ### VCPToolBox Integration

@@ -1,9 +1,9 @@
 // 文件路径: packages/common-backend/src/ai/crew/task.ts
 // 核心理念: 任务定义，描述需要完成的工作和预期输出
 
-import { Injectable, Logger } from '@nestjs/common';
-import type { TaskConfig, TaskContext, TaskResult } from './task.types';
-import type { Agent } from './agent';
+import { Injectable, Logger } from '@nestjs/common'
+import type { TaskConfig, TaskContext, TaskResult } from './task.types'
+import type { Agent } from './agent'
 
 /**
  * @class Task
@@ -12,11 +12,11 @@ import type { Agent } from './agent';
  */
 @Injectable()
 export class Task {
-  private readonly logger = new Logger(Task.name);
+  private readonly logger = new Logger(Task.name)
 
   constructor(
     private readonly name: string,
-    private readonly config: TaskConfig,
+    private readonly config: TaskConfig
   ) {}
 
   /**
@@ -24,7 +24,7 @@ export class Task {
    * @description 获取任务名称
    */
   public getName(): string {
-    return this.name;
+    return this.name
   }
 
   /**
@@ -32,7 +32,7 @@ export class Task {
    * @description 获取任务配置
    */
   public getConfig(): TaskConfig {
-    return this.config;
+    return this.config
   }
 
   /**
@@ -40,7 +40,7 @@ export class Task {
    * @description 获取任务依赖
    */
   public getDependencies(): string[] {
-    return this.config.dependencies ?? [];
+    return this.config.dependencies ?? []
   }
 
   /**
@@ -48,7 +48,7 @@ export class Task {
    * @description 获取任务优先级
    */
   public getPriority(): number {
-    return this.config.priority ?? 5;
+    return this.config.priority ?? 5
   }
 
   /**
@@ -59,32 +59,32 @@ export class Task {
    * @returns 任务执行结果
    */
   public async execute(agent: Agent, context: TaskContext): Promise<TaskResult> {
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     try {
-      this.logger.debug(`Task "${this.name}" executing with agent "${agent.getName()}"`);
+      this.logger.debug(`Task "${this.name}" executing with agent "${agent.getName()}"`)
 
       // 检查超时
       if (this.config.timeout) {
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(() => {
-            reject(new Error(`Task "${this.name}" timed out after ${this.config.timeout}ms`));
-          }, this.config.timeout);
-        });
+            reject(new Error(`Task "${this.name}" timed out after ${this.config.timeout}ms`))
+          }, this.config.timeout)
+        })
 
         const executionPromise = agent.execute(this.config.description, {
           ...context.globalContext,
           taskContext: context.input,
           dependencies: context.dependencies,
-        });
+        })
 
-        const result = await Promise.race([executionPromise, timeoutPromise]);
+        const result = await Promise.race([executionPromise, timeoutPromise])
 
         if (!result.success) {
-          throw new Error(result.error ?? 'Task execution failed');
+          throw new Error(result.error ?? 'Task execution failed')
         }
 
-        const executionTime = Date.now() - startTime;
+        const executionTime = Date.now() - startTime
 
         return {
           taskName: this.name,
@@ -96,7 +96,7 @@ export class Task {
             ...this.config.metadata,
             toolsUsed: result.toolsUsed,
           },
-        };
+        }
       }
 
       // 正常执行（无超时）
@@ -104,13 +104,13 @@ export class Task {
         ...context.globalContext,
         taskContext: context.input,
         dependencies: context.dependencies,
-      });
+      })
 
       if (!result.success) {
-        throw new Error(result.error ?? 'Task execution failed');
+        throw new Error(result.error ?? 'Task execution failed')
       }
 
-      const executionTime = Date.now() - startTime;
+      const executionTime = Date.now() - startTime
 
       return {
         taskName: this.name,
@@ -122,15 +122,15 @@ export class Task {
           ...this.config.metadata,
           toolsUsed: result.toolsUsed,
         },
-      };
+      }
     } catch (error) {
-      const executionTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const executionTime = Date.now() - startTime
+      const errorMessage = error instanceof Error ? error.message : String(error)
 
       this.logger.error(
         `Task "${this.name}" execution failed: ${errorMessage}`,
-        error instanceof Error ? error.stack : undefined,
-      );
+        error instanceof Error ? error.stack : undefined
+      )
 
       return {
         taskName: this.name,
@@ -140,7 +140,7 @@ export class Task {
         executionTime,
         error: errorMessage,
         metadata: this.config.metadata,
-      };
+      }
     }
   }
 
@@ -149,7 +149,7 @@ export class Task {
    * @description 检查任务是否可以执行（依赖是否满足）
    */
   public canExecute(completedTasks: Set<string>): boolean {
-    const dependencies = this.getDependencies();
-    return dependencies.every((dep) => completedTasks.has(dep));
+    const dependencies = this.getDependencies()
+    return dependencies.every((dep) => completedTasks.has(dep))
   }
 }

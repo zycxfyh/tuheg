@@ -42,76 +42,76 @@ metadata:
   name: auto-rollback-monitor
   namespace: production
 spec:
-  schedule: "*/5 * * * *"  # 每5分钟检查一次
+  schedule: '*/5 * * * *' # 每5分钟检查一次
   jobTemplate:
     spec:
       template:
         spec:
           serviceAccountName: rollback-service-account
           containers:
-          - name: rollback-monitor
-            image: tuheg/monitoring-tools:latest
-            command:
-            - /bin/bash
-            - -c
-            - |
-              #!/bin/bash
-              set -e
+            - name: rollback-monitor
+              image: tuheg/monitoring-tools:latest
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  #!/bin/bash
+                  set -e
 
-              echo "开始自动回溯监控检查..."
+                  echo "开始自动回溯监控检查..."
 
-              # 获取当前部署状态
-              DEPLOYMENT_STATUS=$(kubectl get deployment tuheg-backend-gateway -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
+                  # 获取当前部署状态
+                  DEPLOYMENT_STATUS=$(kubectl get deployment tuheg-backend-gateway -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
 
-              if [ "$DEPLOYMENT_STATUS" != "True" ]; then
-                echo "检测到部署不可用，准备回滚..."
-                /scripts/trigger_rollback.sh deployment_unavailable
-                exit 0
-              fi
+                  if [ "$DEPLOYMENT_STATUS" != "True" ]; then
+                    echo "检测到部署不可用，准备回滚..."
+                    /scripts/trigger_rollback.sh deployment_unavailable
+                    exit 0
+                  fi
 
-              # 检查错误率
-              ERROR_RATE=$(curl -s http://prometheus:9090/api/v1/query?query='sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100' | jq -r '.data.result[0].value[1]')
+                  # 检查错误率
+                  ERROR_RATE=$(curl -s http://prometheus:9090/api/v1/query?query='sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100' | jq -r '.data.result[0].value[1]')
 
-              if (( $(echo "$ERROR_RATE > 5.0" | bc -l) )); then
-                echo "检测到高错误率: ${ERROR_RATE}%，准备回滚..."
-                /scripts/trigger_rollback.sh high_error_rate "$ERROR_RATE"
-                exit 0
-              fi
+                  if (( $(echo "$ERROR_RATE > 5.0" | bc -l) )); then
+                    echo "检测到高错误率: ${ERROR_RATE}%，准备回滚..."
+                    /scripts/trigger_rollback.sh high_error_rate "$ERROR_RATE"
+                    exit 0
+                  fi
 
-              # 检查响应时间
-              RESPONSE_TIME=$(curl -s http://prometheus:9090/api/v1/query?query='histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))' | jq -r '.data.result[0].value[1]')
+                  # 检查响应时间
+                  RESPONSE_TIME=$(curl -s http://prometheus:9090/api/v1/query?query='histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))' | jq -r '.data.result[0].value[1]')
 
-              if (( $(echo "$RESPONSE_TIME > 5.0" | bc -l) )); then
-                echo "检测到慢响应时间: ${RESPONSE_TIME}s，准备回滚..."
-                /scripts/trigger_rollback.sh slow_response_time "$RESPONSE_TIME"
-                exit 0
-              fi
+                  if (( $(echo "$RESPONSE_TIME > 5.0" | bc -l) )); then
+                    echo "检测到慢响应时间: ${RESPONSE_TIME}s，准备回滚..."
+                    /scripts/trigger_rollback.sh slow_response_time "$RESPONSE_TIME"
+                    exit 0
+                  fi
 
-              echo "所有指标正常，无需回滚"
+                  echo "所有指标正常，无需回滚"
           volumeMounts:
-          - name: scripts
-            mountPath: /scripts
+            - name: scripts
+              mountPath: /scripts
           env:
-          - name: PROMETHEUS_URL
-            value: "http://prometheus:9090"
-          - name: DEPLOYMENT_NAME
-            value: "tuheg-backend-gateway"
-          - name: NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
+            - name: PROMETHEUS_URL
+              value: 'http://prometheus:9090'
+            - name: DEPLOYMENT_NAME
+              value: 'tuheg-backend-gateway'
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: '128Mi'
+              cpu: '100m'
             limits:
-              memory: "256Mi"
-              cpu: "200m"
+              memory: '256Mi'
+              cpu: '200m'
       volumes:
-      - name: scripts
-        configMap:
-          name: rollback-scripts
-          defaultMode: 0755
+        - name: scripts
+          configMap:
+            name: rollback-scripts
+            defaultMode: 0755
       restartPolicy: Never
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 5

@@ -248,8 +248,13 @@ INSERT INTO "AiConfiguration" (
 
 ```typescript
 // 代码中的使用方式
-const aiResponse = await dynamicAiScheduler.getProviderForRole(user, 'narrative_synthesis');
-const result = await aiResponse.model.invoke([new HumanMessage('创建一个奇幻故事...')]);
+const aiResponse = await dynamicAiScheduler.getProviderForRole(
+  user,
+  'narrative_synthesis'
+)
+const result = await aiResponse.model.invoke([
+  new HumanMessage('创建一个奇幻故事...'),
+])
 ```
 
 ### 📊 供应商对比

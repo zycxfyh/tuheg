@@ -1,9 +1,9 @@
 // 文件路径: packages/common-backend/src/rate-limit/rate-limit.module.ts
 // 核心理念: 模块化导出限流功能
 
-import { Module } from '@nestjs/common';
-import { RateLimitGuard } from './rate-limit.guard';
-import { RateLimitService } from './rate-limit.service';
+import { Module } from '@nestjs/common'
+import { RateLimitGuard } from './rate-limit.guard'
+import { RateLimitService } from './rate-limit.service'
 
 /**
  * @module RateLimitModule

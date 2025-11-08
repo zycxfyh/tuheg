@@ -1,50 +1,50 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { ModelUsage, ProviderMetrics, ModelMetrics, UsageStatus } from '@prisma/client';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { ModelUsage, ProviderMetrics, ModelMetrics, UsageStatus } from '@prisma/client'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 export interface UsageRecord {
-  modelId: string;
-  userId?: string;
-  requestTokens: number;
-  responseTokens: number;
-  cost: number;
-  latency: number;
-  status: UsageStatus;
-  errorMessage?: string;
-  metadata?: Record<string, any>;
+  modelId: string
+  userId?: string
+  requestTokens: number
+  responseTokens: number
+  cost: number
+  latency: number
+  status: UsageStatus
+  errorMessage?: string
+  metadata?: Record<string, any>
 }
 
 export interface PerformanceInsights {
-  period: string;
+  period: string
   topModels: Array<{
-    modelId: string;
-    usageCount: number;
-    totalCost: number;
-    avgLatency: number;
-    successRate: number;
-  }>;
+    modelId: string
+    usageCount: number
+    totalCost: number
+    avgLatency: number
+    successRate: number
+  }>
   costAnalysis: {
-    totalCost: number;
-    avgCostPerRequest: number;
-    costTrend: Array<{ date: string; cost: number }>;
-  };
+    totalCost: number
+    avgCostPerRequest: number
+    costTrend: Array<{ date: string; cost: number }>
+  }
   performanceTrends: {
-    latencyTrend: Array<{ date: string; avgLatency: number }>;
-    successRateTrend: Array<{ date: string; successRate: number }>;
-  };
+    latencyTrend: Array<{ date: string; avgLatency: number }>
+    successRateTrend: Array<{ date: string; successRate: number }>
+  }
   userBehavior: {
-    activeUsers: number;
-    avgRequestsPerUser: number;
-    peakUsageHours: number[];
-  };
+    activeUsers: number
+    avgRequestsPerUser: number
+    peakUsageHours: number[]
+  }
 }
 
 @Injectable()
 export class AiMetricsService {
   constructor(
     private prisma: PrismaService,
-    private eventEmitter: EventEmitter2,
+    private eventEmitter: EventEmitter2
   ) {}
 
   // ==================== 使用记录 ====================
@@ -52,11 +52,8 @@ export class AiMetricsService {
   /**
    * 记录模型使用
    */
-  async recordModelUsage(
-    userId: string | undefined,
-    usage: UsageRecord
-  ): Promise<ModelUsage> {
-    const totalTokens = usage.requestTokens + usage.responseTokens;
+  async recordModelUsage(userId: string | undefined, usage: UsageRecord): Promise<ModelUsage> {
+    const totalTokens = usage.requestTokens + usage.responseTokens
 
     const usageRecord = await this.prisma.modelUsage.create({
       data: {
@@ -69,21 +66,21 @@ export class AiMetricsService {
         latency: usage.latency,
         status: usage.status,
         errorMessage: usage.errorMessage,
-        metadata: usage.metadata
-      }
-    });
+        metadata: usage.metadata,
+      },
+    })
 
     // 异步更新指标
     setImmediate(() => {
-      this.updateMetrics(usage.modelId);
-    });
+      this.updateMetrics(usage.modelId)
+    })
 
     this.eventEmitter.emit('ai.usage.recorded', {
       usage: usageRecord,
-      userId
-    });
+      userId,
+    })
 
-    return usageRecord;
+    return usageRecord
   }
 
   /**
@@ -92,87 +89,82 @@ export class AiMetricsService {
   async getModelUsageStats(
     modelId: string,
     options: {
-      period?: 'hour' | 'day' | 'week' | 'month';
-      userId?: string;
-      startDate?: Date;
-      endDate?: Date;
+      period?: 'hour' | 'day' | 'week' | 'month'
+      userId?: string
+      startDate?: Date
+      endDate?: Date
     } = {}
   ) {
-    const { period = 'month', userId, startDate, endDate } = options;
+    const { period = 'month', userId, startDate, endDate } = options
 
-    let dateFilter: any = {};
+    let dateFilter: any = {}
     if (startDate && endDate) {
-      dateFilter = { gte: startDate, lte: endDate };
+      dateFilter = { gte: startDate, lte: endDate }
     } else {
-      const now = new Date();
+      const now = new Date()
       switch (period) {
         case 'hour':
-          dateFilter = { gte: new Date(now.getTime() - 60 * 60 * 1000) };
-          break;
+          dateFilter = { gte: new Date(now.getTime() - 60 * 60 * 1000) }
+          break
         case 'day':
-          dateFilter = { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) };
-          break;
+          dateFilter = { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) }
+          break
         case 'week':
-          dateFilter = { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) };
-          break;
+          dateFilter = { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) }
+          break
         case 'month':
-          dateFilter = { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) };
-          break;
+          dateFilter = { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) }
+          break
       }
     }
 
     const where: any = {
       modelId,
-      createdAt: dateFilter
-    };
-
-    if (userId) {
-      where.userId = userId;
+      createdAt: dateFilter,
     }
 
-    const [
-      usageStats,
-      costStats,
-      performanceStats,
-      errorStats
-    ] = await Promise.all([
+    if (userId) {
+      where.userId = userId
+    }
+
+    const [usageStats, costStats, performanceStats, errorStats] = await Promise.all([
       this.prisma.modelUsage.aggregate({
         where,
         _count: { id: true },
         _sum: {
           totalTokens: true,
-          cost: true
+          cost: true,
         },
         _avg: {
           latency: true,
           requestTokens: true,
-          responseTokens: true
-        }
+          responseTokens: true,
+        },
       }),
       this.prisma.modelUsage.groupBy({
         by: ['status'],
         where,
         _count: { status: true },
-        _sum: { cost: true }
+        _sum: { cost: true },
       }),
       this.prisma.modelUsage.findMany({
         where: { ...where, status: 'SUCCESS' },
         select: { latency: true, createdAt: true },
-        orderBy: { createdAt: 'asc' }
+        orderBy: { createdAt: 'asc' },
       }),
       this.prisma.modelUsage.findMany({
         where: { ...where, status: { not: 'SUCCESS' } },
-        select: { errorMessage: true, status: true }
-      })
-    ]);
+        select: { errorMessage: true, status: true },
+      }),
+    ])
 
     // 计算成功率
-    const totalRequests = usageStats._count.id;
-    const successfulRequests = costStats.find(s => s.status === 'SUCCESS')?._count.status || 0;
-    const successRate = totalRequests > 0 ? successfulRequests / totalRequests : 0;
+    const totalRequests = usageStats._count.id
+    const successfulRequests = costStats.find((s) => s.status === 'SUCCESS')?._count.status || 0
+    const successRate = totalRequests > 0 ? successfulRequests / totalRequests : 0
 
     // 分析错误类型
-    const errorAnalysis = this.analyzeErrors(errorStats);
+    const errorAnalysis = this.analyzeErrors(errorStats)
 
     return {
       period,
@@ -184,17 +176,20 @@ export class AiMetricsService {
       avgLatency: usageStats._avg.latency || 0,
       avgRequestTokens: usageStats._avg.requestTokens || 0,
       avgResponseTokens: usageStats._avg.responseTokens || 0,
-      costBreakdown: costStats.map(s => ({
+      costBreakdown: costStats.map((s) => ({
         status: s.status,
         count: s._count.status,
-        cost: s._sum.cost || 0
+        cost: s._sum.cost || 0,
       })),
       performance: {
         latencyTrend: this.calculateLatencyTrend(performanceStats),
-        percentile95Latency: this.calculatePercentile(performanceStats.map(p => p.latency), 95)
+        percentile95Latency: this.calculatePercentile(
+          performanceStats.map((p) => p.latency),
+          95
+        ),
       },
-      errors: errorAnalysis
-    };
+      errors: errorAnalysis,
+    }
   }
 
   /**
@@ -203,20 +198,15 @@ export class AiMetricsService {
   async getProviderUsageStats(providerId: string, period: 'day' | 'week' | 'month' = 'month') {
     const models = await this.prisma.aiModel.findMany({
       where: { providerId },
-      select: { id: true, name: true }
-    });
+      select: { id: true, name: true },
+    })
 
-    const modelIds = models.map(m => m.id);
+    const modelIds = models.map((m) => m.id)
 
-    const [
-      usageStats,
-      modelBreakdown
-    ] = await Promise.all([
+    const [usageStats, modelBreakdown] = await Promise.all([
       this.getTotalUsageStats(period, { modelIds }),
-      Promise.all(
-        modelIds.map(modelId => this.getModelUsageStats(modelId, { period }))
-      )
-    ]);
+      Promise.all(modelIds.map((modelId) => this.getModelUsageStats(modelId, { period }))),
+    ])
 
     return {
       providerId,
@@ -225,9 +215,9 @@ export class AiMetricsService {
       modelBreakdown: models.map((model, index) => ({
         modelId: model.id,
         modelName: model.name,
-        stats: modelBreakdown[index]
-      }))
-    };
+        stats: modelBreakdown[index],
+      })),
+    }
   }
 
   /**
@@ -237,45 +227,41 @@ export class AiMetricsService {
     period: 'day' | 'week' | 'month' = 'month',
     filters?: { userId?: string; modelIds?: string[] }
   ) {
-    let dateFilter: any = {};
-    const now = new Date();
+    let dateFilter: any = {}
+    const now = new Date()
 
     switch (period) {
       case 'day':
-        dateFilter = { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) };
-        break;
+        dateFilter = { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) }
+        break
       case 'week':
-        dateFilter = { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) };
-        break;
+        dateFilter = { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) }
+        break
       case 'month':
-        dateFilter = { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) };
-        break;
+        dateFilter = { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) }
+        break
     }
 
-    const where: any = { createdAt: dateFilter };
+    const where: any = { createdAt: dateFilter }
 
     if (filters?.userId) {
-      where.userId = filters.userId;
+      where.userId = filters.userId
     }
 
     if (filters?.modelIds) {
-      where.modelId = { in: filters.modelIds };
+      where.modelId = { in: filters.modelIds }
     }
 
-    const [
-      usageStats,
-      dailyStats,
-      userStats
-    ] = await Promise.all([
+    const [usageStats, dailyStats, userStats] = await Promise.all([
       this.prisma.modelUsage.aggregate({
         where,
         _count: { id: true },
         _sum: { totalTokens: true, cost: true },
-        _avg: { latency: true }
+        _avg: { latency: true },
       }),
       this.getDailyUsageStats(where),
-      this.getUserUsageStats(where)
-    ]);
+      this.getUserUsageStats(where),
+    ])
 
     return {
       period,
@@ -284,8 +270,8 @@ export class AiMetricsService {
       totalCost: usageStats._sum.cost || 0,
       avgLatency: usageStats._avg.latency || 0,
       dailyBreakdown: dailyStats,
-      userStats
-    };
+      userStats,
+    }
   }
 
   // ==================== 性能洞察 ====================
@@ -293,62 +279,59 @@ export class AiMetricsService {
   /**
    * 生成性能洞察报告
    */
-  async getPerformanceInsights(options: {
-    period?: 'day' | 'week' | 'month';
-    modelIds?: string[];
-    userId?: string;
-  } = {}): Promise<PerformanceInsights> {
-    const { period = 'month', modelIds, userId } = options;
+  async getPerformanceInsights(
+    options: {
+      period?: 'day' | 'week' | 'month'
+      modelIds?: string[]
+      userId?: string
+    } = {}
+  ): Promise<PerformanceInsights> {
+    const { period = 'month', modelIds, userId } = options
 
-    const [
-      topModels,
-      costAnalysis,
-      performanceTrends,
-      userBehavior
-    ] = await Promise.all([
+    const [topModels, costAnalysis, performanceTrends, userBehavior] = await Promise.all([
       this.getTopPerformingModels(period, modelIds),
       this.getCostAnalysis(period, modelIds, userId),
       this.getPerformanceTrends(period, modelIds),
-      this.getUserBehaviorAnalysis(period, userId)
-    ]);
+      this.getUserBehaviorAnalysis(period, userId),
+    ])
 
     return {
       period,
       topModels,
       costAnalysis,
       performanceTrends,
-      userBehavior
-    };
+      userBehavior,
+    }
   }
 
   /**
    * 获取使用建议
    */
   async getUsageRecommendations(userId: string): Promise<{
-    costOptimization: string[];
-    performanceTips: string[];
+    costOptimization: string[]
+    performanceTips: string[]
     modelSuggestions: Array<{
-      currentModel: string;
-      suggestedModel: string;
-      reason: string;
-      expectedBenefit: string;
-    }>;
+      currentModel: string
+      suggestedModel: string
+      reason: string
+      expectedBenefit: string
+    }>
   }> {
-    const userUsage = await this.getTotalUsageStats('month', { userId });
+    const userUsage = await this.getTotalUsageStats('month', { userId })
 
     const recommendations = {
       costOptimization: [] as string[],
       performanceTips: [] as string[],
-      modelSuggestions: [] as any[]
-    };
+      modelSuggestions: [] as any[],
+    }
 
     // 基于使用模式生成建议
     if (userUsage.avgLatency > 3000) {
-      recommendations.performanceTips.push('考虑使用响应更快的模型以提升用户体验');
+      recommendations.performanceTips.push('考虑使用响应更快的模型以提升用户体验')
     }
 
     if (userUsage.totalCost > 10) {
-      recommendations.costOptimization.push('您的使用成本较高，建议选择更经济的模型');
+      recommendations.costOptimization.push('您的使用成本较高，建议选择更经济的模型')
     }
 
     // 分析用户的模型使用偏好
@@ -356,27 +339,27 @@ export class AiMetricsService {
       by: ['modelId'],
       where: { userId },
       _count: { id: true },
-      _avg: { latency: true, cost: true }
-    });
+      _avg: { latency: true, cost: true },
+    })
 
     // 生成模型建议
     for (const usage of userModelUsage) {
       const model = await this.prisma.aiModel.findUnique({
         where: { id: usage.modelId },
-        select: { name: true, performance: true, pricing: true }
-      });
+        select: { name: true, performance: true, pricing: true },
+      })
 
       if (model && usage._avg.cost && usage._avg.cost > 0.02) {
         recommendations.modelSuggestions.push({
           currentModel: model.name,
           suggestedModel: '更经济的替代模型',
           reason: '当前模型成本较高',
-          expectedBenefit: `预计节省 ${(usage._avg.cost * 0.5).toFixed(4)} 美元/请求`
-        });
+          expectedBenefit: `预计节省 ${(usage._avg.cost * 0.5).toFixed(4)} 美元/请求`,
+        })
       }
     }
 
-    return recommendations;
+    return recommendations
   }
 
   // ==================== 指标更新 ====================
@@ -387,26 +370,27 @@ export class AiMetricsService {
   private async updateMetrics(modelId: string): Promise<void> {
     try {
       // 计算最近24小时的指标
-      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
       const recentUsage = await this.prisma.modelUsage.findMany({
         where: {
           modelId,
           createdAt: { gte: yesterday },
-          status: 'SUCCESS'
+          status: 'SUCCESS',
         },
         select: {
           latency: true,
           totalTokens: true,
-          cost: true
-        }
-      });
+          cost: true,
+        },
+      })
 
-      if (recentUsage.length === 0) return;
+      if (recentUsage.length === 0) return
 
-      const avgLatency = recentUsage.reduce((sum, u) => sum + u.latency, 0) / recentUsage.length;
-      const tokenEfficiency = recentUsage.reduce((sum, u) => sum + (u.totalTokens / u.latency), 0) / recentUsage.length;
-      const qualityScore = Math.max(0, Math.min(1, 1 - (avgLatency / 10000))); // 基于延迟的质量评分
+      const avgLatency = recentUsage.reduce((sum, u) => sum + u.latency, 0) / recentUsage.length
+      const tokenEfficiency =
+        recentUsage.reduce((sum, u) => sum + u.totalTokens / u.latency, 0) / recentUsage.length
+      const qualityScore = Math.max(0, Math.min(1, 1 - avgLatency / 10000)) // 基于延迟的质量评分
 
       await this.prisma.modelMetrics.create({
         data: {
@@ -415,30 +399,31 @@ export class AiMetricsService {
           errors: 0, // 暂时设为0
           avgLatency: Math.round(avgLatency),
           tokenEfficiency,
-          qualityScore
-        }
-      });
+          qualityScore,
+        },
+      })
 
       // 更新模型的综合性能评分
       const recentMetrics = await this.prisma.modelMetrics.findMany({
         where: { modelId },
         orderBy: { timestamp: 'desc' },
-        take: 10
-      });
+        take: 10,
+      })
 
       if (recentMetrics.length > 0) {
-        const avgQualityScore = recentMetrics.reduce((sum, m) => sum + m.qualityScore, 0) / recentMetrics.length;
+        const avgQualityScore =
+          recentMetrics.reduce((sum, m) => sum + m.qualityScore, 0) / recentMetrics.length
         await this.prisma.aiModel.update({
           where: { id: modelId },
           data: {
             performance: Math.round(avgQualityScore * 100),
             latency: Math.round(avgLatency),
-            updatedAt: new Date()
-          }
-        });
+            updatedAt: new Date(),
+          },
+        })
       }
     } catch (error) {
-      console.error('Failed to update metrics:', error);
+      console.error('Failed to update metrics:', error)
     }
   }
 
@@ -460,13 +445,13 @@ export class AiMetricsService {
       GROUP BY DATE(created_at)
       ORDER BY date DESC
       LIMIT 30
-    `;
+    `
 
-    return dailyStats.map(stat => ({
+    return dailyStats.map((stat) => ({
       date: stat.date,
       requests: Number(stat.requests),
-      cost: Number(stat.cost)
-    }));
+      cost: Number(stat.cost),
+    }))
   }
 
   /**
@@ -477,18 +462,19 @@ export class AiMetricsService {
       this.prisma.modelUsage.findMany({
         where,
         select: { userId: true },
-        distinct: ['userId']
+        distinct: ['userId'],
       }),
       this.prisma.modelUsage.groupBy({
         by: ['userId'],
         where,
-        _count: { id: true }
-      })
-    ]);
+        _count: { id: true },
+      }),
+    ])
 
-    const avgRequestsPerUser = userActivity.length > 0
-      ? userActivity.reduce((sum, u) => sum + u._count.id, 0) / userActivity.length
-      : 0;
+    const avgRequestsPerUser =
+      userActivity.length > 0
+        ? userActivity.reduce((sum, u) => sum + u._count.id, 0) / userActivity.length
+        : 0
 
     return {
       activeUsers: totalUsers.length,
@@ -496,69 +482,74 @@ export class AiMetricsService {
       topUsers: userActivity
         .sort((a, b) => b._count.id - a._count.id)
         .slice(0, 5)
-        .map(u => ({ userId: u.userId, requestCount: u._count.id }))
-    };
+        .map((u) => ({ userId: u.userId, requestCount: u._count.id })),
+    }
   }
 
   /**
    * 分析错误
    */
   private analyzeErrors(errorStats: any[]) {
-    const errorTypes: Record<string, number> = {};
+    const errorTypes: Record<string, number> = {}
 
-    errorStats.forEach(error => {
-      const type = error.status || 'UNKNOWN';
-      errorTypes[type] = (errorTypes[type] || 0) + 1;
-    });
+    errorStats.forEach((error) => {
+      const type = error.status || 'UNKNOWN'
+      errorTypes[type] = (errorTypes[type] || 0) + 1
+    })
 
     return {
       totalErrors: errorStats.length,
       errorTypes,
       topErrorMessages: errorStats
-        .filter(e => e.errorMessage)
-        .reduce((acc, error) => {
-          const msg = error.errorMessage;
-          acc[msg] = (acc[msg] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>)
-    };
+        .filter((e) => e.errorMessage)
+        .reduce(
+          (acc, error) => {
+            const msg = error.errorMessage
+            acc[msg] = (acc[msg] || 0) + 1
+            return acc
+          },
+          {} as Record<string, number>
+        ),
+    }
   }
 
   /**
    * 计算延迟趋势
    */
-  private calculateLatencyTrend(performanceData: any[]): Array<{ date: string; avgLatency: number }> {
+  private calculateLatencyTrend(
+    performanceData: any[]
+  ): Array<{ date: string; avgLatency: number }> {
     // 按日期分组计算平均延迟
-    const dailyLatency: Record<string, number[]> = {};
+    const dailyLatency: Record<string, number[]> = {}
 
-    performanceData.forEach(data => {
-      const date = data.createdAt.toISOString().split('T')[0];
-      if (!dailyLatency[date]) dailyLatency[date] = [];
-      dailyLatency[date].push(data.latency);
-    });
+    performanceData.forEach((data) => {
+      const date = data.createdAt.toISOString().split('T')[0]
+      if (!dailyLatency[date]) dailyLatency[date] = []
+      dailyLatency[date].push(data.latency)
+    })
 
     return Object.entries(dailyLatency)
       .map(([date, latencies]) => ({
         date,
-        avgLatency: latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length
+        avgLatency: latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length,
       }))
-      .sort((a, b) => a.date.localeCompare(b.date));
+      .sort((a, b) => a.date.localeCompare(b.date))
   }
 
   /**
    * 计算百分位数
    */
   private calculatePercentile(values: number[], percentile: number): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) return 0
 
-    const sorted = values.sort((a, b) => a - b);
-    const index = (percentile / 100) * (sorted.length - 1);
-    const lower = Math.floor(index);
-    const upper = Math.ceil(index);
+    const sorted = values.sort((a, b) => a - b)
+    const index = (percentile / 100) * (sorted.length - 1)
+    const lower = Math.floor(index)
+    const upper = Math.ceil(index)
 
-    if (lower === upper) return sorted[lower];
+    if (lower === upper) return sorted[lower]
 
-    return sorted[lower] + (index - lower) * (sorted[upper] - sorted[lower]);
+    return sorted[lower] + (index - lower) * (sorted[upper] - sorted[lower])
   }
 
   // 其他私有方法实现...

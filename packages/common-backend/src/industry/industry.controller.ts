@@ -1,19 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  UseGuards,
-  Request
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../security/jwt-auth.guard';
-import { ContentCreationService } from './content-creation.service';
-import { EducationService } from './education.service';
-import { HealthcareService } from './healthcare.service';
-import { BusinessService } from './business.service';
-import { ManufacturingService } from './manufacturing.service';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common'
+import { JwtAuthGuard } from '../security/jwt-auth.guard'
+import { ContentCreationService } from './content-creation.service'
+import { EducationService } from './education.service'
+import { HealthcareService } from './healthcare.service'
+import { BusinessService } from './business.service'
+import { ManufacturingService } from './manufacturing.service'
 
 @Controller('industry')
 export class IndustryController {
@@ -22,7 +13,7 @@ export class IndustryController {
     private readonly educationService: EducationService,
     private readonly healthcareService: HealthcareService,
     private readonly businessService: BusinessService,
-    private readonly manufacturingService: ManufacturingService,
+    private readonly manufacturingService: ManufacturingService
   ) {}
 
   // ==================== 内容创作行业 ====================
@@ -33,7 +24,7 @@ export class IndustryController {
   @Post('content/marketing')
   @UseGuards(JwtAuthGuard)
   async generateMarketingContent(@Body() request: any) {
-    return this.contentCreationService.generateMarketingCopy(request);
+    return this.contentCreationService.generateMarketingCopy(request)
   }
 
   /**
@@ -42,7 +33,7 @@ export class IndustryController {
   @Post('content/social')
   @UseGuards(JwtAuthGuard)
   async generateSocialMediaContent(@Body() request: any) {
-    return this.contentCreationService.generateSocialMediaContent(request);
+    return this.contentCreationService.generateSocialMediaContent(request)
   }
 
   /**
@@ -51,7 +42,7 @@ export class IndustryController {
   @Post('content/brand-story')
   @UseGuards(JwtAuthGuard)
   async generateBrandStory(@Body() request: any) {
-    return this.contentCreationService.generateBrandStory(request);
+    return this.contentCreationService.generateBrandStory(request)
   }
 
   /**
@@ -60,7 +51,7 @@ export class IndustryController {
   @Post('content/video-script')
   @UseGuards(JwtAuthGuard)
   async generateVideoScript(@Body() request: any) {
-    return this.contentCreationService.generateVideoScript(request);
+    return this.contentCreationService.generateVideoScript(request)
   }
 
   /**
@@ -69,7 +60,7 @@ export class IndustryController {
   @Post('content/multilingual')
   @UseGuards(JwtAuthGuard)
   async generateMultilingualContent(@Body() request: any) {
-    return this.contentCreationService.generateMultilingualContent(request);
+    return this.contentCreationService.generateMultilingualContent(request)
   }
 
   /**
@@ -82,7 +73,7 @@ export class IndustryController {
       request.content,
       request.count,
       request.variations
-    );
+    )
   }
 
   // ==================== 教育培训行业 ====================
@@ -93,7 +84,7 @@ export class IndustryController {
   @Post('education/course-outline')
   @UseGuards(JwtAuthGuard)
   async generateCourseOutline(@Body() request: any) {
-    return this.educationService.generateCourseOutline(request);
+    return this.educationService.generateCourseOutline(request)
   }
 
   /**
@@ -102,7 +93,7 @@ export class IndustryController {
   @Post('education/material')
   @UseGuards(JwtAuthGuard)
   async generateEducationalContent(@Body() request: any) {
-    return this.educationService.generateEducationalContent(request);
+    return this.educationService.generateEducationalContent(request)
   }
 
   /**
@@ -115,7 +106,7 @@ export class IndustryController {
       request.learnerProfile,
       request.subject,
       request.timeframe
-    );
+    )
   }
 
   /**
@@ -124,7 +115,7 @@ export class IndustryController {
   @Post('education/assessment')
   @UseGuards(JwtAuthGuard)
   async generateAssessment(@Body() request: any) {
-    return this.educationService.generateAssessment(request);
+    return this.educationService.generateAssessment(request)
   }
 
   /**
@@ -133,7 +124,7 @@ export class IndustryController {
   @Post('education/exercises')
   @UseGuards(JwtAuthGuard)
   async generateExercises(@Body() request: any) {
-    return this.educationService.generateExercises(request);
+    return this.educationService.generateExercises(request)
   }
 
   /**
@@ -145,7 +136,7 @@ export class IndustryController {
     return this.educationService.generateLearningReport(
       request.learnerProfile,
       request.performanceData
-    );
+    )
   }
 
   // ==================== 医疗健康行业 ====================
@@ -156,7 +147,7 @@ export class IndustryController {
   @Post('healthcare/discharge-summary')
   @UseGuards(JwtAuthGuard)
   async generateDischargeSummary(@Body() request: any) {
-    return this.healthcareService.generateDischargeSummary(request);
+    return this.healthcareService.generateDischargeSummary(request)
   }
 
   /**
@@ -165,7 +156,7 @@ export class IndustryController {
   @Post('healthcare/progress-note')
   @UseGuards(JwtAuthGuard)
   async generateProgressNote(@Body() request: any) {
-    return this.healthcareService.generateProgressNote(request);
+    return this.healthcareService.generateProgressNote(request)
   }
 
   /**
@@ -174,7 +165,7 @@ export class IndustryController {
   @Post('healthcare/document-summary')
   @UseGuards(JwtAuthGuard)
   async summarizeMedicalDocument(@Body() request: any) {
-    return this.healthcareService.summarizeMedicalDocument(request.document);
+    return this.healthcareService.summarizeMedicalDocument(request.document)
   }
 
   /**
@@ -183,7 +174,7 @@ export class IndustryController {
   @Post('healthcare/patient-education')
   @UseGuards(JwtAuthGuard)
   async generatePatientEducation(@Body() request: any) {
-    return this.healthcareService.generatePatientEducation(request);
+    return this.healthcareService.generatePatientEducation(request)
   }
 
   /**
@@ -195,7 +186,7 @@ export class IndustryController {
     return this.healthcareService.personalizePatientEducation(
       request.baseMaterial,
       request.patientContext
-    );
+    )
   }
 
   /**
@@ -204,7 +195,7 @@ export class IndustryController {
   @Post('healthcare/clinical-decision-support')
   @UseGuards(JwtAuthGuard)
   async generateClinicalDecisionSupport(@Body() request: any) {
-    return this.healthcareService.generateClinicalDecisionSupport(request);
+    return this.healthcareService.generateClinicalDecisionSupport(request)
   }
 
   /**
@@ -213,7 +204,7 @@ export class IndustryController {
   @Post('healthcare/drug-interactions')
   @UseGuards(JwtAuthGuard)
   async checkDrugInteractions(@Body() request: any) {
-    return this.healthcareService.checkDrugInteractions(request.medications);
+    return this.healthcareService.checkDrugInteractions(request.medications)
   }
 
   /**
@@ -222,10 +213,7 @@ export class IndustryController {
   @Post('healthcare/patient-trends')
   @UseGuards(JwtAuthGuard)
   async analyzePatientTrends(@Body() request: any) {
-    return this.healthcareService.analyzePatientTrends(
-      request.patientId,
-      request.timeRange
-    );
+    return this.healthcareService.analyzePatientTrends(request.patientId, request.timeRange)
   }
 
   /**
@@ -234,7 +222,7 @@ export class IndustryController {
   @Post('healthcare/medical-report')
   @UseGuards(JwtAuthGuard)
   async generateMedicalReport(@Body() request: any) {
-    return this.healthcareService.generateMedicalReport(request);
+    return this.healthcareService.generateMedicalReport(request)
   }
 
   // ==================== 企业服务行业 ====================
@@ -245,7 +233,7 @@ export class IndustryController {
   @Post('business/bi-report')
   @UseGuards(JwtAuthGuard)
   async generateBusinessIntelligenceReport(@Body() request: any) {
-    return this.businessService.generateBusinessIntelligenceReport(request);
+    return this.businessService.generateBusinessIntelligenceReport(request)
   }
 
   /**
@@ -254,7 +242,7 @@ export class IndustryController {
   @Post('business/contract-analysis')
   @UseGuards(JwtAuthGuard)
   async analyzeContract(@Body() request: any) {
-    return this.businessService.analyzeContract(request);
+    return this.businessService.analyzeContract(request)
   }
 
   /**
@@ -263,7 +251,7 @@ export class IndustryController {
   @Post('business/recruitment-content')
   @UseGuards(JwtAuthGuard)
   async generateRecruitmentContent(@Body() request: any) {
-    return this.businessService.generateRecruitmentContent(request);
+    return this.businessService.generateRecruitmentContent(request)
   }
 
   /**
@@ -272,7 +260,7 @@ export class IndustryController {
   @Post('business/training-material')
   @UseGuards(JwtAuthGuard)
   async generateTrainingMaterial(@Body() request: any) {
-    return this.businessService.generateTrainingMaterial(request);
+    return this.businessService.generateTrainingMaterial(request)
   }
 
   /**
@@ -281,7 +269,7 @@ export class IndustryController {
   @Post('business/customer-service')
   @UseGuards(JwtAuthGuard)
   async automateCustomerService(@Body() request: any) {
-    return this.businessService.automateCustomerService(request);
+    return this.businessService.automateCustomerService(request)
   }
 
   // ==================== 制造业 ====================
@@ -292,7 +280,7 @@ export class IndustryController {
   @Post('manufacturing/technical-docs')
   @UseGuards(JwtAuthGuard)
   async generateTechnicalDocumentation(@Body() request: any) {
-    return this.manufacturingService.generateTechnicalDocumentation(request);
+    return this.manufacturingService.generateTechnicalDocumentation(request)
   }
 
   /**
@@ -301,7 +289,7 @@ export class IndustryController {
   @Post('manufacturing/qc-report')
   @UseGuards(JwtAuthGuard)
   async generateQualityControlReport(@Body() request: any) {
-    return this.manufacturingService.generateQualityControlReport(request);
+    return this.manufacturingService.generateQualityControlReport(request)
   }
 
   /**
@@ -310,7 +298,7 @@ export class IndustryController {
   @Post('manufacturing/maintenance-manual')
   @UseGuards(JwtAuthGuard)
   async generateMaintenanceManual(@Body() request: any) {
-    return this.manufacturingService.generateMaintenanceManual(request);
+    return this.manufacturingService.generateMaintenanceManual(request)
   }
 
   /**
@@ -319,7 +307,7 @@ export class IndustryController {
   @Post('manufacturing/supply-chain')
   @UseGuards(JwtAuthGuard)
   async optimizeSupplyChain(@Body() request: any) {
-    return this.manufacturingService.optimizeSupplyChain(request);
+    return this.manufacturingService.optimizeSupplyChain(request)
   }
 
   // ==================== 行业洞察和分析 ====================
@@ -336,9 +324,9 @@ export class IndustryController {
         contentGenerationSpeed: '2-5 minutes per piece',
         costSavings: '30-50% vs manual creation',
         qualityImprovement: '25-40% better engagement',
-        complianceRate: '95%+ for regulated industries'
-      }
-    };
+        complianceRate: '95%+ for regulated industries',
+      },
+    }
   }
 
   /**
@@ -352,26 +340,26 @@ export class IndustryController {
         'Maintain brand consistency across all content',
         'Personalize content for target audiences',
         'Use data-driven insights for content optimization',
-        'Ensure content accessibility and inclusivity'
+        'Ensure content accessibility and inclusivity',
       ],
       education: [
         'Create adaptive learning paths',
         'Incorporate multimedia elements',
         'Provide immediate feedback and assessment',
-        'Foster collaborative learning environments'
+        'Foster collaborative learning environments',
       ],
       healthcare: [
         'Ensure HIPAA compliance in all AI applications',
         'Validate AI recommendations with clinical expertise',
         'Maintain clear audit trails for clinical decisions',
-        'Prioritize patient privacy and data security'
-      ]
-    };
+        'Prioritize patient privacy and data security',
+      ],
+    }
 
     return {
       industry,
-      bestPractices: practices[industry as keyof typeof practices] || []
-    };
+      bestPractices: practices[industry as keyof typeof practices] || [],
+    }
   }
 
   /**
@@ -379,10 +367,7 @@ export class IndustryController {
    */
   @Get('stats/usage/:industry')
   @UseGuards(JwtAuthGuard)
-  async getIndustryUsageStats(
-    @Param('industry') industry: string,
-    @Query() query: any
-  ) {
+  async getIndustryUsageStats(@Param('industry') industry: string, @Query() query: any) {
     // 这里应该返回行业特定的使用统计
     return {
       industry,
@@ -391,15 +376,11 @@ export class IndustryController {
         totalRequests: 1250,
         successfulGenerations: 1180,
         averageProcessingTime: 45, // seconds
-        topUseCases: [
-          'Content generation',
-          'Document analysis',
-          'Automated reporting'
-        ],
+        topUseCases: ['Content generation', 'Document analysis', 'Automated reporting'],
         userSatisfaction: 4.6,
-        costSavings: '$45,000'
-      }
-    };
+        costSavings: '$45,000',
+      },
+    }
   }
 
   // ==================== 行业定制配置 ====================
@@ -414,19 +395,19 @@ export class IndustryController {
       content: [
         { id: 'marketing-email', name: '营销邮件', description: '专业的营销邮件模板' },
         { id: 'social-post', name: '社交媒体帖子', description: '引人注目的社交媒体内容' },
-        { id: 'blog-article', name: '博客文章', description: 'SEO优化的博客内容' }
+        { id: 'blog-article', name: '博客文章', description: 'SEO优化的博客内容' },
       ],
       education: [
         { id: 'lesson-plan', name: '课程计划', description: '结构化的教学计划' },
         { id: 'assessment', name: '评估题目', description: '多样化的评估形式' },
-        { id: 'study-guide', name: '学习指南', description: '学生自主学习材料' }
-      ]
-    };
+        { id: 'study-guide', name: '学习指南', description: '学生自主学习材料' },
+      ],
+    }
 
     return {
       industry,
-      templates: templates[industry as keyof typeof templates] || []
-    };
+      templates: templates[industry as keyof typeof templates] || [],
+    }
   }
 
   /**
@@ -440,47 +421,32 @@ export class IndustryController {
         compliance: {
           hipaa: true,
           gdpr: true,
-          dataRetention: '7 years'
+          dataRetention: '7 years',
         },
-        specializations: [
-          'Internal Medicine',
-          'Emergency Medicine',
-          'Surgery',
-          'Pediatrics'
-        ],
+        specializations: ['Internal Medicine', 'Emergency Medicine', 'Surgery', 'Pediatrics'],
         documentTypes: [
           'Discharge Summary',
           'Progress Notes',
           'Consultation Reports',
-          'Patient Education'
-        ]
+          'Patient Education',
+        ],
       },
       education: {
-        standards: [
-          'Common Core',
-          'Next Generation Science Standards',
-          'State Standards'
-        ],
+        standards: ['Common Core', 'Next Generation Science Standards', 'State Standards'],
         subjects: [
           'Mathematics',
           'Science',
           'Language Arts',
           'Social Studies',
-          'Foreign Languages'
+          'Foreign Languages',
         ],
-        gradeLevels: [
-          'Elementary',
-          'Middle School',
-          'High School',
-          'College',
-          'Professional'
-        ]
-      }
-    };
+        gradeLevels: ['Elementary', 'Middle School', 'High School', 'College', 'Professional'],
+      },
+    }
 
     return {
       industry,
-      config: configs[industry as keyof typeof configs] || {}
-    };
+      config: configs[industry as keyof typeof configs] || {},
+    }
   }
 }

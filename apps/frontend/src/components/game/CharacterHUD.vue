@@ -49,24 +49,24 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useGameStore } from '@/stores/game.store';
+import { computed } from 'vue'
+import { useGameStore } from '@/stores/game.store'
 // [核心修正] 导入正确的 store 和函数名
-import { useUIStore } from '@/stores/ui.store';
+import { useUIStore } from '@/stores/ui.store'
 
-const gameStore = useGameStore();
+const gameStore = useGameStore()
 // [核心修正] 获取正确的 store 实例
-const uiStore = useUIStore();
+const uiStore = useUIStore()
 
 const hpPercentage = computed(() => {
-  const char = gameStore.currentGame?.character;
-  if (!char || !char.maxHp) return '0%';
-  return `${(char.hp / char.maxHp) * 100}%`;
-});
+  const char = gameStore.currentGame?.character
+  if (!char || !char.maxHp) return '0%'
+  return `${(char.hp / char.maxHp) * 100}%`
+})
 
 const mpPercentage = computed(() => {
-  const char = gameStore.currentGame?.character;
-  if (!char || !char.maxMp) return '0%';
-  return `${(char.mp / char.maxMp) * 100}%`;
-});
+  const char = gameStore.currentGame?.character
+  if (!char || !char.maxMp) return '0%'
+  return `${(char.mp / char.maxMp) * 100}%`
+})
 </script>

@@ -1,7 +1,7 @@
 // 文件路径: apps/nexus-engine/src/games/games.service.ts
 
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { Game, Character, WorldBookEntry } from '@prisma/client';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { Game, Character, WorldBookEntry } from '@prisma/client'
 
 // [核心修正] 从 @tuheg/common-backend 导入所有需要的共享模块
 import {
@@ -11,14 +11,14 @@ import {
   SubmitActionDto,
   CreateNarrativeGameDto,
   UpdateCharacterDto,
-} from '@tuheg/common-backend';
+} from '@tuheg/common-backend'
 
 @Injectable()
 export class GamesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventBus: EventBusService,
-    private readonly cacheService: CacheService,
+    private readonly cacheService: CacheService
   ) {}
 
   /**
@@ -29,36 +29,36 @@ export class GamesService {
    */
   private async getGameWithCache(
     gameId: string,
-    userId: string,
+    userId: string
   ): Promise<Game & { character: Character | null; worldBook: WorldBookEntry[] }> {
-    const cacheKey = `game:${gameId}`;
+    const cacheKey = `game:${gameId}`
 
     // 先尝试从缓存获取
     const cachedGame = await this.cacheService.get<
       Game & { character: Character | null; worldBook: WorldBookEntry[] }
-    >(cacheKey);
+    >(cacheKey)
     if (cachedGame) {
       // 验证缓存中的数据权限
       if (cachedGame.ownerId !== userId) {
-        throw new ForbiddenException("You don't have permission to access this game.");
+        throw new ForbiddenException("You don't have permission to access this game.")
       }
-      return cachedGame;
+      return cachedGame
     }
 
     // 缓存未命中，从数据库查询
     const gameWithIncludes = await this.prisma.game.findUnique({
       where: { id: gameId },
       include: { character: true, worldBook: true },
-    });
+    })
 
     if (!gameWithIncludes) {
-      throw new NotFoundException(`Game with ID "${gameId}" not found.`);
+      throw new NotFoundException(`Game with ID "${gameId}" not found.`)
     }
 
     // 缓存游戏数据（5分钟TTL）
-    await this.cacheService.set(cacheKey, gameWithIncludes, { ttl: 300 });
+    await this.cacheService.set(cacheKey, gameWithIncludes, { ttl: 300 })
 
-    return gameWithIncludes;
+    return gameWithIncludes
   }
 
   /**
@@ -66,8 +66,8 @@ export class GamesService {
    * @param gameId 游戏ID
    */
   private async clearGameCache(gameId: string): Promise<void> {
-    const cacheKey = `game:${gameId}`;
-    await this.cacheService.delete(cacheKey);
+    const cacheKey = `game:${gameId}`
+    await this.cacheService.delete(cacheKey)
   }
 
   /**
@@ -76,18 +76,18 @@ export class GamesService {
    */
   public async createNarrativeDriven(
     userId: string,
-    dto: CreateNarrativeGameDto,
+    dto: CreateNarrativeGameDto
   ): Promise<{ message: string }> {
     // [核心] 发布一个“请求创建游戏”的事件
     this.eventBus.publish('GAME_CREATION_REQUESTED', {
       userId,
       concept: dto.concept,
-    });
+    })
 
     // 立即向前端返回一个“任务已受理”的响应
     return {
       message: 'Game creation request has been accepted and is being processed.',
-    };
+    }
   }
 
   /**
@@ -96,7 +96,7 @@ export class GamesService {
    * [优化] 使用缓存减少数据库查询
    */
   public async submitAction(userId: string, gameId: string, dto: SubmitActionDto): Promise<void> {
-    const gameWithIncludes = await this.getGameWithCache(gameId, userId);
+    const gameWithIncludes = await this.getGameWithCache(gameId, userId)
 
     this.eventBus.publish('PLAYER_ACTION_SUBMITTED', {
       correlationId: crypto.randomUUID(),
@@ -104,29 +104,29 @@ export class GamesService {
       userId: userId,
       playerAction: dto,
       gameStateSnapshot: gameWithIncludes,
-    });
+    })
   }
 
   // --- 以下为标准的CRUD方法 ---
 
   public async findOne(
     userId: string,
-    gameId: string,
+    gameId: string
   ): Promise<Game & { character: Character | null; worldBook: WorldBookEntry[] }> {
     // [优化] 使用缓存减少数据库查询
-    return this.getGameWithCache(gameId, userId);
+    return this.getGameWithCache(gameId, userId)
   }
 
   public async findAllForUser(
-    userId: string,
+    userId: string
   ): Promise<{ id: string; name: string | null; updatedAt: Date }[]> {
-    const cacheKey = `games:list:${userId}`;
+    const cacheKey = `games:list:${userId}`
 
     // [优化] 先尝试从缓存获取用户游戏列表
     const cachedGames =
-      await this.cacheService.get<{ id: string; name: string | null; updatedAt: Date }[]>(cacheKey);
+      await this.cacheService.get<{ id: string; name: string | null; updatedAt: Date }[]>(cacheKey)
     if (cachedGames) {
-      return cachedGames;
+      return cachedGames
     }
 
     // 缓存未命中，从数据库查询
@@ -134,48 +134,48 @@ export class GamesService {
       where: { ownerId: userId },
       select: { id: true, name: true, updatedAt: true },
       orderBy: { updatedAt: 'desc' },
-    });
+    })
 
     // 缓存游戏列表（10分钟TTL，因为列表更新不频繁）
-    await this.cacheService.set(cacheKey, games, { ttl: 600 });
+    await this.cacheService.set(cacheKey, games, { ttl: 600 })
 
-    return games;
+    return games
   }
 
   public async delete(userId: string, gameId: string): Promise<{ message: string }> {
     const result = await this.prisma.game.deleteMany({
       where: { id: gameId, ownerId: userId },
-    });
+    })
 
     if (result.count === 0) {
       throw new NotFoundException(
-        `Game with ID "${gameId}" not found or you don't have permission to delete it.`,
-      );
+        `Game with ID "${gameId}" not found or you don't have permission to delete it.`
+      )
     }
 
     // [优化] 删除游戏时清除相关缓存
-    await this.clearGameCache(gameId);
-    await this.cacheService.delete(`games:list:${userId}`);
+    await this.clearGameCache(gameId)
+    await this.cacheService.delete(`games:list:${userId}`)
 
-    return { message: `Game with ID "${gameId}" deleted successfully.` };
+    return { message: `Game with ID "${gameId}" deleted successfully.` }
   }
 
   public async updateCharacterState(
     userId: string,
     gameId: string,
-    dto: UpdateCharacterDto,
+    dto: UpdateCharacterDto
   ): Promise<Character> {
     // 首先验证用户是否拥有该游戏
-    await this.findOne(userId, gameId);
+    await this.findOne(userId, gameId)
 
     const updatedCharacter = await this.prisma.character.update({
       where: { gameId: gameId },
       data: dto,
-    });
+    })
 
     // [优化] 更新角色状态时清除游戏缓存，确保后续查询获取最新数据
-    await this.clearGameCache(gameId);
+    await this.clearGameCache(gameId)
 
-    return updatedCharacter;
+    return updatedCharacter
   }
 }

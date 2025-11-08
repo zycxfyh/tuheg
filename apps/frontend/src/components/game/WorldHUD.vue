@@ -25,18 +25,18 @@
 
 <script setup>
 // [核心修正] 导入正确的 store 和函数名
-import { useUIStore } from '@/stores/ui.store';
-import { useGameStore } from '@/stores/game.store';
-import { useRouter } from 'vue-router';
+import { useUIStore } from '@/stores/ui.store'
+import { useGameStore } from '@/stores/game.store'
+import { useRouter } from 'vue-router'
 
 // [核心修正] 获取正确的 store 实例
-const uiStore = useUIStore();
-const gameStore = useGameStore();
-const router = useRouter();
+const uiStore = useUIStore()
+const gameStore = useGameStore()
+const router = useRouter()
 
 function returnToNexus() {
   if (confirm('确定要中断当前化身，返回中枢系统吗？')) {
-    router.push('/nexus');
+    router.push('/nexus')
   }
 }
 </script>

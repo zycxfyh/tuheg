@@ -1,36 +1,36 @@
 // 文件路径: apps/narrative-agent/src/main.ts (已集成Sentry)
 
-import { NestFactory } from '@nestjs/core';
-import { NarrativeAgentModule } from './narrative-agent.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
-import { Channel } from 'amqplib'; // [核心修正] 导入 Channel 类型
-import * as Sentry from '@sentry/node'; // [Sentry] 导入 Sentry
+import { NestFactory } from '@nestjs/core'
+import { NarrativeAgentModule } from './narrative-agent.module'
+import { MicroserviceOptions, Transport } from '@nestjs/microservices'
+import { ConfigService } from '@nestjs/config'
+import { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
+import * as Sentry from '@sentry/node' // [Sentry] 导入 Sentry
 
 async function bootstrap() {
   // [Sentry] 初始化 Sentry - 先创建临时应用获取配置
-  const tempApp = await NestFactory.create(NarrativeAgentModule);
-  const configService = tempApp.get(ConfigService);
+  const tempApp = await NestFactory.create(NarrativeAgentModule)
+  const configService = tempApp.get(ConfigService)
 
   Sentry.init({
     dsn: configService.get<string>('SENTRY_DSN'),
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
     environment: `agent-narrative-${process.env.NODE_ENV || 'development'}`,
-  });
+  })
 
   // 关闭临时应用
-  await tempApp.close();
+  await tempApp.close()
 
-  const rmqUrl = configService.get<string>('RABBITMQ_URL', 'amqp://localhost:5672');
-  const RETRY_EXCHANGE = 'narrative_retry_exchange';
-  const RETRY_QUEUE = 'narrative_retry_queue';
-  const DEAD_LETTER_EXCHANGE = 'dlx';
-  const DEAD_LETTER_QUEUE = 'narrative_queue_dead';
+  const rmqUrl = configService.get<string>('RABBITMQ_URL', 'amqp://localhost:5672')
+  const RETRY_EXCHANGE = 'narrative_retry_exchange'
+  const RETRY_QUEUE = 'narrative_retry_queue'
+  const DEAD_LETTER_EXCHANGE = 'dlx'
+  const DEAD_LETTER_QUEUE = 'narrative_queue_dead'
 
   // [Sentry] 使用 try...catch 块包裹整个应用创建和监听过程
   try {
-    const app = await NestFactory.create(NarrativeAgentModule);
+    const app = await NestFactory.create(NarrativeAgentModule)
 
     app.connectMicroservice<MicroserviceOptions>({
       transport: Transport.RMQ,
@@ -60,37 +60,37 @@ async function bootstrap() {
             channel.assertExchange(DEAD_LETTER_EXCHANGE, 'direct', { durable: true }),
             channel.assertQueue(DEAD_LETTER_QUEUE, { durable: true }),
             channel.bindQueue(DEAD_LETTER_QUEUE, DEAD_LETTER_EXCHANGE, DEAD_LETTER_QUEUE),
-          ]);
+          ])
         },
       },
-    });
+    })
 
     // [新增] 配置HTTP服务器
-    const httpPort = configService.get<number>('NARRATIVE_AGENT_HTTP_PORT', 8082);
-    app.setGlobalPrefix('api/v1/narrative'); // API前缀
+    const httpPort = configService.get<number>('NARRATIVE_AGENT_HTTP_PORT', 8082)
+    app.setGlobalPrefix('api/v1/narrative') // API前缀
 
-    await app.startAllMicroservices();
-    await app.listen(httpPort);
+    await app.startAllMicroservices()
+    await app.listen(httpPort)
 
-    console.log('🚀 Narrative Agent is running:');
-    console.log(`   📡 Microservices: listening for tasks on the event bus`);
-    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/narrative`);
+    console.log('🚀 Narrative Agent is running:')
+    console.log(`   📡 Microservices: listening for tasks on the event bus`)
+    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/narrative`)
   } catch (err) {
     // [Sentry] 如果启动失败，捕获异常并上报
-    Sentry.captureException(err);
-    console.error('Failed to start Narrative Agent:', err);
+    Sentry.captureException(err)
+    console.error('Failed to start Narrative Agent:', err)
     // 确保在启动失败时进程退出
     await Sentry.close(2000).then(() => {
-      process.exit(1);
-    });
+      process.exit(1)
+    })
   }
 }
 
 // [Sentry] 使用 try...catch 包裹顶层bootstrap调用
 bootstrap().catch((err) => {
-  Sentry.captureException(err);
-  console.error('Unhandled error during bootstrap of Narrative Agent:', err);
+  Sentry.captureException(err)
+  console.error('Unhandled error during bootstrap of Narrative Agent:', err)
   Sentry.close(2000).then(() => {
-    process.exit(1);
-  });
-});
+    process.exit(1)
+  })
+})

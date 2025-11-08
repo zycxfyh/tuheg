@@ -1,0 +1,21 @@
+{
+  "version": "2.1.9",
+  "results": [
+    [":src/services/__tests__/api.service.test.js", { "duration": 0, "failed": true }],
+    [":src/services/__tests__/performance.service.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/ErrorBoundary.snapshot.test.js", { "duration": 0, "failed": true }],
+    [":src/router/__tests__/index.test.js", { "duration": 0, "failed": true }],
+    [":src/services/__tests__/cache.service.test.js", { "duration": 0, "failed": true }],
+    [":src/services/__tests__/preload.service.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/ErrorBoundary.performance.test.js", { "duration": 0, "failed": true }],
+    [":src/__tests__/App.test.js", { "duration": 0, "failed": true }],
+    [":src/stores/__tests__/theme.store.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/ErrorBoundary.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/ThemeSwitcher.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/PageLoader.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/LanguageSwitcher.test.js", { "duration": 0, "failed": true }],
+    [":src/composables/__tests__/useToast.test.js", { "duration": 0, "failed": true }],
+    [":src/stores/__tests__/app.store.test.js", { "duration": 0, "failed": true }],
+    [":src/components/common/__tests__/ProcessingOverlay.test.js", { "duration": 0, "failed": true }]
+  ]
+}

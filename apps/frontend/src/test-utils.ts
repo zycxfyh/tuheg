@@ -1,12 +1,24 @@
 // 文件路径: apps/frontend/src/test-utils.ts
 // 核心理念: 用户中心的测试，优先使用可访问的查询方式
 
-import { render, mount, type RenderOptions, VueWrapper } from '@vue/test-utils';
-import { createPinia, setActivePinia } from 'pinia';
-import { createRouter, createWebHistory } from 'vue-router';
-import { createI18n } from 'vue-i18n';
-import { routes } from './router';
-import type { Component } from 'vue';
+import { render, mount, type RenderOptions, VueWrapper } from '@vue/test-utils'
+
+// Mock import.meta.env for Vitest
+global.importMetaEnv = {
+  VITE_API_BASE_URL: 'http://localhost:3000',
+}
+
+// Mock import.meta
+if (!global.import) {
+  global.import = { meta: { env: global.importMetaEnv } }
+} else if (!global.import.meta) {
+  global.import.meta = { env: global.importMetaEnv }
+}
+import { createPinia, setActivePinia } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
+import { createI18n } from 'vue-i18n'
+import { routes } from './router'
+import type { Component } from 'vue'
 
 /**
  * @interface TestUtilsOptions
@@ -14,17 +26,17 @@ import type { Component } from 'vue';
  */
 export interface TestUtilsOptions extends RenderOptions {
   /** 路由配置 */
-  routes?: Array<{ path: string; component: Component }>;
+  routes?: Array<{ path: string; component: Component }>
   /** 初始路由 */
-  initialRoute?: string;
+  initialRoute?: string
   /** 是否创建 Pinia store */
-  createStore?: boolean;
+  createStore?: boolean
   /** 初始语言 */
-  initialLocale?: string;
+  initialLocale?: string
   /** 初始主题 */
-  initialTheme?: string;
+  initialTheme?: string
   /** 认证状态 */
-  mockAuth?: { loggedIn: boolean; user?: any };
+  mockAuth?: { loggedIn: boolean; user?: any }
 }
 
 /**
@@ -53,18 +65,18 @@ export function renderWithProviders(component: Component, options: TestUtilsOpti
     initialTheme = 'auto',
     mockAuth,
     ...renderOptions
-  } = options;
+  } = options
 
-  const finalRoutes = customRoutes.length > 0 ? customRoutes : routes;
+  const finalRoutes = customRoutes.length > 0 ? customRoutes : routes
 
   // 创建 Pinia store（如果需要）
   if (createStore) {
-    const pinia = createPinia();
-    setActivePinia(pinia);
+    const pinia = createPinia()
+    setActivePinia(pinia)
     renderOptions.global = {
       ...renderOptions.global,
       plugins: [...(renderOptions.global?.plugins ?? []), pinia],
-    };
+    }
   }
 
   // 创建 i18n
@@ -103,29 +115,29 @@ export function renderWithProviders(component: Component, options: TestUtilsOpti
         },
       },
     },
-  });
+  })
 
   renderOptions.global = {
     ...renderOptions.global,
     plugins: [...(renderOptions.global?.plugins ?? []), i18n],
-  };
+  }
 
   // 创建路由（如果需要）
   if (finalRoutes.length > 0) {
     const router = createRouter({
       history: createWebHistory(),
       routes: finalRoutes,
-    });
-    router.push(initialRoute);
+    })
+    router.push(initialRoute)
     renderOptions.global = {
       ...renderOptions.global,
       plugins: [...(renderOptions.global?.plugins ?? []), router],
-    };
+    }
   }
 
   // 设置主题
   if (initialTheme !== 'auto') {
-    document.documentElement.setAttribute('data-theme', initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme)
   }
 
   // 设置认证状态
@@ -139,10 +151,10 @@ export function renderWithProviders(component: Component, options: TestUtilsOpti
           user: mockAuth.user || null,
         },
       },
-    };
+    }
   }
 
-  return render(component, renderOptions);
+  return render(component, renderOptions)
 }
 
 /**
@@ -151,7 +163,7 @@ export function renderWithProviders(component: Component, options: TestUtilsOpti
  */
 export function mountWithProviders(
   component: Component,
-  options: TestUtilsOptions = {},
+  options: TestUtilsOptions = {}
 ): VueWrapper {
   const {
     routes: customRoutes = [],
@@ -161,18 +173,18 @@ export function mountWithProviders(
     initialTheme = 'auto',
     mockAuth,
     ...mountOptions
-  } = options;
+  } = options
 
-  const finalRoutes = customRoutes.length > 0 ? customRoutes : routes;
+  const finalRoutes = customRoutes.length > 0 ? customRoutes : routes
 
   // 创建 Pinia store（如果需要）
   if (createStore) {
-    const pinia = createPinia();
-    setActivePinia(pinia);
+    const pinia = createPinia()
+    setActivePinia(pinia)
     mountOptions.global = {
       ...mountOptions.global,
       plugins: [...(mountOptions.global?.plugins ?? []), pinia],
-    };
+    }
   }
 
   // 创建 i18n
@@ -211,29 +223,29 @@ export function mountWithProviders(
         },
       },
     },
-  });
+  })
 
   mountOptions.global = {
     ...mountOptions.global,
     plugins: [...(mountOptions.global?.plugins ?? []), i18n],
-  };
+  }
 
   // 创建路由（如果需要）
   if (finalRoutes.length > 0) {
     const router = createRouter({
       history: createWebHistory(),
       routes: finalRoutes,
-    });
-    router.push(initialRoute);
+    })
+    router.push(initialRoute)
     mountOptions.global = {
       ...mountOptions.global,
       plugins: [...(mountOptions.global?.plugins ?? []), router],
-    };
+    }
   }
 
   // 设置主题
   if (initialTheme !== 'auto') {
-    document.documentElement.setAttribute('data-theme', initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme)
   }
 
   // 设置认证状态
@@ -247,10 +259,10 @@ export function mountWithProviders(
           user: mockAuth.user || null,
         },
       },
-    };
+    }
   }
 
-  return mount(component, mountOptions);
+  return mount(component, mountOptions)
 }
 
 /**
@@ -261,26 +273,26 @@ export function mountWithProviders(
 export async function waitFor(
   callback: () => void | Promise<void>,
   options: {
-    timeout?: number;
-    interval?: number;
-  } = {},
+    timeout?: number
+    interval?: number
+  } = {}
 ): Promise<void> {
-  const { timeout = 1000, interval = 50 } = options;
-  const startTime = Date.now();
+  const { timeout = 1000, interval = 50 } = options
+  const startTime = Date.now()
 
   while (Date.now() - startTime < timeout) {
     try {
-      await callback();
-      return;
+      await callback()
+      return
     } catch (error) {
       if (Date.now() - startTime >= timeout) {
-        throw error;
+        throw error
       }
-      await new Promise((resolve) => setTimeout(resolve, interval));
+      await new Promise((resolve) => setTimeout(resolve, interval))
     }
   }
 
-  throw new Error(`waitFor timeout after ${timeout}ms`);
+  throw new Error(`waitFor timeout after ${timeout}ms`)
 }
 
 /**
@@ -288,13 +300,13 @@ export async function waitFor(
  * @description 通过角色查找元素（可访问性优先）
  */
 export function findByRole(container: HTMLElement, role: string, options?: { name?: string }) {
-  const elements = container.querySelectorAll(`[role="${role}"]`);
+  const elements = container.querySelectorAll(`[role="${role}"]`)
 
   if (options?.name) {
-    return Array.from(elements).find((el) => el.textContent?.includes(options.name ?? ''));
+    return Array.from(elements).find((el) => el.textContent?.includes(options.name ?? ''))
   }
 
-  return elements[0] ?? null;
+  return elements[0] ?? null
 }
 
 /**
@@ -302,14 +314,14 @@ export function findByRole(container: HTMLElement, role: string, options?: { nam
  * @description 通过标签文本查找元素
  */
 export function findByLabelText(container: HTMLElement, text: string): HTMLElement | null {
-  const labels = Array.from(container.querySelectorAll('label'));
-  const label = labels.find((l) => l.textContent?.includes(text));
+  const labels = Array.from(container.querySelectorAll('label'))
+  const label = labels.find((l) => l.textContent?.includes(text))
 
   if (label && label.htmlFor) {
-    return container.querySelector(`#${label.htmlFor}`);
+    return container.querySelector(`#${label.htmlFor}`)
   }
 
-  return label ?? null;
+  return label ?? null
 }
 
 /**
@@ -317,8 +329,8 @@ export function findByLabelText(container: HTMLElement, text: string): HTMLEleme
  * @description 通过占位符文本查找元素
  */
 export function findByPlaceholderText(container: HTMLElement, text: string): HTMLElement | null {
-  const inputs = Array.from(container.querySelectorAll<HTMLInputElement>('input, textarea'));
-  return inputs.find((input) => input.placeholder?.includes(text)) ?? null;
+  const inputs = Array.from(container.querySelectorAll<HTMLInputElement>('input, textarea'))
+  return inputs.find((input) => input.placeholder?.includes(text)) ?? null
 }
 
 /**
@@ -326,7 +338,7 @@ export function findByPlaceholderText(container: HTMLElement, text: string): HTM
  * @description 通过测试ID查找元素
  */
 export function findByTestId(container: HTMLElement, testId: string): HTMLElement | null {
-  return container.querySelector(`[data-testid="${testId}"]`);
+  return container.querySelector(`[data-testid="${testId}"]`)
 }
 
 /**
@@ -336,37 +348,37 @@ export function findByTestId(container: HTMLElement, testId: string): HTMLElemen
 export async function simulateUserFlow(
   wrapper: VueWrapper,
   steps: Array<{
-    action: 'click' | 'type' | 'submit';
-    selector: string;
-    value?: string;
-    wait?: number;
-  }>,
+    action: 'click' | 'type' | 'submit'
+    selector: string
+    value?: string
+    wait?: number
+  }>
 ): Promise<void> {
   for (const step of steps) {
     if (step.wait) {
-      await new Promise((resolve) => setTimeout(resolve, step.wait));
+      await new Promise((resolve) => setTimeout(resolve, step.wait))
     }
 
-    const element = wrapper.find(step.selector);
+    const element = wrapper.find(step.selector)
     if (!element.exists()) {
-      throw new Error(`Element with selector "${step.selector}" not found`);
+      throw new Error(`Element with selector "${step.selector}" not found`)
     }
 
     switch (step.action) {
       case 'click':
-        await element.trigger('click');
-        break;
+        await element.trigger('click')
+        break
       case 'type':
         if (step.value !== undefined) {
-          await element.setValue(step.value);
+          await element.setValue(step.value)
         }
-        break;
+        break
       case 'submit':
-        await element.trigger('submit');
-        break;
+        await element.trigger('submit')
+        break
     }
 
-    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick()
   }
 }
 
@@ -378,9 +390,9 @@ export function mockApiResponse(
   method: string,
   url: string,
   response: any,
-  options: { status?: number; delay?: number } = {},
+  options: { status?: number; delay?: number } = {}
 ) {
-  const { status = 200, delay = 0 } = options;
+  const { status = 200, delay = 0 } = options
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -388,9 +400,9 @@ export function mockApiResponse(
         status,
         data: response,
         config: { method, url },
-      });
-    }, delay);
-  });
+      })
+    }, delay)
+  })
 }
 
 /**
@@ -400,12 +412,12 @@ export function mockApiResponse(
 export function cleanupTestEnvironment(): void {
   // 清理localStorage
   if (typeof window !== 'undefined' && window.localStorage) {
-    window.localStorage.clear();
+    window.localStorage.clear()
   }
 
   // 重置document样式
   if (typeof document !== 'undefined') {
-    document.documentElement.removeAttribute('data-theme');
-    document.documentElement.style.cssText = '';
+    document.documentElement.removeAttribute('data-theme')
+    document.documentElement.style.cssText = ''
   }
 }

@@ -2,9 +2,9 @@
 // 职责: VCPToolBox 异步工具调用服务
 // 借鉴思想: 非阻塞工具调用 + 上下文感知异步结果处理
 
-import { Injectable, Logger } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, Logger } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * 异步工具调用任务状态
@@ -21,28 +21,28 @@ export enum AsyncToolCallStatus {
  * 异步工具调用任务
  */
 export interface AsyncToolCallTask {
-  id: string;
-  toolName: string;
-  input: unknown;
-  context: Record<string, unknown>;
-  status: AsyncToolCallStatus;
-  createdAt: Date;
-  startedAt?: Date;
-  completedAt?: Date;
-  result?: unknown;
-  error?: string;
-  timeoutMs?: number;
-  correlationId: string; // 用于跟踪相关操作
+  id: string
+  toolName: string
+  input: unknown
+  context: Record<string, unknown>
+  status: AsyncToolCallStatus
+  createdAt: Date
+  startedAt?: Date
+  completedAt?: Date
+  result?: unknown
+  error?: string
+  timeoutMs?: number
+  correlationId: string // 用于跟踪相关操作
 }
 
 /**
  * 异步工具调用配置
  */
 export interface AsyncToolCallConfig {
-  timeoutMs?: number;
-  enableWebSocket?: boolean;
-  enableFilePersistence?: boolean;
-  retryAttempts?: number;
+  timeoutMs?: number
+  enableWebSocket?: boolean
+  enableFilePersistence?: boolean
+  retryAttempts?: number
 }
 
 /**
@@ -51,9 +51,9 @@ export interface AsyncToolCallConfig {
  */
 @Injectable()
 export class AsyncToolCallService {
-  private readonly logger = new Logger(AsyncToolCallService.name);
-  private readonly activeTasks = new Map<string, AsyncToolCallTask>();
-  private readonly completedTasks = new Map<string, AsyncToolCallTask>();
+  private readonly logger = new Logger(AsyncToolCallService.name)
+  private readonly activeTasks = new Map<string, AsyncToolCallTask>()
+  private readonly completedTasks = new Map<string, AsyncToolCallTask>()
 
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
@@ -71,10 +71,10 @@ export class AsyncToolCallService {
     toolName: string,
     input: unknown,
     context: Record<string, unknown> = {},
-    config: AsyncToolCallConfig = {},
+    config: AsyncToolCallConfig = {}
   ): Promise<string> {
-    const taskId = uuidv4();
-    const correlationId = (context.correlationId as string) || uuidv4();
+    const taskId = uuidv4()
+    const correlationId = (context.correlationId as string) || uuidv4()
 
     const task: AsyncToolCallTask = {
       id: taskId,
@@ -85,17 +85,17 @@ export class AsyncToolCallService {
       createdAt: new Date(),
       timeoutMs: config.timeoutMs || 30000, // 默认30秒超时
       correlationId,
-    };
+    }
 
-    this.activeTasks.set(taskId, task);
+    this.activeTasks.set(taskId, task)
 
     // 立即返回任务ID，不阻塞调用者
     this.executeToolAsync(task, config).catch((error) => {
-      this.logger.error(`Async tool execution failed for task ${taskId}:`, error);
-      this.updateTaskStatus(taskId, AsyncToolCallStatus.FAILED, undefined, error.message);
-    });
+      this.logger.error(`Async tool execution failed for task ${taskId}:`, error)
+      this.updateTaskStatus(taskId, AsyncToolCallStatus.FAILED, undefined, error.message)
+    })
 
-    this.logger.debug(`Async tool call initiated: ${toolName} (task: ${taskId})`);
+    this.logger.debug(`Async tool call initiated: ${toolName} (task: ${taskId})`)
 
     // 触发WebSocket推送（如果启用）
     if (config.enableWebSocket !== false) {
@@ -103,10 +103,10 @@ export class AsyncToolCallService {
         taskId,
         toolName,
         correlationId,
-      });
+      })
     }
 
-    return taskId;
+    return taskId
   }
 
   /**
@@ -114,29 +114,29 @@ export class AsyncToolCallService {
    */
   private async executeToolAsync(
     task: AsyncToolCallTask,
-    config: AsyncToolCallConfig,
+    config: AsyncToolCallConfig
   ): Promise<void> {
-    const { id: taskId, toolName, input, timeoutMs } = task;
+    const { id: taskId, toolName, input, timeoutMs } = task
 
     try {
       // 更新状态为运行中
-      this.updateTaskStatus(taskId, AsyncToolCallStatus.RUNNING);
-      task.startedAt = new Date();
+      this.updateTaskStatus(taskId, AsyncToolCallStatus.RUNNING)
+      task.startedAt = new Date()
 
       // 创建带超时的Promise
-      const toolPromise = this.executeToolByName(toolName, input);
+      const toolPromise = this.executeToolByName(toolName, input)
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
           () => reject(new Error(`Tool execution timeout after ${timeoutMs}ms`)),
-          timeoutMs,
-        );
-      });
+          timeoutMs
+        )
+      })
 
       // 竞态执行：工具调用 vs 超时
-      const result = await Promise.race([toolPromise, timeoutPromise]);
+      const result = await Promise.race([toolPromise, timeoutPromise])
 
       // 执行成功
-      this.updateTaskStatus(taskId, AsyncToolCallStatus.COMPLETED, result);
+      this.updateTaskStatus(taskId, AsyncToolCallStatus.COMPLETED, result)
 
       // 触发完成事件
       this.eventEmitter.emit('async-tool-call.completed', {
@@ -144,14 +144,14 @@ export class AsyncToolCallService {
         toolName,
         result,
         correlationId: task.correlationId,
-      });
+      })
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error)
       const status = errorMessage.includes('timeout')
         ? AsyncToolCallStatus.TIMEOUT
-        : AsyncToolCallStatus.FAILED;
+        : AsyncToolCallStatus.FAILED
 
-      this.updateTaskStatus(taskId, status, undefined, errorMessage);
+      this.updateTaskStatus(taskId, status, undefined, errorMessage)
 
       // 触发失败事件
       this.eventEmitter.emit('async-tool-call.failed', {
@@ -159,7 +159,7 @@ export class AsyncToolCallService {
         toolName,
         error: errorMessage,
         correlationId: task.correlationId,
-      });
+      })
     }
   }
 
@@ -173,13 +173,13 @@ export class AsyncToolCallService {
 
     switch (toolName) {
       case 'web_search':
-        return this.mockWebSearch(input);
+        return this.mockWebSearch(input)
       case 'file_operation':
-        return this.mockFileOperation(input);
+        return this.mockFileOperation(input)
       case 'data_analysis':
-        return this.mockDataAnalysis(input);
+        return this.mockDataAnalysis(input)
       default:
-        throw new Error(`Unknown tool: ${toolName}`);
+        throw new Error(`Unknown tool: ${toolName}`)
     }
   }
 
@@ -187,14 +187,14 @@ export class AsyncToolCallService {
    * 获取任务状态
    */
   getTaskStatus(taskId: string): AsyncToolCallTask | null {
-    return this.activeTasks.get(taskId) || this.completedTasks.get(taskId) || null;
+    return this.activeTasks.get(taskId) || this.completedTasks.get(taskId) || null
   }
 
   /**
    * 获取所有活跃任务
    */
   getActiveTasks(): AsyncToolCallTask[] {
-    return Array.from(this.activeTasks.values());
+    return Array.from(this.activeTasks.values())
   }
 
   /**
@@ -204,9 +204,9 @@ export class AsyncToolCallService {
     const allTasks = [
       ...Array.from(this.activeTasks.values()),
       ...Array.from(this.completedTasks.values()),
-    ];
+    ]
 
-    return allTasks.filter((task) => task.correlationId === correlationId);
+    return allTasks.filter((task) => task.correlationId === correlationId)
   }
 
   /**
@@ -214,32 +214,32 @@ export class AsyncToolCallService {
    */
   async waitForTaskCompletion(
     taskId: string,
-    timeoutMs: number = 30000,
+    timeoutMs: number = 30000
   ): Promise<AsyncToolCallTask> {
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     while (Date.now() - startTime < timeoutMs) {
-      const task = this.getTaskStatus(taskId);
+      const task = this.getTaskStatus(taskId)
       if (!task) {
-        throw new Error(`Task ${taskId} not found`);
+        throw new Error(`Task ${taskId} not found`)
       }
 
       if (task.status === AsyncToolCallStatus.COMPLETED) {
-        return task;
+        return task
       }
 
       if (
         task.status === AsyncToolCallStatus.FAILED ||
         task.status === AsyncToolCallStatus.TIMEOUT
       ) {
-        throw new Error(`Task ${taskId} failed: ${task.error}`);
+        throw new Error(`Task ${taskId} failed: ${task.error}`)
       }
 
       // 等待100ms后重试
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100))
     }
 
-    throw new Error(`Task ${taskId} did not complete within ${timeoutMs}ms`);
+    throw new Error(`Task ${taskId} did not complete within ${timeoutMs}ms`)
   }
 
   /**
@@ -247,18 +247,18 @@ export class AsyncToolCallService {
    */
   cleanupCompletedTasks(maxAgeMs: number = 3600000): number {
     // 默认1小时
-    const now = Date.now();
-    let cleaned = 0;
+    const now = Date.now()
+    let cleaned = 0
 
     for (const [taskId, task] of this.completedTasks.entries()) {
       if (task.completedAt && now - task.completedAt.getTime() > maxAgeMs) {
-        this.completedTasks.delete(taskId);
-        cleaned++;
+        this.completedTasks.delete(taskId)
+        cleaned++
       }
     }
 
-    this.logger.debug(`Cleaned up ${cleaned} completed async tool tasks`);
-    return cleaned;
+    this.logger.debug(`Cleaned up ${cleaned} completed async tool tasks`)
+    return cleaned
   }
 
   /**
@@ -268,37 +268,37 @@ export class AsyncToolCallService {
     taskId: string,
     status: AsyncToolCallStatus,
     result?: unknown,
-    error?: string,
+    error?: string
   ): void {
-    const task = this.activeTasks.get(taskId);
-    if (!task) return;
+    const task = this.activeTasks.get(taskId)
+    if (!task) return
 
-    task.status = status;
-    task.result = result;
-    task.error = error;
+    task.status = status
+    task.result = result
+    task.error = error
 
     if (status === AsyncToolCallStatus.RUNNING) {
-      task.startedAt = new Date();
+      task.startedAt = new Date()
     } else if (
       status === AsyncToolCallStatus.COMPLETED ||
       status === AsyncToolCallStatus.FAILED ||
       status === AsyncToolCallStatus.TIMEOUT
     ) {
-      task.completedAt = new Date();
+      task.completedAt = new Date()
 
       // 将完成的任务移到completedTasks中
-      this.activeTasks.delete(taskId);
-      this.completedTasks.set(taskId, task);
+      this.activeTasks.delete(taskId)
+      this.completedTasks.set(taskId, task)
     }
 
-    this.logger.debug(`Task ${taskId} status updated to ${status}`);
+    this.logger.debug(`Task ${taskId} status updated to ${status}`)
   }
 
   // ===== 模拟工具实现 =====
 
   private async mockWebSearch(input: unknown): Promise<unknown> {
     // 模拟网络延迟
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     return {
       query: input,
@@ -307,12 +307,12 @@ export class AsyncToolCallService {
         { title: '示例搜索结果2', url: 'https://example.com/2', snippet: '另一个搜索结果...' },
       ],
       timestamp: new Date().toISOString(),
-    };
+    }
   }
 
   private async mockFileOperation(input: unknown): Promise<unknown> {
     // 模拟文件操作延迟
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500))
 
     return {
       operation: 'read',
@@ -320,12 +320,12 @@ export class AsyncToolCallService {
       content: '文件内容示例...',
       size: 1024,
       timestamp: new Date().toISOString(),
-    };
+    }
   }
 
   private async mockDataAnalysis(input: unknown): Promise<unknown> {
     // 模拟数据分析延迟
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000))
 
     return {
       data: input,
@@ -335,6 +335,6 @@ export class AsyncToolCallService {
         confidence: 0.85,
       },
       timestamp: new Date().toISOString(),
-    };
+    }
   }
 }

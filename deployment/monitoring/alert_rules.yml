@@ -11,9 +11,9 @@ groups:
           slo: availability
           team: platform
         annotations:
-          summary: "可用性SLO违反 (P0)"
-          description: "{{ $labels.job }} 服务可用性低于 99.9% SLO，当前可用性: {{ $value | printf \"%.3f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/slo-availability-violation"
+          summary: '可用性SLO违反 (P0)'
+          description: '{{ $labels.job }} 服务可用性低于 99.9% SLO，当前可用性: {{ $value | printf "%.3f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/slo-availability-violation'
 
       # 性能SLO告警 (P95 < 500ms)
       - alert: SLOPerformanceViolation
@@ -24,9 +24,9 @@ groups:
           slo: performance
           team: platform
         annotations:
-          summary: "性能SLO违反 (P1)"
-          description: "{{ $labels.job }} 服务P95响应时间超过 500ms SLO，当前值: {{ $value | printf \"%.2f\" }}s"
-          runbook_url: "https://tuheg.com/runbooks/slo-performance-violation"
+          summary: '性能SLO违反 (P1)'
+          description: '{{ $labels.job }} 服务P95响应时间超过 500ms SLO，当前值: {{ $value | printf "%.2f" }}s'
+          runbook_url: 'https://tuheg.com/runbooks/slo-performance-violation'
 
       # 错误率SLO告警 (5xx < 1%)
       - alert: SLOErrorBudgetViolation
@@ -37,9 +37,9 @@ groups:
           slo: error_budget
           team: platform
         annotations:
-          summary: "错误预算SLO违反 (P1)"
-          description: "{{ $labels.job }} 服务5xx错误率超过 1% SLO，当前错误率: {{ $value | printf \"%.2f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/slo-error-budget-violation"
+          summary: '错误预算SLO违反 (P1)'
+          description: '{{ $labels.job }} 服务5xx错误率超过 1% SLO，当前错误率: {{ $value | printf "%.2f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/slo-error-budget-violation'
 
   # 智能告警规则 - 基于趋势和异常检测
   - name: intelligent-alerts
@@ -53,9 +53,9 @@ groups:
           type: anomaly
           team: security
         annotations:
-          summary: "异常流量检测 (P1)"
-          description: "{{ $labels.job }} 服务检测到异常流量模式，当前请求率偏离1小时前50%以上"
-          runbook_url: "https://tuheg.com/runbooks/traffic-anomaly"
+          summary: '异常流量检测 (P1)'
+          description: '{{ $labels.job }} 服务检测到异常流量模式，当前请求率偏离1小时前50%以上'
+          runbook_url: 'https://tuheg.com/runbooks/traffic-anomaly'
 
       # 性能趋势恶化
       - alert: PerformanceDegradationTrend
@@ -66,22 +66,22 @@ groups:
           type: trend
           team: platform
         annotations:
-          summary: "性能趋势恶化 (P1)"
-          description: "{{ $labels.job }} 服务响应时间呈上升趋势，30分钟内上升超过100ms"
-          runbook_url: "https://tuheg.com/runbooks/performance-trend"
+          summary: '性能趋势恶化 (P1)'
+          description: '{{ $labels.job }} 服务响应时间呈上升趋势，30分钟内上升超过100ms'
+          runbook_url: 'https://tuheg.com/runbooks/performance-trend'
 
       # 内存泄漏检测
       - alert: MemoryLeakDetected
-        expr: deriv(node_memory_MemAvailable_bytes[1h]) < -1024*1024*10  # 每小时减少10MB
+        expr: deriv(node_memory_MemAvailable_bytes[1h]) < -1024*1024*10 # 每小时减少10MB
         for: 30m
         labels:
           severity: warning
           type: resource_leak
           team: infrastructure
         annotations:
-          summary: "内存泄漏检测 (P1)"
-          description: "检测到内存泄漏模式，可用内存每小时减少超过10MB"
-          runbook_url: "https://tuheg.com/runbooks/memory-leak"
+          summary: '内存泄漏检测 (P1)'
+          description: '检测到内存泄漏模式，可用内存每小时减少超过10MB'
+          runbook_url: 'https://tuheg.com/runbooks/memory-leak'
 
   # 业务指标告警 - 游戏创作平台特化
   - name: business-alerts
@@ -95,9 +95,9 @@ groups:
           business_metric: game_creation
           team: platform
         annotations:
-          summary: "游戏创建成功率低 (P1)"
-          description: "游戏创建成功率低于99% SLO，当前成功率: {{ $value | printf \"%.2f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/game-creation-low-success"
+          summary: '游戏创建成功率低 (P1)'
+          description: '游戏创建成功率低于99% SLO，当前成功率: {{ $value | printf "%.2f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/game-creation-low-success'
 
       # AI生成质量监控
       - alert: AIQualityDegradation
@@ -108,9 +108,9 @@ groups:
           business_metric: ai_quality
           team: ai
         annotations:
-          summary: "AI生成质量下降 (P2)"
-          description: "AI生成内容质量评分低于7.5分，当前评分: {{ $value | printf \"%.1f\" }}"
-          runbook_url: "https://tuheg.com/runbooks/ai-quality-degradation"
+          summary: 'AI生成质量下降 (P2)'
+          description: 'AI生成内容质量评分低于7.5分，当前评分: {{ $value | printf "%.1f" }}'
+          runbook_url: 'https://tuheg.com/runbooks/ai-quality-degradation'
 
       # 用户体验监控
       - alert: UserSessionFailureHigh
@@ -121,9 +121,9 @@ groups:
           business_metric: user_experience
           team: platform
         annotations:
-          summary: "用户会话失败率高 (P1)"
-          description: "用户会话失败率超过0.5%，影响用户体验，当前失败率: {{ $value | printf \"%.2f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/user-session-failure-high"
+          summary: '用户会话失败率高 (P1)'
+          description: '用户会话失败率超过0.5%，影响用户体验，当前失败率: {{ $value | printf "%.2f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/user-session-failure-high'
 
   # 安全监控告警
   - name: security-alerts
@@ -137,9 +137,9 @@ groups:
           security_type: authentication
           team: security
         annotations:
-          summary: "异常认证失败 (P1)"
-          description: "5分钟内认证失败次数超过10次，可能存在暴力破解攻击"
-          runbook_url: "https://tuheg.com/runbooks/auth-failure-spike"
+          summary: '异常认证失败 (P1)'
+          description: '5分钟内认证失败次数超过10次，可能存在暴力破解攻击'
+          runbook_url: 'https://tuheg.com/runbooks/auth-failure-spike'
 
       # SQL注入检测
       - alert: SQLInjectionDetected
@@ -150,9 +150,9 @@ groups:
           security_type: injection
           team: security
         annotations:
-          summary: "SQL注入攻击检测 (P0)"
-          description: "检测到SQL注入攻击尝试，立即响应"
-          runbook_url: "https://tuheg.com/runbooks/sql-injection-detected"
+          summary: 'SQL注入攻击检测 (P0)'
+          description: '检测到SQL注入攻击尝试，立即响应'
+          runbook_url: 'https://tuheg.com/runbooks/sql-injection-detected'
 
       # 异常访问模式
       - alert: AbnormalAccessPattern
@@ -163,9 +163,9 @@ groups:
           security_type: access_pattern
           team: security
         annotations:
-          summary: "异常访问模式检测 (P1)"
-          description: "检测到异常访问模式，5分钟内触发5次以上"
-          runbook_url: "https://tuheg.com/runbooks/abnormal-access-pattern"
+          summary: '异常访问模式检测 (P1)'
+          description: '检测到异常访问模式，5分钟内触发5次以上'
+          runbook_url: 'https://tuheg.com/runbooks/abnormal-access-pattern'
 
   # 依赖服务监控
   - name: dependency-alerts
@@ -179,9 +179,9 @@ groups:
           dependency: openai
           team: ai
         annotations:
-          summary: "OpenAI API不可用 (P0)"
-          description: "OpenAI API服务不可用超过2分钟"
-          runbook_url: "https://tuheg.com/runbooks/openai-api-down"
+          summary: 'OpenAI API不可用 (P0)'
+          description: 'OpenAI API服务不可用超过2分钟'
+          runbook_url: 'https://tuheg.com/runbooks/openai-api-down'
 
       # Clerk认证服务
       - alert: ClerkServiceDown
@@ -192,9 +192,9 @@ groups:
           dependency: clerk
           team: platform
         annotations:
-          summary: "Clerk认证服务不可用 (P0)"
-          description: "Clerk认证服务不可用超过2分钟"
-          runbook_url: "https://tuheg.com/runbooks/clerk-service-down"
+          summary: 'Clerk认证服务不可用 (P0)'
+          description: 'Clerk认证服务不可用超过2分钟'
+          runbook_url: 'https://tuheg.com/runbooks/clerk-service-down'
 
       # 外部API延迟
       - alert: ExternalAPIHighLatency
@@ -205,9 +205,9 @@ groups:
           dependency: external_api
           team: platform
         annotations:
-          summary: "外部API高延迟 (P1)"
-          description: "外部API响应时间P95超过5秒，当前值: {{ $value | printf \"%.2f\" }}s"
-          runbook_url: "https://tuheg.com/runbooks/external-api-latency"
+          summary: '外部API高延迟 (P1)'
+          description: '外部API响应时间P95超过5秒，当前值: {{ $value | printf "%.2f" }}s'
+          runbook_url: 'https://tuheg.com/runbooks/external-api-latency'
 
   # 传统告警规则 - 保持向后兼容
   - name: legacy-alerts
@@ -220,9 +220,9 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "服务完全不可用 (P0)"
-          description: "{{ $labels.job }} 服务在 {{ $labels.instance }} 上完全宕机超过 1 分钟"
-          runbook_url: "https://tuheg.com/runbooks/service-down"
+          summary: '服务完全不可用 (P0)'
+          description: '{{ $labels.job }} 服务在 {{ $labels.instance }} 上完全宕机超过 1 分钟'
+          runbook_url: 'https://tuheg.com/runbooks/service-down'
 
       - alert: DatabaseDown
         expr: up{job="postgres"} == 0
@@ -231,9 +231,9 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "数据库服务不可用 (P0)"
-          description: "PostgreSQL 数据库服务宕机超过 30 秒"
-          runbook_url: "https://tuheg.com/runbooks/database-down"
+          summary: '数据库服务不可用 (P0)'
+          description: 'PostgreSQL 数据库服务宕机超过 30 秒'
+          runbook_url: 'https://tuheg.com/runbooks/database-down'
 
       - alert: RedisDown
         expr: up{job="redis"} == 0
@@ -242,9 +242,9 @@ groups:
           severity: critical
           team: infrastructure
         annotations:
-          summary: "Redis 缓存服务不可用 (P0)"
-          description: "Redis 缓存服务宕机超过 30 秒"
-          runbook_url: "https://tuheg.com/runbooks/redis-down"
+          summary: 'Redis 缓存服务不可用 (P0)'
+          description: 'Redis 缓存服务宕机超过 30 秒'
+          runbook_url: 'https://tuheg.com/runbooks/redis-down'
 
       # P1 重要告警 - 更敏感的阈值
       - alert: HighErrorRate
@@ -254,9 +254,9 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "服务错误率过高 (P1)"
-          description: "{{ $labels.job }} 服务 5xx 错误率超过 2% 持续 3 分钟，当前值: {{ $value | printf \"%.2f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/high-error-rate"
+          summary: '服务错误率过高 (P1)'
+          description: '{{ $labels.job }} 服务 5xx 错误率超过 2% 持续 3 分钟，当前值: {{ $value | printf "%.2f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/high-error-rate'
 
       - alert: HighResponseTime
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~"backend-gateway|creation-agent|logic-agent|narrative-agent"}[5m])) > 1
@@ -265,9 +265,9 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "服务响应时间过高 (P1)"
-          description: "{{ $labels.job }} 服务 95% 响应时间超过 1 秒持续 3 分钟，当前值: {{ $value | printf \"%.2f\" }}s"
-          runbook_url: "https://tuheg.com/runbooks/high-response-time"
+          summary: '服务响应时间过高 (P1)'
+          description: '{{ $labels.job }} 服务 95% 响应时间超过 1 秒持续 3 分钟，当前值: {{ $value | printf "%.2f" }}s'
+          runbook_url: 'https://tuheg.com/runbooks/high-response-time'
 
       - alert: HighMemoryUsage
         expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
@@ -276,9 +276,9 @@ groups:
           severity: warning
           team: infrastructure
         annotations:
-          summary: "服务器内存使用率过高 (P1)"
-          description: "{{ $labels.instance }} 内存使用率超过 90% 持续 3 分钟，当前值: {{ $value | printf \"%.1f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/high-memory-usage"
+          summary: '服务器内存使用率过高 (P1)'
+          description: '{{ $labels.instance }} 内存使用率超过 90% 持续 3 分钟，当前值: {{ $value | printf "%.1f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/high-memory-usage'
 
       - alert: HighCpuUsage
         expr: (1 - rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100 > 85
@@ -287,9 +287,9 @@ groups:
           severity: warning
           team: infrastructure
         annotations:
-          summary: "服务器 CPU 使用率过高 (P1)"
-          description: "{{ $labels.instance }} CPU使用率超过 85% 持续 3 分钟，当前值: {{ $value | printf \"%.1f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/high-cpu-usage"
+          summary: '服务器 CPU 使用率过高 (P1)'
+          description: '{{ $labels.instance }} CPU使用率超过 85% 持续 3 分钟，当前值: {{ $value | printf "%.1f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/high-cpu-usage'
 
       - alert: DatabaseConnectionHigh
         expr: pg_stat_activity_count{datname="tuheg_prod"} > 90
@@ -298,9 +298,9 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "数据库连接数过高 (P1)"
-          description: "数据库活跃连接数超过 90 个持续 3 分钟，当前值: {{ $value }}"
-          runbook_url: "https://tuheg.com/runbooks/database-connections-high"
+          summary: '数据库连接数过高 (P1)'
+          description: '数据库活跃连接数超过 90 个持续 3 分钟，当前值: {{ $value }}'
+          runbook_url: 'https://tuheg.com/runbooks/database-connections-high'
 
       # P2 一般告警
       - alert: DiskSpaceLow
@@ -310,9 +310,9 @@ groups:
           severity: info
           team: infrastructure
         annotations:
-          summary: "磁盘空间不足 (P2)"
-          description: "{{ $labels.instance }} 磁盘可用空间不足 15%，当前可用: {{ $value | printf \"%.1f\" }}%"
-          runbook_url: "https://tuheg.com/runbooks/disk-space-low"
+          summary: '磁盘空间不足 (P2)'
+          description: '{{ $labels.instance }} 磁盘可用空间不足 15%，当前可用: {{ $value | printf "%.1f" }}%'
+          runbook_url: 'https://tuheg.com/runbooks/disk-space-low'
 
       - alert: PodRestarting
         expr: increase(kube_pod_container_status_restarts_total{namespace="tuheg-production"}[10m]) > 2
@@ -321,9 +321,9 @@ groups:
           severity: info
           team: platform
         annotations:
-          summary: "Pod 频繁重启 (P2)"
-          description: "{{ $labels.pod }} 在 namespace {{ $labels.namespace }} 中10分钟内重启超过2次"
-          runbook_url: "https://tuheg.com/runbooks/pod-restarting"
+          summary: 'Pod 频繁重启 (P2)'
+          description: '{{ $labels.pod }} 在 namespace {{ $labels.namespace }} 中10分钟内重启超过2次'
+          runbook_url: 'https://tuheg.com/runbooks/pod-restarting'
 
   # 告警抑制规则
   - name: alert-inhibition
@@ -334,7 +334,7 @@ groups:
         for: 1m
         labels:
           severity: none
-          inhibited: "true"
+          inhibited: 'true'
         annotations:
-          summary: "服务级别告警被抑制"
-          description: "由于服务宕机，相关性能和错误告警已被抑制"
+          summary: '服务级别告警被抑制'
+          description: '由于服务宕机，相关性能和错误告警已被抑制'

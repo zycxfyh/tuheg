@@ -42,18 +42,18 @@
 // =================================================================
 // [核心修正] 修正了 useAppStore 的导入路径，这是导致黑屏的根本原因
 // =================================================================
-import { useAppStore } from '@/stores/app.store';
-import { useAssets } from '@/composables/useAssets';
+import { useAppStore } from '@/stores/app.store'
+import { useAssets } from '@/composables/useAssets'
 
-const appStore = useAppStore();
-const { handleCharacterCardUpload } = useAssets();
+const appStore = useAppStore()
+const { handleCharacterCardUpload } = useAssets()
 
-const emit = defineEmits(['back', 'start-creation']);
+const emit = defineEmits(['back', 'start-creation'])
 
 function onStartClick() {
   if (appStore.uploadedCharacterCard) {
     // [注释] 此处的 start-creation 事件将由父组件 CreationHubView.vue 捕获
-    emit('start-creation', appStore.uploadedCharacterCard);
+    emit('start-creation', appStore.uploadedCharacterCard)
   }
 }
 </script>

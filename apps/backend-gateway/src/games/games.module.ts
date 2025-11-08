@@ -1,11 +1,11 @@
 // 文件路径: apps/nexus-engine/src/games/games.module.ts
 
-import { Module } from '@nestjs/common';
-import { GamesController } from './games.controller';
-import { GamesService } from './games.service';
+import { Module } from '@nestjs/common'
+import { GamesController } from './games.controller'
+import { GamesService } from './games.service'
 
 // [核心修正] 从 @tuheg/common-backend 导入共享模块
-import { PrismaModule, EventBusModule } from '@tuheg/common-backend';
+import { PrismaModule, EventBusModule } from '@tuheg/common-backend'
 
 @Module({
   imports: [

@@ -13,17 +13,17 @@ import {
   UseInterceptors,
   BadRequestException,
   NotFoundException,
-  ForbiddenException
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from '../security/jwt-auth.guard';
-import { RolesGuard } from '../security/roles.guard';
-import { Roles } from '../security/roles.decorator';
-import { PluginMarketplaceService } from './plugin-marketplace.service';
-import { PluginReviewService } from './plugin-review.service';
-import { PluginStatisticsService } from './plugin-statistics.service';
-import { PluginUploadService } from './plugin-upload.service';
-import { PluginSearchService } from './plugin-search.service';
+  ForbiddenException,
+} from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { JwtAuthGuard } from '../security/jwt-auth.guard'
+import { RolesGuard } from '../security/roles.guard'
+import { Roles } from '../security/roles.decorator'
+import { PluginMarketplaceService } from './plugin-marketplace.service'
+import { PluginReviewService } from './plugin-review.service'
+import { PluginStatisticsService } from './plugin-statistics.service'
+import { PluginUploadService } from './plugin-upload.service'
+import { PluginSearchService } from './plugin-search.service'
 import {
   CreatePluginDto,
   UpdatePluginDto,
@@ -35,8 +35,8 @@ import {
   CreatePluginReviewDto,
   UpdatePluginReviewDto,
   DownloadPluginDto,
-  PluginStatisticsDto
-} from '../dto/plugin-marketplace.dto';
+  PluginStatisticsDto,
+} from '../dto/plugin-marketplace.dto'
 
 @Controller('plugins/marketplace')
 export class PluginMarketplaceController {
@@ -45,7 +45,7 @@ export class PluginMarketplaceController {
     private readonly reviewService: PluginReviewService,
     private readonly statsService: PluginStatisticsService,
     private readonly uploadService: PluginUploadService,
-    private readonly searchService: PluginSearchService,
+    private readonly searchService: PluginSearchService
   ) {}
 
   // ==================== 插件管理 ====================
@@ -55,7 +55,7 @@ export class PluginMarketplaceController {
    */
   @Get()
   async getPlugins(@Query() query: SearchPluginsDto) {
-    return this.pluginService.searchPlugins(query);
+    return this.pluginService.searchPlugins(query)
   }
 
   /**
@@ -63,7 +63,7 @@ export class PluginMarketplaceController {
    */
   @Get(':id')
   async getPlugin(@Param('id') id: string) {
-    return this.pluginService.getPlugin(id, true);
+    return this.pluginService.getPlugin(id, true)
   }
 
   /**
@@ -72,7 +72,7 @@ export class PluginMarketplaceController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createPlugin(@Request() req, @Body() data: CreatePluginDto) {
-    return this.pluginService.createPlugin(req.user.id, data);
+    return this.pluginService.createPlugin(req.user.id, data)
   }
 
   /**
@@ -80,12 +80,8 @@ export class PluginMarketplaceController {
    */
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  async updatePlugin(
-    @Param('id') id: string,
-    @Request() req,
-    @Body() data: UpdatePluginDto
-  ) {
-    return this.pluginService.updatePlugin(id, req.user.id, data);
+  async updatePlugin(@Param('id') id: string, @Request() req, @Body() data: UpdatePluginDto) {
+    return this.pluginService.updatePlugin(id, req.user.id, data)
   }
 
   /**
@@ -94,8 +90,8 @@ export class PluginMarketplaceController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deletePlugin(@Param('id') id: string, @Request() req) {
-    await this.pluginService.deletePlugin(id, req.user.id);
-    return { message: 'Plugin deleted successfully' };
+    await this.pluginService.deletePlugin(id, req.user.id)
+    return { message: 'Plugin deleted successfully' }
   }
 
   /**
@@ -111,24 +107,26 @@ export class PluginMarketplaceController {
     @Body() data: { version: string; changelog?: string }
   ) {
     // 检查用户是否有权限上传到此插件
-    const plugin = await this.pluginService.getPlugin(id);
+    const plugin = await this.pluginService.getPlugin(id)
     if (plugin.authorId !== req.user.id) {
-      throw new ForbiddenException('You do not have permission to upload to this plugin');
+      throw new ForbiddenException('You do not have permission to upload to this plugin')
     }
 
-    return this.uploadService.uploadPluginFile(id, file, data);
+    return this.uploadService.uploadPluginFile(id, file, data)
   }
 
   /**
    * 下载插件
    */
   @Post(':id/download')
-  async downloadPlugin(
-    @Param('id') id: string,
-    @Body() data: DownloadPluginDto,
-    @Request() req
-  ) {
-    return this.uploadService.downloadPlugin(id, data.version, req.user?.id, req.ip, req.get('User-Agent'));
+  async downloadPlugin(@Param('id') id: string, @Body() data: DownloadPluginDto, @Request() req) {
+    return this.uploadService.downloadPlugin(
+      id,
+      data.version,
+      req.user?.id,
+      req.ip,
+      req.get('User-Agent')
+    )
   }
 
   // ==================== 插件审核（管理员权限） ====================
@@ -139,12 +137,8 @@ export class PluginMarketplaceController {
   @Put(':id/review')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'moderator')
-  async reviewPlugin(
-    @Param('id') id: string,
-    @Request() req,
-    @Body() data: ReviewPluginDto
-  ) {
-    return this.pluginService.reviewPlugin(id, req.user.id, data);
+  async reviewPlugin(@Param('id') id: string, @Request() req, @Body() data: ReviewPluginDto) {
+    return this.pluginService.reviewPlugin(id, req.user.id, data)
   }
 
   /**
@@ -156,8 +150,8 @@ export class PluginMarketplaceController {
   async getPendingPlugins() {
     return this.pluginService.searchPlugins({
       status: 'PENDING_REVIEW',
-      limit: 50
-    });
+      limit: 50,
+    })
   }
 
   // ==================== 用户插件管理 ====================
@@ -168,7 +162,7 @@ export class PluginMarketplaceController {
   @Get('user/my-plugins')
   @UseGuards(JwtAuthGuard)
   async getMyPlugins(@Request() req, @Query('status') status?: string) {
-    return this.pluginService.getUserPlugins(req.user.id, status as any);
+    return this.pluginService.getUserPlugins(req.user.id, status as any)
   }
 
   /**
@@ -176,7 +170,7 @@ export class PluginMarketplaceController {
    */
   @Get('user/:userId/plugins')
   async getUserPlugins(@Param('userId') userId: string) {
-    return this.pluginService.getUserPlugins(userId, 'APPROVED');
+    return this.pluginService.getUserPlugins(userId, 'APPROVED')
   }
 
   // ==================== 插件评价 ====================
@@ -189,7 +183,7 @@ export class PluginMarketplaceController {
     @Param('id') id: string,
     @Query() query: { page?: number; limit?: number; sort?: 'newest' | 'oldest' | 'rating' }
   ) {
-    return this.reviewService.getPluginReviews(id, query);
+    return this.reviewService.getPluginReviews(id, query)
   }
 
   /**
@@ -202,7 +196,7 @@ export class PluginMarketplaceController {
     @Request() req,
     @Body() data: CreatePluginReviewDto
   ) {
-    return this.reviewService.createReview(id, req.user.id, data);
+    return this.reviewService.createReview(id, req.user.id, data)
   }
 
   /**
@@ -216,7 +210,7 @@ export class PluginMarketplaceController {
     @Request() req,
     @Body() data: UpdatePluginReviewDto
   ) {
-    return this.reviewService.updateReview(reviewId, req.user.id, data);
+    return this.reviewService.updateReview(reviewId, req.user.id, data)
   }
 
   /**
@@ -229,8 +223,8 @@ export class PluginMarketplaceController {
     @Param('reviewId') reviewId: string,
     @Request() req
   ) {
-    await this.reviewService.deleteReview(reviewId, req.user.id);
-    return { message: 'Review deleted successfully' };
+    await this.reviewService.deleteReview(reviewId, req.user.id)
+    return { message: 'Review deleted successfully' }
   }
 
   /**
@@ -243,7 +237,7 @@ export class PluginMarketplaceController {
     @Request() req,
     @Body() data: { helpful: boolean }
   ) {
-    return this.reviewService.voteReviewHelpful(reviewId, req.user.id, data.helpful);
+    return this.reviewService.voteReviewHelpful(reviewId, req.user.id, data.helpful)
   }
 
   // ==================== 插件分类管理 ====================
@@ -253,8 +247,8 @@ export class PluginMarketplaceController {
    */
   @Get('categories/all')
   async getCategories(@Query('activeOnly') activeOnly?: string) {
-    const active = activeOnly !== 'false';
-    return this.pluginService.getCategories(active);
+    const active = activeOnly !== 'false'
+    return this.pluginService.getCategories(active)
   }
 
   /**
@@ -264,7 +258,7 @@ export class PluginMarketplaceController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   async createCategory(@Body() data: CreatePluginCategoryDto) {
-    return this.pluginService.createCategory(data);
+    return this.pluginService.createCategory(data)
   }
 
   /**
@@ -273,11 +267,8 @@ export class PluginMarketplaceController {
   @Put('categories/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
-  async updateCategory(
-    @Param('id') id: string,
-    @Body() data: UpdatePluginCategoryDto
-  ) {
-    return this.pluginService.updateCategory(id, data);
+  async updateCategory(@Param('id') id: string, @Body() data: UpdatePluginCategoryDto) {
+    return this.pluginService.updateCategory(id, data)
   }
 
   /**
@@ -287,8 +278,8 @@ export class PluginMarketplaceController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   async deleteCategory(@Param('id') id: string) {
-    await this.pluginService.deleteCategory(id);
-    return { message: 'Category deleted successfully' };
+    await this.pluginService.deleteCategory(id)
+    return { message: 'Category deleted successfully' }
   }
 
   // ==================== 插件标签管理 ====================
@@ -298,8 +289,8 @@ export class PluginMarketplaceController {
    */
   @Get('tags/all')
   async getTags(@Query('activeOnly') activeOnly?: string) {
-    const active = activeOnly !== 'false';
-    return this.pluginService.getTags(active);
+    const active = activeOnly !== 'false'
+    return this.pluginService.getTags(active)
   }
 
   /**
@@ -309,7 +300,7 @@ export class PluginMarketplaceController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   async createTag(@Body() data: CreatePluginTagDto) {
-    return this.pluginService.createTag(data);
+    return this.pluginService.createTag(data)
   }
 
   /**
@@ -319,8 +310,8 @@ export class PluginMarketplaceController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   async deleteTag(@Param('id') id: string) {
-    await this.pluginService.deleteTag(id);
-    return { message: 'Tag deleted successfully' };
+    await this.pluginService.deleteTag(id)
+    return { message: 'Tag deleted successfully' }
   }
 
   // ==================== 插件搜索 ====================
@@ -330,7 +321,7 @@ export class PluginMarketplaceController {
    */
   @Get('search/advanced')
   async advancedSearch(@Query() query: SearchPluginsDto) {
-    return this.searchService.advancedSearch(query);
+    return this.searchService.advancedSearch(query)
   }
 
   /**
@@ -338,7 +329,7 @@ export class PluginMarketplaceController {
    */
   @Get('search/suggestions')
   async getSearchSuggestions(@Query('q') q: string) {
-    return this.searchService.getSearchSuggestions(q);
+    return this.searchService.getSearchSuggestions(q)
   }
 
   // ==================== 插件统计 ====================
@@ -347,11 +338,8 @@ export class PluginMarketplaceController {
    * 获取插件统计信息
    */
   @Get(':id/statistics')
-  async getPluginStatistics(
-    @Param('id') id: string,
-    @Query() query: PluginStatisticsDto
-  ) {
-    return this.statsService.getPluginStatistics(id, query);
+  async getPluginStatistics(@Param('id') id: string, @Query() query: PluginStatisticsDto) {
+    return this.statsService.getPluginStatistics(id, query)
   }
 
   /**
@@ -359,7 +347,7 @@ export class PluginMarketplaceController {
    */
   @Get('statistics/market-overview')
   async getMarketStatistics(@Query() query: PluginStatisticsDto) {
-    return this.statsService.getMarketOverview(query);
+    return this.statsService.getMarketOverview(query)
   }
 
   /**
@@ -367,7 +355,7 @@ export class PluginMarketplaceController {
    */
   @Get('statistics/trending')
   async getTrendingPlugins(@Query('limit') limit?: number) {
-    return this.statsService.getTrendingPlugins(limit ? parseInt(limit.toString()) : 10);
+    return this.statsService.getTrendingPlugins(limit ? parseInt(limit.toString()) : 10)
   }
 
   /**
@@ -375,6 +363,6 @@ export class PluginMarketplaceController {
    */
   @Get('statistics/featured')
   async getFeaturedPlugins(@Query('limit') limit?: number) {
-    return this.statsService.getFeaturedPlugins(limit ? parseInt(limit.toString()) : 10);
+    return this.statsService.getFeaturedPlugins(limit ? parseInt(limit.toString()) : 10)
   }
 }

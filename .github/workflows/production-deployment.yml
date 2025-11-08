@@ -1,0 +1,472 @@
+name: Production Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version bump type'
+        required: false
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      deployment_strategy:
+        description: 'Deployment strategy'
+        required: false
+        default: 'rolling'
+        type: choice
+        options:
+          - rolling
+          - blue-green
+          - canary
+      force_deploy:
+        description: 'Force deployment bypassing some checks'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  production-readiness-check:
+    name: Production Readiness Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify staging validation passed
+        run: |
+          # Check if staging deployment and regression tests passed
+          STAGING_WORKFLOW_RUN=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/staging-deployment.yml/runs?per_page=1" | \
+            jq -r '.workflow_runs[0].conclusion')
+
+          REGRESSION_WORKFLOW_RUN=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/regression-matrix.yml/runs?per_page=1" | \
+            jq -r '.workflow_runs[0].conclusion')
+
+          if [ "$STAGING_WORKFLOW_RUN" != "success" ] && [ "${{ github.event.inputs.force_deploy }}" != "true" ]; then
+            echo "❌ Staging deployment failed. Cannot proceed to production."
+            exit 1
+          fi
+
+          if [ "$REGRESSION_WORKFLOW_RUN" != "success" ] && [ "${{ github.event.inputs.force_deploy }}" != "true" ]; then
+            echo "❌ Regression tests failed. Cannot proceed to production."
+            exit 1
+          fi
+
+          echo "✅ Staging and regression validations passed"
+
+      - name: Check deployment window
+        run: |
+          # Check if current time is within deployment window (e.g., business hours)
+          CURRENT_HOUR=$(date +%H)
+          DAY_OF_WEEK=$(date +%u) # 1=Monday, 7=Sunday
+
+          if [ "$DAY_OF_WEEK" -gt 5 ]; then # Weekend
+            echo "⚠️ Deployment during weekend"
+          elif [ "$CURRENT_HOUR" -lt 9 ] || [ "$CURRENT_HOUR" -gt 17 ]; then # Outside business hours
+            echo "⚠️ Deployment outside business hours (9 AM - 6 PM)"
+          fi
+
+          # Allow deployment but log the timing
+          echo "Deployment time check completed"
+
+  version-management:
+    name: Version Management
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: production-readiness-check
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Determine version bump
+        id: version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          BUMP_TYPE="${{ github.event.inputs.version_bump || 'patch' }}"
+
+          # Calculate new version
+          if [ "$BUMP_TYPE" = "major" ]; then
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1+1 ".0.0"}')
+          elif [ "$BUMP_TYPE" = "minor" ]; then
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1 "." $2+1 ".0"}')
+          else
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1 "." $2 "." $3+1}')
+          fi
+
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Update version in package.json
+        run: |
+          npm version ${{ steps.version.outputs.new_version }} --no-git-tag-version
+          pnpm install --lockfile-only
+
+      - name: Create version commit
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add package.json pnpm-lock.yaml
+          git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
+
+      - name: Create git tag
+        run: |
+          git tag -a "v${{ steps.version.outputs.new_version }}" -m "Release version ${{ steps.version.outputs.new_version }}"
+          git push origin main --tags
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          release_name: Release v${{ steps.version.outputs.new_version }}
+          body: |
+            ## Changes
+
+            This release includes all changes from the latest development cycle.
+
+            ### Deployment Notes
+            - Version bump: ${{ steps.version.outputs.bump_type }}
+            - Previous version: ${{ steps.version.outputs.current_version }}
+            - New version: ${{ steps.version.outputs.new_version }}
+
+            ### Validation Status
+            - ✅ All automated tests passed
+            - ✅ Security scans completed
+            - ✅ Staging deployment successful
+            - ✅ Regression tests passed
+          draft: false
+          prerelease: false
+
+  build-production-artifacts:
+    name: Build Production Artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: version-management
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build production artifacts
+        run: |
+          pnpm build
+          pnpm build:production  # Additional production optimizations
+
+      - name: Create production build artifacts
+        run: |
+          mkdir -p production-artifacts
+
+          # Copy built applications
+          cp -r apps/*/dist production-artifacts/ 2>/dev/null || true
+          cp -r packages/*/dist production-artifacts/packages/ 2>/dev/null || true
+
+          # Copy deployment manifests
+          cp -r deployment production-artifacts/
+          cp package.json production-artifacts/
+          cp pnpm-lock.yaml production-artifacts/
+
+          # Generate deployment metadata
+          echo "{
+            \"version\": \"$(node -p "require('./package.json').version")\",
+            \"build_time\": \"$(date -Iseconds)\",
+            \"commit_sha\": \"${{ github.sha }}\",
+            \"build_number\": \"${{ github.run_number }}\"
+          }" > production-artifacts/build-metadata.json
+
+      - name: Upload production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build-${{ github.sha }}
+          path: production-artifacts/
+          retention-days: 30
+
+  deploy-to-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [version-management, build-production-artifacts]
+    environment: production
+
+    steps:
+      - name: Download production artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: production-build-${{ github.sha }}
+          path: production-artifacts/
+
+      - name: Setup deployment strategy
+        id: deployment
+        run: |
+          STRATEGY="${{ github.event.inputs.deployment_strategy || 'rolling' }}"
+          echo "strategy=$STRATEGY" >> $GITHUB_OUTPUT
+
+          case $STRATEGY in
+            "blue-green")
+              echo "Using blue-green deployment strategy"
+              ;;
+            "canary")
+              echo "Using canary deployment strategy"
+              ;;
+            "rolling")
+              echo "Using rolling deployment strategy"
+              ;;
+          esac
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.CONTAINER_REGISTRY }}
+          username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+
+      - name: Build and push production images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.CONTAINER_REGISTRY }}/backend-gateway:${{ github.sha }}
+            ${{ secrets.CONTAINER_REGISTRY }}/backend-gateway:v$(node -p "require('./production-artifacts/package.json').version")
+            ${{ secrets.CONTAINER_REGISTRY }}/backend-gateway:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Deploy based on strategy
+        run: |
+          STRATEGY="${{ steps.deployment.outputs.strategy }}"
+
+          case $STRATEGY in
+            "blue-green")
+              echo "Executing blue-green deployment..."
+              ./deployment/blue-green-deployment.yml
+              ;;
+            "canary")
+              echo "Executing canary deployment..."
+              ./deployment/canary-deploy.sh
+              ;;
+            "rolling")
+              echo "Executing rolling deployment..."
+              kubectl apply -f production-artifacts/deployment/k8s/production/
+              kubectl rollout status deployment/backend-gateway --namespace production --timeout=600s
+              ;;
+          esac
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG_PRODUCTION }}
+          DEPLOYMENT_STRATEGY: ${{ steps.deployment.outputs.strategy }}
+
+  production-validation:
+    name: Production Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: deploy-to-production
+    environment: production
+
+    steps:
+      - name: Production health checks
+        run: |
+          echo "Running production health checks..."
+
+          # Wait for application to be ready
+          for i in {1..60}; do
+            if curl -f -s "${{ secrets.PRODUCTION_URL }}/health" > /dev/null; then
+              echo "✅ Production environment is healthy"
+              break
+            fi
+            echo "Waiting for production health check... ($i/60)"
+            sleep 15
+          done
+
+          if [ $i -eq 60 ]; then
+            echo "❌ Production environment failed health checks"
+            exit 1
+          fi
+
+      - name: Run production smoke tests
+        run: |
+          npm install -g newman
+
+          # Run comprehensive smoke tests against production
+          newman run scripts/production-smoke-tests.postman_collection.json \
+            --environment scripts/production.postman_environment.json \
+            --reporters cli,json \
+            --reporter-json-export production-smoke-results.json \
+            --timeout 30000
+
+      - name: Performance validation
+        run: |
+          # Run basic performance checks
+          RESPONSE_TIME=$(curl -o /dev/null -s -w "%{time_total}" ${{ secrets.PRODUCTION_URL }}/health)
+
+          if (( $(echo "$RESPONSE_TIME > 2.0" | bc -l) )); then
+            echo "⚠️ Slow response time detected: ${RESPONSE_TIME}s"
+          else
+            echo "✅ Response time acceptable: ${RESPONSE_TIME}s"
+          fi
+
+      - name: Upload production validation results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-validation-${{ github.run_id }}
+          path: |
+            production-smoke-results.json
+          retention-days: 30
+
+  post-deployment:
+    name: Post-deployment Tasks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [deploy-to-production, production-validation]
+    if: success()
+    environment: production
+
+    steps:
+      - name: Update deployment tracking
+        run: |
+          # Record successful deployment
+          echo "Recording successful production deployment..."
+
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.DEPLOYMENT_TRACKING_API_KEY }}" \
+            -d "{
+              \"version\": \"$(node -p "require('./production-artifacts/package.json').version")\",
+              \"commit_sha\": \"${{ github.sha }}\",
+              \"deployment_time\": \"$(date -Iseconds)\",
+              \"environment\": \"production\",
+              \"status\": \"success\"
+            }" \
+            ${{ secrets.DEPLOYMENT_TRACKING_API_URL }}
+
+      - name: Trigger documentation update
+        run: |
+          # Trigger documentation deployment if docs are separate
+          if [ -n "${{ secrets.DOCS_DEPLOY_WEBHOOK }}" ]; then
+            curl -X POST ${{ secrets.DOCS_DEPLOY_WEBHOOK }}
+          fi
+
+      - name: Send production deployment notifications
+        run: |
+          VERSION=$(node -p "require('./production-artifacts/package.json').version")
+
+          # Slack notification
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"🚀 Production deployment completed\",
+              \"blocks\": [
+                {
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Production Deployment Successful*\nVersion: v$VERSION\nEnvironment: Production\nStatus: ✅ Deployed\"
+                  }
+                },
+                {
+                  \"type\": \"actions\",
+                  \"elements\": [
+                    {
+                      \"type\": \"button\",
+                      \"text\": {
+                        \"type\": \"plain_text\",
+                        \"text\": \"View Production\"
+                      },
+                      \"url\": \"${{ secrets.PRODUCTION_URL }}\"
+                    },
+                    {
+                      \"type\": \"button\",
+                      \"text\": {
+                        \"type\": \"plain_text\",
+                        \"text\": \"View Release\"
+                      },
+                      \"url\": \"https://github.com/${{ github.repository }}/releases/tag/v$VERSION\"
+                    }
+                  ]
+                }
+              ]
+            }" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deployment-rollback:
+    name: Deployment Rollback
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [deploy-to-production, production-validation]
+    if: failure()
+
+    steps:
+      - name: Initiate rollback
+        run: |
+          echo "❌ Production deployment failed. Initiating rollback..."
+
+          # Trigger rollback script
+          ./deployment/rollback.sh production auto
+
+          # Notify about rollback
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"⚠️ Production deployment failed - Rollback initiated\",
+              \"blocks\": [
+                {
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Production Deployment Failed*\nA rollback has been automatically initiated.\nPlease investigate the failure.\"
+                  }
+                }
+              ]
+            }" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}

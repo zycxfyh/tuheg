@@ -9,16 +9,16 @@ defineProps({
     type: Boolean,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(['load-game', 'delete-game']);
+const emit = defineEmits(['load-game', 'delete-game'])
 
 function onLoadGame(gameId) {
-  emit('load-game', gameId);
+  emit('load-game', gameId)
 }
 
 function onDeleteGame(gameId) {
-  emit('delete-game', gameId);
+  emit('delete-game', gameId)
 }
 </script>
 

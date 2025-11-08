@@ -16,9 +16,9 @@
  */
 export interface NotifyUserPayload {
   /** 目标用户 ID */
-  userId: string;
+  userId: string
   /** 事件名称（如 'creation_completed', 'processing_failed' 等） */
-  event: string;
+  event: string
   /** 事件数据（具体内容取决于事件类型） */
-  data: Record<string, unknown>; // 使用 Record<string, unknown> 代替 any，符合类型安全要求
+  data: Record<string, unknown> // 使用 Record<string, unknown> 代替 any，符合类型安全要求
 }

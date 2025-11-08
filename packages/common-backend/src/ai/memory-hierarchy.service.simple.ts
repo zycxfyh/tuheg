@@ -1,9 +1,9 @@
 // 文件路径: packages/common-backend/src/ai/memory-hierarchy.service.ts
 // 职责: 记忆管理服务，管理游戏记忆的基本操作（简化版）
 
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Memory } from '@prisma/client';
+import { Injectable, Logger } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { Memory } from '@prisma/client'
 
 /**
  * 记忆管理服务
@@ -11,7 +11,7 @@ import { Memory } from '@prisma/client';
  */
 @Injectable()
 export class MemoryHierarchyService {
-  private readonly logger = new Logger(MemoryHierarchyService.name);
+  private readonly logger = new Logger(MemoryHierarchyService.name)
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -27,7 +27,7 @@ export class MemoryHierarchyService {
       where: { gameId },
       orderBy: { createdAt: 'desc' },
       take: limit,
-    });
+    })
   }
 
   /**
@@ -43,7 +43,7 @@ export class MemoryHierarchyService {
         gameId,
         content,
       },
-    });
+    })
   }
 
   /**
@@ -55,7 +55,7 @@ export class MemoryHierarchyService {
   async deleteMemory(memoryId: string): Promise<Memory> {
     return this.prisma.memory.delete({
       where: { id: memoryId },
-    });
+    })
   }
 
   /**
@@ -67,9 +67,9 @@ export class MemoryHierarchyService {
   async getMemoryStats(gameId: string): Promise<{ total: number }> {
     const count = await this.prisma.memory.count({
       where: { gameId },
-    });
+    })
 
-    return { total: count };
+    return { total: count }
   }
 
   /**
@@ -86,10 +86,10 @@ export class MemoryHierarchyService {
       orderBy: { createdAt: 'desc' },
       skip: keepCount,
       select: { id: true },
-    });
+    })
 
     if (memoriesToDelete.length === 0) {
-      return 0;
+      return 0
     }
 
     // 批量删除
@@ -97,9 +97,9 @@ export class MemoryHierarchyService {
       where: {
         id: { in: memoriesToDelete.map((m) => m.id) },
       },
-    });
+    })
 
-    this.logger.log(`Cleaned up ${result.count} old memories for game ${gameId}`);
-    return result.count;
+    this.logger.log(`Cleaned up ${result.count} old memories for game ${gameId}`)
+    return result.count
   }
 }

@@ -1,6 +1,6 @@
-import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
@@ -46,19 +46,19 @@ export default defineConfig({
         chunkFileNames: (chunkInfo) => {
           const facadeModuleId = chunkInfo.facadeModuleId
             ? chunkInfo.facadeModuleId.split('/').pop().replace('.vue', '')
-            : 'chunk';
-          return `js/${facadeModuleId}-[hash].js`;
+            : 'chunk'
+          return `js/${facadeModuleId}-[hash].js`
         },
         entryFileNames: 'js/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
-          const info = assetInfo.name.split('.');
-          let extType = info[info.length - 1];
+          const info = assetInfo.name.split('.')
+          let extType = info[info.length - 1]
           if (/\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(assetInfo.name)) {
-            extType = 'img';
+            extType = 'img'
           } else if (/\.(css)$/i.test(assetInfo.name)) {
-            extType = 'css';
+            extType = 'css'
           }
-          return `${extType}/[name]-[hash].[ext]`;
+          return `${extType}/[name]-[hash].[ext]`
         },
       },
     },
@@ -89,4 +89,4 @@ export default defineConfig({
   css: {
     devSourcemap: true,
   },
-});
+})

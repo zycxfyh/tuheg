@@ -40,37 +40,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 // [核心修正] 导入正确的 store 和函数名
-import { useUIStore } from '@/stores/ui.store';
-import { useGameStore } from '@/stores/game.store';
+import { useUIStore } from '@/stores/ui.store'
+import { useGameStore } from '@/stores/game.store'
 
-const uiStore = useUIStore();
-const gameStore = useGameStore();
+const uiStore = useUIStore()
+const gameStore = useGameStore()
 
-const editableCharacter = ref(null);
+const editableCharacter = ref(null)
 
 onMounted(() => {
   if (gameStore.currentGame?.character) {
-    editableCharacter.value = JSON.parse(JSON.stringify(gameStore.currentGame.character));
+    editableCharacter.value = JSON.parse(JSON.stringify(gameStore.currentGame.character))
   }
-});
+})
 
 function handleSaveChanges() {
-  if (!editableCharacter.value || !gameStore.currentGame?.id) return;
+  if (!editableCharacter.value || !gameStore.currentGame?.id) return
 
-  const originalCharacter = gameStore.currentGame.character;
-  const changes = {};
+  const originalCharacter = gameStore.currentGame.character
+  const changes = {}
   for (const key in editableCharacter.value) {
     if (originalCharacter && editableCharacter.value[key] !== originalCharacter[key]) {
-      changes[key] = editableCharacter.value[key];
+      changes[key] = editableCharacter.value[key]
     }
   }
 
   if (Object.keys(changes).length > 0) {
-    gameStore.updateCharacterState(gameStore.currentGame.id, changes);
+    gameStore.updateCharacterState(gameStore.currentGame.id, changes)
   } else {
-    uiStore.hideWeaverConsole();
+    uiStore.hideWeaverConsole()
   }
 }
 </script>

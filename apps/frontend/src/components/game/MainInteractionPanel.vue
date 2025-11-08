@@ -1,14 +1,14 @@
 <!-- 文件路径: src/components/game/MainInteractionPanel.vue (UI优化版) -->
 <script setup>
-import { useGameStore } from '@/stores/game.store';
-import { ref, onUnmounted, watch } from 'vue';
+import { useGameStore } from '@/stores/game.store'
+import { ref, onUnmounted, watch } from 'vue'
 
-const gameStore = useGameStore();
+const gameStore = useGameStore()
 
 // [新增] 进度指示器状态
-const processingProgress = ref(0);
-const processingStep = ref('正在分析你的行动...');
-const currentTip = ref('AI正在理解你的指令，请稍候');
+const processingProgress = ref(0)
+const processingStep = ref('正在分析你的行动...')
+const currentTip = ref('AI正在理解你的指令，请稍候')
 
 // [新增] 处理步骤和提示
 const processingSteps = [
@@ -17,7 +17,7 @@ const processingSteps = [
   { step: '正在生成叙事内容...', tip: 'AI正在为你编写故事', progress: 60 },
   { step: '正在整理最终结果...', tip: 'AI正在完善回应内容', progress: 80 },
   { step: '即将完成...', tip: 'AI正在最后润色', progress: 95 },
-];
+]
 
 const tips = [
   'AI正在理解你的指令，请稍候',
@@ -28,78 +28,78 @@ const tips = [
   '复杂的决策需要更多时间思考',
   'AI正在确保故事的一致性',
   '正在检查游戏规则的合理性',
-];
+]
 
 // [新增] 进度更新定时器
-let progressTimer = null;
+let progressTimer = null
 
 function startProgressAnimation() {
-  let currentIndex = 0;
-  processingProgress.value = 0;
-  processingStep.value = processingSteps[0].step;
-  currentTip.value = processingSteps[0].tip;
+  let currentIndex = 0
+  processingProgress.value = 0
+  processingStep.value = processingSteps[0].step
+  currentTip.value = processingSteps[0].tip
 
   progressTimer = setInterval(() => {
     if (!gameStore.isAiThinking) {
-      clearInterval(progressTimer);
-      progressTimer = null;
-      processingProgress.value = 100;
-      processingStep.value = '处理完成！';
-      currentTip.value = '你的行动已成功执行';
-      return;
+      clearInterval(progressTimer)
+      progressTimer = null
+      processingProgress.value = 100
+      processingStep.value = '处理完成！'
+      currentTip.value = '你的行动已成功执行'
+      return
     }
 
-    currentIndex = (currentIndex + 1) % processingSteps.length;
-    const step = processingSteps[currentIndex];
-    processingProgress.value = step.progress;
-    processingStep.value = step.step;
-    currentTip.value = step.tip;
-  }, 2000); // 每2秒更新一次步骤
+    currentIndex = (currentIndex + 1) % processingSteps.length
+    const step = processingSteps[currentIndex]
+    processingProgress.value = step.progress
+    processingStep.value = step.step
+    currentTip.value = step.tip
+  }, 2000) // 每2秒更新一次步骤
 }
 
 function stopProgressAnimation() {
   if (progressTimer) {
-    clearInterval(progressTimer);
-    progressTimer = null;
+    clearInterval(progressTimer)
+    progressTimer = null
   }
-  processingProgress.value = 0;
-  processingStep.value = '准备就绪';
-  currentTip.value = 'AI已准备好处理你的下一个行动';
+  processingProgress.value = 0
+  processingStep.value = '准备就绪'
+  currentTip.value = 'AI已准备好处理你的下一个行动'
 }
 
 // [新增] 监听AI思考状态变化
-import { watch } from 'vue';
+import { watch } from 'vue'
 watch(
   () => gameStore.isAiThinking,
   (isThinking) => {
     if (isThinking) {
-      startProgressAnimation();
+      startProgressAnimation()
     } else {
-      stopProgressAnimation();
+      stopProgressAnimation()
     }
-  },
-);
+  }
+)
 
 // [新增] 组件卸载时清理定时器
 onUnmounted(() => {
-  stopProgressAnimation();
-});
+  stopProgressAnimation()
+})
 
 function submitCommand() {
-  const commandText = gameStore.commandInputValue.trim();
+  const commandText = gameStore.commandInputValue.trim()
   if (commandText && gameStore.currentGame) {
     // [新增] 立即显示操作确认反馈
-    gameStore.addNarrativeEntry(`🎯 执行行动: "${commandText}"`, true);
-    gameStore.submitAction(gameStore.currentGame.id, 'command', commandText);
-    gameStore.commandInputValue = '';
+    gameStore.addNarrativeEntry(`🎯 执行行动: "${commandText}"`, true)
+    gameStore.submitAction(gameStore.currentGame.id, 'command', commandText)
+    gameStore.commandInputValue = ''
   }
 }
 
 function handleOptionClick(option) {
   if (gameStore.currentGame) {
     // [新增] 立即显示操作确认反馈
-    gameStore.addNarrativeEntry(`🎯 选择选项: ${option.text}`, true);
-    gameStore.submitAction(gameStore.currentGame.id, 'option', option);
+    gameStore.addNarrativeEntry(`🎯 选择选项: ${option.text}`, true)
+    gameStore.submitAction(gameStore.currentGame.id, 'option', option)
   }
 }
 </script>

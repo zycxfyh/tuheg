@@ -1,0 +1,211 @@
+name: 🔒 Security Audit
+
+on:
+  schedule:
+    # 每天早上9点运行安全审计
+    - cron: '0 9 * * *'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'apps/**/package.json'
+      - 'packages/**/package.json'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'apps/**/package.json'
+      - 'packages/**/package.json'
+  workflow_dispatch:
+    inputs:
+      severity_level:
+        description: 'Minimum severity level to report'
+        required: false
+        default: 'moderate'
+        type: choice
+        options:
+          - low
+          - moderate
+          - high
+          - critical
+
+env:
+  NODE_VERSION: '20.x'
+  PNPM_VERSION: '9.x'
+
+# 最小权限原则
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  checks: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  security-audit:
+    name: '🔍 安全审计'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 依赖安全审计
+      - name: 🔒 NPM Audit
+        id: npm-audit
+        run: |
+          echo "🔍 Running npm audit..."
+          if ! pnpm audit --audit-level moderate --json > audit-results.json; then
+            echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+            echo "❌ Security vulnerabilities found"
+          else
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+            echo "✅ No security vulnerabilities found"
+          fi
+
+      # 依赖检查
+      - name: 📋 Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          config-file: '.github/dependency-review-config.yml'
+          fail-on-severity: ${{ github.event.inputs.severity_level || 'moderate' }}
+
+      # SBOM 生成
+      - name: 📄 Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: '.'
+          format: 'spdx-json'
+          output-file: './sbom.spdx.json'
+
+      # 容器安全扫描
+      - name: 🐳 Container Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: 0
+
+      # 上传 SARIF 报告
+      - name: 📊 Upload Security Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+          category: 'security'
+
+      # 安全报告生成
+      - name: 📋 Generate Security Report
+        if: always()
+        run: |
+          echo "# 🔒 安全审计报告" > security-report.md
+          echo "" >> security-report.md
+          echo "**扫描时间**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> security-report.md
+          echo "**提交**: \`${{ github.sha }}\`" >> security-report.md
+          echo "**分支**: \`${{ github.ref }}\`" >> security-report.md
+          echo "" >> security-report.md
+
+          # NPM Audit 结果
+          if [ "${{ steps.npm-audit.outputs.vulnerabilities_found }}" = "true" ]; then
+            echo "## ❌ NPM 安全漏洞" >> security-report.md
+            echo "" >> security-report.md
+            echo "\`\`\`json" >> security-report.md
+            cat audit-results.json | jq '.vulnerabilities // empty' >> security-report.md 2>/dev/null || echo "{}" >> security-report.md
+            echo "\`\`\`" >> security-report.md
+          else
+            echo "## ✅ NPM 安全审计通过" >> security-report.md
+          fi
+          echo "" >> security-report.md
+
+          # SBOM 信息
+          echo "## 📄 软件物料清单 (SBOM)" >> security-report.md
+          echo "" >> security-report.md
+          echo "SBOM 文件已生成: \`sbom.spdx.json\`" >> security-report.md
+          echo "" >> security-report.md
+
+      # 上传安全报告
+      - name: 📤 Upload Security Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit-report-${{ github.sha }}
+          path: |
+            security-report.md
+            audit-results.json
+            sbom.spdx.json
+          retention-days: 30
+
+      # 安全问题自动创建
+      - name: 🚨 Create Security Issues
+        if: failure() && github.event_name != 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // 检查是否有严重的安全问题
+            let hasCriticalIssues = false;
+            try {
+              const auditData = JSON.parse(fs.readFileSync('audit-results.json', 'utf8'));
+              hasCriticalIssues = Object.keys(auditData.vulnerabilities || {}).length > 0;
+            } catch (e) {
+              console.log('No audit results found');
+            }
+
+            if (hasCriticalIssues) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🚨 安全漏洞发现 - ${new Date().toISOString().split('T')[0]}`,
+                body: \`## 🔒 安全警报
+
+**检测时间**: \${new Date().toISOString()}
+**触发原因**: 安全审计发现漏洞
+**影响范围**: 依赖包安全漏洞
+
+### 📊 详细信息
+
+安全扫描发现了一个或多个安全漏洞。详情请查看：
+- [安全审计报告](\${context.payload.repository.html_url}/actions/runs/\${context.runId})
+- [Artifacts](\${context.payload.repository.html_url}/actions/runs/\${context.runId}#artifacts)
+
+### 🔧 建议操作
+
+1. 立即审查漏洞详情
+2. 更新受影响的依赖包
+3. 在 staging 环境验证修复
+4. 部署安全补丁
+
+### 📞 联系信息
+
+- 安全团队: @security-team
+- DevOps团队: @devops-team
+
+---
+*此 Issue 由自动安全审计系统生成*\`,
+                labels: ['security', 'vulnerability', 'urgent'],
+                assignees: ['security-team']
+              });
+            }

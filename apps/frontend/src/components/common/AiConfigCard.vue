@@ -162,24 +162,24 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
-import { useSettingsStore, ALL_AI_ROLES } from '@/stores/settings.store';
-import { apiService } from '@/services/api.service';
-import { useToast } from '@/composables/useToast';
+import { ref, watch, computed } from 'vue'
+import { useSettingsStore, ALL_AI_ROLES } from '@/stores/settings.store'
+import { apiService } from '@/services/api.service'
+import { useToast } from '@/composables/useToast'
 
 const props = defineProps({
   config: { type: Object, required: true },
   isGlobal: { type: Boolean, default: false },
-});
+})
 
-const settingsStore = useSettingsStore();
-const { show: showToast } = useToast();
+const settingsStore = useSettingsStore()
+const { show: showToast } = useToast()
 
-const isNew = computed(() => !!props.config.isNew);
-const editableConfig = ref(JSON.parse(JSON.stringify(props.config)));
-const isLoading = ref(false);
-const isTesting = ref(false);
-const fetchedModels = ref([]);
+const isNew = computed(() => !!props.config.isNew)
+const editableConfig = ref(JSON.parse(JSON.stringify(props.config)))
+const isLoading = ref(false)
+const isTesting = ref(false)
+const fetchedModels = ref([])
 
 // New reactive properties for enhanced UX
 const errors = ref({
@@ -187,21 +187,21 @@ const errors = ref({
   apiKey: '',
   baseUrl: '',
   modelId: '',
-});
+})
 
-const connectionStatus = ref(null);
+const connectionStatus = ref(null)
 
 const currentStep = computed(() => {
-  if (!editableConfig.value.provider) return 1;
-  if (!editableConfig.value.apiKey) return 2;
-  if (!editableConfig.value.modelId) return 3;
-  if (!fetchedModels.value.length) return 3;
-  return 4;
-});
+  if (!editableConfig.value.provider) return 1
+  if (!editableConfig.value.apiKey) return 2
+  if (!editableConfig.value.modelId) return 3
+  if (!fetchedModels.value.length) return 3
+  return 4
+})
 
 const canTestConnection = computed(() => {
-  return editableConfig.value.provider && editableConfig.value.apiKey;
-});
+  return editableConfig.value.provider && editableConfig.value.apiKey
+})
 
 // --- Data for Provider Select ---
 const providers = {
@@ -219,12 +219,12 @@ const providers = {
     { id: 'Ollama', name: 'Ollama (本地)', baseUrl: 'http://localhost:11434/v1' },
     { id: 'CustomOpenAICompatible', name: '自定义兼容接口', baseUrl: '' },
   ],
-};
+}
 const providerGroups = ref([
   { label: '国内供应商', providers: providers.china },
   { label: '国际供应商', providers: providers.international },
   { label: '本地与其他', providers: providers.local },
-]);
+])
 
 // --- Data for Role Assignment ---
 const availableRoles = ref([
@@ -248,28 +248,28 @@ const availableRoles = ref([
     name: '输出审查',
     description: '(高级) 负责审查其他AI的输出质量，并提出修改意见。',
   },
-]);
+])
 
 const selectedRoles = computed({
   get: () =>
     editableConfig.value.assignedRoles ? editableConfig.value.assignedRoles.split(',') : [],
   set: (newValue) => {
-    editableConfig.value.assignedRoles = newValue.join(',');
+    editableConfig.value.assignedRoles = newValue.join(',')
   },
-});
+})
 
 // --- Computed Properties for UI ---
 const modelSelectPlaceholder = computed(() => {
-  if (!editableConfig.value.provider) return '请先选择供应商';
-  if (!editableConfig.value.apiKey) return '请填写API Key';
-  return '请点击右侧按钮获取';
-});
+  if (!editableConfig.value.provider) return '请先选择供应商'
+  if (!editableConfig.value.apiKey) return '请填写API Key'
+  return '请点击右侧按钮获取'
+})
 
 const testButtonText = computed(() => {
-  if (isTesting.value) return '测试中...';
-  if (fetchedModels.value.length > 0) return '重新获取';
-  return '测试 & 获取模型';
-});
+  if (isTesting.value) return '测试中...'
+  if (fetchedModels.value.length > 0) return '重新获取'
+  return '测试 & 获取模型'
+})
 
 // --- Methods ---
 
@@ -280,81 +280,81 @@ function clearErrors() {
     apiKey: '',
     baseUrl: '',
     modelId: '',
-  };
+  }
 }
 
 // Clear connection status
 function clearConnectionStatus() {
-  connectionStatus.value = null;
+  connectionStatus.value = null
 }
 
 // Validate form fields
 function validateFields() {
-  clearErrors();
-  let isValid = true;
+  clearErrors()
+  let isValid = true
 
   if (!editableConfig.value.provider) {
-    errors.value.provider = '请选择一个AI供应商';
-    isValid = false;
+    errors.value.provider = '请选择一个AI供应商'
+    isValid = false
   }
 
   if (!editableConfig.value.apiKey) {
-    errors.value.apiKey = '请输入API密钥';
-    isValid = false;
+    errors.value.apiKey = '请输入API密钥'
+    isValid = false
   }
 
   if (!editableConfig.value.modelId) {
-    errors.value.modelId = '请选择一个模型';
-    isValid = false;
+    errors.value.modelId = '请选择一个模型'
+    isValid = false
   }
 
-  return isValid;
+  return isValid
 }
 
 function onProviderChange() {
-  clearErrors();
-  clearConnectionStatus();
+  clearErrors()
+  clearConnectionStatus()
 
-  const allProviders = [...providers.china, ...providers.international, ...providers.local];
-  const selectedProvider = allProviders.find((p) => p.id === editableConfig.value.provider);
+  const allProviders = [...providers.china, ...providers.international, ...providers.local]
+  const selectedProvider = allProviders.find((p) => p.id === editableConfig.value.provider)
   if (selectedProvider) {
-    editableConfig.value.baseUrl = selectedProvider.baseUrl;
+    editableConfig.value.baseUrl = selectedProvider.baseUrl
   }
 
   // Reset model selection when provider changes
-  fetchedModels.value = [];
-  editableConfig.value.modelId = '';
+  fetchedModels.value = []
+  editableConfig.value.modelId = ''
 
   // Update step indicator
   if (editableConfig.value.provider && editableConfig.value.apiKey) {
     // Trigger model fetching if we have both provider and API key
     if (canTestConnection.value) {
-      handleTestConnection();
+      handleTestConnection()
     }
   }
 }
 
 async function handleTestConnection() {
   if (!canTestConnection.value) {
-    return showToast('请先选择供应商并输入API密钥。', 'warning');
+    return showToast('请先选择供应商并输入API密钥。', 'warning')
   }
 
-  clearConnectionStatus();
-  isTesting.value = true;
-  fetchedModels.value = [];
+  clearConnectionStatus()
+  isTesting.value = true
+  fetchedModels.value = []
 
   // Clear model error since we're testing
-  errors.value.modelId = '';
+  errors.value.modelId = ''
 
   try {
     const payload = {
       provider: editableConfig.value.provider,
       apiKey: editableConfig.value.apiKey,
       baseUrl: editableConfig.value.baseUrl || null,
-    };
+    }
 
-    const response = await apiService.settings.testConnection(payload);
-    fetchedModels.value = response.models || [];
+    const response = await apiService.settings.testConnection(payload)
+    fetchedModels.value = response.models || []
 
     if (response.models && response.models.length > 0) {
       // Auto-select first model if none selected
@@ -362,7 +362,7 @@ async function handleTestConnection() {
         !editableConfig.value.modelId ||
         !response.models.includes(editableConfig.value.modelId)
       ) {
-        editableConfig.value.modelId = response.models[0];
+        editableConfig.value.modelId = response.models[0]
       }
 
       connectionStatus.value = {
@@ -370,115 +370,115 @@ async function handleTestConnection() {
         title: '连接成功',
         message: response.message || `成功获取 ${response.models.length} 个可用模型`,
         details: null,
-      };
+      }
 
-      showToast(response.message || `成功获取 ${response.models.length} 个模型！`, 'success');
+      showToast(response.message || `成功获取 ${response.models.length} 个模型！`, 'success')
     } else {
       connectionStatus.value = {
         type: 'warning',
         title: '连接成功但无模型',
         message: '连接成功，但未找到可用模型',
         details: '请检查您的API密钥权限或联系供应商支持',
-      };
-      showToast('连接成功，但未找到可用模型。', 'warning');
+      }
+      showToast('连接成功，但未找到可用模型。', 'warning')
     }
   } catch (error) {
-    console.error('Connection test failed:', error);
+    console.error('Connection test failed:', error)
 
     const errorInfo = {
       type: 'error',
       title: '连接失败',
       message: '未知错误',
       details: null,
-    };
+    }
 
     if (error.response) {
       // Backend returned an error with details
-      const errorData = error.response.data;
+      const errorData = error.response.data
       if (errorData.message) {
-        errorInfo.message = errorData.message;
-        errorInfo.details = errorData.details || null;
+        errorInfo.message = errorData.message
+        errorInfo.details = errorData.details || null
 
         // Set specific field errors based on error type
         if (errorData.message.includes('供应商') || errorData.message.includes('provider')) {
-          errors.value.provider = errorInfo.message;
+          errors.value.provider = errorInfo.message
         } else if (errorData.message.includes('API密钥') || errorData.message.includes('apiKey')) {
-          errors.value.apiKey = errorInfo.message;
+          errors.value.apiKey = errorInfo.message
         } else if (
           errorData.message.includes('Base URL') ||
           errorData.message.includes('baseUrl')
         ) {
-          errors.value.baseUrl = errorInfo.message;
+          errors.value.baseUrl = errorInfo.message
         }
       }
     } else if (error.message) {
-      errorInfo.message = error.message;
-      errorInfo.details = '请检查网络连接或稍后重试';
+      errorInfo.message = error.message
+      errorInfo.details = '请检查网络连接或稍后重试'
     }
 
-    connectionStatus.value = errorInfo;
-    showToast(`连接测试失败: ${errorInfo.message}`, 'error');
+    connectionStatus.value = errorInfo
+    showToast(`连接测试失败: ${errorInfo.message}`, 'error')
   } finally {
-    isTesting.value = false;
+    isTesting.value = false
   }
 }
 
 function handleSave() {
   // Validate all fields before saving
   if (!validateFields()) {
-    showToast('请填写所有必需字段并解决错误。', 'error');
-    return;
+    showToast('请填写所有必需字段并解决错误。', 'error')
+    return
   }
 
-  const dataToSave = { ...editableConfig.value };
+  const dataToSave = { ...editableConfig.value }
 
   if (props.isGlobal) {
-    dataToSave.assignedRoles = ALL_AI_ROLES.join(',');
+    dataToSave.assignedRoles = ALL_AI_ROLES.join(',')
   }
 
   try {
     if (isNew.value) {
-      const { isNew: _isNew, id: _id, ...creationData } = dataToSave;
-      settingsStore.createAiConfiguration(creationData);
-      showToast('AI配置创建成功！', 'success');
+      const { isNew: _isNew, id: _id, ...creationData } = dataToSave
+      settingsStore.createAiConfiguration(creationData)
+      showToast('AI配置创建成功！', 'success')
     } else {
-      settingsStore.updateAiConfiguration(props.config.id, dataToSave);
-      showToast('AI配置更新成功！', 'success');
+      settingsStore.updateAiConfiguration(props.config.id, dataToSave)
+      showToast('AI配置更新成功！', 'success')
     }
 
     // Clear any connection status after successful save
-    clearConnectionStatus();
+    clearConnectionStatus()
   } catch (error) {
-    showToast('保存配置失败，请重试。', 'error');
-    console.error('Save configuration failed:', error);
+    showToast('保存配置失败，请重试。', 'error')
+    console.error('Save configuration failed:', error)
   }
 }
 
 function handleDelete() {
   if (confirm(`确定要删除 "${props.config.provider}" 这个AI配置吗？`)) {
-    settingsStore.deleteAiConfiguration(props.config.id);
+    settingsStore.deleteAiConfiguration(props.config.id)
   }
 }
 
 function resetChanges() {
-  editableConfig.value = JSON.parse(JSON.stringify(props.config));
+  editableConfig.value = JSON.parse(JSON.stringify(props.config))
   // Also reset fetched models if not a new card
   if (!isNew.value) {
-    fetchedModels.value = [];
+    fetchedModels.value = []
   }
 }
 
 function handleCancelNew() {
-  settingsStore.removeNewConfigCard(props.config.id);
+  settingsStore.removeNewConfigCard(props.config.id)
 }
 
 watch(
   () => props.config,
   (newVal) => {
-    editableConfig.value = JSON.parse(JSON.stringify(newVal));
+    editableConfig.value = JSON.parse(JSON.stringify(newVal))
   },
-  { deep: true, immediate: true },
-);
+  { deep: true, immediate: true }
+)
 </script>
 
 <style scoped>

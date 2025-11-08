@@ -20,16 +20,16 @@
 </template>
 
 <script setup>
-import { useToastStore } from '@/stores/toast.store';
+import { useToastStore } from '@/stores/toast.store'
 
-const toastStore = useToastStore();
+const toastStore = useToastStore()
 
 /**
  * 移除指定的Toast
  * @param {number} id - Toast ID
  */
 function removeToast(id) {
-  toastStore.removeToast(id);
+  toastStore.removeToast(id)
 }
 
 /**
@@ -40,12 +40,12 @@ function removeToast(id) {
 function getToastIcon(type) {
   switch (type) {
     case 'success':
-      return '✓';
+      return '✓'
     case 'error':
-      return '✕';
+      return '✕'
     case 'info':
     default:
-      return 'ℹ';
+      return 'ℹ'
   }
 }
 </script>

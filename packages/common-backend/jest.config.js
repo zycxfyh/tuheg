@@ -1,5 +1,5 @@
 // Jest configuration for common-backend package
-const baseConfig = require('../../shared/jest.config.js');
+const baseConfig = require('../../shared/jest.config.js')
 
 module.exports = {
   ...baseConfig,
@@ -32,4 +32,4 @@ module.exports = {
       statements: 80,
     },
   },
-};
+}

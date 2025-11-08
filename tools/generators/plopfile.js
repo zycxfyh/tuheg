@@ -12,12 +12,12 @@ export default function (plop) {
         message: 'Agent 名称（如: planner, critic）:',
         validate: (value) => {
           if (!value) {
-            return 'Agent 名称不能为空';
+            return 'Agent 名称不能为空'
           }
           if (!/^[a-z][a-z0-9-]*$/.test(value)) {
-            return 'Agent 名称必须是小写字母、数字和连字符';
+            return 'Agent 名称必须是小写字母、数字和连字符'
           }
-          return true;
+          return true
         },
       },
       {
@@ -52,7 +52,7 @@ export default function (plop) {
         templateFile: 'templates/agent-module.hbs',
       },
     ],
-  });
+  })
 
   // 生成器：创建新的 API Controller
   plop.setGenerator('controller', {
@@ -86,7 +86,7 @@ export default function (plop) {
         templateFile: 'templates/module.hbs',
       },
     ],
-  });
+  })
 
   // 生成器：创建新的 Vue 组件
   plop.setGenerator('component', {
@@ -112,5 +112,5 @@ export default function (plop) {
         skipIfExists: true,
       },
     ],
-  });
+  })
 }

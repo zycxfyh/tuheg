@@ -1,11 +1,11 @@
 // 文件路径: apps/frontend/playwright.config.ts (已修正并转为TS)
 
-import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
+import { defineConfig, devices } from '@playwright/test'
+import path from 'path'
 
 // pnpm --filter <package_name> dev
-const PORT = process.env.PORT || 5173;
-const baseURL = `http://localhost:${PORT}`;
+const PORT = process.env.PORT || 5173
+const baseURL = `http://localhost:${PORT}`
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -43,4 +43,4 @@ export default defineConfig({
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
   },
-});
+})

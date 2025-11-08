@@ -7,9 +7,7 @@
           <i class="icon-plug"></i>
           插件市场
         </h1>
-        <p class="marketplace-subtitle">
-          发现和安装强大的 VCPToolBox 插件，扩展你的创作能力
-        </p>
+        <p class="marketplace-subtitle">发现和安装强大的 VCPToolBox 插件，扩展你的创作能力</p>
 
         <!-- 搜索栏 -->
         <div class="search-section">
@@ -20,7 +18,7 @@
               type="text"
               placeholder="搜索插件、标签或作者..."
               class="search-input"
-            >
+            />
             <button class="search-button">
               <i class="icon-search"></i>
             </button>
@@ -64,17 +62,13 @@
         <div class="filter-section">
           <h3 class="filter-title">分类</h3>
           <div class="filter-options">
-            <label
-              v-for="category in categories"
-              :key="category.id"
-              class="filter-option"
-            >
+            <label v-for="category in categories" :key="category.id" class="filter-option">
               <input
                 v-model="filters.category"
                 :value="category.id"
                 type="checkbox"
                 class="filter-checkbox"
-              >
+              />
               <span class="option-label">{{ category.displayName }}</span>
               <span class="option-count">({{ category.count }})</span>
             </label>
@@ -84,17 +78,13 @@
         <div class="filter-section">
           <h3 class="filter-title">标签</h3>
           <div class="filter-options">
-            <label
-              v-for="tag in popularTags"
-              :key="tag.id"
-              class="filter-option"
-            >
+            <label v-for="tag in popularTags" :key="tag.id" class="filter-option">
               <input
                 v-model="filters.tags"
                 :value="tag.name"
                 type="checkbox"
                 class="filter-checkbox"
-              >
+              />
               <span class="option-label">{{ tag.displayName }}</span>
               <span class="option-count">({{ tag.count }})</span>
             </label>
@@ -104,18 +94,14 @@
         <div class="filter-section">
           <h3 class="filter-title">评分</h3>
           <div class="rating-filter">
-            <label
-              v-for="rating in ratingOptions"
-              :key="rating.value"
-              class="rating-option"
-            >
+            <label v-for="rating in ratingOptions" :key="rating.value" class="rating-option">
               <input
                 v-model="filters.minRating"
                 :value="rating.value"
                 type="radio"
                 name="rating"
                 class="rating-radio"
-              >
+              />
               <span class="rating-stars">
                 <i
                   v-for="star in 5"
@@ -130,12 +116,8 @@
         </div>
 
         <div class="filter-actions">
-          <button @click="clearFilters" class="clear-filters-btn">
-            清除筛选
-          </button>
-          <button @click="applyFilters" class="apply-filters-btn">
-            应用筛选
-          </button>
+          <button @click="clearFilters" class="clear-filters-btn">清除筛选</button>
+          <button @click="applyFilters" class="apply-filters-btn">应用筛选</button>
         </div>
       </aside>
 
@@ -144,15 +126,9 @@
         <!-- 排序和视图选项 -->
         <div class="content-header">
           <div class="results-info">
-            <span v-if="searchResults.total > 0">
-              找到 {{ searchResults.total }} 个插件
-            </span>
-            <span v-else-if="loading">
-              搜索中...
-            </span>
-            <span v-else>
-              暂无结果
-            </span>
+            <span v-if="searchResults.total > 0"> 找到 {{ searchResults.total }} 个插件 </span>
+            <span v-else-if="loading"> 搜索中... </span>
+            <span v-else> 暂无结果 </span>
           </div>
 
           <div class="view-options">
@@ -210,9 +186,7 @@
           </div>
           <h3>未找到插件</h3>
           <p>尝试调整搜索关键词或筛选条件</p>
-          <button @click="clearFilters" class="retry-btn">
-            清除筛选
-          </button>
+          <button @click="clearFilters" class="retry-btn">清除筛选</button>
         </div>
 
         <!-- 分页 -->
@@ -285,14 +259,14 @@ const viewMode = ref('grid') // 'grid' | 'list'
 const searchResults = ref({
   plugins: [],
   total: 0,
-  hasMore: false
+  hasMore: false,
 })
 
 // 过滤器
 const filters = ref({
   category: [],
   tags: [],
-  minRating: null
+  minRating: null,
 })
 
 // 分类和标签数据
@@ -302,7 +276,7 @@ const ratingOptions = [
   { value: 4, label: '4星' },
   { value: 3, label: '3星' },
   { value: 2, label: '2星' },
-  { value: 1, label: '1星' }
+  { value: 1, label: '1星' },
 ]
 
 // 防抖搜索
@@ -337,17 +311,21 @@ onMounted(async () => {
 })
 
 // 监听过滤器变化
-watch(() => [filters.value, sortBy.value, sortOrder.value], () => {
-  currentPage.value = 1
-  performSearch()
-}, { deep: true })
+watch(
+  () => [filters.value, sortBy.value, sortOrder.value],
+  () => {
+    currentPage.value = 1
+    performSearch()
+  },
+  { deep: true }
+)
 
 // 方法
 async function loadInitialData() {
   try {
     const [categoriesData, tagsData] = await Promise.all([
       pluginMarketplaceApi.getCategories(),
-      pluginMarketplaceApi.getTags()
+      pluginMarketplaceApi.getTags(),
     ])
 
     categories.value = categoriesData
@@ -379,7 +357,7 @@ async function performSearch() {
       sortBy: sortBy.value,
       sortOrder: sortOrder.value,
       limit: pageSize.value,
-      offset: (currentPage.value - 1) * pageSize.value
+      offset: (currentPage.value - 1) * pageSize.value,
     }
 
     const results = await pluginMarketplaceApi.searchPlugins(params)
@@ -402,7 +380,7 @@ function clearFilters() {
   filters.value = {
     category: [],
     tags: [],
-    minRating: null
+    minRating: null,
   }
   searchQuery.value = ''
   currentPage.value = 1
@@ -802,8 +780,12 @@ function closeDetailsModal() {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 空状态 */

@@ -117,7 +117,7 @@ Creation Agent (世界创建层)
 
 ```typescript
 // 根据用户配置和任务角色选择最优AI模型
-const provider = await dynamicAiScheduler.getProviderForRole(user, AiRole.LOGIC);
+const provider = await dynamicAiScheduler.getProviderForRole(user, AiRole.LOGIC)
 ```
 
 **路由策略**：
@@ -145,7 +145,7 @@ const provider = await dynamicAiScheduler.getProviderForRole(user, AiRole.LOGIC)
 
 ```typescript
 // 创建AI提供商实例
-const provider = aiProviderFactory.createProvider(aiConfig);
+const provider = aiProviderFactory.createProvider(aiConfig)
 ```
 
 **支持的提供商类型**：
@@ -185,7 +185,7 @@ const provider = aiProviderFactory.createProvider(aiConfig);
 
 ```typescript
 // 当上下文超过阈值时，自动生成摘要
-const summary = await contextSummarizer.summarize(longContext);
+const summary = await contextSummarizer.summarize(longContext)
 ```
 
 **摘要策略**：
@@ -224,10 +224,13 @@ const summary = await contextSummarizer.summarize(longContext);
 
 ```typescript
 // 自动重试失败的AI调用
-const result = await retryStrategy.executeWithRetry(() => aiProvider.generate(prompt), {
-  maxRetries: 3,
-  backoff: 'exponential',
-});
+const result = await retryStrategy.executeWithRetry(
+  () => aiProvider.generate(prompt),
+  {
+    maxRetries: 3,
+    backoff: 'exponential',
+  }
+)
 ```
 
 **重试策略**：
@@ -246,7 +249,7 @@ const result = await retryStrategy.executeWithRetry(() => aiProvider.generate(pr
 
 ```typescript
 // 自动修复JSON格式错误
-const cleaned = jsonCleaner.clean(malformedJson);
+const cleaned = jsonCleaner.clean(malformedJson)
 ```
 
 **关键文件**：

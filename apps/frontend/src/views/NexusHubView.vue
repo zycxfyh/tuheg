@@ -36,51 +36,51 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth.store';
-import { useSettingsStore } from '@/stores/settings.store';
-import { apiService } from '@/services/api.service';
-import { useToast } from '@/composables/useToast';
-import SaveList from '@/components/nexus/SaveList.vue';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.store'
+import { useSettingsStore } from '@/stores/settings.store'
+import { apiService } from '@/services/api.service'
+import { useToast } from '@/composables/useToast'
+import SaveList from '@/components/nexus/SaveList.vue'
 
-const authStore = useAuthStore();
-const settingsStore = useSettingsStore();
-const router = useRouter();
-const { show: showToast } = useToast();
+const authStore = useAuthStore()
+const settingsStore = useSettingsStore()
+const router = useRouter()
+const { show: showToast } = useToast()
 
-const gameList = ref([]);
-const isLoading = ref(true);
+const gameList = ref([])
+const isLoading = ref(true)
 
 async function fetchGames() {
-  isLoading.value = true;
+  isLoading.value = true
   try {
-    gameList.value = await apiService.games.getAll();
+    gameList.value = await apiService.games.getAll()
   } catch (error) {
-    showToast(`读取档案失败: ${error.message}`, 'error');
+    showToast(`读取档案失败: ${error.message}`, 'error')
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
 }
 
 function loadGame(gameId) {
-  router.push(`/game/${gameId}`);
+  router.push(`/game/${gameId}`)
 }
 
 async function deleteGame(gameId) {
   if (!confirm(`确定要永久删除此化身档案吗？此操作无法撤销。`)) {
-    return;
+    return
   }
   try {
-    const response = await apiService.games.delete(gameId);
-    showToast(response.message, 'success');
-    await fetchGames();
+    const response = await apiService.games.delete(gameId)
+    showToast(response.message, 'success')
+    await fetchGames()
   } catch (error) {
-    showToast(`删除失败: ${error.message}`, 'error');
+    showToast(`删除失败: ${error.message}`, 'error')
   }
 }
 
-onMounted(fetchGames);
+onMounted(fetchGames)
 </script>
 
 <style scoped>

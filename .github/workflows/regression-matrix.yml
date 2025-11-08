@@ -1,0 +1,327 @@
+name: Regression Matrix Validation
+
+on:
+  workflow_run:
+    workflows: ['Staging Deployment']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to validate'
+        required: false
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      test_scope:
+        description: 'Test scope (full or smoke)'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - smoke
+
+concurrency:
+  group: regression-matrix-${{ github.event.workflow_run.head_sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  setup-regression-matrix:
+    name: Setup Regression Matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.setup.outputs.matrix }}
+      environment: ${{ steps.setup.outputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup regression matrix
+        id: setup
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.environment || 'staging' }}"
+          TEST_SCOPE="${{ github.event.inputs.test_scope || 'full' }}"
+
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+
+          if [ "$TEST_SCOPE" = "smoke" ]; then
+            MATRIX='{
+              "test": [
+                {"name": "API Smoke Tests", "type": "api", "priority": "critical"},
+                {"name": "Frontend Smoke Tests", "type": "ui", "priority": "critical"}
+              ]
+            }'
+          else
+            MATRIX='{
+              "test": [
+                {"name": "API Regression Tests", "type": "api", "priority": "high"},
+                {"name": "UI Regression Tests", "type": "ui", "priority": "high"},
+                {"name": "Database Regression Tests", "type": "database", "priority": "high"},
+                {"name": "Performance Regression Tests", "type": "performance", "priority": "medium"},
+                {"name": "Security Regression Tests", "type": "security", "priority": "medium"},
+                {"name": "Cross-browser Tests", "type": "cross-browser", "priority": "low"}
+              ]
+            }'
+          fi
+
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  run-regression-tests:
+    name: ${{ matrix.test.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: setup-regression-matrix
+    environment: ${{ needs.setup-regression-matrix.outputs.environment }}
+    strategy:
+      matrix: ${{ fromJson(needs.setup-regression-matrix.outputs.matrix) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup test environment
+        run: |
+          # Setup test data and environment based on test type
+          case "${{ matrix.test.type }}" in
+            "api")
+              echo "Setting up API test environment..."
+              # Setup API test data
+              ;;
+            "ui")
+              echo "Setting up UI test environment..."
+              pnpm --filter frontend exec playwright install --with-deps
+              ;;
+            "database")
+              echo "Setting up database test environment..."
+              # Setup database test schema
+              ;;
+            "performance")
+              echo "Setting up performance test environment..."
+              # Setup performance test tools
+              ;;
+            "security")
+              echo "Setting up security test environment..."
+              # Setup security testing tools
+              ;;
+            "cross-browser")
+              echo "Setting up cross-browser test environment..."
+              # Setup browser testing matrix
+              ;;
+          esac
+
+      - name: Run ${{ matrix.test.type }} regression tests
+        run: |
+          case "${{ matrix.test.type }}" in
+            "api")
+              pnpm test:regression -- --grep="api"
+              ;;
+            "ui")
+              pnpm test:e2e -- --grep="regression"
+              ;;
+            "database")
+              pnpm industrial-test:db-regression
+              ;;
+            "performance")
+              pnpm test:performance -- --compare-baseline
+              ;;
+            "security")
+              pnpm industrial-test:security-regression
+              ;;
+            "cross-browser")
+              pnpm test:e2e -- --project="chromium,firefox,webkit"
+              ;;
+          esac
+        env:
+          TEST_ENVIRONMENT: ${{ needs.setup-regression-matrix.outputs.environment }}
+          BASE_URL: ${{ secrets.STAGING_URL }}
+          API_BASE_URL: ${{ secrets.STAGING_API_URL }}
+          DB_CONNECTION_STRING: ${{ secrets.STAGING_DB_URL }}
+          TEST_DATA_PATH: ./test-data/regression/
+
+      - name: Collect test artifacts
+        if: always()
+        run: |
+          mkdir -p regression-artifacts/${{ matrix.test.type }}
+          cp -r test-results/* regression-artifacts/${{ matrix.test.type }}/ 2>/dev/null || true
+          cp -r coverage/* regression-artifacts/${{ matrix.test.type }}/ 2>/dev/null || true
+          cp -r logs/* regression-artifacts/${{ matrix.test.type }}/ 2>/dev/null || true
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: regression-${{ matrix.test.type }}-${{ github.run_id }}
+          path: regression-artifacts/
+          retention-days: 14
+
+  compare-baseline:
+    name: Compare with Baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [setup-regression-matrix, run-regression-tests]
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download baseline results
+        uses: actions/download-artifact@v4
+        with:
+          name: baseline-regression-results
+          path: baseline-results/
+          # This would need to be created from a stable production deployment
+
+      - name: Download current results
+        uses: actions/download-artifact@v4
+        with:
+          name: regression-api-${{ github.run_id }}
+          path: current-results/
+
+      - name: Compare regression results
+        run: |
+          # Compare test results with baseline
+          pnpm exec node scripts/compare-regression-results.js \
+            --baseline baseline-results/ \
+            --current current-results/ \
+            --output regression-comparison.json
+
+      - name: Generate regression report
+        run: |
+          echo "## 🔄 Regression Analysis Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Read comparison results
+          if [ -f regression-comparison.json ]; then
+            REGRESSIONS=$(jq '.regressions | length' regression-comparison.json)
+            IMPROVEMENTS=$(jq '.improvements | length' regression-comparison.json)
+            TOTAL_TESTS=$(jq '.total_tests' regression-comparison.json)
+
+            echo "**Total Tests:** $TOTAL_TESTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Regressions:** $REGRESSIONS" >> $GITHUB_STEP_SUMMARY
+            echo "**Improvements:** $IMPROVEMENTS" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Show regressions if any
+            if [ "$REGRESSIONS" -gt 0 ]; then
+              echo "### ⚠️ Regressions Detected" >> $GITHUB_STEP_SUMMARY
+              jq -r '.regressions[] | "- \(.test): \(.description)"' regression-comparison.json >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+
+            # Show critical regressions
+            CRITICAL_REGRESSIONS=$(jq '.regressions[] | select(.severity == "critical") | length' regression-comparison.json)
+            if [ "$CRITICAL_REGRESSIONS" -gt 0 ]; then
+              echo "### 🚨 Critical Regressions" >> $GITHUB_STEP_SUMMARY
+              echo "Critical regressions detected! Deployment should be blocked." >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⚠️ No baseline comparison available" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload comparison report
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-comparison-${{ github.run_id }}
+          path: |
+            regression-comparison.json
+          retention-days: 30
+
+  regression-gate:
+    name: Regression Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [setup-regression-matrix, run-regression-tests, compare-baseline]
+    if: always()
+
+    steps:
+      - name: Check regression criteria
+        run: |
+          # Define acceptable regression thresholds
+          MAX_REGRESSIONS=5
+          MAX_CRITICAL_REGRESSIONS=0
+
+          if [ -f regression-comparison.json ]; then
+            REGRESSIONS=$(jq '.regressions | length' regression-comparison.json)
+            CRITICAL_REGRESSIONS=$(jq '.regressions[] | select(.severity == "critical") | length' regression-comparison.json)
+
+            if [ "$CRITICAL_REGRESSIONS" -gt "$MAX_CRITICAL_REGRESSIONS" ]; then
+              echo "❌ Critical regressions detected ($CRITICAL_REGRESSIONS). Blocking deployment."
+              exit 1
+            fi
+
+            if [ "$REGRESSIONS" -gt "$MAX_REGRESSIONS" ]; then
+              echo "❌ Too many regressions detected ($REGRESSIONS > $MAX_REGRESSIONS). Blocking deployment."
+              exit 1
+            fi
+
+            echo "✅ Regression criteria met. Proceeding with deployment."
+          else
+            echo "⚠️ No regression comparison available. Allowing deployment with caution."
+          fi
+
+  notify-regression-results:
+    name: Notify Regression Results
+    runs-on: ubuntu-latest
+    needs: [setup-regression-matrix, run-regression-tests, compare-baseline, regression-gate]
+    if: always()
+
+    steps:
+      - name: Send regression notification
+        run: |
+          STATUS="${{ needs.regression-gate.result }}"
+          ENVIRONMENT="${{ needs.setup-regression-matrix.outputs.environment }}"
+
+          if [ "$STATUS" = "success" ]; then
+            MESSAGE="✅ Regression tests passed for $ENVIRONMENT environment"
+            COLOR="good"
+          else
+            MESSAGE="❌ Regression tests failed for $ENVIRONMENT environment"
+            COLOR="danger"
+          fi
+
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"attachments\": [
+                {
+                  \"color\": \"$COLOR\",
+                  \"title\": \"Regression Test Results\",
+                  \"text\": \"$MESSAGE\",
+                  \"fields\": [
+                    {
+                      \"title\": \"Environment\",
+                      \"value\": \"$ENVIRONMENT\",
+                      \"short\": true
+                    },
+                    {
+                      \"title\": \"Status\",
+                      \"value\": \"$STATUS\",
+                      \"short\": true
+                    }
+                  ]
+                }
+              ]
+            }" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}

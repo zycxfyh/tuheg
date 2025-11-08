@@ -7,9 +7,7 @@
           <i class="icon-users"></i>
           多Agent协作系统
         </h1>
-        <p class="collaboration-subtitle">
-          见证AI Agent间的智能协作，实现复杂任务的分布式解决
-        </p>
+        <p class="collaboration-subtitle">见证AI Agent间的智能协作，实现复杂任务的分布式解决</p>
 
         <div class="system-status">
           <div class="status-indicator" :class="systemHealth.status">
@@ -80,22 +78,13 @@
           <div class="canvas-header">
             <h2>协作网络</h2>
             <div class="canvas-controls">
-              <button
-                :class="{ active: viewMode === 'network' }"
-                @click="viewMode = 'network'"
-              >
+              <button :class="{ active: viewMode === 'network' }" @click="viewMode = 'network'">
                 网络视图
               </button>
-              <button
-                :class="{ active: viewMode === 'timeline' }"
-                @click="viewMode = 'timeline'"
-              >
+              <button :class="{ active: viewMode === 'timeline' }" @click="viewMode = 'timeline'">
                 时间线视图
               </button>
-              <button
-                :class="{ active: viewMode === 'tasks' }"
-                @click="viewMode = 'tasks'"
-              >
+              <button :class="{ active: viewMode === 'tasks' }" @click="viewMode = 'tasks'">
                 任务视图
               </button>
             </div>
@@ -161,9 +150,7 @@
             </div>
 
             <div class="timeline-axis">
-              <div class="time-marker" v-for="hour in 24" :key="hour">
-                {{ hour }}:00
-              </div>
+              <div class="time-marker" v-for="hour in 24" :key="hour">{{ hour }}:00</div>
             </div>
           </div>
 
@@ -185,7 +172,10 @@
                 <p class="task-description">{{ task.description }}</p>
 
                 <div class="task-meta">
-                  <div class="task-priority" :class="task.priority >= 8 ? 'high' : task.priority >= 4 ? 'medium' : 'low'">
+                  <div
+                    class="task-priority"
+                    :class="task.priority >= 8 ? 'high' : task.priority >= 4 ? 'medium' : 'low'"
+                  >
                     优先级: {{ task.priority }}
                   </div>
                   <div class="task-complexity">
@@ -202,10 +192,12 @@
                     <div class="progress-bar">
                       <div
                         class="progress-fill"
-                        :style="{ width: (task.agents[0].progress * 100) + '%' }"
+                        :style="{ width: task.agents[0].progress * 100 + '%' }"
                       ></div>
                     </div>
-                    <span class="progress-text">{{ Math.round(task.agents[0].progress * 100) }}%</span>
+                    <span class="progress-text"
+                      >{{ Math.round(task.agents[0].progress * 100) }}%</span
+                    >
                   </div>
                 </div>
               </div>
@@ -269,7 +261,11 @@
               <p class="collaboration-goal">{{ collaboration.goal }}</p>
 
               <div class="collaboration-participants">
-                <div class="participant" v-for="participant in collaboration.participants.slice(0, 3)" :key="participant.id">
+                <div
+                  class="participant"
+                  v-for="participant in collaboration.participants.slice(0, 3)"
+                  :key="participant.id"
+                >
                   <i :class="getAgentIcon(participant.type)"></i>
                   <span>{{ participant.displayName }}</span>
                 </div>
@@ -280,15 +276,24 @@
 
               <div class="collaboration-progress">
                 <div class="progress-stats">
-                  <span>{{ collaboration.tasks?.filter(t => t.status === 'COMPLETED').length || 0 }} / {{ collaboration.tasks?.length || 0 }} 任务</span>
+                  <span
+                    >{{
+                      collaboration.tasks?.filter((t) => t.status === 'COMPLETED').length || 0
+                    }}
+                    / {{ collaboration.tasks?.length || 0 }} 任务</span
+                  >
                 </div>
                 <div class="progress-bar">
                   <div
                     class="progress-fill"
                     :style="{
-                      width: collaboration.tasks?.length > 0
-                        ? ((collaboration.tasks.filter(t => t.status === 'COMPLETED').length / collaboration.tasks.length) * 100) + '%'
-                        : '0%'
+                      width:
+                        collaboration.tasks?.length > 0
+                          ? (collaboration.tasks.filter((t) => t.status === 'COMPLETED').length /
+                              collaboration.tasks.length) *
+                              100 +
+                            '%'
+                          : '0%',
                     }"
                   ></div>
                 </div>
@@ -394,21 +399,15 @@ onUnmounted(() => {
 // 方法
 async function loadInitialData() {
   try {
-    const [
-      agentsData,
-      collaborationsData,
-      tasksData,
-      messagesData,
-      healthData,
-      metricsData
-    ] = await Promise.all([
-      agentCollaborationApi.getAgents(),
-      agentCollaborationApi.getActiveCollaborations(),
-      agentCollaborationApi.getTasks({ limit: 20 }),
-      loadRecentMessages(),
-      agentCollaborationApi.getSystemHealth(),
-      loadSystemMetrics()
-    ])
+    const [agentsData, collaborationsData, tasksData, messagesData, healthData, metricsData] =
+      await Promise.all([
+        agentCollaborationApi.getAgents(),
+        agentCollaborationApi.getActiveCollaborations(),
+        agentCollaborationApi.getTasks({ limit: 20 }),
+        loadRecentMessages(),
+        agentCollaborationApi.getSystemHealth(),
+        loadSystemMetrics(),
+      ])
 
     agents.value = agentsData
     activeCollaborations.value = collaborationsData
@@ -420,8 +419,8 @@ async function loadInitialData() {
     // 计算Agent统计
     agentStats.value = {
       total: agentsData.length,
-      online: agentsData.filter(a => a.status === 'ONLINE').length,
-      busy: agentsData.filter(a => a.status === 'BUSY').length
+      online: agentsData.filter((a) => a.status === 'ONLINE').length,
+      busy: agentsData.filter((a) => a.status === 'BUSY').length,
     }
 
     // 初始化节点位置
@@ -440,7 +439,7 @@ async function loadRecentMessages() {
       receiver: null,
       message: '开始处理创作任务...',
       messageType: 'STATUS',
-      createdAt: new Date(Date.now() - 300000)
+      createdAt: new Date(Date.now() - 300000),
     },
     {
       id: '2',
@@ -448,8 +447,8 @@ async function loadRecentMessages() {
       receiver: { displayName: '创作Agent' },
       message: '分析任务需求中...',
       messageType: 'COMMAND',
-      createdAt: new Date(Date.now() - 240000)
-    }
+      createdAt: new Date(Date.now() - 240000),
+    },
   ]
 }
 
@@ -458,7 +457,7 @@ async function loadSystemMetrics() {
     totalTasks: 45,
     completedTasks: 32,
     totalMessages: 128,
-    successRate: 87
+    successRate: 87,
   }
 }
 
@@ -471,7 +470,7 @@ function initializeNodePositions() {
 
     nodePositions.value.set(agent.id, {
       x: centerX + Math.cos(angle) * radius,
-      y: centerY + Math.sin(angle) * radius
+      y: centerY + Math.sin(angle) * radius,
     })
   })
 }
@@ -496,7 +495,7 @@ function getAgentIcon(type) {
     LOGIC: 'icon-brain',
     NARRATIVE: 'icon-book',
     CRITIC: 'icon-search',
-    SPECIALIST: 'icon-star'
+    SPECIALIST: 'icon-star',
   }
   return icons[type] || 'icon-robot'
 }
@@ -508,7 +507,7 @@ function getAgentTypeName(type) {
     LOGIC: '逻辑',
     NARRATIVE: '叙事',
     CRITIC: '批评',
-    SPECIALIST: '专家'
+    SPECIALIST: '专家',
   }
   return names[type] || '未知'
 }
@@ -518,7 +517,7 @@ function getAgentStatusName(status) {
     OFFLINE: '离线',
     ONLINE: '在线',
     BUSY: '忙碌',
-    MAINTENANCE: '维护'
+    MAINTENANCE: '维护',
   }
   return names[status] || '未知'
 }
@@ -530,7 +529,7 @@ function getTaskStatusName(status) {
     IN_PROGRESS: '进行中',
     COMPLETED: '已完成',
     FAILED: '失败',
-    CANCELLED: '已取消'
+    CANCELLED: '已取消',
   }
   return names[status] || '未知'
 }
@@ -540,7 +539,7 @@ function getComplexityName(complexity) {
     LOW: '低',
     MEDIUM: '中',
     HIGH: '高',
-    CRITICAL: '关键'
+    CRITICAL: '关键',
   }
   return names[complexity] || '未知'
 }
@@ -550,7 +549,7 @@ function getCollaborationStatusName(status) {
     ACTIVE: '活跃',
     COMPLETED: '完成',
     SUSPENDED: '暂停',
-    TERMINATED: '终止'
+    TERMINATED: '终止',
   }
   return names[status] || '未知'
 }
@@ -561,7 +560,7 @@ function getMessageIcon(type) {
     COMMAND: 'icon-terminal',
     RESULT: 'icon-check',
     ERROR: 'icon-alert',
-    STATUS: 'icon-info'
+    STATUS: 'icon-info',
   }
   return icons[type] || 'icon-message'
 }
@@ -571,7 +570,7 @@ function formatTime(timestamp) {
   return date.toLocaleTimeString('zh-CN', {
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
   })
 }
 
@@ -581,7 +580,7 @@ function getEventPosition(timestamp) {
   const hoursAgo = (now - eventTime) / (1000 * 60 * 60)
 
   // 24小时内的事件，按时间比例定位
-  return Math.max(0, Math.min(100, (24 - hoursAgo) / 24 * 100))
+  return Math.max(0, Math.min(100, ((24 - hoursAgo) / 24) * 100))
 }
 
 function createDemoCollaboration() {
@@ -595,16 +594,16 @@ async function startDemoCollaboration(config) {
       participantIds: config.participantIds,
       config: {
         goal: config.goal,
-        strategy: 'round-robin'
-      }
+        strategy: 'round-robin',
+      },
     })
 
     // 创建演示任务
     const tasks = await Promise.all(
-      config.tasks.map(taskData =>
+      config.tasks.map((taskData) =>
         agentCollaborationApi.createTask({
           ...taskData,
-          gameId: null // 可以关联到当前游戏
+          gameId: null, // 可以关联到当前游戏
         })
       )
     )
@@ -640,7 +639,7 @@ async function createRandomTask() {
       priority: Math.floor(Math.random() * 10) + 1,
       complexity: complexities[Math.floor(Math.random() * complexities.length)],
       input: { demo: true },
-      requirements: { estimatedDuration: Math.floor(Math.random() * 60) + 15 }
+      requirements: { estimatedDuration: Math.floor(Math.random() * 60) + 15 },
     }
 
     await agentCollaborationApi.createTask(randomTask)
@@ -670,7 +669,7 @@ function startRealTimeUpdates() {
     try {
       const [tasksData, messagesData] = await Promise.all([
         agentCollaborationApi.getTasks({ limit: 10 }),
-        loadRecentMessages()
+        loadRecentMessages(),
       ])
 
       recentTasks.value = tasksData.tasks
@@ -740,7 +739,8 @@ function stopRealTimeUpdates() {
   margin-top: 2rem;
 }
 
-.status-indicator, .agent-count {
+.status-indicator,
+.agent-count {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -769,14 +769,16 @@ function stopRealTimeUpdates() {
   gap: 2rem;
 }
 
-.agents-panel, .quick-actions {
+.agents-panel,
+.quick-actions {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.agents-panel h3, .quick-actions h3 {
+.agents-panel h3,
+.quick-actions h3 {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 1rem;
@@ -1104,7 +1106,7 @@ function stopRealTimeUpdates() {
 .connection-line {
   stroke: var(--primary-color);
   stroke-width: 2;
-  stroke-dasharray: 5,5;
+  stroke-dasharray: 5, 5;
   animation: dash 2s linear infinite;
 }
 
@@ -1503,14 +1505,16 @@ function stopRealTimeUpdates() {
   gap: 2rem;
 }
 
-.active-collaborations, .system-metrics {
+.active-collaborations,
+.system-metrics {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.active-collaborations h3, .system-metrics h3 {
+.active-collaborations h3,
+.system-metrics h3 {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 1rem;
@@ -1699,7 +1703,8 @@ function stopRealTimeUpdates() {
     flex-direction: column;
   }
 
-  .collaboration-sidebar, .collaboration-details {
+  .collaboration-sidebar,
+  .collaboration-details {
     width: 100%;
   }
 

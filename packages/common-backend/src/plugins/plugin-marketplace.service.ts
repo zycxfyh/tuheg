@@ -1,12 +1,17 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
 import {
   PluginMarketplace,
   PluginVersion,
   PluginCategory,
   PluginStatus,
-  Prisma
-} from '@prisma/client';
+  Prisma,
+} from '@prisma/client'
 import {
   CreatePluginDto,
   UpdatePluginDto,
@@ -14,8 +19,8 @@ import {
   SearchPluginsDto,
   CreatePluginCategoryDto,
   UpdatePluginCategoryDto,
-  CreatePluginTagDto
-} from '../dto/plugin-marketplace.dto';
+  CreatePluginTagDto,
+} from '../dto/plugin-marketplace.dto'
 
 @Injectable()
 export class PluginMarketplaceService {
@@ -29,27 +34,27 @@ export class PluginMarketplaceService {
   async createPlugin(authorId: string, data: CreatePluginDto): Promise<PluginMarketplace> {
     // 检查分类是否存在
     const category = await this.prisma.pluginCategory.findUnique({
-      where: { id: data.categoryId }
-    });
+      where: { id: data.categoryId },
+    })
     if (!category) {
-      throw new BadRequestException('Plugin category not found');
+      throw new BadRequestException('Plugin category not found')
     }
 
     // 检查插件名称是否已被使用
     const existingPlugin = await this.prisma.pluginMarketplace.findUnique({
-      where: { name: data.name }
-    });
+      where: { name: data.name },
+    })
     if (existingPlugin) {
-      throw new BadRequestException('Plugin name already exists');
+      throw new BadRequestException('Plugin name already exists')
     }
 
     // 检查标签是否存在
     if (data.tags && data.tags.length > 0) {
       const tagCount = await this.prisma.pluginTag.count({
-        where: { id: { in: data.tags } }
-      });
+        where: { id: { in: data.tags } },
+      })
       if (tagCount !== data.tags.length) {
-        throw new BadRequestException('One or more tags not found');
+        throw new BadRequestException('One or more tags not found')
       }
     }
 
@@ -64,9 +69,11 @@ export class PluginMarketplaceService {
         homepage: data.homepage,
         repository: data.repository,
         license: data.license,
-        tags: data.tags ? {
-          connect: data.tags.map(id => ({ id }))
-        } : undefined,
+        tags: data.tags
+          ? {
+              connect: data.tags.map((id) => ({ id })),
+            }
+          : undefined,
         versions: {
           create: {
             version: data.version.version,
@@ -77,20 +84,22 @@ export class PluginMarketplaceService {
             minVersion: data.version.minVersion,
             maxVersion: data.version.maxVersion,
             isStable: data.version.isStable,
-          }
+          },
         },
-        dependencies: data.dependencies ? {
-          create: data.dependencies.map(dep => ({
-            dependencyId: dep.pluginId,
-            minVersion: dep.minVersion,
-            maxVersion: dep.maxVersion,
-            isRequired: dep.isRequired,
-          }))
-        } : undefined,
+        dependencies: data.dependencies
+          ? {
+              create: data.dependencies.map((dep) => ({
+                dependencyId: dep.pluginId,
+                minVersion: dep.minVersion,
+                maxVersion: dep.maxVersion,
+                isRequired: dep.isRequired,
+              })),
+            }
+          : undefined,
       },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: true,
         tags: true,
@@ -98,14 +107,14 @@ export class PluginMarketplaceService {
         dependencies: {
           include: {
             dependency: {
-              select: { id: true, name: true, displayName: true }
-            }
-          }
-        }
-      }
-    });
+              select: { id: true, name: true, displayName: true },
+            },
+          },
+        },
+      },
+    })
 
-    return plugin;
+    return plugin
   }
 
   /**
@@ -116,7 +125,7 @@ export class PluginMarketplaceService {
       where: { id },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: true,
         tags: true,
@@ -124,70 +133,74 @@ export class PluginMarketplaceService {
         reviews: {
           include: {
             user: {
-              select: { id: true, email: true }
-            }
+              select: { id: true, email: true },
+            },
           },
           orderBy: { createdAt: 'desc' },
-          take: 10
+          take: 10,
         },
         dependencies: {
           include: {
             dependency: {
-              select: { id: true, name: true, displayName: true }
-            }
-          }
+              select: { id: true, name: true, displayName: true },
+            },
+          },
         },
         _count: {
           select: {
             downloads: true,
-            reviews: true
-          }
-        }
-      }
-    });
+            reviews: true,
+          },
+        },
+      },
+    })
 
     if (!plugin) {
-      throw new NotFoundException('Plugin not found');
+      throw new NotFoundException('Plugin not found')
     }
 
-    return plugin;
+    return plugin
   }
 
   /**
    * 更新插件信息
    */
-  async updatePlugin(id: string, authorId: string, data: UpdatePluginDto): Promise<PluginMarketplace> {
+  async updatePlugin(
+    id: string,
+    authorId: string,
+    data: UpdatePluginDto
+  ): Promise<PluginMarketplace> {
     // 检查插件是否存在且用户有权限
     const plugin = await this.prisma.pluginMarketplace.findUnique({
       where: { id },
-      select: { authorId: true }
-    });
+      select: { authorId: true },
+    })
 
     if (!plugin) {
-      throw new NotFoundException('Plugin not found');
+      throw new NotFoundException('Plugin not found')
     }
 
     if (plugin.authorId !== authorId) {
-      throw new ForbiddenException('You do not have permission to update this plugin');
+      throw new ForbiddenException('You do not have permission to update this plugin')
     }
 
     // 检查分类是否存在
     if (data.categoryId) {
       const category = await this.prisma.pluginCategory.findUnique({
-        where: { id: data.categoryId }
-      });
+        where: { id: data.categoryId },
+      })
       if (!category) {
-        throw new BadRequestException('Plugin category not found');
+        throw new BadRequestException('Plugin category not found')
       }
     }
 
     // 检查标签是否存在
     if (data.tags && data.tags.length > 0) {
       const tagCount = await this.prisma.pluginTag.count({
-        where: { id: { in: data.tags } }
-      });
+        where: { id: { in: data.tags } },
+      })
       if (tagCount !== data.tags.length) {
-        throw new BadRequestException('One or more tags not found');
+        throw new BadRequestException('One or more tags not found')
       }
     }
 
@@ -202,33 +215,37 @@ export class PluginMarketplaceService {
         repository: data.repository,
         license: data.license,
         updatedAt: new Date(),
-        tags: data.tags ? {
-          set: data.tags.map(id => ({ id }))
-        } : undefined,
-        dependencies: data.dependencies ? {
-          deleteMany: {}, // 删除所有现有依赖
-          create: data.dependencies.map(dep => ({
-            dependencyId: dep.pluginId,
-            minVersion: dep.minVersion,
-            maxVersion: dep.maxVersion,
-            isRequired: dep.isRequired,
-          }))
-        } : undefined,
+        tags: data.tags
+          ? {
+              set: data.tags.map((id) => ({ id })),
+            }
+          : undefined,
+        dependencies: data.dependencies
+          ? {
+              deleteMany: {}, // 删除所有现有依赖
+              create: data.dependencies.map((dep) => ({
+                dependencyId: dep.pluginId,
+                minVersion: dep.minVersion,
+                maxVersion: dep.maxVersion,
+                isRequired: dep.isRequired,
+              })),
+            }
+          : undefined,
       },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: true,
         tags: true,
         versions: {
           orderBy: { createdAt: 'desc' },
-          take: 1
-        }
-      }
-    });
+          take: 1,
+        },
+      },
+    })
 
-    return updatedPlugin;
+    return updatedPlugin
   }
 
   /**
@@ -238,15 +255,15 @@ export class PluginMarketplaceService {
     // 检查插件是否存在且用户有权限
     const plugin = await this.prisma.pluginMarketplace.findUnique({
       where: { id },
-      select: { authorId: true, status: true }
-    });
+      select: { authorId: true, status: true },
+    })
 
     if (!plugin) {
-      throw new NotFoundException('Plugin not found');
+      throw new NotFoundException('Plugin not found')
     }
 
     if (plugin.authorId !== authorId) {
-      throw new ForbiddenException('You do not have permission to delete this plugin');
+      throw new ForbiddenException('You do not have permission to delete this plugin')
     }
 
     // 软删除：将状态设置为DEPRECATED
@@ -254,23 +271,27 @@ export class PluginMarketplaceService {
       where: { id },
       data: {
         status: PluginStatus.DEPRECATED,
-        updatedAt: new Date()
-      }
-    });
+        updatedAt: new Date(),
+      },
+    })
   }
 
   /**
    * 审核插件
    */
-  async reviewPlugin(id: string, reviewerId: string, data: ReviewPluginDto): Promise<PluginMarketplace> {
+  async reviewPlugin(
+    id: string,
+    reviewerId: string,
+    data: ReviewPluginDto
+  ): Promise<PluginMarketplace> {
     // 检查插件是否存在
     const plugin = await this.prisma.pluginMarketplace.findUnique({
       where: { id },
-      select: { status: true }
-    });
+      select: { status: true },
+    })
 
     if (!plugin) {
-      throw new NotFoundException('Plugin not found');
+      throw new NotFoundException('Plugin not found')
     }
 
     // 更新插件状态
@@ -279,34 +300,34 @@ export class PluginMarketplaceService {
       data: {
         status: data.status,
         isPublic: data.status === PluginStatus.APPROVED,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: true,
-        tags: true
-      }
-    });
+        tags: true,
+      },
+    })
 
     // TODO: 发送通知给插件作者
 
-    return updatedPlugin;
+    return updatedPlugin
   }
 
   /**
    * 搜索和过滤插件
    */
   async searchPlugins(params: SearchPluginsDto): Promise<{
-    plugins: PluginMarketplace[];
-    total: number;
-    hasMore: boolean;
+    plugins: PluginMarketplace[]
+    total: number
+    hasMore: boolean
   }> {
     const where: Prisma.PluginMarketplaceWhereInput = {
       status: params.status || PluginStatus.APPROVED,
       isPublic: true,
-    };
+    }
 
     // 搜索关键词
     if (params.q) {
@@ -314,60 +335,60 @@ export class PluginMarketplaceService {
         { name: { contains: params.q, mode: 'insensitive' } },
         { displayName: { contains: params.q, mode: 'insensitive' } },
         { description: { contains: params.q, mode: 'insensitive' } },
-      ];
+      ]
     }
 
     // 分类过滤
     if (params.category) {
-      where.categoryId = params.category;
+      where.categoryId = params.category
     }
 
     // 作者过滤
     if (params.author) {
-      where.authorId = params.author;
+      where.authorId = params.author
     }
 
     // 标签过滤
     if (params.tags && params.tags.length > 0) {
       where.tags = {
         some: {
-          name: { in: params.tags }
-        }
-      };
+          name: { in: params.tags },
+        },
+      }
     }
 
     // 精选过滤
     if (params.isFeatured !== undefined) {
-      where.isFeatured = params.isFeatured;
+      where.isFeatured = params.isFeatured
     }
 
     // 评分过滤
     if (params.minRating) {
       where.averageRating = {
-        gte: params.minRating
-      };
+        gte: params.minRating,
+      }
     }
 
     // 排序
-    const orderBy: Prisma.PluginMarketplaceOrderByWithRelationInput = {};
+    const orderBy: Prisma.PluginMarketplaceOrderByWithRelationInput = {}
     switch (params.sortBy) {
       case 'name':
-        orderBy.name = params.sortOrder;
-        break;
+        orderBy.name = params.sortOrder
+        break
       case 'downloads':
-        orderBy.totalDownloads = params.sortOrder;
-        break;
+        orderBy.totalDownloads = params.sortOrder
+        break
       case 'rating':
-        orderBy.averageRating = params.sortOrder;
-        break;
+        orderBy.averageRating = params.sortOrder
+        break
       case 'createdAt':
-        orderBy.createdAt = params.sortOrder;
-        break;
+        orderBy.createdAt = params.sortOrder
+        break
       case 'updatedAt':
-        orderBy.updatedAt = params.sortOrder;
-        break;
+        orderBy.updatedAt = params.sortOrder
+        break
       default:
-        orderBy.totalDownloads = 'desc';
+        orderBy.totalDownloads = 'desc'
     }
 
     // 查询插件
@@ -376,36 +397,36 @@ export class PluginMarketplaceService {
         where,
         include: {
           author: {
-            select: { id: true, email: true }
+            select: { id: true, email: true },
           },
           category: true,
           tags: true,
           versions: {
             orderBy: { createdAt: 'desc' },
-            take: 1
+            take: 1,
           },
           _count: {
             select: {
               downloads: true,
-              reviews: true
-            }
-          }
+              reviews: true,
+            },
+          },
         },
         orderBy,
         skip: params.offset,
         take: params.limit + 1, // 多取一条来判断是否有更多
       }),
-      this.prisma.pluginMarketplace.count({ where })
-    ]);
+      this.prisma.pluginMarketplace.count({ where }),
+    ])
 
-    const hasMore = plugins.length > params.limit;
-    const resultPlugins = hasMore ? plugins.slice(0, -1) : plugins;
+    const hasMore = plugins.length > params.limit
+    const resultPlugins = hasMore ? plugins.slice(0, -1) : plugins
 
     return {
       plugins: resultPlugins,
       total,
-      hasMore
-    };
+      hasMore,
+    }
   }
 
   /**
@@ -413,11 +434,11 @@ export class PluginMarketplaceService {
    */
   async getUserPlugins(userId: string, status?: PluginStatus): Promise<PluginMarketplace[]> {
     const where: Prisma.PluginMarketplaceWhereInput = {
-      authorId: userId
-    };
+      authorId: userId,
+    }
 
     if (status) {
-      where.status = status;
+      where.status = status
     }
 
     return this.prisma.pluginMarketplace.findMany({
@@ -427,17 +448,17 @@ export class PluginMarketplaceService {
         tags: true,
         versions: {
           orderBy: { createdAt: 'desc' },
-          take: 1
+          take: 1,
         },
         _count: {
           select: {
             downloads: true,
-            reviews: true
-          }
-        }
+            reviews: true,
+          },
+        },
       },
-      orderBy: { updatedAt: 'desc' }
-    });
+      orderBy: { updatedAt: 'desc' },
+    })
   }
 
   // ==================== 插件分类管理 ====================
@@ -448,11 +469,11 @@ export class PluginMarketplaceService {
   async createCategory(data: CreatePluginCategoryDto): Promise<PluginCategory> {
     // 检查分类名称是否已被使用
     const existingCategory = await this.prisma.pluginCategory.findUnique({
-      where: { name: data.name }
-    });
+      where: { name: data.name },
+    })
 
     if (existingCategory) {
-      throw new BadRequestException('Category name already exists');
+      throw new BadRequestException('Category name already exists')
     }
 
     return this.prisma.pluginCategory.create({
@@ -463,8 +484,8 @@ export class PluginMarketplaceService {
         icon: data.icon,
         color: data.color,
         sortOrder: data.sortOrder,
-      }
-    });
+      },
+    })
   }
 
   /**
@@ -478,12 +499,12 @@ export class PluginMarketplaceService {
         _count: {
           select: {
             plugins: {
-              where: { status: PluginStatus.APPROVED, isPublic: true }
-            }
-          }
-        }
-      }
-    });
+              where: { status: PluginStatus.APPROVED, isPublic: true },
+            },
+          },
+        },
+      },
+    })
   }
 
   /**
@@ -499,8 +520,8 @@ export class PluginMarketplaceService {
         color: data.color,
         sortOrder: data.sortOrder,
         isActive: data.isActive,
-      }
-    });
+      },
+    })
   }
 
   /**
@@ -509,16 +530,16 @@ export class PluginMarketplaceService {
   async deleteCategory(id: string): Promise<void> {
     // 检查是否有插件使用此分类
     const pluginCount = await this.prisma.pluginMarketplace.count({
-      where: { categoryId: id }
-    });
+      where: { categoryId: id },
+    })
 
     if (pluginCount > 0) {
-      throw new BadRequestException('Cannot delete category that has plugins');
+      throw new BadRequestException('Cannot delete category that has plugins')
     }
 
     await this.prisma.pluginCategory.delete({
-      where: { id }
-    });
+      where: { id },
+    })
   }
 
   // ==================== 插件标签管理 ====================
@@ -529,11 +550,11 @@ export class PluginMarketplaceService {
   async createTag(data: CreatePluginTagDto) {
     // 检查标签名称是否已被使用
     const existingTag = await this.prisma.pluginTag.findUnique({
-      where: { name: data.name }
-    });
+      where: { name: data.name },
+    })
 
     if (existingTag) {
-      throw new BadRequestException('Tag name already exists');
+      throw new BadRequestException('Tag name already exists')
     }
 
     return this.prisma.pluginTag.create({
@@ -541,8 +562,8 @@ export class PluginMarketplaceService {
         name: data.name,
         displayName: data.displayName,
         color: data.color,
-      }
-    });
+      },
+    })
   }
 
   /**
@@ -551,8 +572,8 @@ export class PluginMarketplaceService {
   async getTags(activeOnly = true) {
     return this.prisma.pluginTag.findMany({
       where: activeOnly ? { isActive: true } : {},
-      orderBy: { usageCount: 'desc' }
-    });
+      orderBy: { usageCount: 'desc' },
+    })
   }
 
   /**
@@ -563,17 +584,17 @@ export class PluginMarketplaceService {
     const pluginCount = await this.prisma.pluginMarketplace.count({
       where: {
         tags: {
-          some: { id }
-        }
-      }
-    });
+          some: { id },
+        },
+      },
+    })
 
     if (pluginCount > 0) {
-      throw new BadRequestException('Cannot delete tag that is being used by plugins');
+      throw new BadRequestException('Cannot delete tag that is being used by plugins')
     }
 
     await this.prisma.pluginTag.delete({
-      where: { id }
-    });
+      where: { id },
+    })
   }
 }

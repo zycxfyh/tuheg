@@ -1,0 +1,148 @@
+name: 🤖 Auto Merge Dependabot
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  status: {}
+
+# 最小权限原则
+permissions:
+  contents: read
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  dependabot-auto-merge:
+    name: '🤖 Dependabot 自动合并'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # 只对 Dependabot PR 执行
+    if: >
+      github.event_name == 'pull_request' &&
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.draft == false
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # 等待所有必需检查完成
+      - name: ⏳ 等待 CI 检查完成
+        id: wait-for-ci
+        uses: fountainhead/action-wait-for-check@v1.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: '🚀 CI/CD Pipeline'
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # 检查是否有未解决的冲突
+      - name: 🔍 检查合并冲突
+        run: |
+          if git merge-tree $(git merge-base HEAD ${{ github.event.pull_request.head.sha }}) HEAD ${{ github.event.pull_request.head.sha }} | grep -q "<<<<<<<"; then
+            echo "❌ 发现合并冲突，跳过自动合并"
+            exit 1
+          else
+            echo "✅ 无合并冲突"
+          fi
+
+      # 额外的安全检查（针对依赖更新）
+      - name: 🔒 验证依赖更新安全
+        run: |
+          # 对于主要版本更新，使用更严格的检查
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ "$PR_TITLE" == *"major"* ]] || [[ "$PR_TITLE" == *"bump "*[0-9]*"."[0-9]*"."[0-9]* ]]; then
+            echo "🔒 主要版本更新：需要人工审查"
+            exit 1
+          fi
+
+          # 检查是否为安全更新
+          if [[ "$PR_TITLE" == *"security"* ]] || [[ "${{ github.event.pull_request.labels.*.name }}" == *"security"* ]]; then
+            echo "🔒 安全更新：执行额外验证"
+            # 这里可以添加额外的安全检查
+          fi
+
+      # 自动合并 - 只对补丁版本和小版本更新
+      - name: 🤖 执行自动合并
+        if: >
+          steps.wait-for-ci.outputs.conclusion == 'success' &&
+          (contains(github.event.pull_request.title, 'patch') ||
+           contains(github.event.pull_request.title, 'minor') ||
+           contains(github.event.pull_request.labels.*.name, 'patch') ||
+           contains(github.event.pull_request.labels.*.name, 'minor'))
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: squash
+
+      # 对于主要版本更新，添加人工审查提醒
+      - name: 📝 添加人工审查提醒
+        if: >
+          steps.wait-for-ci.outputs.conclusion == 'success' &&
+          (contains(github.event.pull_request.title, 'major') ||
+           contains(github.event.pull_request.labels.*.name, 'major'))
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: \`## 🔄 主要版本依赖更新
+
+此 PR 包含主要版本依赖更新，需要人工审查。
+
+### 📋 检查清单
+
+- [ ] 审查破坏性变更 (Breaking Changes)
+- [ ] 检查迁移指南 (Migration Guide)
+- [ ] 验证向后兼容性
+- [ ] 更新相关文档
+- [ ] 运行完整测试套件
+
+### 👥 必需评审者
+
+- @devops-team
+- @backend-team (如果涉及后端依赖)
+- @frontend-team (如果涉及前端依赖)
+
+### ⏰ 响应时间
+
+请在 24 小时内完成审查。
+
+---
+*此提醒由自动依赖管理生成*\`
+            });
+
+      # 通知失败情况
+      - name: 🚨 通知自动合并失败
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: \`## ⚠️ 自动合并失败
+
+**原因**: CI 检查失败、存在冲突或需要人工审查
+**时间**: \${new Date().toISOString()}
+
+### 🔍 可能的解决方案
+
+1. **CI 失败**: 检查测试日志，修复失败的测试
+2. **合并冲突**: 解决代码冲突后重新运行
+3. **主要版本更新**: 需要人工审查和批准
+4. **安全更新**: 可能需要额外的安全验证
+
+### 📞 联系支持
+
+如有疑问，请联系 @devops-team 或 @security-team
+
+---
+*此通知由自动依赖管理生成*\`
+            });

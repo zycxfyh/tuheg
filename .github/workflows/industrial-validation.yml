@@ -2,9 +2,9 @@ name: 🔬 Industrial Validation Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
     inputs:
       skip_validation:
@@ -210,7 +210,7 @@ jobs:
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-security-results.sarif'
-          exit-code: 0  # Don't fail on findings, just report
+          exit-code: 0 # Don't fail on findings, just report
 
       - name: 📊 Security Report Generation
         run: |
@@ -779,7 +779,18 @@ jobs:
   validation-summary:
     name: 🎯 工业验证总结
     runs-on: ubuntu-latest
-    needs: [validation-local, validation-automated-testing, validation-security, validation-integration, validation-pr-review, validation-staging-deploy, validation-regression, validation-production-deploy, validation-monitoring]
+    needs:
+      [
+        validation-local,
+        validation-automated-testing,
+        validation-security,
+        validation-integration,
+        validation-pr-review,
+        validation-staging-deploy,
+        validation-regression,
+        validation-production-deploy,
+        validation-monitoring,
+      ]
     if: always()
     steps:
       - name: 📋 Generate Validation Summary

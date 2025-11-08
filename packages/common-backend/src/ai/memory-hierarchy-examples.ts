@@ -2,7 +2,7 @@
 // 职责: VCPToolBox 4种记忆召回模式的使用示例
 // 展示如何在AI对话中使用智能记忆系统
 
-import { MemoryHierarchyService, MemoryRecallMode } from './memory-hierarchy.service';
+import { MemoryHierarchyService, MemoryRecallMode } from './memory-hierarchy.service'
 
 /**
  * VCPToolBox 记忆召回模式使用示例
@@ -18,14 +18,14 @@ export class MemoryRecallExamples {
     const result = await this.memoryService.recallMemories(gameId, {
       mode: MemoryRecallMode.FULL_TEXT,
       limit: 10,
-    });
+    })
 
-    console.log('📖 无条件全文注入结果:');
-    console.log(`总记忆数: ${result.stats.totalMemories}`);
-    console.log(`返回条数: ${result.stats.returnedCount}`);
-    console.log('记忆内容:', result.memories);
+    console.log('📖 无条件全文注入结果:')
+    console.log(`总记忆数: ${result.stats.totalMemories}`)
+    console.log(`返回条数: ${result.stats.returnedCount}`)
+    console.log('记忆内容:', result.memories)
 
-    return result;
+    return result
   }
 
   /**
@@ -37,14 +37,14 @@ export class MemoryRecallExamples {
       mode: MemoryRecallMode.RAG_FRAGMENT,
       contextText: currentContext,
       limit: 3,
-    });
+    })
 
-    console.log('🔍 RAG片段检索结果:');
-    console.log(`平均相似度: ${result.stats.averageSimilarity?.toFixed(3)}`);
-    console.log(`返回条数: ${result.stats.returnedCount}`);
-    console.log('相关记忆:', result.memories);
+    console.log('🔍 RAG片段检索结果:')
+    console.log(`平均相似度: ${result.stats.averageSimilarity?.toFixed(3)}`)
+    console.log(`返回条数: ${result.stats.returnedCount}`)
+    console.log('相关记忆:', result.memories)
 
-    return result;
+    return result
   }
 
   /**
@@ -57,18 +57,18 @@ export class MemoryRecallExamples {
       contextText: currentContext,
       similarityThreshold: 0.8, // 高相似度阈值
       limit: 5,
-    });
+    })
 
-    console.log('🎯 阈值全文注入结果:');
-    console.log(`相似度阈值: 0.8`);
+    console.log('🎯 阈值全文注入结果:')
+    console.log(`相似度阈值: 0.8`)
     if (result.memories.length > 0) {
-      console.log('✅ 找到高度相关记忆，注入全文');
-      console.log(`返回条数: ${result.stats.returnedCount}`);
+      console.log('✅ 找到高度相关记忆，注入全文')
+      console.log(`返回条数: ${result.stats.returnedCount}`)
     } else {
-      console.log('❌ 未找到足够相关的记忆，跳过注入');
+      console.log('❌ 未找到足够相关的记忆，跳过注入')
     }
 
-    return result;
+    return result
   }
 
   /**
@@ -81,15 +81,15 @@ export class MemoryRecallExamples {
       contextText: currentContext,
       similarityThreshold: 0.6, // 中等相似度阈值
       limit: 3,
-    });
+    })
 
-    console.log('🎪 阈值RAG片段检索结果:');
-    console.log(`相似度阈值: 0.6`);
-    console.log(`平均相似度: ${result.stats.averageSimilarity?.toFixed(3)}`);
-    console.log(`返回条数: ${result.stats.returnedCount}`);
-    console.log('相关记忆片段:', result.memories);
+    console.log('🎪 阈值RAG片段检索结果:')
+    console.log(`相似度阈值: 0.6`)
+    console.log(`平均相似度: ${result.stats.averageSimilarity?.toFixed(3)}`)
+    console.log(`返回条数: ${result.stats.returnedCount}`)
+    console.log('相关记忆片段:', result.memories)
 
-    return result;
+    return result
   }
 
   /**
@@ -100,14 +100,14 @@ export class MemoryRecallExamples {
     const result = await this.memoryService.smartMemoryInjection(gameId, currentContext, {
       maxMemories: 3,
       similarityThreshold: 0.7,
-    });
+    })
 
-    console.log('🤖 智能记忆注入结果:');
-    console.log(`选择策略: ${result.strategy}`);
-    console.log(`统计信息:`, result.stats);
-    console.log('注入内容:', result.content);
+    console.log('🤖 智能记忆注入结果:')
+    console.log(`选择策略: ${result.strategy}`)
+    console.log(`统计信息:`, result.stats)
+    console.log('注入内容:', result.content)
 
-    return result;
+    return result
   }
 
   /**
@@ -124,42 +124,42 @@ export class MemoryRecallExamples {
     只有在真正重要的时候<<角色日记本>>才会全力以赴。
 
     在日常决策中《《角色日记本》》，他更倾向于稳健的选择。
-    `;
+    `
 
-    console.log('📝 原始AI文本:');
-    console.log(aiGeneratedText);
-    console.log('');
+    console.log('📝 原始AI文本:')
+    console.log(aiGeneratedText)
+    console.log('')
 
     const parsedText = await this.memoryService.parseMemorySyntax(
       aiGeneratedText,
       gameId,
-      currentContext,
-    );
+      currentContext
+    )
 
-    console.log('🔄 解析后文本:');
-    console.log(parsedText);
+    console.log('🔄 解析后文本:')
+    console.log(parsedText)
 
-    return parsedText;
+    return parsedText
   }
 
   /**
    * 综合示例: 在叙事AI中的应用
    */
   async narrativeAIExample(gameId: string, playerAction: string) {
-    console.log('🎭 叙事AI记忆增强示例');
-    console.log('玩家行动:', playerAction);
-    console.log('');
+    console.log('🎭 叙事AI记忆增强示例')
+    console.log('玩家行动:', playerAction)
+    console.log('')
 
     // 步骤1: 智能分析上下文并注入相关记忆
     const contextAnalysis = await this.memoryService.smartMemoryInjection(gameId, playerAction, {
       maxMemories: 2,
       similarityThreshold: 0.7,
-    });
+    })
 
-    console.log('📊 上下文分析结果:');
-    console.log(`策略: ${contextAnalysis.strategy}`);
-    console.log(`相关记忆: ${contextAnalysis.stats.returnedCount}条`);
-    console.log('');
+    console.log('📊 上下文分析结果:')
+    console.log(`策略: ${contextAnalysis.strategy}`)
+    console.log(`相关记忆: ${contextAnalysis.stats.returnedCount}条`)
+    console.log('')
 
     // 步骤2: 生成增强的叙事提示词
     const enhancedPrompt = `
@@ -170,11 +170,11 @@ ${contextAnalysis.content}
 
 请基于角色的记忆和过往经历，生成生动而连贯的叙事回应。
 保持角色的个性和行为模式的一致性。
-    `.trim();
+    `.trim()
 
-    console.log('✨ 增强后的AI提示词:');
-    console.log(enhancedPrompt);
-    console.log('');
+    console.log('✨ 增强后的AI提示词:')
+    console.log(enhancedPrompt)
+    console.log('')
 
     // 这里可以继续调用AI生成最终叙事
     // const narrative = await this.aiService.generateNarrative(enhancedPrompt);
@@ -183,7 +183,7 @@ ${contextAnalysis.content}
       contextAnalysis,
       enhancedPrompt,
       // narrative,
-    };
+    }
   }
 }
 

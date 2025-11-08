@@ -13,11 +13,11 @@
 // - 支持可配置的相似度阈值和返回数量
 // - 提供性能监控和缓存机制
 
-import { OpenAIEmbeddings } from '@langchain/openai';
-import { Injectable, Logger } from '@nestjs/common';
-import type { ConfigService } from '@nestjs/config';
-import type { User } from '@prisma/client';
-import type { PrismaService } from '../prisma/prisma.service';
+import { OpenAIEmbeddings } from '@langchain/openai'
+import { Injectable, Logger } from '@nestjs/common'
+import type { ConfigService } from '@nestjs/config'
+import type { User } from '@prisma/client'
+import type { PrismaService } from '../prisma/prisma.service'
 // import type { DynamicAiSchedulerService } from "./dynamic-ai-scheduler.service"; // 暂时不需要
 
 /**
@@ -25,15 +25,15 @@ import type { PrismaService } from '../prisma/prisma.service';
  */
 export interface VectorSearchResult {
   /** Memory 记录 ID */
-  id: string;
+  id: string
   /** 记忆内容 */
-  content: string;
+  content: string
   /** 相似度分数（0-1，越高越相似） */
-  similarity: number;
+  similarity: number
   /** 创建时间 */
-  createdAt: Date;
+  createdAt: Date
   /** 元数据（可选） */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -41,32 +41,32 @@ export interface VectorSearchResult {
  */
 export interface VectorSearchConfig {
   /** 返回的最大结果数量（默认 5） */
-  limit: number;
+  limit: number
   /** 最小相似度阈值（默认 0.7） */
-  minSimilarity: number;
+  minSimilarity: number
   /** 是否启用缓存（默认 true） */
-  enableCache: boolean;
+  enableCache: boolean
 }
 
 @Injectable()
 export class VectorSearchService {
-  private readonly logger = new Logger(VectorSearchService.name);
-  private readonly embeddingsCache = new Map<string, number[]>();
+  private readonly logger = new Logger(VectorSearchService.name)
+  private readonly embeddingsCache = new Map<string, number[]>()
 
-  private readonly config: VectorSearchConfig;
+  private readonly config: VectorSearchConfig
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
     // private readonly scheduler: DynamicAiSchedulerService, // 暂时不需要调度器
   ) {
     this.config = {
       limit: this.configService.get<number>('VECTOR_SEARCH_LIMIT') || 5,
       minSimilarity: this.configService.get<number>('VECTOR_SEARCH_MIN_SIMILARITY') || 0.7,
       enableCache: this.configService.get<boolean>('VECTOR_SEARCH_CACHE_ENABLED') ?? true,
-    };
+    }
 
-    this.logger.log(`VectorSearchService initialized with config: ${JSON.stringify(this.config)}`);
+    this.logger.log(`VectorSearchService initialized with config: ${JSON.stringify(this.config)}`)
   }
 
   /**
@@ -79,25 +79,25 @@ export class VectorSearchService {
   async generateEmbedding(text: string, user: User): Promise<number[]> {
     // 检查缓存
     if (this.config.enableCache) {
-      const cached = this.embeddingsCache.get(text);
+      const cached = this.embeddingsCache.get(text)
       if (cached) {
-        this.logger.debug(`Using cached embedding for text: ${text.slice(0, 50)}...`);
-        return cached;
+        this.logger.debug(`Using cached embedding for text: ${text.slice(0, 50)}...`)
+        return cached
       }
     }
 
     try {
       // 获取用户的 AI 配置（优先使用 narrative_synthesis 角色的配置，因为它通常支持 embedding）
-      let apiKey: string;
-      let baseUrl: string | undefined;
+      let apiKey: string
+      let baseUrl: string | undefined
 
       try {
         // 验证用户是否有有效的AI配置
         const userConfigs = await this.prisma.aiConfiguration.findMany({
           where: { ownerId: user.id },
-        });
+        })
         if (userConfigs.length === 0) {
-          throw new Error('用户没有配置AI提供商，无法进行向量搜索');
+          throw new Error('用户没有配置AI提供商，无法进行向量搜索')
         }
 
         // 从环境变量获取 embedding API 配置
@@ -105,28 +105,28 @@ export class VectorSearchService {
         apiKey =
           this.configService.get<string>('OPENAI_API_KEY') ||
           this.configService.get<string>('EMBEDDING_API_KEY') ||
-          '';
+          ''
         baseUrl =
           this.configService.get<string>('OPENAI_BASE_URL') ||
           this.configService.get<string>('EMBEDDING_BASE_URL') ||
-          'https://api.openai.com/v1';
+          'https://api.openai.com/v1'
       } catch (error) {
         // 如果无法获取用户配置，使用系统默认
         this.logger.warn(
           `Failed to get user AI config, using system defaults:`,
-          error instanceof Error ? error.message : String(error),
-        );
+          error instanceof Error ? error.message : String(error)
+        )
         apiKey =
           this.configService.get<string>('OPENAI_API_KEY') ||
           this.configService.get<string>('EMBEDDING_API_KEY') ||
-          '';
-        baseUrl = this.configService.get<string>('OPENAI_BASE_URL') || 'https://api.openai.com/v1';
+          ''
+        baseUrl = this.configService.get<string>('OPENAI_BASE_URL') || 'https://api.openai.com/v1'
       }
 
       if (!apiKey) {
         throw new Error(
-          'OpenAI API key not found. Please set OPENAI_API_KEY or EMBEDDING_API_KEY environment variable.',
-        );
+          'OpenAI API key not found. Please set OPENAI_API_KEY or EMBEDDING_API_KEY environment variable.'
+        )
       }
 
       // 创建 Embeddings 实例
@@ -136,32 +136,32 @@ export class VectorSearchService {
           baseURL: baseUrl,
         },
         modelName: 'text-embedding-ada-002', // 1536 维，与 pgvector 配置匹配
-      });
+      })
 
-      const embedding = await embeddings.embedQuery(text);
+      const embedding = await embeddings.embedQuery(text)
 
       // 验证向量维度（应该是 1536）
       if (embedding.length !== 1536) {
-        throw new Error(`Unexpected embedding dimension: ${embedding.length}, expected 1536`);
+        throw new Error(`Unexpected embedding dimension: ${embedding.length}, expected 1536`)
       }
 
       // 缓存结果
       if (this.config.enableCache) {
-        this.embeddingsCache.set(text, embedding);
+        this.embeddingsCache.set(text, embedding)
       }
 
       this.logger.debug(
-        `Generated embedding for text: ${text.slice(0, 50)}... (dim: ${embedding.length})`,
-      );
-      return embedding;
+        `Generated embedding for text: ${text.slice(0, 50)}... (dim: ${embedding.length})`
+      )
+      return embedding
     } catch (error) {
       this.logger.error(
         `Failed to generate embedding:`,
-        error instanceof Error ? error.message : String(error),
-      );
+        error instanceof Error ? error.message : String(error)
+      )
       throw new Error(
-        `Failed to generate embedding vector: ${error instanceof Error ? error.message : String(error)}`,
-      );
+        `Failed to generate embedding vector: ${error instanceof Error ? error.message : String(error)}`
+      )
     }
   }
 
@@ -178,30 +178,30 @@ export class VectorSearchService {
     queryText: string,
     gameId: string,
     user: User,
-    options?: Partial<VectorSearchConfig>,
+    options?: Partial<VectorSearchConfig>
   ): Promise<VectorSearchResult[]> {
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     try {
       // 生成查询文本的 embedding
-      const queryEmbedding = await this.generateEmbedding(queryText, user);
+      const queryEmbedding = await this.generateEmbedding(queryText, user)
 
       // 执行向量相似度搜索
       // pgvector 使用 cosine 相似度，我们使用 `1 - cosine_distance` 作为相似度分数
       // 其中 <=> 是 cosine distance 运算符
-      const minSimilarity = options?.minSimilarity ?? this.config.minSimilarity;
-      const limit = options?.limit ?? this.config.limit;
+      const minSimilarity = options?.minSimilarity ?? this.config.minSimilarity
+      const limit = options?.limit ?? this.config.limit
 
       // 将 embedding 数组转换为 PostgreSQL vector 格式
-      const embeddingStr = `[${queryEmbedding.join(',')}]`;
+      const embeddingStr = `[${queryEmbedding.join(',')}]`
 
       // 使用 $queryRawUnsafe 执行原始 SQL（因为需要动态插入向量值）
       const results = await this.prisma.$queryRawUnsafe<
         Array<{
-          id: string;
-          content: string;
-          createdAt: Date;
-          similarity: number;
+          id: string
+          content: string
+          createdAt: Date
+          similarity: number
         }>
       >(
         `SELECT 
@@ -219,13 +219,11 @@ export class VectorSearchService {
         embeddingStr,
         gameId,
         minSimilarity,
-        limit,
-      );
+        limit
+      )
 
-      const duration = Date.now() - startTime;
-      this.logger.debug(
-        `Vector search completed in ${duration}ms, found ${results.length} results`,
-      );
+      const duration = Date.now() - startTime
+      this.logger.debug(`Vector search completed in ${duration}ms, found ${results.length} results`)
 
       // 转换为返回格式
       return results.map((result) => ({
@@ -233,14 +231,14 @@ export class VectorSearchService {
         content: result.content,
         similarity: Number(result.similarity),
         createdAt: result.createdAt,
-      }));
+      }))
     } catch (error) {
       this.logger.error(
         `Vector search failed:`,
-        error instanceof Error ? error.message : String(error),
-      );
+        error instanceof Error ? error.message : String(error)
+      )
       // 如果向量搜索失败，返回空数组（优雅降级）
-      return [];
+      return []
     }
   }
 
@@ -253,7 +251,7 @@ export class VectorSearchService {
    */
   async generateAndStoreEmbedding(memoryId: string, content: string, user: User): Promise<void> {
     try {
-      const embedding = await this.generateEmbedding(content, user);
+      const embedding = await this.generateEmbedding(content, user)
 
       // 使用 Prisma 的原始查询更新 embedding
       // 注意：Prisma 不支持直接更新 vector 类型，需要使用原始 SQL
@@ -261,14 +259,14 @@ export class VectorSearchService {
         UPDATE "Memory"
         SET embedding = ${JSON.stringify(embedding)}::vector
         WHERE id = ${memoryId}
-      `;
+      `
 
-      this.logger.debug(`Stored embedding for memory ${memoryId}`);
+      this.logger.debug(`Stored embedding for memory ${memoryId}`)
     } catch (error) {
       this.logger.error(
         `Failed to generate and store embedding for memory ${memoryId}:`,
-        error instanceof Error ? error.message : String(error),
-      );
+        error instanceof Error ? error.message : String(error)
+      )
       // 不抛出异常，允许记忆在没有 embedding 的情况下继续存在
     }
   }
@@ -277,8 +275,8 @@ export class VectorSearchService {
    * 清理过期的缓存
    */
   clearCache(): void {
-    this.embeddingsCache.clear();
-    this.logger.debug('Embeddings cache cleared');
+    this.embeddingsCache.clear()
+    this.logger.debug('Embeddings cache cleared')
   }
 
   /**
@@ -287,6 +285,6 @@ export class VectorSearchService {
   getCacheStats(): { size: number } {
     return {
       size: this.embeddingsCache.size,
-    };
+    }
   }
 }

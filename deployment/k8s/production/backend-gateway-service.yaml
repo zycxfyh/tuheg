@@ -10,10 +10,10 @@ spec:
   selector:
     app: backend-gateway
   ports:
-  - name: http
-    port: 80
-    targetPort: 3000
-    protocol: TCP
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
@@ -22,25 +22,25 @@ metadata:
   name: backend-gateway-ingress
   namespace: tuheg-production
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/rate-limit: "100"
-    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/rate-limit: '100'
+    nginx.ingress.kubernetes.io/rate-limit-window: '1m'
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - api.tuheg.com
-    secretName: tuheg-tls
+    - hosts:
+        - api.tuheg.com
+      secretName: tuheg-tls
   rules:
-  - host: api.tuheg.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: backend-gateway
-            port:
-              number: 80
+    - host: api.tuheg.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-gateway
+                port:
+                  number: 80

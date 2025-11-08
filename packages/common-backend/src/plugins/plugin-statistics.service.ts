@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { PluginStatisticsDto } from '../dto/plugin-marketplace.dto';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { PluginStatisticsDto } from '../dto/plugin-marketplace.dto'
 
 @Injectable()
 export class PluginStatisticsService {
@@ -10,24 +10,19 @@ export class PluginStatisticsService {
    * 获取插件统计信息
    */
   async getPluginStatistics(pluginId: string, options: PluginStatisticsDto) {
-    const { period = 'month', startDate, endDate } = options;
+    const { period = 'month', startDate, endDate } = options
 
     // 计算时间范围
-    const dateRange = this.calculateDateRange(period, startDate, endDate);
+    const dateRange = this.calculateDateRange(period, startDate, endDate)
 
-    const [
-      downloadStats,
-      reviewStats,
-      versionStats,
-      dailyDownloads,
-      ratingDistribution
-    ] = await Promise.all([
-      this.getDownloadStatistics(pluginId, dateRange),
-      this.getReviewStatistics(pluginId, dateRange),
-      this.getVersionStatistics(pluginId),
-      this.getDailyDownloadTrend(pluginId, dateRange),
-      this.getRatingDistribution(pluginId)
-    ]);
+    const [downloadStats, reviewStats, versionStats, dailyDownloads, ratingDistribution] =
+      await Promise.all([
+        this.getDownloadStatistics(pluginId, dateRange),
+        this.getReviewStatistics(pluginId, dateRange),
+        this.getVersionStatistics(pluginId),
+        this.getDailyDownloadTrend(pluginId, dateRange),
+        this.getRatingDistribution(pluginId),
+      ])
 
     return {
       pluginId,
@@ -37,50 +32,44 @@ export class PluginStatisticsService {
       reviews: reviewStats,
       versions: versionStats,
       trends: {
-        dailyDownloads
+        dailyDownloads,
       },
-      ratings: ratingDistribution
-    };
+      ratings: ratingDistribution,
+    }
   }
 
   /**
    * 获取插件市场概览统计
    */
   async getMarketOverview(options: PluginStatisticsDto) {
-    const { period = 'month', startDate, endDate } = options;
-    const dateRange = this.calculateDateRange(period, startDate, endDate);
+    const { period = 'month', startDate, endDate } = options
+    const dateRange = this.calculateDateRange(period, startDate, endDate)
 
-    const [
-      totalPlugins,
-      totalDownloads,
-      totalReviews,
-      categoryStats,
-      topPlugins,
-      recentActivity
-    ] = await Promise.all([
-      this.prisma.pluginMarketplace.count({
-        where: { status: 'APPROVED', isPublic: true }
-      }),
-      this.prisma.pluginDownload.count({
-        where: {
-          downloadedAt: {
-            gte: dateRange.start,
-            lte: dateRange.end
-          }
-        }
-      }),
-      this.prisma.pluginReview.count({
-        where: {
-          createdAt: {
-            gte: dateRange.start,
-            lte: dateRange.end
-          }
-        }
-      }),
-      this.getCategoryStatistics(dateRange),
-      this.getTopPlugins(dateRange, 10),
-      this.getRecentActivity(dateRange, 20)
-    ]);
+    const [totalPlugins, totalDownloads, totalReviews, categoryStats, topPlugins, recentActivity] =
+      await Promise.all([
+        this.prisma.pluginMarketplace.count({
+          where: { status: 'APPROVED', isPublic: true },
+        }),
+        this.prisma.pluginDownload.count({
+          where: {
+            downloadedAt: {
+              gte: dateRange.start,
+              lte: dateRange.end,
+            },
+          },
+        }),
+        this.prisma.pluginReview.count({
+          where: {
+            createdAt: {
+              gte: dateRange.start,
+              lte: dateRange.end,
+            },
+          },
+        }),
+        this.getCategoryStatistics(dateRange),
+        this.getTopPlugins(dateRange, 10),
+        this.getRecentActivity(dateRange, 20),
+      ])
 
     return {
       period,
@@ -89,25 +78,25 @@ export class PluginStatisticsService {
         totalPlugins,
         totalDownloads,
         totalReviews,
-        averageRating: await this.getMarketAverageRating()
+        averageRating: await this.getMarketAverageRating(),
       },
       categoryStats,
       topPlugins,
-      recentActivity
-    };
+      recentActivity,
+    }
   }
 
   /**
    * 获取热门插件
    */
   async getTrendingPlugins(limit: number = 10) {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
     const plugins = await this.prisma.pluginMarketplace.findMany({
       where: {
         status: 'APPROVED',
-        isPublic: true
+        isPublic: true,
       },
       select: {
         id: true,
@@ -115,10 +104,10 @@ export class PluginStatisticsService {
         displayName: true,
         description: true,
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: {
-          select: { id: true, displayName: true }
+          select: { id: true, displayName: true },
         },
         totalDownloads: true,
         averageRating: true,
@@ -129,24 +118,24 @@ export class PluginStatisticsService {
           select: {
             downloads: {
               where: {
-                downloadedAt: { gte: thirtyDaysAgo }
-              }
-            }
-          }
-        }
+                downloadedAt: { gte: thirtyDaysAgo },
+              },
+            },
+          },
+        },
       },
       orderBy: {
         downloads: {
-          _count: 'desc'
-        }
+          _count: 'desc',
+        },
       },
-      take: limit
-    });
+      take: limit,
+    })
 
-    return plugins.map(plugin => ({
+    return plugins.map((plugin) => ({
       ...plugin,
-      recentDownloads: plugin._count.downloads
-    }));
+      recentDownloads: plugin._count.downloads,
+    }))
   }
 
   /**
@@ -157,32 +146,32 @@ export class PluginStatisticsService {
       where: {
         status: 'APPROVED',
         isPublic: true,
-        isFeatured: true
+        isFeatured: true,
       },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: {
-          select: { id: true, displayName: true }
+          select: { id: true, displayName: true },
         },
         versions: {
           orderBy: { createdAt: 'desc' },
           take: 1,
-          select: { version: true, createdAt: true }
+          select: { version: true, createdAt: true },
         },
         _count: {
           select: {
             downloads: true,
-            reviews: true
-          }
-        }
+            reviews: true,
+          },
+        },
       },
       orderBy: { updatedAt: 'desc' },
-      take: limit
-    });
+      take: limit,
+    })
 
-    return plugins;
+    return plugins
   }
 
   // ==================== 私有方法 ====================
@@ -191,126 +180,116 @@ export class PluginStatisticsService {
    * 计算时间范围
    */
   private calculateDateRange(period: string, startDate?: string, endDate?: string) {
-    const now = new Date();
-    let start: Date;
-    let end: Date = endDate ? new Date(endDate) : now;
+    const now = new Date()
+    let start: Date
+    const end: Date = endDate ? new Date(endDate) : now
 
     if (startDate) {
-      start = new Date(startDate);
+      start = new Date(startDate)
     } else {
       switch (period) {
         case 'day':
-          start = new Date(now);
-          start.setHours(0, 0, 0, 0);
-          break;
+          start = new Date(now)
+          start.setHours(0, 0, 0, 0)
+          break
         case 'week':
-          start = new Date(now);
-          start.setDate(now.getDate() - 7);
-          break;
+          start = new Date(now)
+          start.setDate(now.getDate() - 7)
+          break
         case 'month':
-          start = new Date(now);
-          start.setMonth(now.getMonth() - 1);
-          break;
+          start = new Date(now)
+          start.setMonth(now.getMonth() - 1)
+          break
         case 'year':
-          start = new Date(now);
-          start.setFullYear(now.getFullYear() - 1);
-          break;
+          start = new Date(now)
+          start.setFullYear(now.getFullYear() - 1)
+          break
         case 'all':
-          start = new Date(2020, 0, 1); // 假设从2020年开始
-          break;
+          start = new Date(2020, 0, 1) // 假设从2020年开始
+          break
         default:
-          start = new Date(now);
-          start.setMonth(now.getMonth() - 1);
+          start = new Date(now)
+          start.setMonth(now.getMonth() - 1)
       }
     }
 
-    return { start, end };
+    return { start, end }
   }
 
   /**
    * 获取下载统计
    */
   private async getDownloadStatistics(pluginId: string, dateRange: { start: Date; end: Date }) {
-    const [
-      totalDownloads,
-      periodDownloads,
-      uniqueUsers,
-      topVersions
-    ] = await Promise.all([
+    const [totalDownloads, periodDownloads, uniqueUsers, topVersions] = await Promise.all([
       this.prisma.pluginDownload.count({ where: { pluginId } }),
       this.prisma.pluginDownload.count({
         where: {
           pluginId,
-          downloadedAt: { gte: dateRange.start, lte: dateRange.end }
-        }
+          downloadedAt: { gte: dateRange.start, lte: dateRange.end },
+        },
       }),
       this.prisma.pluginDownload.findMany({
         where: {
           pluginId,
-          downloadedAt: { gte: dateRange.start, lte: dateRange.end }
+          downloadedAt: { gte: dateRange.start, lte: dateRange.end },
         },
         select: { userId: true },
-        distinct: ['userId']
+        distinct: ['userId'],
       }),
       this.prisma.pluginVersion.groupBy({
         by: ['version'],
         where: { pluginId },
         _count: { id: true },
         orderBy: { _count: { id: 'desc' } },
-        take: 5
-      })
-    ]);
+        take: 5,
+      }),
+    ])
 
     return {
       total: totalDownloads,
       period: periodDownloads,
-      uniqueUsers: new Set(uniqueUsers.map(d => d.userId).filter(Boolean)).size,
-      topVersions: topVersions.map(v => ({
+      uniqueUsers: new Set(uniqueUsers.map((d) => d.userId).filter(Boolean)).size,
+      topVersions: topVersions.map((v) => ({
         version: v.version,
-        downloads: v._count.id
-      }))
-    };
+        downloads: v._count.id,
+      })),
+    }
   }
 
   /**
    * 获取评价统计
    */
   private async getReviewStatistics(pluginId: string, dateRange: { start: Date; end: Date }) {
-    const [
-      totalReviews,
-      periodReviews,
-      averageRating,
-      ratingDistribution
-    ] = await Promise.all([
+    const [totalReviews, periodReviews, averageRating, ratingDistribution] = await Promise.all([
       this.prisma.pluginReview.count({ where: { pluginId } }),
       this.prisma.pluginReview.count({
         where: {
           pluginId,
-          createdAt: { gte: dateRange.start, lte: dateRange.end }
-        }
+          createdAt: { gte: dateRange.start, lte: dateRange.end },
+        },
       }),
       this.prisma.pluginReview.aggregate({
         where: { pluginId },
-        _avg: { rating: true }
+        _avg: { rating: true },
       }),
       this.prisma.pluginReview.groupBy({
         by: ['rating'],
         where: { pluginId },
-        _count: { rating: true }
-      })
-    ]);
+        _count: { rating: true },
+      }),
+    ])
 
-    const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    ratingDistribution.forEach(item => {
-      distribution[item.rating as keyof typeof distribution] = item._count.rating;
-    });
+    const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    ratingDistribution.forEach((item) => {
+      distribution[item.rating as keyof typeof distribution] = item._count.rating
+    })
 
     return {
       total: totalReviews,
       period: periodReviews,
       averageRating: averageRating._avg.rating || 0,
-      distribution
-    };
+      distribution,
+    }
   }
 
   /**
@@ -323,31 +302,29 @@ export class PluginStatisticsService {
         version: true,
         downloads: true,
         createdAt: true,
-        isStable: true
+        isStable: true,
       },
-      orderBy: { createdAt: 'desc' }
-    });
+      orderBy: { createdAt: 'desc' },
+    })
 
     return {
       total: versions.length,
-      stable: versions.filter(v => v.isStable).length,
+      stable: versions.filter((v) => v.isStable).length,
       latest: versions[0]?.version || null,
-      versions: versions.map(v => ({
+      versions: versions.map((v) => ({
         version: v.version,
         downloads: v.downloads,
         releasedAt: v.createdAt,
-        isStable: v.isStable
-      }))
-    };
+        isStable: v.isStable,
+      })),
+    }
   }
 
   /**
    * 获取每日下载趋势
    */
   private async getDailyDownloadTrend(pluginId: string, dateRange: { start: Date; end: Date }) {
-    const downloads = await this.prisma.$queryRaw<
-      Array<{ date: Date; count: bigint }>
-    >`
+    const downloads = await this.prisma.$queryRaw<Array<{ date: Date; count: bigint }>>`
       SELECT
         DATE(downloaded_at) as date,
         COUNT(*) as count
@@ -357,12 +334,12 @@ export class PluginStatisticsService {
         AND downloaded_at <= ${dateRange.end}
       GROUP BY DATE(downloaded_at)
       ORDER BY date
-    `;
+    `
 
-    return downloads.map(d => ({
+    return downloads.map((d) => ({
       date: d.date.toISOString().split('T')[0],
-      downloads: Number(d.count)
-    }));
+      downloads: Number(d.count),
+    }))
   }
 
   /**
@@ -372,15 +349,15 @@ export class PluginStatisticsService {
     const distribution = await this.prisma.pluginReview.groupBy({
       by: ['rating'],
       where: { pluginId },
-      _count: { rating: true }
-    });
+      _count: { rating: true },
+    })
 
-    const result = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    distribution.forEach(item => {
-      result[item.rating as keyof typeof result] = item._count.rating;
-    });
+    const result = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    distribution.forEach((item) => {
+      result[item.rating as keyof typeof result] = item._count.rating
+    })
 
-    return result;
+    return result
   }
 
   /**
@@ -396,13 +373,13 @@ export class PluginStatisticsService {
         _count: {
           select: {
             plugins: {
-              where: { status: 'APPROVED', isPublic: true }
-            }
-          }
-        }
+              where: { status: 'APPROVED', isPublic: true },
+            },
+          },
+        },
       },
-      orderBy: { sortOrder: 'asc' }
-    });
+      orderBy: { sortOrder: 'asc' },
+    })
 
     // 为每个分类计算下载量
     const categoryStats = await Promise.all(
@@ -412,26 +389,26 @@ export class PluginStatisticsService {
             plugin: {
               categoryId: category.id,
               status: 'APPROVED',
-              isPublic: true
+              isPublic: true,
             },
             downloadedAt: {
               gte: dateRange.start,
-              lte: dateRange.end
-            }
-          }
-        });
+              lte: dateRange.end,
+            },
+          },
+        })
 
         return {
           id: category.id,
           name: category.name,
           displayName: category.displayName,
           pluginCount: category._count.plugins,
-          downloads
-        };
+          downloads,
+        }
       })
-    );
+    )
 
-    return categoryStats;
+    return categoryStats
   }
 
   /**
@@ -439,10 +416,10 @@ export class PluginStatisticsService {
    */
   private async getMarketAverageRating(): Promise<number> {
     const result = await this.prisma.pluginReview.aggregate({
-      _avg: { rating: true }
-    });
+      _avg: { rating: true },
+    })
 
-    return result._avg.rating || 0;
+    return result._avg.rating || 0
   }
 
   /**
@@ -452,7 +429,7 @@ export class PluginStatisticsService {
     const plugins = await this.prisma.pluginMarketplace.findMany({
       where: {
         status: 'APPROVED',
-        isPublic: true
+        isPublic: true,
       },
       select: {
         id: true,
@@ -464,28 +441,28 @@ export class PluginStatisticsService {
           select: {
             downloads: {
               where: {
-                downloadedAt: { gte: dateRange.start, lte: dateRange.end }
-              }
-            }
-          }
-        }
+                downloadedAt: { gte: dateRange.start, lte: dateRange.end },
+              },
+            },
+          },
+        },
       },
       orderBy: {
         downloads: {
-          _count: 'desc'
-        }
+          _count: 'desc',
+        },
       },
-      take: limit
-    });
+      take: limit,
+    })
 
-    return plugins.map(plugin => ({
+    return plugins.map((plugin) => ({
       id: plugin.id,
       name: plugin.name,
       displayName: plugin.displayName,
       totalDownloads: plugin.totalDownloads,
       averageRating: plugin.averageRating,
-      periodDownloads: plugin._count.downloads
-    }));
+      periodDownloads: plugin._count.downloads,
+    }))
   }
 
   /**
@@ -497,18 +474,18 @@ export class PluginStatisticsService {
       where: {
         status: 'APPROVED',
         isPublic: true,
-        createdAt: { gte: dateRange.start, lte: dateRange.end }
+        createdAt: { gte: dateRange.start, lte: dateRange.end },
       },
       select: {
         id: true,
         name: true,
         displayName: true,
         author: { select: { email: true } },
-        createdAt: true
+        createdAt: true,
       },
       orderBy: { createdAt: 'desc' },
-      take: Math.floor(limit / 3)
-    });
+      take: Math.floor(limit / 3),
+    })
 
     // 获取最近的版本更新
     const versionUpdates = await this.prisma.pluginVersion.findMany({
@@ -516,8 +493,8 @@ export class PluginStatisticsService {
         createdAt: { gte: dateRange.start, lte: dateRange.end },
         plugin: {
           status: 'APPROVED',
-          isPublic: true
-        }
+          isPublic: true,
+        },
       },
       select: {
         version: true,
@@ -527,13 +504,13 @@ export class PluginStatisticsService {
             id: true,
             name: true,
             displayName: true,
-            author: { select: { email: true } }
-          }
-        }
+            author: { select: { email: true } },
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
-      take: Math.floor(limit / 3)
-    });
+      take: Math.floor(limit / 3),
+    })
 
     // 获取最近的评价
     const reviews = await this.prisma.pluginReview.findMany({
@@ -541,8 +518,8 @@ export class PluginStatisticsService {
         createdAt: { gte: dateRange.start, lte: dateRange.end },
         plugin: {
           status: 'APPROVED',
-          isPublic: true
-        }
+          isPublic: true,
+        },
       },
       select: {
         rating: true,
@@ -552,38 +529,38 @@ export class PluginStatisticsService {
           select: {
             id: true,
             name: true,
-            displayName: true
-          }
-        }
+            displayName: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
-      take: Math.floor(limit / 3)
-    });
+      take: Math.floor(limit / 3),
+    })
 
     // 合并并排序所有活动
     const activities = [
-      ...newPlugins.map(p => ({
+      ...newPlugins.map((p) => ({
         type: 'plugin_created' as const,
         timestamp: p.createdAt,
         plugin: p,
-        user: p.author.email
+        user: p.author.email,
       })),
-      ...versionUpdates.map(v => ({
+      ...versionUpdates.map((v) => ({
         type: 'version_released' as const,
         timestamp: v.createdAt,
         plugin: v.plugin,
         version: v.version,
-        user: v.plugin.author.email
+        user: v.plugin.author.email,
       })),
-      ...reviews.map(r => ({
+      ...reviews.map((r) => ({
         type: 'review_added' as const,
         timestamp: r.createdAt,
         plugin: r.plugin,
         rating: r.rating,
-        user: r.user.email
-      }))
-    ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        user: r.user.email,
+      })),
+    ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
 
-    return activities.slice(0, limit);
+    return activities.slice(0, limit)
   }
 }

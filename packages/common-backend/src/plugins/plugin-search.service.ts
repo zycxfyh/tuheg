@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { SearchPluginsDto } from '../dto/plugin-marketplace.dto';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { SearchPluginsDto } from '../dto/plugin-marketplace.dto'
 
 @Injectable()
 export class PluginSearchService {
@@ -12,8 +12,8 @@ export class PluginSearchService {
   async advancedSearch(params: SearchPluginsDto) {
     const where: any = {
       status: 'APPROVED',
-      isPublic: true
-    };
+      isPublic: true,
+    }
 
     // 全文搜索
     if (params.q) {
@@ -24,74 +24,74 @@ export class PluginSearchService {
         {
           tags: {
             some: {
-              name: { contains: params.q, mode: 'insensitive' }
-            }
-          }
+              name: { contains: params.q, mode: 'insensitive' },
+            },
+          },
         },
         {
           author: {
-            email: { contains: params.q, mode: 'insensitive' }
-          }
-        }
-      ];
+            email: { contains: params.q, mode: 'insensitive' },
+          },
+        },
+      ]
     }
 
     // 分类过滤
     if (params.category) {
-      where.categoryId = params.category;
+      where.categoryId = params.category
     }
 
     // 作者过滤
     if (params.author) {
-      where.authorId = params.author;
+      where.authorId = params.author
     }
 
     // 标签过滤
     if (params.tags && params.tags.length > 0) {
       where.tags = {
         some: {
-          name: { in: params.tags }
-        }
-      };
+          name: { in: params.tags },
+        },
+      }
     }
 
     // 状态过滤
     if (params.status) {
-      where.status = params.status;
+      where.status = params.status
     }
 
     // 精选过滤
     if (params.isFeatured !== undefined) {
-      where.isFeatured = params.isFeatured;
+      where.isFeatured = params.isFeatured
     }
 
     // 评分过滤
     if (params.minRating) {
       where.averageRating = {
-        gte: params.minRating
-      };
+        gte: params.minRating,
+      }
     }
 
     // 排序
-    const orderBy: any = {};
+    const orderBy: any = {}
     switch (params.sortBy) {
       case 'name':
-        orderBy.name = params.sortOrder;
-        break;
+        orderBy.name = params.sortOrder
+        break
       case 'downloads':
-        orderBy.totalDownloads = params.sortOrder;
-        break;
+        orderBy.totalDownloads = params.sortOrder
+        break
       case 'rating':
-        orderBy.averageRating = params.sortOrder;
-        break;
+        orderBy.averageRating = params.sortOrder
+        break
       case 'createdAt':
-        orderBy.createdAt = params.sortOrder;
-        break;
+        orderBy.createdAt = params.sortOrder
+        break
       case 'updatedAt':
-        orderBy.updatedAt = params.sortOrder;
-        break;
+        orderBy.updatedAt = params.sortOrder
+        break
       default:
-        orderBy.totalDownloads = 'desc';
+        orderBy.totalDownloads = 'desc'
     }
 
     // 查询插件
@@ -100,46 +100,46 @@ export class PluginSearchService {
         where,
         include: {
           author: {
-            select: { id: true, email: true }
+            select: { id: true, email: true },
           },
           category: {
-            select: { id: true, displayName: true }
+            select: { id: true, displayName: true },
           },
           tags: {
-            select: { id: true, name: true, displayName: true }
+            select: { id: true, name: true, displayName: true },
           },
           versions: {
             orderBy: { createdAt: 'desc' },
             take: 1,
-            select: { version: true, createdAt: true }
+            select: { version: true, createdAt: true },
           },
           _count: {
             select: {
               downloads: true,
-              reviews: true
-            }
-          }
+              reviews: true,
+            },
+          },
         },
         orderBy,
         skip: params.offset,
-        take: params.limit
+        take: params.limit,
       }),
-      this.prisma.pluginMarketplace.count({ where })
-    ]);
+      this.prisma.pluginMarketplace.count({ where }),
+    ])
 
     // 添加搜索相关的元数据
-    const searchMetadata = await this.getSearchMetadata(params.q);
+    const searchMetadata = await this.getSearchMetadata(params.q)
 
     return {
-      plugins: plugins.map(plugin => ({
+      plugins: plugins.map((plugin) => ({
         ...plugin,
         latestVersion: plugin.versions[0]?.version || null,
-        lastUpdated: plugin.versions[0]?.createdAt || plugin.updatedAt
+        lastUpdated: plugin.versions[0]?.createdAt || plugin.updatedAt,
       })),
       total,
       hasMore: params.offset + params.limit < total,
-      searchMetadata
-    };
+      searchMetadata,
+    }
   }
 
   /**
@@ -151,133 +151,129 @@ export class PluginSearchService {
         plugins: [],
         tags: [],
         categories: [],
-        authors: []
-      };
+        authors: [],
+      }
     }
 
-    const [
-      pluginSuggestions,
-      tagSuggestions,
-      categorySuggestions,
-      authorSuggestions
-    ] = await Promise.all([
-      // 插件名称建议
-      this.prisma.pluginMarketplace.findMany({
-        where: {
-          OR: [
-            { name: { startsWith: query, mode: 'insensitive' } },
-            { displayName: { startsWith: query, mode: 'insensitive' } }
-          ],
-          status: 'APPROVED',
-          isPublic: true
-        },
-        select: {
-          id: true,
-          name: true,
-          displayName: true,
-          totalDownloads: true
-        },
-        orderBy: { totalDownloads: 'desc' },
-        take: Math.floor(limit / 4)
-      }),
+    const [pluginSuggestions, tagSuggestions, categorySuggestions, authorSuggestions] =
+      await Promise.all([
+        // 插件名称建议
+        this.prisma.pluginMarketplace.findMany({
+          where: {
+            OR: [
+              { name: { startsWith: query, mode: 'insensitive' } },
+              { displayName: { startsWith: query, mode: 'insensitive' } },
+            ],
+            status: 'APPROVED',
+            isPublic: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            displayName: true,
+            totalDownloads: true,
+          },
+          orderBy: { totalDownloads: 'desc' },
+          take: Math.floor(limit / 4),
+        }),
 
-      // 标签建议
-      this.prisma.pluginTag.findMany({
-        where: {
-          OR: [
-            { name: { startsWith: query, mode: 'insensitive' } },
-            { displayName: { startsWith: query, mode: 'insensitive' } }
-          ],
-          isActive: true
-        },
-        select: {
-          id: true,
-          name: true,
-          displayName: true,
-          usageCount: true
-        },
-        orderBy: { usageCount: 'desc' },
-        take: Math.floor(limit / 4)
-      }),
+        // 标签建议
+        this.prisma.pluginTag.findMany({
+          where: {
+            OR: [
+              { name: { startsWith: query, mode: 'insensitive' } },
+              { displayName: { startsWith: query, mode: 'insensitive' } },
+            ],
+            isActive: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            displayName: true,
+            usageCount: true,
+          },
+          orderBy: { usageCount: 'desc' },
+          take: Math.floor(limit / 4),
+        }),
 
-      // 分类建议
-      this.prisma.pluginCategory.findMany({
-        where: {
-          OR: [
-            { name: { startsWith: query, mode: 'insensitive' } },
-            { displayName: { startsWith: query, mode: 'insensitive' } }
-          ],
-          isActive: true
-        },
-        select: {
-          id: true,
-          name: true,
-          displayName: true
-        },
-        orderBy: { sortOrder: 'asc' },
-        take: Math.floor(limit / 4)
-      }),
+        // 分类建议
+        this.prisma.pluginCategory.findMany({
+          where: {
+            OR: [
+              { name: { startsWith: query, mode: 'insensitive' } },
+              { displayName: { startsWith: query, mode: 'insensitive' } },
+            ],
+            isActive: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            displayName: true,
+          },
+          orderBy: { sortOrder: 'asc' },
+          take: Math.floor(limit / 4),
+        }),
 
-      // 作者建议
-      this.prisma.user.findMany({
-        where: {
-          authoredPlugins: {
-            some: {
-              status: 'APPROVED',
-              isPublic: true
-            }
-          }
-        },
-        select: {
-          id: true,
-          email: true,
-          _count: {
-            select: {
-              authoredPlugins: {
-                where: {
-                  status: 'APPROVED',
-                  isPublic: true
-                }
-              }
-            }
-          }
-        },
-        orderBy: {
-          authoredPlugins: {
-            _count: 'desc'
-          }
-        },
-        take: Math.floor(limit / 4)
-      })
-    ]);
+        // 作者建议
+        this.prisma.user.findMany({
+          where: {
+            authoredPlugins: {
+              some: {
+                status: 'APPROVED',
+                isPublic: true,
+              },
+            },
+          },
+          select: {
+            id: true,
+            email: true,
+            _count: {
+              select: {
+                authoredPlugins: {
+                  where: {
+                    status: 'APPROVED',
+                    isPublic: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            authoredPlugins: {
+              _count: 'desc',
+            },
+          },
+          take: Math.floor(limit / 4),
+        }),
+      ])
 
     return {
-      plugins: pluginSuggestions.map(p => ({
+      plugins: pluginSuggestions.map((p) => ({
         id: p.id,
         name: p.name,
         displayName: p.displayName,
-        type: 'plugin'
+        type: 'plugin',
       })),
-      tags: tagSuggestions.map(t => ({
+      tags: tagSuggestions.map((t) => ({
         id: t.id,
         name: t.name,
         displayName: t.displayName,
-        type: 'tag'
+        type: 'tag',
       })),
-      categories: categorySuggestions.map(c => ({
+      categories: categorySuggestions.map((c) => ({
         id: c.id,
         name: c.name,
         displayName: c.displayName,
-        type: 'category'
+        type: 'category',
       })),
-      authors: authorSuggestions.map(a => ({
+      authors: authorSuggestions.map((a) => ({
         id: a.id,
         name: a.email,
         displayName: a.email,
         pluginCount: a._count.authoredPlugins,
-        type: 'author'
-      }))
-    };
+        type: 'author',
+      })),
+    }
   }
 
   /**
@@ -290,15 +286,15 @@ export class PluginSearchService {
       select: {
         categoryId: true,
         tags: { select: { id: true } },
-        authorId: true
-      }
-    });
+        authorId: true,
+      },
+    })
 
     if (!currentPlugin) {
-      return [];
+      return []
     }
 
-    const tagIds = currentPlugin.tags.map(t => t.id);
+    const tagIds = currentPlugin.tags.map((t) => t.id)
 
     // 查找相关插件
     const relatedPlugins = await this.prisma.pluginMarketplace.findMany({
@@ -313,45 +309,45 @@ export class PluginSearchService {
               {
                 tags: {
                   some: {
-                    id: { in: tagIds }
-                  }
-                }
+                    id: { in: tagIds },
+                  },
+                },
               },
-              { authorId: currentPlugin.authorId }
-            ]
-          }
-        ]
+              { authorId: currentPlugin.authorId },
+            ],
+          },
+        ],
       },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: {
-          select: { id: true, displayName: true }
+          select: { id: true, displayName: true },
         },
         tags: {
-          select: { id: true, name: true, displayName: true }
+          select: { id: true, name: true, displayName: true },
         },
         _count: {
           select: {
             downloads: true,
-            reviews: true
-          }
-        }
+            reviews: true,
+          },
+        },
       },
       orderBy: { totalDownloads: 'desc' },
-      take: limit
-    });
+      take: limit,
+    })
 
-    return relatedPlugins;
+    return relatedPlugins
   }
 
   /**
    * 插件发现（基于用户偏好）
    */
   async discoverPlugins(userId?: string, limit: number = 10) {
-    let preferredCategories: string[] = [];
-    let preferredTags: string[] = [];
+    let preferredCategories: string[] = []
+    let preferredTags: string[] = []
 
     if (userId) {
       // 基于用户历史下载和评价来推荐
@@ -363,11 +359,11 @@ export class PluginSearchService {
             plugin: {
               select: {
                 categoryId: true,
-                tags: { select: { id: true } }
-              }
-            }
+                tags: { select: { id: true } },
+              },
+            },
           },
-          take: 20
+          take: 20,
         }),
 
         // 用户评价过的插件
@@ -377,95 +373,96 @@ export class PluginSearchService {
             plugin: {
               select: {
                 categoryId: true,
-                tags: { select: { id: true } }
-              }
-            }
+                tags: { select: { id: true } },
+              },
+            },
           },
-          take: 20
-        })
-      ]);
+          take: 20,
+        }),
+      ])
 
       // 统计偏好分类和标签
-      const categoryCount: Record<string, number> = {};
-      const tagCount: Record<string, number> = {};
+      const categoryCount: Record<string, number> = {}
+      const tagCount: Record<string, number> = {}
 
-      [...userActivity[0], ...userActivity[1]].forEach(activity => {
+      ;[...userActivity[0], ...userActivity[1]].forEach((activity) => {
         if (activity.plugin.categoryId) {
-          categoryCount[activity.plugin.categoryId] = (categoryCount[activity.plugin.categoryId] || 0) + 1;
+          categoryCount[activity.plugin.categoryId] =
+            (categoryCount[activity.plugin.categoryId] || 0) + 1
         }
 
-        activity.plugin.tags.forEach(tag => {
-          tagCount[tag.id] = (tagCount[tag.id] || 0) + 1;
-        });
-      });
+        activity.plugin.tags.forEach((tag) => {
+          tagCount[tag.id] = (tagCount[tag.id] || 0) + 1
+        })
+      })
 
       // 获取最受欢迎的分类和标签
       preferredCategories = Object.entries(categoryCount)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 3)
-        .map(([id]) => id);
+        .map(([id]) => id)
 
       preferredTags = Object.entries(tagCount)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 5)
-        .map(([id]) => id);
+        .map(([id]) => id)
     }
 
     // 根据偏好推荐插件
     const where: any = {
       status: 'APPROVED',
-      isPublic: true
-    };
+      isPublic: true,
+    }
 
     if (preferredCategories.length > 0 || preferredTags.length > 0) {
-      where.OR = [];
+      where.OR = []
 
       if (preferredCategories.length > 0) {
         where.OR.push({
-          categoryId: { in: preferredCategories }
-        });
+          categoryId: { in: preferredCategories },
+        })
       }
 
       if (preferredTags.length > 0) {
         where.OR.push({
           tags: {
             some: {
-              id: { in: preferredTags }
-            }
-          }
-        });
+              id: { in: preferredTags },
+            },
+          },
+        })
       }
     }
 
     // 如果没有用户偏好数据，返回热门插件
     if (!where.OR || where.OR.length === 0) {
-      return this.getTrendingPlugins(limit);
+      return this.getTrendingPlugins(limit)
     }
 
     const plugins = await this.prisma.pluginMarketplace.findMany({
       where,
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: {
-          select: { id: true, displayName: true }
+          select: { id: true, displayName: true },
         },
         tags: {
-          select: { id: true, name: true, displayName: true }
+          select: { id: true, name: true, displayName: true },
         },
         _count: {
           select: {
             downloads: true,
-            reviews: true
-          }
-        }
+            reviews: true,
+          },
+        },
       },
       orderBy: { totalDownloads: 'desc' },
-      take: limit
-    });
+      take: limit,
+    })
 
-    return plugins;
+    return plugins
   }
 
   /**
@@ -479,30 +476,25 @@ export class PluginSearchService {
       select: {
         name: true,
         displayName: true,
-        usageCount: true
+        usageCount: true,
       },
       orderBy: { usageCount: 'desc' },
-      take: limit
-    });
+      take: limit,
+    })
 
-    return popularTags.map(tag => ({
+    return popularTags.map((tag) => ({
       term: tag.name,
       displayTerm: tag.displayName,
       count: tag.usageCount,
-      type: 'tag'
-    }));
+      type: 'tag',
+    }))
   }
 
   /**
    * 高级过滤器选项
    */
   async getFilterOptions() {
-    const [
-      categories,
-      tags,
-      ratingRanges,
-      dateRanges
-    ] = await Promise.all([
+    const [categories, tags, ratingRanges, dateRanges] = await Promise.all([
       // 分类选项
       this.prisma.pluginCategory.findMany({
         where: { isActive: true },
@@ -513,12 +505,12 @@ export class PluginSearchService {
           _count: {
             select: {
               plugins: {
-                where: { status: 'APPROVED', isPublic: true }
-              }
-            }
-          }
+                where: { status: 'APPROVED', isPublic: true },
+              },
+            },
+          },
         },
-        orderBy: { sortOrder: 'asc' }
+        orderBy: { sortOrder: 'asc' },
       }),
 
       // 标签选项（最热门的）
@@ -528,10 +520,10 @@ export class PluginSearchService {
           id: true,
           name: true,
           displayName: true,
-          usageCount: true
+          usageCount: true,
         },
         orderBy: { usageCount: 'desc' },
-        take: 50
+        take: 50,
       }),
 
       // 评分范围统计
@@ -543,26 +535,26 @@ export class PluginSearchService {
         { key: 'week', label: '本周', days: 7 },
         { key: 'month', label: '本月', days: 30 },
         { key: 'quarter', label: '本季度', days: 90 },
-        { key: 'year', label: '今年', days: 365 }
-      ])
-    ]);
+        { key: 'year', label: '今年', days: 365 },
+      ]),
+    ])
 
     return {
-      categories: categories.map(c => ({
+      categories: categories.map((c) => ({
         id: c.id,
         name: c.name,
         displayName: c.displayName,
-        count: c._count.plugins
+        count: c._count.plugins,
       })),
-      tags: tags.map(t => ({
+      tags: tags.map((t) => ({
         id: t.id,
         name: t.name,
         displayName: t.displayName,
-        count: t.usageCount
+        count: t.usageCount,
       })),
       ratingRanges,
-      dateRanges
-    };
+      dateRanges,
+    }
   }
 
   // ==================== 私有方法 ====================
@@ -572,18 +564,13 @@ export class PluginSearchService {
    */
   private async getSearchMetadata(query?: string) {
     if (!query) {
-      return null;
+      return null
     }
 
     // 计算搜索结果的各种统计
-    const searchTerm = query.toLowerCase();
+    const searchTerm = query.toLowerCase()
 
-    const [
-      totalPlugins,
-      categoryMatches,
-      tagMatches,
-      authorMatches
-    ] = await Promise.all([
+    const [totalPlugins, categoryMatches, tagMatches, authorMatches] = await Promise.all([
       this.prisma.pluginMarketplace.count({
         where: {
           status: 'APPROVED',
@@ -591,9 +578,9 @@ export class PluginSearchService {
           OR: [
             { name: { contains: searchTerm, mode: 'insensitive' } },
             { displayName: { contains: searchTerm, mode: 'insensitive' } },
-            { description: { contains: searchTerm, mode: 'insensitive' } }
-          ]
-        }
+            { description: { contains: searchTerm, mode: 'insensitive' } },
+          ],
+        },
       }),
 
       // 匹配的分类数量
@@ -602,9 +589,9 @@ export class PluginSearchService {
           isActive: true,
           OR: [
             { name: { contains: searchTerm, mode: 'insensitive' } },
-            { displayName: { contains: searchTerm, mode: 'insensitive' } }
-          ]
-        }
+            { displayName: { contains: searchTerm, mode: 'insensitive' } },
+          ],
+        },
       }),
 
       // 匹配的标签数量
@@ -613,9 +600,9 @@ export class PluginSearchService {
           isActive: true,
           OR: [
             { name: { contains: searchTerm, mode: 'insensitive' } },
-            { displayName: { contains: searchTerm, mode: 'insensitive' } }
-          ]
-        }
+            { displayName: { contains: searchTerm, mode: 'insensitive' } },
+          ],
+        },
       }),
 
       // 匹配的作者数量
@@ -624,13 +611,13 @@ export class PluginSearchService {
           authoredPlugins: {
             some: {
               status: 'APPROVED',
-              isPublic: true
-            }
+              isPublic: true,
+            },
           },
-          email: { contains: searchTerm, mode: 'insensitive' }
-        }
-      })
-    ]);
+          email: { contains: searchTerm, mode: 'insensitive' },
+        },
+      }),
+    ])
 
     return {
       totalResults: totalPlugins,
@@ -638,8 +625,8 @@ export class PluginSearchService {
       tagsFound: tagMatches,
       authorsFound: authorMatches,
       searchTerm: query,
-      searchTimestamp: new Date().toISOString()
-    };
+      searchTimestamp: new Date().toISOString(),
+    }
   }
 
   /**
@@ -651,8 +638,8 @@ export class PluginSearchService {
       { min: 4.0, max: 4.5, label: '4.0-4.5星' },
       { min: 3.5, max: 4.0, label: '3.5-4.0星' },
       { min: 3.0, max: 3.5, label: '3.0-3.5星' },
-      { min: 0, max: 3.0, label: '3.0星以下' }
-    ];
+      { min: 0, max: 3.0, label: '3.0星以下' },
+    ]
 
     const stats = await Promise.all(
       ranges.map(async (range) => {
@@ -662,56 +649,56 @@ export class PluginSearchService {
             isPublic: true,
             averageRating: {
               gte: range.min,
-              lt: range.max
-            }
-          }
-        });
+              lt: range.max,
+            },
+          },
+        })
 
         return {
           ...range,
-          count
-        };
+          count,
+        }
       })
-    );
+    )
 
-    return stats;
+    return stats
   }
 
   /**
    * 获取热门插件（内部方法）
    */
   private async getTrendingPlugins(limit: number) {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
     return this.prisma.pluginMarketplace.findMany({
       where: {
         status: 'APPROVED',
-        isPublic: true
+        isPublic: true,
       },
       include: {
         author: {
-          select: { id: true, email: true }
+          select: { id: true, email: true },
         },
         category: {
-          select: { id: true, displayName: true }
+          select: { id: true, displayName: true },
         },
         tags: {
-          select: { id: true, name: true, displayName: true }
+          select: { id: true, name: true, displayName: true },
         },
         _count: {
           select: {
             downloads: true,
-            reviews: true
-          }
-        }
+            reviews: true,
+          },
+        },
       },
       orderBy: {
         downloads: {
-          _count: 'desc'
-        }
+          _count: 'desc',
+        },
       },
-      take: limit
-    });
+      take: limit,
+    })
   }
 }

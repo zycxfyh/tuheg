@@ -9,14 +9,14 @@ import {
   Query,
   UseGuards,
   Request,
-  BadRequestException
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../security/jwt-auth.guard';
-import { AiProviderService } from './ai-provider.service';
-import { AiModelService } from './ai-model.service';
-import { ModelRouterService } from './model-router.service';
-import { AiMetricsService } from './ai-metrics.service';
-import { AiTaskQueueService } from './ai-task-queue.service';
+  BadRequestException,
+} from '@nestjs/common'
+import { JwtAuthGuard } from '../security/jwt-auth.guard'
+import { AiProviderService } from './ai-provider.service'
+import { AiModelService } from './ai-model.service'
+import { ModelRouterService } from './model-router.service'
+import { AiMetricsService } from './ai-metrics.service'
+import { AiTaskQueueService } from './ai-task-queue.service'
 
 @Controller('ai')
 export class AiIntegrationController {
@@ -25,7 +25,7 @@ export class AiIntegrationController {
     private readonly modelService: AiModelService,
     private readonly routerService: ModelRouterService,
     private readonly metricsService: AiMetricsService,
-    private readonly taskQueueService: AiTaskQueueService,
+    private readonly taskQueueService: AiTaskQueueService
   ) {}
 
   // ==================== AI提供商管理 ====================
@@ -35,9 +35,7 @@ export class AiIntegrationController {
    */
   @Get('providers')
   async getProviders(@Query('status') status?: string) {
-    return this.providerService.getProviders(
-      status ? { status: status as any } : undefined
-    );
+    return this.providerService.getProviders(status ? { status: status as any } : undefined)
   }
 
   /**
@@ -45,7 +43,7 @@ export class AiIntegrationController {
    */
   @Get('providers/:id')
   async getProvider(@Param('id') id: string) {
-    return this.providerService.getProvider(id);
+    return this.providerService.getProvider(id)
   }
 
   /**
@@ -54,7 +52,7 @@ export class AiIntegrationController {
   @Post('providers')
   @UseGuards(JwtAuthGuard)
   async registerProvider(@Body() data: any) {
-    return this.providerService.registerProvider(data);
+    return this.providerService.registerProvider(data)
   }
 
   /**
@@ -63,7 +61,7 @@ export class AiIntegrationController {
   @Put('providers/:id')
   @UseGuards(JwtAuthGuard)
   async updateProvider(@Param('id') id: string, @Body() data: any) {
-    return this.providerService.updateProvider(id, data);
+    return this.providerService.updateProvider(id, data)
   }
 
   /**
@@ -72,8 +70,8 @@ export class AiIntegrationController {
   @Delete('providers/:id')
   @UseGuards(JwtAuthGuard)
   async deleteProvider(@Param('id') id: string) {
-    await this.providerService.deleteProvider(id);
-    return { message: 'Provider deleted successfully' };
+    await this.providerService.deleteProvider(id)
+    return { message: 'Provider deleted successfully' }
   }
 
   /**
@@ -81,7 +79,7 @@ export class AiIntegrationController {
    */
   @Get('providers/:id/health')
   async checkProviderHealth(@Param('id') id: string) {
-    return this.providerService.healthCheck(id);
+    return this.providerService.healthCheck(id)
   }
 
   /**
@@ -89,7 +87,7 @@ export class AiIntegrationController {
    */
   @Get('providers/health/batch')
   async batchHealthCheck() {
-    return this.providerService.batchHealthCheck();
+    return this.providerService.batchHealthCheck()
   }
 
   // ==================== AI模型管理 ====================
@@ -99,7 +97,7 @@ export class AiIntegrationController {
    */
   @Get('models')
   async getModels(@Query() filters: any) {
-    return this.modelService.getModels(filters);
+    return this.modelService.getModels(filters)
   }
 
   /**
@@ -107,7 +105,7 @@ export class AiIntegrationController {
    */
   @Get('models/:id')
   async getModel(@Param('id') id: string) {
-    return this.modelService.getModel(id);
+    return this.modelService.getModel(id)
   }
 
   /**
@@ -116,7 +114,7 @@ export class AiIntegrationController {
   @Post('models')
   @UseGuards(JwtAuthGuard)
   async registerModel(@Body() data: { providerId: string; model: any }) {
-    return this.modelService.registerModel(data.providerId, data.model);
+    return this.modelService.registerModel(data.providerId, data.model)
   }
 
   /**
@@ -125,7 +123,7 @@ export class AiIntegrationController {
   @Put('models/:id')
   @UseGuards(JwtAuthGuard)
   async updateModel(@Param('id') id: string, @Body() data: any) {
-    return this.modelService.updateModel(id, data);
+    return this.modelService.updateModel(id, data)
   }
 
   /**
@@ -134,8 +132,8 @@ export class AiIntegrationController {
   @Delete('models/:id')
   @UseGuards(JwtAuthGuard)
   async deleteModel(@Param('id') id: string) {
-    await this.modelService.deleteModel(id);
-    return { message: 'Model deleted successfully' };
+    await this.modelService.deleteModel(id)
+    return { message: 'Model deleted successfully' }
   }
 
   /**
@@ -146,7 +144,7 @@ export class AiIntegrationController {
     @Param('capability') capability: string,
     @Query('limit') limit?: number
   ) {
-    return this.modelService.findModelsByCapability(capability, limit);
+    return this.modelService.findModelsByCapability(capability, limit)
   }
 
   // ==================== 模型路由 ====================
@@ -156,8 +154,8 @@ export class AiIntegrationController {
    */
   @Get('routers')
   async getRouters(@Query('activeOnly') activeOnly?: string) {
-    const active = activeOnly !== 'false';
-    return this.routerService.getRouters(active);
+    const active = activeOnly !== 'false'
+    return this.routerService.getRouters(active)
   }
 
   /**
@@ -165,7 +163,7 @@ export class AiIntegrationController {
    */
   @Get('routers/:id')
   async getRouter(@Param('id') id: string) {
-    return this.routerService.getRouter(id);
+    return this.routerService.getRouter(id)
   }
 
   /**
@@ -174,7 +172,7 @@ export class AiIntegrationController {
   @Post('routers')
   @UseGuards(JwtAuthGuard)
   async createRouter(@Body() data: any) {
-    return this.routerService.createRouter(data);
+    return this.routerService.createRouter(data)
   }
 
   /**
@@ -183,7 +181,7 @@ export class AiIntegrationController {
   @Put('routers/:id')
   @UseGuards(JwtAuthGuard)
   async updateRouter(@Param('id') id: string, @Body() data: any) {
-    return this.routerService.updateRouter(id, data);
+    return this.routerService.updateRouter(id, data)
   }
 
   /**
@@ -192,8 +190,8 @@ export class AiIntegrationController {
   @Delete('routers/:id')
   @UseGuards(JwtAuthGuard)
   async deleteRouter(@Param('id') id: string) {
-    await this.routerService.deleteRouter(id);
-    return { message: 'Router deleted successfully' };
+    await this.routerService.deleteRouter(id)
+    return { message: 'Router deleted successfully' }
   }
 
   /**
@@ -201,7 +199,7 @@ export class AiIntegrationController {
    */
   @Post('route')
   async routeRequest(@Body() request: any) {
-    return this.routerService.routeRequest(request);
+    return this.routerService.routeRequest(request)
   }
 
   /**
@@ -209,7 +207,7 @@ export class AiIntegrationController {
    */
   @Get('routers/:id/health')
   async checkRouterHealth(@Param('id') id: string) {
-    return this.routerService.healthCheck(id);
+    return this.routerService.healthCheck(id)
   }
 
   // ==================== AI使用统计 ====================
@@ -220,18 +218,15 @@ export class AiIntegrationController {
   @Post('usage')
   @UseGuards(JwtAuthGuard)
   async recordUsage(@Request() req, @Body() data: any) {
-    return this.metricsService.recordModelUsage(req.user.id, data);
+    return this.metricsService.recordModelUsage(req.user.id, data)
   }
 
   /**
    * 获取模型使用统计
    */
   @Get('usage/models/:modelId')
-  async getModelUsageStats(
-    @Param('modelId') modelId: string,
-    @Query() query: any
-  ) {
-    return this.metricsService.getModelUsageStats(modelId, query);
+  async getModelUsageStats(@Param('modelId') modelId: string, @Query() query: any) {
+    return this.metricsService.getModelUsageStats(modelId, query)
   }
 
   /**
@@ -239,11 +234,8 @@ export class AiIntegrationController {
    */
   @Get('usage/users/:userId')
   @UseGuards(JwtAuthGuard)
-  async getUserUsageStats(
-    @Param('userId') userId: string,
-    @Query() query: any
-  ) {
-    return this.metricsService.getUserUsageStats(userId, query);
+  async getUserUsageStats(@Param('userId') userId: string, @Query() query: any) {
+    return this.metricsService.getUserUsageStats(userId, query)
   }
 
   /**
@@ -254,7 +246,7 @@ export class AiIntegrationController {
     @Param('providerId') providerId: string,
     @Query('period') period?: string
   ) {
-    return this.metricsService.getProviderUsageStats(providerId, period as any);
+    return this.metricsService.getProviderUsageStats(providerId, period as any)
   }
 
   // ==================== AI任务队列 ====================
@@ -265,7 +257,7 @@ export class AiIntegrationController {
   @Post('queue')
   @UseGuards(JwtAuthGuard)
   async addToQueue(@Body() data: any) {
-    return this.taskQueueService.addToQueue(data);
+    return this.taskQueueService.addToQueue(data)
   }
 
   /**
@@ -273,7 +265,7 @@ export class AiIntegrationController {
    */
   @Get('queue')
   async getQueueStatus(@Query() filters: any) {
-    return this.taskQueueService.getQueueStatus(filters);
+    return this.taskQueueService.getQueueStatus(filters)
   }
 
   /**
@@ -281,7 +273,7 @@ export class AiIntegrationController {
    */
   @Get('queue/:id')
   async getQueuedTask(@Param('id') id: string) {
-    return this.taskQueueService.getQueuedTask(id);
+    return this.taskQueueService.getQueuedTask(id)
   }
 
   /**
@@ -290,8 +282,8 @@ export class AiIntegrationController {
   @Delete('queue/:id')
   @UseGuards(JwtAuthGuard)
   async cancelQueuedTask(@Param('id') id: string) {
-    await this.taskQueueService.cancelQueuedTask(id);
-    return { message: 'Task cancelled successfully' };
+    await this.taskQueueService.cancelQueuedTask(id)
+    return { message: 'Task cancelled successfully' }
   }
 
   /**
@@ -300,7 +292,7 @@ export class AiIntegrationController {
   @Post('queue/:id/retry')
   @UseGuards(JwtAuthGuard)
   async retryQueuedTask(@Param('id') id: string) {
-    return this.taskQueueService.retryQueuedTask(id);
+    return this.taskQueueService.retryQueuedTask(id)
   }
 
   // ==================== 智能推荐 ====================
@@ -310,7 +302,7 @@ export class AiIntegrationController {
    */
   @Post('recommend/models')
   async getModelRecommendations(@Body() context: any) {
-    return this.modelService.getRecommendations(context);
+    return this.modelService.getRecommendations(context)
   }
 
   /**
@@ -319,7 +311,7 @@ export class AiIntegrationController {
   @Get('recommend/usage/:userId')
   @UseGuards(JwtAuthGuard)
   async getUsageRecommendations(@Param('userId') userId: string) {
-    return this.metricsService.getUsageRecommendations(userId);
+    return this.metricsService.getUsageRecommendations(userId)
   }
 
   /**
@@ -327,7 +319,7 @@ export class AiIntegrationController {
    */
   @Get('insights/performance')
   async getPerformanceInsights(@Query() query: any) {
-    return this.metricsService.getPerformanceInsights(query);
+    return this.metricsService.getPerformanceInsights(query)
   }
 
   // ==================== 系统管理 ====================
@@ -338,8 +330,8 @@ export class AiIntegrationController {
   @Post('setup/providers')
   @UseGuards(JwtAuthGuard)
   async initializeBuiltInProviders() {
-    await this.providerService.initializeBuiltInProviders();
-    return { message: 'Built-in providers initialized successfully' };
+    await this.providerService.initializeBuiltInProviders()
+    return { message: 'Built-in providers initialized successfully' }
   }
 
   /**
@@ -348,8 +340,8 @@ export class AiIntegrationController {
   @Post('setup/routers')
   @UseGuards(JwtAuthGuard)
   async initializeBuiltInRouters() {
-    await this.routerService.initializeBuiltInRouters();
-    return { message: 'Built-in routers initialized successfully' };
+    await this.routerService.initializeBuiltInRouters()
+    return { message: 'Built-in routers initialized successfully' }
   }
 
   /**
@@ -357,22 +349,22 @@ export class AiIntegrationController {
    */
   @Get('health')
   async getSystemHealth() {
-    const [
-      providersHealth,
-      modelsCount,
-      activeRouters
-    ] = await Promise.all([
+    const [providersHealth, modelsCount, activeRouters] = await Promise.all([
       this.providerService.batchHealthCheck(),
       this.modelService.getModels({ status: 'ACTIVE' }),
-      this.routerService.getRouters(true)
-    ]);
+      this.routerService.getRouters(true),
+    ])
 
     const unhealthyProviders = Object.values(providersHealth).filter(
       (health: any) => health.status === 'unhealthy'
-    ).length;
+    ).length
 
-    const status = unhealthyProviders === 0 ? 'healthy' :
-                   unhealthyProviders < Object.keys(providersHealth).length * 0.5 ? 'degraded' : 'unhealthy';
+    const status =
+      unhealthyProviders === 0
+        ? 'healthy'
+        : unhealthyProviders < Object.keys(providersHealth).length * 0.5
+          ? 'degraded'
+          : 'unhealthy'
 
     return {
       status,
@@ -381,16 +373,16 @@ export class AiIntegrationController {
         providers: {
           total: Object.keys(providersHealth).length,
           healthy: Object.values(providersHealth).filter((h: any) => h.status === 'healthy').length,
-          unhealthy: unhealthyProviders
+          unhealthy: unhealthyProviders,
         },
         models: {
-          active: modelsCount.length
+          active: modelsCount.length,
         },
         routers: {
-          active: activeRouters.length
-        }
-      }
-    };
+          active: activeRouters.length,
+        },
+      },
+    }
   }
 
   /**
@@ -398,21 +390,17 @@ export class AiIntegrationController {
    */
   @Get('stats')
   async getSystemStats(@Query('period') period?: string) {
-    const [
-      totalUsage,
-      providerStats,
-      modelStats
-    ] = await Promise.all([
+    const [totalUsage, providerStats, modelStats] = await Promise.all([
       this.metricsService.getTotalUsageStats(period as any),
       this.metricsService.getProviderStatsSummary(),
-      this.metricsService.getModelStatsSummary()
-    ]);
+      this.metricsService.getModelStatsSummary(),
+    ])
 
     return {
       period: period || 'month',
       usage: totalUsage,
       providers: providerStats,
-      models: modelStats
-    };
+      models: modelStats,
+    }
   }
 }

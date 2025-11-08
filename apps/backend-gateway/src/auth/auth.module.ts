@@ -1,15 +1,15 @@
 // 文件路径: apps/nexus-engine/src/auth/auth.module.ts
 
-import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common'
+import { AuthController } from './auth.controller'
+import { AuthService } from './auth.service'
+import { JwtModule } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
+import { JwtStrategy } from './strategies/jwt.strategy'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
 // [核心修正] 放弃旧的 '@/' 别名，从 @tuheg/common-backend 导入共享的 PrismaModule
-import { PrismaModule } from '@tuheg/common-backend';
+import { PrismaModule } from '@tuheg/common-backend'
 
 @Module({
   imports: [

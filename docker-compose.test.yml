@@ -13,12 +13,12 @@ services:
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpass
     ports:
-      - "5433:5432"  # 避免与本地PostgreSQL冲突
+      - '5433:5432' # 避免与本地PostgreSQL冲突
     volumes:
       - postgres_test_data:/var/lib/postgresql/data
       - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U testuser -d tuheg_test"]
+      test: ['CMD-SHELL', 'pg_isready -U testuser -d tuheg_test']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -28,12 +28,12 @@ services:
     image: redis:7-alpine
     container_name: tuheg-redis-test
     ports:
-      - "6380:6379"  # 避免与本地Redis冲突
+      - '6380:6379' # 避免与本地Redis冲突
     command: redis-server --appendonly yes
     volumes:
       - redis_test_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -46,8 +46,8 @@ services:
       RABBITMQ_DEFAULT_USER: testuser
       RABBITMQ_DEFAULT_PASS: testpass
     ports:
-      - "5673:5672"   # AMQP端口
-      - "15673:15672" # 管理界面端口
+      - '5673:5672' # AMQP端口
+      - '15673:15672' # 管理界面端口
     volumes:
       - rabbitmq_test_data:/var/lib/rabbitmq
     healthcheck:
@@ -68,7 +68,7 @@ services:
       REDIS_URL: redis://redis-test:6379
       RABBITMQ_URL: amqp://testuser:testpass@rabbitmq-test:5672
     ports:
-      - "3001:3000"  # 避免与本地服务冲突
+      - '3001:3000' # 避免与本地服务冲突
     depends_on:
       postgres-test:
         condition: service_healthy
@@ -77,7 +77,7 @@ services:
       rabbitmq-test:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
       interval: 10s
       timeout: 5s
       retries: 3
@@ -101,7 +101,7 @@ services:
       rabbitmq-test:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8081/health']
       interval: 10s
       timeout: 5s
       retries: 3
@@ -125,7 +125,7 @@ services:
       rabbitmq-test:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8082/health']
       interval: 10s
       timeout: 5s
       retries: 3
@@ -149,7 +149,7 @@ services:
       rabbitmq-test:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8083/health']
       interval: 10s
       timeout: 5s
       retries: 3

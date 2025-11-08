@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/observability/sentry.config.ts
 // 核心理念: 增强的错误追踪和性能监控配置
 
-import * as Sentry from '@sentry/node';
-import type { NodeOptions } from '@sentry/node';
+import * as Sentry from '@sentry/node'
+import type { NodeOptions } from '@sentry/node'
 
 /**
  * @interface SentryConfigOptions
@@ -10,21 +10,21 @@ import type { NodeOptions } from '@sentry/node';
  */
 export interface SentryConfigOptions {
   /** 环境名称 */
-  environment?: string;
+  environment?: string
   /** 发布版本 */
-  release?: string;
+  release?: string
   /** DSN */
-  dsn?: string;
+  dsn?: string
   /** 采样率 */
-  tracesSampleRate?: number;
+  tracesSampleRate?: number
   /** 性能监控采样率 */
-  profilesSampleRate?: number;
+  profilesSampleRate?: number
   /** 是否启用性能监控 */
-  enablePerformanceMonitoring?: boolean;
+  enablePerformanceMonitoring?: boolean
   /** 自定义标签 */
-  tags?: Record<string, string>;
+  tags?: Record<string, string>
   /** 忽略的错误 */
-  ignoreErrors?: string[];
+  ignoreErrors?: string[]
 }
 
 /**
@@ -59,11 +59,11 @@ export function configureSentry(options: SentryConfigOptions = {}): void {
       // 忽略已知的第三方库错误
       'ResizeObserver loop limit exceeded',
     ],
-  } = options;
+  } = options
 
   if (!dsn) {
-    console.warn('Sentry DSN not configured, skipping Sentry initialization');
-    return;
+    console.warn('Sentry DSN not configured, skipping Sentry initialization')
+    return
   }
 
   const sentryOptions: NodeOptions = {
@@ -95,11 +95,11 @@ export function configureSentry(options: SentryConfigOptions = {}): void {
     autoSessionTracking: true,
     // 发送默认 PII（个人可识别信息）
     sendDefaultPii: false,
-  };
+  }
 
-  Sentry.init(sentryOptions);
+  Sentry.init(sentryOptions)
 
-  console.log(`Sentry initialized for environment: ${environment}, release: ${release}`);
+  console.log(`Sentry initialized for environment: ${environment}, release: ${release}`)
 }
 
 /**
@@ -111,7 +111,7 @@ export function setSentryUser(user: { id: string; email?: string; username?: str
     id: user.id,
     email: user.email,
     username: user.username,
-  });
+  })
 }
 
 /**
@@ -119,7 +119,7 @@ export function setSentryUser(user: { id: string; email?: string; username?: str
  * @description 设置 Sentry 上下文
  */
 export function setSentryContext(key: string, context: Record<string, unknown>): void {
-  Sentry.setContext(key, context);
+  Sentry.setContext(key, context)
 }
 
 /**
@@ -127,7 +127,7 @@ export function setSentryContext(key: string, context: Record<string, unknown>):
  * @description 设置 Sentry 标签
  */
 export function setSentryTag(key: string, value: string): void {
-  Sentry.setTag(key, value);
+  Sentry.setTag(key, value)
 }
 
 /**
@@ -137,26 +137,26 @@ export function setSentryTag(key: string, value: string): void {
 export function captureException(
   error: Error,
   context?: {
-    tags?: Record<string, string>;
-    extra?: Record<string, unknown>;
-    user?: { id: string; email?: string };
-  },
+    tags?: Record<string, string>
+    extra?: Record<string, unknown>
+    user?: { id: string; email?: string }
+  }
 ): void {
   if (context?.tags) {
     for (const [key, value] of Object.entries(context.tags)) {
-      Sentry.setTag(key, value);
+      Sentry.setTag(key, value)
     }
   }
 
   if (context?.extra) {
-    Sentry.setExtra('context', context.extra);
+    Sentry.setExtra('context', context.extra)
   }
 
   if (context?.user) {
-    setSentryUser(context.user);
+    setSentryUser(context.user)
   }
 
-  Sentry.captureException(error);
+  Sentry.captureException(error)
 }
 
 /**
@@ -167,19 +167,19 @@ export function captureMessage(
   message: string,
   level: Sentry.SeverityLevel = 'info',
   context?: {
-    tags?: Record<string, string>;
-    extra?: Record<string, unknown>;
-  },
+    tags?: Record<string, string>
+    extra?: Record<string, unknown>
+  }
 ): void {
   if (context?.tags) {
     for (const [key, value] of Object.entries(context.tags)) {
-      Sentry.setTag(key, value);
+      Sentry.setTag(key, value)
     }
   }
 
   if (context?.extra) {
-    Sentry.setExtra('context', context.extra);
+    Sentry.setExtra('context', context.extra)
   }
 
-  Sentry.captureMessage(message, level);
+  Sentry.captureMessage(message, level)
 }

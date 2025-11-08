@@ -6,10 +6,10 @@
 // 3. <<角色日记本>> - 阈值全文注入
 // 4. 《《角色日记本》》 - 阈值RAG片段检索
 
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Memory } from '@prisma/client';
-import { VectorSearchService } from './vector-search.service';
+import { Injectable, Logger } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { Memory } from '@prisma/client'
+import { VectorSearchService } from './vector-search.service'
 
 /**
  * 记忆召回模式枚举
@@ -30,13 +30,13 @@ export enum MemoryRecallMode {
  */
 export interface MemoryRecallConfig {
   /** 召回模式 */
-  mode: MemoryRecallMode;
+  mode: MemoryRecallMode
   /** 相似度阈值 (0-1) */
-  similarityThreshold?: number;
+  similarityThreshold?: number
   /** 最大返回数量 */
-  limit?: number;
+  limit?: number
   /** 上下文文本 (用于语义检索) */
-  contextText?: string;
+  contextText?: string
 }
 
 /**
@@ -44,15 +44,15 @@ export interface MemoryRecallConfig {
  */
 export interface MemoryRecallResult {
   /** 召回的记忆内容 */
-  memories: string[];
+  memories: string[]
   /** 使用的召回模式 */
-  mode: MemoryRecallMode;
+  mode: MemoryRecallMode
   /** 召回统计信息 */
   stats: {
-    totalMemories: number;
-    returnedCount: number;
-    averageSimilarity?: number;
-  };
+    totalMemories: number
+    returnedCount: number
+    averageSimilarity?: number
+  }
 }
 
 /**
@@ -61,11 +61,11 @@ export interface MemoryRecallResult {
  */
 @Injectable()
 export class MemoryHierarchyService {
-  private readonly logger = new Logger(MemoryHierarchyService.name);
+  private readonly logger = new Logger(MemoryHierarchyService.name)
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly vectorSearch: VectorSearchService,
+    private readonly vectorSearch: VectorSearchService
   ) {}
 
   /**
@@ -76,85 +76,85 @@ export class MemoryHierarchyService {
    * @returns 召回结果
    */
   async recallMemories(gameId: string, config: MemoryRecallConfig): Promise<MemoryRecallResult> {
-    const { mode, similarityThreshold = 0.7, limit = 10, contextText } = config;
+    const { mode, similarityThreshold = 0.7, limit = 10, contextText } = config
 
     // 获取游戏的所有记忆用于统计
     const allMemories = await this.prisma.memory.findMany({
       where: { gameId },
       orderBy: { createdAt: 'desc' },
-    });
+    })
 
-    let memories: string[] = [];
-    let averageSimilarity: number | undefined;
+    let memories: string[] = []
+    let averageSimilarity: number | undefined
 
     switch (mode) {
       case MemoryRecallMode.FULL_TEXT: {
         // {{角色日记本}} - 无条件全文注入
-        memories = allMemories.slice(0, limit).map((m) => m.content);
-        break;
+        memories = allMemories.slice(0, limit).map((m) => m.content)
+        break
       }
 
       case MemoryRecallMode.RAG_FRAGMENT:
         {
           // [[角色日记本]] - RAG片段检索
           if (!contextText) {
-            throw new Error('RAG模式需要提供上下文文本');
+            throw new Error('RAG模式需要提供上下文文本')
           }
           const ragResults = await this.vectorSearch.searchSimilarMemories(
             contextText,
             gameId,
             { id: 'system' } as any, // 简化用户对象
-            { limit, minSimilarity: 0 },
-          );
-          memories = ragResults.map((r) => r.content);
+            { limit, minSimilarity: 0 }
+          )
+          memories = ragResults.map((r) => r.content)
           averageSimilarity =
-            ragResults.reduce((sum, r) => sum + r.similarity, 0) / ragResults.length || 0;
+            ragResults.reduce((sum, r) => sum + r.similarity, 0) / ragResults.length || 0
         }
-        break;
+        break
 
       case MemoryRecallMode.THRESHOLD_FULL: {
         // <<角色日记本>> - 阈值全文注入
         if (!contextText) {
-          throw new Error('阈值模式需要提供上下文文本');
+          throw new Error('阈值模式需要提供上下文文本')
         }
         const thresholdResults = await this.vectorSearch.searchSimilarMemories(
           contextText,
           gameId,
           { id: 'system' } as any,
-          { limit: 1, minSimilarity: similarityThreshold },
-        );
+          { limit: 1, minSimilarity: similarityThreshold }
+        )
         if (thresholdResults.length > 0) {
           // 如果找到足够相似的记忆，返回所有记忆的全文
-          memories = allMemories.slice(0, limit).map((m) => m.content);
+          memories = allMemories.slice(0, limit).map((m) => m.content)
         } else {
           // 否则返回空
-          memories = [];
+          memories = []
         }
-        averageSimilarity = thresholdResults[0]?.similarity;
-        break;
+        averageSimilarity = thresholdResults[0]?.similarity
+        break
       }
 
       case MemoryRecallMode.THRESHOLD_RAG:
         {
           // 《《角色日记本》》 - 阈值RAG片段检索
           if (!contextText) {
-            throw new Error('阈值RAG模式需要提供上下文文本');
+            throw new Error('阈值RAG模式需要提供上下文文本')
           }
           const thresholdRagResults = await this.vectorSearch.searchSimilarMemories(
             contextText,
             gameId,
             { id: 'system' } as any,
-            { limit, minSimilarity: similarityThreshold },
-          );
-          memories = thresholdRagResults.map((r) => r.content);
+            { limit, minSimilarity: similarityThreshold }
+          )
+          memories = thresholdRagResults.map((r) => r.content)
           averageSimilarity =
             thresholdRagResults.reduce((sum, r) => sum + r.similarity, 0) /
-              thresholdRagResults.length || 0;
+              thresholdRagResults.length || 0
         }
-        break;
+        break
 
       default:
-        throw new Error(`未知的记忆召回模式: ${mode}`);
+        throw new Error(`未知的记忆召回模式: ${mode}`)
     }
 
     return {
@@ -165,7 +165,7 @@ export class MemoryHierarchyService {
         returnedCount: memories.length,
         averageSimilarity,
       },
-    };
+    }
   }
 
   /**
@@ -177,7 +177,7 @@ export class MemoryHierarchyService {
       where: { gameId },
       orderBy: { createdAt: 'desc' },
       take: limit,
-    });
+    })
   }
 
   /**
@@ -188,14 +188,14 @@ export class MemoryHierarchyService {
     const result = await this.recallMemories(gameId, {
       mode: MemoryRecallMode.FULL_TEXT,
       limit,
-    });
+    })
     // 返回 Memory 对象而不是字符串数组
     const memories = await this.prisma.memory.findMany({
       where: { gameId },
       orderBy: { createdAt: 'desc' },
       take: limit,
-    });
-    return memories;
+    })
+    return memories
   }
 
   /**
@@ -211,7 +211,7 @@ export class MemoryHierarchyService {
         gameId,
         content,
       },
-    });
+    })
   }
 
   /**
@@ -223,7 +223,7 @@ export class MemoryHierarchyService {
   async deleteMemory(memoryId: string): Promise<Memory> {
     return this.prisma.memory.delete({
       where: { id: memoryId },
-    });
+    })
   }
 
   /**
@@ -235,9 +235,9 @@ export class MemoryHierarchyService {
   async getMemoryStats(gameId: string): Promise<{ total: number }> {
     const count = await this.prisma.memory.count({
       where: { gameId },
-    });
+    })
 
-    return { total: count };
+    return { total: count }
   }
 
   /**
@@ -250,7 +250,7 @@ export class MemoryHierarchyService {
    * @returns 解析后的文本
    */
   async parseMemorySyntax(text: string, gameId: string, contextText?: string): Promise<string> {
-    let result = text;
+    let result = text
 
     // 匹配4种记忆召回语法
     const patterns = [
@@ -262,42 +262,42 @@ export class MemoryHierarchyService {
       { regex: /<<([^>]+)>>/g, mode: MemoryRecallMode.THRESHOLD_FULL },
       // 《《角色日记本》》 - 阈值RAG片段检索
       { regex: /《《([^》]+)》》/g, mode: MemoryRecallMode.THRESHOLD_RAG },
-    ];
+    ]
 
     for (const pattern of patterns) {
-      const matches = [...result.matchAll(pattern.regex)];
+      const matches = [...result.matchAll(pattern.regex)]
       for (const match of matches) {
-        const memoryName = match[1].trim();
-        const fullMatch = match[0];
+        const memoryName = match[1].trim()
+        const fullMatch = match[0]
 
         try {
           const recallResult = await this.recallMemories(gameId, {
             mode: pattern.mode,
             contextText: pattern.mode.includes('rag') ? contextText : undefined,
             limit: 5, // 默认最多返回5条记忆
-          });
+          })
 
           // 格式化记忆内容
-          let replacement = '';
+          let replacement = ''
           if (recallResult.memories.length > 0) {
-            replacement = `\n--- ${memoryName} 记忆 ---\n${recallResult.memories.join('\n---\n')}\n--- 记忆结束 ---\n`;
+            replacement = `\n--- ${memoryName} 记忆 ---\n${recallResult.memories.join('\n---\n')}\n--- 记忆结束 ---\n`
           } else {
-            replacement = `\n--- ${memoryName} 记忆 ---\n(暂无相关记忆)\n--- 记忆结束 ---\n`;
+            replacement = `\n--- ${memoryName} 记忆 ---\n(暂无相关记忆)\n--- 记忆结束 ---\n`
           }
 
-          result = result.replace(fullMatch, replacement);
+          result = result.replace(fullMatch, replacement)
 
           this.logger.debug(
-            `Parsed memory syntax: ${fullMatch} -> ${recallResult.memories.length} memories recalled`,
-          );
+            `Parsed memory syntax: ${fullMatch} -> ${recallResult.memories.length} memories recalled`
+          )
         } catch (error) {
-          this.logger.warn(`Failed to parse memory syntax ${fullMatch}:`, error);
+          this.logger.warn(`Failed to parse memory syntax ${fullMatch}:`, error)
           // 如果解析失败，保持原标记不变
         }
       }
     }
 
-    return result;
+    return result
   }
 
   /**
@@ -313,22 +313,22 @@ export class MemoryHierarchyService {
     gameId: string,
     contextText: string,
     options?: {
-      maxMemories?: number;
-      similarityThreshold?: number;
-      forceFullRecall?: boolean;
-    },
+      maxMemories?: number
+      similarityThreshold?: number
+      forceFullRecall?: boolean
+    }
   ): Promise<{ content: string; strategy: string; stats: any }> {
-    const { maxMemories = 3, similarityThreshold = 0.7, forceFullRecall = false } = options || {};
+    const { maxMemories = 3, similarityThreshold = 0.7, forceFullRecall = false } = options || {}
 
     // 首先尝试RAG检索
     const ragResult = await this.recallMemories(gameId, {
       mode: MemoryRecallMode.RAG_FRAGMENT,
       contextText,
       limit: maxMemories,
-    });
+    })
 
-    let content = '';
-    let strategy = '';
+    let content = ''
+    let strategy = ''
 
     if (forceFullRecall || ragResult.memories.length === 0) {
       // 如果强制全文或RAG无结果，使用阈值全文模式
@@ -337,26 +337,26 @@ export class MemoryHierarchyService {
         contextText,
         similarityThreshold,
         limit: maxMemories,
-      });
+      })
 
       if (thresholdResult.memories.length > 0) {
-        content = thresholdResult.memories.join('\n---\n');
-        strategy = 'threshold_full_recall';
+        content = thresholdResult.memories.join('\n---\n')
+        strategy = 'threshold_full_recall'
       } else {
-        content = '暂无高度相关的历史记忆';
-        strategy = 'no_relevant_memory';
+        content = '暂无高度相关的历史记忆'
+        strategy = 'no_relevant_memory'
       }
     } else {
       // 使用RAG结果
-      content = ragResult.memories.join('\n---\n');
-      strategy = 'rag_fragment_recall';
+      content = ragResult.memories.join('\n---\n')
+      strategy = 'rag_fragment_recall'
     }
 
     return {
       content,
       strategy,
       stats: ragResult.stats,
-    };
+    }
   }
 
   /**
@@ -373,10 +373,10 @@ export class MemoryHierarchyService {
       orderBy: { createdAt: 'desc' },
       skip: keepCount,
       select: { id: true },
-    });
+    })
 
     if (memoriesToDelete.length === 0) {
-      return 0;
+      return 0
     }
 
     // 批量删除
@@ -384,9 +384,9 @@ export class MemoryHierarchyService {
       where: {
         id: { in: memoriesToDelete.map((m) => m.id) },
       },
-    });
+    })
 
-    this.logger.log(`Cleaned up ${result.count} old memories for game ${gameId}`);
-    return result.count;
+    this.logger.log(`Cleaned up ${result.count} old memories for game ${gameId}`)
+    return result.count
   }
 }

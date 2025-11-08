@@ -1,34 +1,34 @@
-import { Injectable } from '@nestjs/common';
-import { AiProviderService } from '../plugins/ai-provider.service';
-import { ModelRouterService } from '../plugins/model-router.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Injectable } from '@nestjs/common'
+import { AiProviderService } from '../plugins/ai-provider.service'
+import { ModelRouterService } from '../plugins/model-router.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 export interface ContentCreationRequest {
-  type: 'marketing' | 'social' | 'brand' | 'video' | 'multilingual';
-  topic: string;
-  audience?: string;
-  tone?: 'professional' | 'casual' | 'creative' | 'formal';
-  length?: 'short' | 'medium' | 'long';
-  platform?: string;
+  type: 'marketing' | 'social' | 'brand' | 'video' | 'multilingual'
+  topic: string
+  audience?: string
+  tone?: 'professional' | 'casual' | 'creative' | 'formal'
+  length?: 'short' | 'medium' | 'long'
+  platform?: string
   brandGuidelines?: {
-    voice: string;
-    values: string[];
-    restrictions: string[];
-  };
-  requirements?: Record<string, any>;
+    voice: string
+    values: string[]
+    restrictions: string[]
+  }
+  requirements?: Record<string, any>
 }
 
 export interface ContentCreationResult {
-  content: string;
+  content: string
   metadata: {
-    wordCount: number;
-    readingTime: number;
-    tone: string;
-    seoScore?: number;
-    brandAlignment?: number;
-  };
-  suggestions: string[];
-  alternatives: string[];
+    wordCount: number
+    readingTime: number
+    tone: string
+    seoScore?: number
+    brandAlignment?: number
+  }
+  suggestions: string[]
+  alternatives: string[]
 }
 
 @Injectable()
@@ -36,7 +36,7 @@ export class ContentCreationService {
   constructor(
     private aiProviderService: AiProviderService,
     private modelRouterService: ModelRouterService,
-    private eventEmitter: EventEmitter2,
+    private eventEmitter: EventEmitter2
   ) {}
 
   // ==================== 营销内容生成 ====================
@@ -50,8 +50,8 @@ export class ContentCreationService {
       audience = 'general',
       tone = 'professional',
       length = 'medium',
-      brandGuidelines
-    } = request;
+      brandGuidelines,
+    } = request
 
     // 构建提示词
     const prompt = this.buildMarketingPrompt({
@@ -59,23 +59,23 @@ export class ContentCreationService {
       audience,
       tone,
       length,
-      brandGuidelines
-    });
+      brandGuidelines,
+    })
 
     // 选择合适的AI模型
     const routingRequest = {
       capabilities: ['text-generation', 'creative-writing'],
       priority: 'performance' as const,
-      context: { contentType: 'marketing', tone, length }
-    };
+      context: { contentType: 'marketing', tone, length },
+    }
 
-    const routingResult = await this.modelRouterService.routeRequest(routingRequest);
+    const routingResult = await this.modelRouterService.routeRequest(routingRequest)
 
     // 生成内容
-    const content = await this.generateContent(prompt, routingResult.model.id);
+    const content = await this.generateContent(prompt, routingResult.model.id)
 
     // 分析内容质量
-    const analysis = await this.analyzeContent(content, request);
+    const analysis = await this.analyzeContent(content, request)
 
     const result: ContentCreationResult = {
       content,
@@ -84,42 +84,38 @@ export class ContentCreationService {
         readingTime: this.calculateReadingTime(content),
         tone,
         seoScore: analysis.seoScore,
-        brandAlignment: analysis.brandAlignment
+        brandAlignment: analysis.brandAlignment,
       },
       suggestions: analysis.suggestions,
-      alternatives: []
-    };
+      alternatives: [],
+    }
 
     this.eventEmitter.emit('industry.contentCreated', {
       type: 'marketing',
       request,
-      result
-    });
+      result,
+    })
 
-    return result;
+    return result
   }
 
   /**
    * 生成社交媒体内容
    */
-  async generateSocialMediaContent(request: ContentCreationRequest): Promise<ContentCreationResult> {
-    const {
-      topic,
-      platform = 'twitter',
-      tone = 'casual',
-      audience,
-      brandGuidelines
-    } = request;
+  async generateSocialMediaContent(
+    request: ContentCreationRequest
+  ): Promise<ContentCreationResult> {
+    const { topic, platform = 'twitter', tone = 'casual', audience, brandGuidelines } = request
 
     // 平台特定的内容长度限制
     const lengthLimits = {
       twitter: 280,
       instagram: 2200,
       linkedin: 3000,
-      facebook: 63206
-    };
+      facebook: 63206,
+    }
 
-    const maxLength = lengthLimits[platform as keyof typeof lengthLimits] || 500;
+    const maxLength = lengthLimits[platform as keyof typeof lengthLimits] || 500
 
     const prompt = this.buildSocialMediaPrompt({
       topic,
@@ -127,17 +123,17 @@ export class ContentCreationService {
       tone,
       audience,
       maxLength,
-      brandGuidelines
-    });
+      brandGuidelines,
+    })
 
     const routingResult = await this.modelRouterService.routeRequest({
       capabilities: ['text-generation', 'social-media'],
       priority: 'performance',
-      context: { platform, maxLength }
-    });
+      context: { platform, maxLength },
+    })
 
-    const content = await this.generateContent(prompt, routingResult.model.id);
-    const analysis = await this.analyzeContent(content, request);
+    const content = await this.generateContent(prompt, routingResult.model.id)
+    const analysis = await this.analyzeContent(content, request)
 
     return {
       content: this.truncateContent(content, maxLength),
@@ -146,11 +142,11 @@ export class ContentCreationService {
         readingTime: this.calculateReadingTime(content),
         tone,
         seoScore: analysis.seoScore,
-        brandAlignment: analysis.brandAlignment
+        brandAlignment: analysis.brandAlignment,
       },
       suggestions: analysis.suggestions,
-      alternatives: []
-    };
+      alternatives: [],
+    }
   }
 
   // ==================== 品牌内容生成 ====================
@@ -159,12 +155,12 @@ export class ContentCreationService {
    * 生成品牌故事
    */
   async generateBrandStory(request: {
-    brandName: string;
-    mission: string;
-    values: string[];
-    targetAudience: string;
-    storyType: 'origin' | 'mission' | 'customer' | 'future';
-    length: 'short' | 'medium' | 'long';
+    brandName: string
+    mission: string
+    values: string[]
+    targetAudience: string
+    storyType: 'origin' | 'mission' | 'customer' | 'future'
+    length: 'short' | 'medium' | 'long'
   }): Promise<ContentCreationResult> {
     const prompt = `Create a compelling brand story for ${request.brandName}.
 
@@ -174,16 +170,16 @@ Target Audience: ${request.targetAudience}
 Story Type: ${request.storyType}
 Length: ${request.length}
 
-Make it authentic, emotional, and aligned with brand values.`;
+Make it authentic, emotional, and aligned with brand values.`
 
     const routingResult = await this.modelRouterService.routeRequest({
       capabilities: ['creative-writing', 'narrative'],
       priority: 'performance',
-      context: { contentType: 'brand-story', storyType: request.storyType }
-    });
+      context: { contentType: 'brand-story', storyType: request.storyType },
+    })
 
-    const content = await this.generateContent(prompt, routingResult.model.id);
-    const analysis = await this.analyzeBrandAlignment(content, request.values);
+    const content = await this.generateContent(prompt, routingResult.model.id)
+    const analysis = await this.analyzeBrandAlignment(content, request.values)
 
     return {
       content,
@@ -191,11 +187,11 @@ Make it authentic, emotional, and aligned with brand values.`;
         wordCount: this.countWords(content),
         readingTime: this.calculateReadingTime(content),
         tone: 'inspirational',
-        brandAlignment: analysis.score
+        brandAlignment: analysis.score,
       },
       suggestions: analysis.suggestions,
-      alternatives: []
-    };
+      alternatives: [],
+    }
   }
 
   // ==================== 视频内容生成 ====================
@@ -204,25 +200,25 @@ Make it authentic, emotional, and aligned with brand values.`;
    * 生成视频脚本
    */
   async generateVideoScript(request: {
-    topic: string;
-    duration: number; // 秒
-    style: 'educational' | 'promotional' | 'storytelling';
-    targetAudience: string;
-    callToAction?: string;
+    topic: string
+    duration: number // 秒
+    style: 'educational' | 'promotional' | 'storytelling'
+    targetAudience: string
+    callToAction?: string
   }): Promise<{
-    script: string;
+    script: string
     scenes: Array<{
-      sceneNumber: number;
-      duration: number;
-      description: string;
-      dialogue: string;
-      visualNotes: string;
-    }>;
+      sceneNumber: number
+      duration: number
+      description: string
+      dialogue: string
+      visualNotes: string
+    }>
     metadata: {
-      totalDuration: number;
-      sceneCount: number;
-      estimatedWordCount: number;
-    };
+      totalDuration: number
+      sceneCount: number
+      estimatedWordCount: number
+    }
   }> {
     const prompt = `Create a video script for:
 
@@ -232,16 +228,16 @@ Style: ${request.style}
 Target Audience: ${request.targetAudience}
 ${request.callToAction ? `Call to Action: ${request.callToAction}` : ''}
 
-Include scene descriptions, dialogue, and visual notes.`;
+Include scene descriptions, dialogue, and visual notes.`
 
     const routingResult = await this.modelRouterService.routeRequest({
       capabilities: ['script-writing', 'creative-writing'],
       priority: 'performance',
-      context: { contentType: 'video-script', duration: request.duration }
-    });
+      context: { contentType: 'video-script', duration: request.duration },
+    })
 
-    const content = await this.generateContent(prompt, routingResult.model.id);
-    const parsedScript = this.parseVideoScript(content);
+    const content = await this.generateContent(prompt, routingResult.model.id)
+    const parsedScript = this.parseVideoScript(content)
 
     return {
       script: content,
@@ -249,9 +245,9 @@ Include scene descriptions, dialogue, and visual notes.`;
       metadata: {
         totalDuration: request.duration,
         sceneCount: parsedScript.scenes.length,
-        estimatedWordCount: this.countWords(content)
-      }
-    };
+        estimatedWordCount: this.countWords(content),
+      },
+    }
   }
 
   // ==================== 多语言内容生成 ====================
@@ -260,14 +256,14 @@ Include scene descriptions, dialogue, and visual notes.`;
    * 生成多语言内容
    */
   async generateMultilingualContent(request: {
-    content: string;
-    sourceLanguage: string;
-    targetLanguages: string[];
-    context: 'marketing' | 'technical' | 'creative';
-    preserveTone: boolean;
-    culturalAdaptation: boolean;
+    content: string
+    sourceLanguage: string
+    targetLanguages: string[]
+    context: 'marketing' | 'technical' | 'creative'
+    preserveTone: boolean
+    culturalAdaptation: boolean
   }): Promise<Record<string, ContentCreationResult>> {
-    const results: Record<string, ContentCreationResult> = {};
+    const results: Record<string, ContentCreationResult> = {}
 
     for (const targetLanguage of request.targetLanguages) {
       const prompt = `Translate and adapt the following content:
@@ -281,7 +277,7 @@ Cultural Adaptation: ${request.culturalAdaptation ? 'Yes' : 'No'}
 Content:
 ${request.content}
 
-Ensure the translation is natural and culturally appropriate.`;
+Ensure the translation is natural and culturally appropriate.`
 
       const routingResult = await this.modelRouterService.routeRequest({
         capabilities: ['translation', 'cultural-adaptation'],
@@ -289,25 +285,25 @@ Ensure the translation is natural and culturally appropriate.`;
         context: {
           sourceLanguage: request.sourceLanguage,
           targetLanguage,
-          context: request.context
-        }
-      });
+          context: request.context,
+        },
+      })
 
-      const translatedContent = await this.generateContent(prompt, routingResult.model.id);
+      const translatedContent = await this.generateContent(prompt, routingResult.model.id)
 
       results[targetLanguage] = {
         content: translatedContent,
         metadata: {
           wordCount: this.countWords(translatedContent),
           readingTime: this.calculateReadingTime(translatedContent),
-          tone: request.preserveTone ? 'preserved' : 'adapted'
+          tone: request.preserveTone ? 'preserved' : 'adapted',
         },
         suggestions: [],
-        alternatives: []
-      };
+        alternatives: [],
+      }
     }
 
-    return results;
+    return results
   }
 
   // ==================== 内容分析和优化 ====================
@@ -315,26 +311,29 @@ Ensure the translation is natural and culturally appropriate.`;
   /**
    * 分析内容质量
    */
-  async analyzeContent(content: string, request: ContentCreationRequest): Promise<{
-    seoScore: number;
-    readabilityScore: number;
-    engagementScore: number;
-    brandAlignment: number;
-    suggestions: string[];
+  async analyzeContent(
+    content: string,
+    request: ContentCreationRequest
+  ): Promise<{
+    seoScore: number
+    readabilityScore: number
+    engagementScore: number
+    brandAlignment: number
+    suggestions: string[]
   }> {
     // SEO分析
-    const seoScore = this.calculateSEOScore(content, request.topic);
+    const seoScore = this.calculateSEOScore(content, request.topic)
 
     // 可读性分析
-    const readabilityScore = this.calculateReadabilityScore(content);
+    const readabilityScore = this.calculateReadabilityScore(content)
 
     // 参与度分析
-    const engagementScore = this.calculateEngagementScore(content, request.tone);
+    const engagementScore = this.calculateEngagementScore(content, request.tone)
 
     // 品牌一致性分析
     const brandAlignment = request.brandGuidelines
       ? await this.analyzeBrandAlignment(content, request.brandGuidelines.values)
-      : 0.8;
+      : 0.8
 
     // 生成建议
     const suggestions = this.generateContentSuggestions({
@@ -343,16 +342,16 @@ Ensure the translation is natural and culturally appropriate.`;
       engagementScore,
       brandAlignment,
       content,
-      request
-    });
+      request,
+    })
 
     return {
       seoScore,
       readabilityScore,
       engagementScore,
       brandAlignment: brandAlignment.score || brandAlignment,
-      suggestions
-    };
+      suggestions,
+    }
   }
 
   /**
@@ -363,27 +362,27 @@ Ensure the translation is natural and culturally appropriate.`;
     count: number = 3,
     variations: ('tone' | 'length' | 'style')[] = ['tone']
   ): Promise<string[]> {
-    const variants: string[] = [];
+    const variants: string[] = []
 
     for (let i = 0; i < count; i++) {
-      const variationType = variations[i % variations.length];
+      const variationType = variations[i % variations.length]
       const prompt = `Rewrite the following content with a ${variationType} variation:
 
 Original content:
 ${content}
 
-Create a ${variationType} variation while maintaining the core message.`;
+Create a ${variationType} variation while maintaining the core message.`
 
       const routingResult = await this.modelRouterService.routeRequest({
         capabilities: ['content-rewriting'],
-        priority: 'balanced'
-      });
+        priority: 'balanced',
+      })
 
-      const variant = await this.generateContent(prompt, routingResult.model.id);
-      variants.push(variant);
+      const variant = await this.generateContent(prompt, routingResult.model.id)
+      variants.push(variant)
     }
 
-    return variants;
+    return variants
   }
 
   // ==================== 私有方法 ====================
@@ -400,7 +399,7 @@ Tone: ${params.tone}
 Length: ${params.length}
 ${params.brandGuidelines ? `Brand Guidelines: ${JSON.stringify(params.brandGuidelines)}` : ''}
 
-Make it persuasive, engaging, and conversion-focused.`;
+Make it persuasive, engaging, and conversion-focused.`
   }
 
   /**
@@ -415,7 +414,7 @@ ${params.audience ? `Audience: ${params.audience}` : ''}
 Character limit: ${params.maxLength}
 ${params.brandGuidelines ? `Brand Guidelines: ${JSON.stringify(params.brandGuidelines)}` : ''}
 
-Make it shareable and platform-optimized.`;
+Make it shareable and platform-optimized.`
   }
 
   /**
@@ -424,46 +423,46 @@ Make it shareable and platform-optimized.`;
   private async generateContent(prompt: string, modelId: string): Promise<string> {
     // 这里应该调用实际的AI模型API
     // 暂时返回模拟内容
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    return `Generated content based on prompt: ${prompt.substring(0, 100)}...`;
+    return `Generated content based on prompt: ${prompt.substring(0, 100)}...`
   }
 
   /**
    * 计算词数
    */
   private countWords(text: string): number {
-    return text.trim().split(/\s+/).length;
+    return text.trim().split(/\s+/).length
   }
 
   /**
    * 计算阅读时间
    */
   private calculateReadingTime(text: string): number {
-    const wordsPerMinute = 200;
-    return Math.ceil(this.countWords(text) / wordsPerMinute);
+    const wordsPerMinute = 200
+    return Math.ceil(this.countWords(text) / wordsPerMinute)
   }
 
   /**
    * 截断内容
    */
   private truncateContent(content: string, maxLength: number): string {
-    if (content.length <= maxLength) return content;
+    if (content.length <= maxLength) return content
 
     // 智能截断，尽量在句号或空格处截断
-    let truncated = content.substring(0, maxLength);
+    let truncated = content.substring(0, maxLength)
     const lastSentenceEnd = Math.max(
       truncated.lastIndexOf('.'),
       truncated.lastIndexOf('!'),
       truncated.lastIndexOf('?'),
       truncated.lastIndexOf(' ')
-    );
+    )
 
     if (lastSentenceEnd > maxLength * 0.8) {
-      truncated = truncated.substring(0, lastSentenceEnd + 1);
+      truncated = truncated.substring(0, lastSentenceEnd + 1)
     }
 
-    return truncated.trim() + '...';
+    return truncated.trim() + '...'
   }
 
   /**
@@ -476,10 +475,10 @@ Make it shareable and platform-optimized.`;
       duration: 10, // 默认10秒
       description: scene,
       dialogue: '',
-      visualNotes: ''
-    }));
+      visualNotes: '',
+    }))
 
-    return { scenes };
+    return { scenes }
   }
 
   // 其他分析方法的实现...

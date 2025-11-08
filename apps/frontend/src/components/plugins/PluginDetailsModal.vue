@@ -44,11 +44,17 @@
                           <i
                             v-for="star in 5"
                             :key="star"
-                            :class="star <= Math.floor(plugin.averageRating || 0) ? 'icon-star-full' : 'icon-star-empty'"
+                            :class="
+                              star <= Math.floor(plugin.averageRating || 0)
+                                ? 'icon-star-full'
+                                : 'icon-star-empty'
+                            "
                             class="star-icon"
                           ></i>
                         </div>
-                        <span class="rating-score">{{ plugin.averageRating ? plugin.averageRating.toFixed(1) : '暂无' }}</span>
+                        <span class="rating-score">{{
+                          plugin.averageRating ? plugin.averageRating.toFixed(1) : '暂无'
+                        }}</span>
                       </div>
                     </div>
                     <div class="stat-label">{{ plugin.reviewCount || 0 }} 评价</div>
@@ -63,11 +69,7 @@
             </div>
 
             <div class="plugin-actions">
-              <button
-                @click="$emit('install', plugin)"
-                :disabled="installing"
-                class="install-btn"
-              >
+              <button @click="$emit('install', plugin)" :disabled="installing" class="install-btn">
                 <i v-if="installing" class="icon-spinner spinning"></i>
                 <i v-else class="icon-download"></i>
                 {{ installing ? '安装中...' : '安装插件' }}
@@ -110,11 +112,7 @@
                   <div class="overview-section">
                     <h3>标签</h3>
                     <div class="tags-list">
-                      <span
-                        v-for="tag in plugin.tags"
-                        :key="tag.id"
-                        class="tag-item"
-                      >
+                      <span v-for="tag in plugin.tags" :key="tag.id" class="tag-item">
                         {{ tag.displayName }}
                       </span>
                     </div>
@@ -147,14 +145,13 @@
                     </div>
                   </div>
 
-                  <div v-if="plugin.dependencies && plugin.dependencies.length > 0" class="overview-section">
+                  <div
+                    v-if="plugin.dependencies && plugin.dependencies.length > 0"
+                    class="overview-section"
+                  >
                     <h3>依赖项</h3>
                     <div class="dependencies-list">
-                      <div
-                        v-for="dep in plugin.dependencies"
-                        :key="dep.id"
-                        class="dependency-item"
-                      >
+                      <div v-for="dep in plugin.dependencies" :key="dep.id" class="dependency-item">
                         <span class="dep-name">{{ dep.dependency.displayName }}</span>
                         <span class="dep-version">
                           {{ dep.minVersion || '*' }} - {{ dep.maxVersion || '*' }}
@@ -169,11 +166,7 @@
               <!-- 版本标签页 -->
               <div v-if="activeTab === 'versions'" class="tab-pane">
                 <div v-if="plugin.versions && plugin.versions.length > 0" class="versions-list">
-                  <div
-                    v-for="version in plugin.versions"
-                    :key="version.id"
-                    class="version-item"
-                  >
+                  <div v-for="version in plugin.versions" :key="version.id" class="version-item">
                     <div class="version-header">
                       <div class="version-info">
                         <span class="version-number">{{ version.version }}</span>
@@ -205,12 +198,18 @@
                   <div class="reviews-summary">
                     <div class="rating-overview">
                       <div class="average-rating">
-                        <div class="rating-score-large">{{ plugin.averageRating ? plugin.averageRating.toFixed(1) : '0.0' }}</div>
+                        <div class="rating-score-large">
+                          {{ plugin.averageRating ? plugin.averageRating.toFixed(1) : '0.0' }}
+                        </div>
                         <div class="rating-stars-large">
                           <i
                             v-for="star in 5"
                             :key="star"
-                            :class="star <= Math.floor(plugin.averageRating || 0) ? 'icon-star-full' : 'icon-star-empty'"
+                            :class="
+                              star <= Math.floor(plugin.averageRating || 0)
+                                ? 'icon-star-full'
+                                : 'icon-star-empty'
+                            "
                             class="star-icon"
                           ></i>
                         </div>
@@ -218,11 +217,7 @@
                       </div>
 
                       <div class="rating-breakdown">
-                        <div
-                          v-for="rating in [5,4,3,2,1]"
-                          :key="rating"
-                          class="rating-bar"
-                        >
+                        <div v-for="rating in [5, 4, 3, 2, 1]" :key="rating" class="rating-bar">
                           <span class="rating-label">{{ rating }}星</span>
                           <div class="rating-bar-bg">
                             <div
@@ -238,11 +233,7 @@
 
                   <!-- 评价列表 -->
                   <div v-if="plugin.reviews && plugin.reviews.length > 0" class="reviews-list">
-                    <div
-                      v-for="review in plugin.reviews"
-                      :key="review.id"
-                      class="review-item"
-                    >
+                    <div v-for="review in plugin.reviews" :key="review.id" class="review-item">
                       <div class="review-header">
                         <div class="reviewer-info">
                           <span class="reviewer-name">{{ review.user.email }}</span>
@@ -326,7 +317,9 @@
                           <div class="adoption-bar">
                             <div
                               class="adoption-fill"
-                              :style="{ width: getVersionAdoptionPercentage(version.downloads) + '%' }"
+                              :style="{
+                                width: getVersionAdoptionPercentage(version.downloads) + '%',
+                              }"
                             ></div>
                           </div>
                           <span class="adoption-count">{{ version.downloads }}</span>
@@ -350,12 +343,12 @@ import { computed, ref, watch } from 'vue'
 const props = defineProps({
   plugin: {
     type: Object,
-    required: true
+    required: true,
   },
   visible: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['close', 'install'])
@@ -367,28 +360,31 @@ const tabs = [
   { key: 'overview', label: '概述', icon: 'icon-info-circle' },
   { key: 'versions', label: '版本', icon: 'icon-code-branch' },
   { key: 'reviews', label: '评价', icon: 'icon-comments' },
-  { key: 'stats', label: '统计', icon: 'icon-chart-bar' }
+  { key: 'stats', label: '统计', icon: 'icon-chart-bar' },
 ]
 
 // 计算属性
 const pluginIconClass = computed(() => {
   const categoryIcons = {
     'ai-tools': 'icon-brain',
-    'utilities': 'icon-wrench',
-    'themes': 'icon-palette',
-    'languages': 'icon-globe',
-    'integrations': 'icon-plug'
+    utilities: 'icon-wrench',
+    themes: 'icon-palette',
+    languages: 'icon-globe',
+    integrations: 'icon-plug',
   }
 
   return categoryIcons[props.plugin.category?.name] || 'icon-puzzle-piece'
 })
 
 // 监听 visible 变化，重置标签页
-watch(() => props.visible, (newVisible) => {
-  if (newVisible) {
-    activeTab.value = 'overview'
+watch(
+  () => props.visible,
+  (newVisible) => {
+    if (newVisible) {
+      activeTab.value = 'overview'
+    }
   }
-})
+)
 
 // 方法
 function formatNumber(num) {
@@ -405,26 +401,28 @@ function formatDate(dateString) {
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
 function getRatingPercentage(rating) {
-  const ratingDistribution = props.plugin.reviews?.reduce((acc, review) => {
-    acc[review.rating] = (acc[review.rating] || 0) + 1
-    return acc
-  }, {}) || {}
+  const ratingDistribution =
+    props.plugin.reviews?.reduce((acc, review) => {
+      acc[review.rating] = (acc[review.rating] || 0) + 1
+      return acc
+    }, {}) || {}
 
   const total = Object.values(ratingDistribution).reduce((sum, count) => sum + count, 0)
   return total > 0 ? ((ratingDistribution[rating] || 0) / total) * 100 : 0
 }
 
 function getRatingCount(rating) {
-  return props.plugin.reviews?.filter(review => review.rating === rating).length || 0
+  return props.plugin.reviews?.filter((review) => review.rating === rating).length || 0
 }
 
 function getVersionAdoptionPercentage(downloads) {
-  const totalDownloads = props.plugin.versions?.reduce((sum, version) => sum + version.downloads, 0) || 1
+  const totalDownloads =
+    props.plugin.versions?.reduce((sum, version) => sum + version.downloads, 0) || 1
   return totalDownloads > 0 ? (downloads / totalDownloads) * 100 : 0
 }
 </script>
@@ -695,8 +693,14 @@ function getVersionAdoptionPercentage(downloads) {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 概述标签页 */
@@ -1171,7 +1175,11 @@ function getVersionAdoptionPercentage(downloads) {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

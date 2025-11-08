@@ -72,40 +72,40 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
-import { useThemeStore } from '@/stores/theme.store';
+import { computed, onMounted } from 'vue'
+import { useThemeStore } from '@/stores/theme.store'
 
-const themeStore = useThemeStore();
+const themeStore = useThemeStore()
 
 // 计算属性
-const currentTheme = computed(() => themeStore.currentTheme);
-const themeMode = computed(() => themeStore.themeMode);
-const themeOptions = computed(() => themeStore.getThemeOptions());
-const themeModeOptions = computed(() => themeStore.getThemeModeOptions());
-const isDarkTheme = computed(() => themeStore.isDarkTheme());
+const currentTheme = computed(() => themeStore.currentTheme)
+const themeMode = computed(() => themeStore.themeMode)
+const themeOptions = computed(() => themeStore.getThemeOptions())
+const themeModeOptions = computed(() => themeStore.getThemeModeOptions())
+const isDarkTheme = computed(() => themeStore.isDarkTheme())
 
 // 方法
 const setTheme = (theme) => {
-  themeStore.setTheme(theme);
-};
+  themeStore.setTheme(theme)
+}
 
 const setThemeMode = (mode) => {
-  themeStore.setThemeMode(mode);
-};
+  themeStore.setThemeMode(mode)
+}
 
 const toggleTheme = () => {
-  themeStore.toggleTheme();
-};
+  themeStore.toggleTheme()
+}
 
 const getThemeIcon = (theme) => {
-  return themeStore.getThemeIcon(theme);
-};
+  return themeStore.getThemeIcon(theme)
+}
 
 // 生命周期
 onMounted(() => {
   // 初始化主题系统
-  themeStore.initTheme();
-});
+  themeStore.initTheme()
+})
 </script>
 
 <style scoped>

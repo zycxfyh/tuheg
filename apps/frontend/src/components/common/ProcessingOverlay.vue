@@ -5,7 +5,7 @@
 
 <script setup>
 // [核心修正] 导入正确的 store 和函数名
-import { useUIStore } from '@/stores/ui.store';
+import { useUIStore } from '@/stores/ui.store'
 
-const uiStore = useUIStore();
+const uiStore = useUIStore()
 </script>

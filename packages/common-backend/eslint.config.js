@@ -1,5 +1,5 @@
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
+const eslint = require('@eslint/js')
+const tseslint = require('typescript-eslint')
 
 module.exports = tseslint.config(
   eslint.configs.recommended,
@@ -21,5 +21,5 @@ module.exports = tseslint.config(
   },
   {
     ignores: ['dist/', 'node_modules/', '*.d.ts', 'eslint.config.js', 'jest.config.js', 'test/'],
-  },
-);
+  }
+)

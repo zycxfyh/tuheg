@@ -1,0 +1,299 @@
+name: Integration Testing
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test against'
+        required: false
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: integration_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build applications
+        run: pnpm build
+
+      - name: Setup test database
+        run: |
+          PGPASSWORD=${{ secrets.DB_PASSWORD }} psql -h localhost -U postgres -d integration_test -f scripts/init-test-db.sql
+        env:
+          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Run integration tests
+        run: pnpm test:integration
+        env:
+          DATABASE_URL: postgresql://postgres:${{ secrets.DB_PASSWORD }}@localhost:5432/integration_test
+          REDIS_URL: redis://localhost:6379
+          NODE_ENV: test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          API_KEY: ${{ secrets.API_KEY }}
+
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results-${{ github.run_id }}
+          path: |
+            test-results/integration/
+            logs/integration-test.log
+          retention-days: 7
+
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: integration-tests
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm --filter frontend build
+
+      - name: Setup Playwright
+        run: pnpm --filter frontend exec playwright install --with-deps
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+        env:
+          BASE_URL: ${{ secrets.STAGING_URL || 'http://localhost:3000' }}
+          API_BASE_URL: ${{ secrets.STAGING_API_URL || 'http://localhost:4000' }}
+          NODE_ENV: test
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results-${{ github.run_id }}
+          path: |
+            test-results/e2e/
+            apps/frontend/test-results/
+            apps/frontend/playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: apps/frontend/playwright-report/
+          retention-days: 30
+
+  api-tests:
+    name: API Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: integration-tests
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test AI Agents API
+        run: pnpm test:ai-agents
+        env:
+          API_BASE_URL: ${{ secrets.STAGING_API_URL || 'http://localhost:4000' }}
+          API_KEY: ${{ secrets.API_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Upload API test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-results-${{ github.run_id }}
+          path: |
+            test-results/api/
+            logs/api-test.log
+          retention-days: 7
+
+  contract-tests:
+    name: Contract Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: integration-tests
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run contract tests
+        run: |
+          # Install pact-cli if needed
+          npm install -g @pact-foundation/pact-cli
+          # Run contract verification
+          pnpm exec pact verify
+        env:
+          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
+          PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME }}
+          PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD }}
+
+      - name: Upload contract test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contract-test-results-${{ github.run_id }}
+          path: |
+            pacts/
+            pact-logs/
+          retention-days: 7
+
+  integration-summary:
+    name: Integration Test Summary
+    runs-on: ubuntu-latest
+    needs: [integration-tests, e2e-tests, api-tests, contract-tests]
+    if: always()
+
+    steps:
+      - name: Generate integration summary
+        run: |
+          echo "## 🔗 Integration Testing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Integration tests status
+          if [ "${{ needs.integration-tests.result }}" == "success" ]; then
+            echo "✅ Integration Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Integration Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # E2E tests status
+          if [ "${{ needs.e2e-tests.result }}" == "success" ]; then
+            echo "✅ E2E Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ E2E Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # API tests status
+          if [ "${{ needs.api-tests.result }}" == "success" ]; then
+            echo "✅ API Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ API Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Contract tests status
+          if [ "${{ needs.contract-tests.result }}" == "success" ]; then
+            echo "✅ Contract Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Contract Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Test Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Integration test results" >> $GITHUB_STEP_SUMMARY
+          echo "- E2E test reports and screenshots" >> $GITHUB_STEP_SUMMARY
+          echo "- API test logs" >> $GITHUB_STEP_SUMMARY
+          echo "- Contract verification results" >> $GITHUB_STEP_SUMMARY

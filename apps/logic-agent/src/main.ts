@@ -1,29 +1,29 @@
 // 文件路径: apps/backend/apps/logic-agent/src/main.ts (已修复类型)
 
-import { NestFactory } from '@nestjs/core';
-import { LogicAgentModule } from './logic-agent.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
-import * as Sentry from '@sentry/node';
-import { Channel } from 'amqplib'; // <-- [核心修正] 导入 Channel 类型
+import { NestFactory } from '@nestjs/core'
+import { LogicAgentModule } from './logic-agent.module'
+import { MicroserviceOptions, Transport } from '@nestjs/microservices'
+import { ConfigService } from '@nestjs/config'
+import * as Sentry from '@sentry/node'
+import { Channel } from 'amqplib' // <-- [核心修正] 导入 Channel 类型
 
 async function bootstrap() {
-  const app = await NestFactory.create(LogicAgentModule);
-  const configService = app.get(ConfigService);
+  const app = await NestFactory.create(LogicAgentModule)
+  const configService = app.get(ConfigService)
 
   Sentry.init({
     dsn: configService.get<string>('SENTRY_DSN'),
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
     environment: `agent-logic-${process.env.NODE_ENV || 'development'}`,
-  });
+  })
 
-  const rmqUrl = configService.get<string>('RABBITMQ_URL', 'amqp://localhost:5672');
+  const rmqUrl = configService.get<string>('RABBITMQ_URL', 'amqp://localhost:5672')
 
-  const RETRY_EXCHANGE = 'logic_retry_exchange';
-  const RETRY_QUEUE = 'logic_retry_queue';
-  const DEAD_LETTER_EXCHANGE = 'dlx';
-  const DEAD_LETTER_QUEUE = 'logic_queue_dead';
+  const RETRY_EXCHANGE = 'logic_retry_exchange'
+  const RETRY_QUEUE = 'logic_retry_queue'
+  const DEAD_LETTER_EXCHANGE = 'dlx'
+  const DEAD_LETTER_QUEUE = 'logic_queue_dead'
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
@@ -53,35 +53,35 @@ async function bootstrap() {
           channel.assertExchange(DEAD_LETTER_EXCHANGE, 'direct', { durable: true }),
           channel.assertQueue(DEAD_LETTER_QUEUE, { durable: true }),
           channel.bindQueue(DEAD_LETTER_QUEUE, DEAD_LETTER_EXCHANGE, DEAD_LETTER_QUEUE),
-        ]);
+        ])
       },
     },
-  });
+  })
 
   // [新增] 配置HTTP服务器
-  const httpPort = configService.get<number>('LOGIC_AGENT_HTTP_PORT', 8081);
-  app.setGlobalPrefix('api/v1/logic'); // API前缀
+  const httpPort = configService.get<number>('LOGIC_AGENT_HTTP_PORT', 8081)
+  app.setGlobalPrefix('api/v1/logic') // API前缀
 
   try {
-    await app.startAllMicroservices();
-    await app.listen(httpPort);
+    await app.startAllMicroservices()
+    await app.listen(httpPort)
 
-    console.log('🚀 Logic Agent is running:');
-    console.log(`   📡 Microservices: listening for tasks on the event bus`);
-    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/logic`);
+    console.log('🚀 Logic Agent is running:')
+    console.log(`   📡 Microservices: listening for tasks on the event bus`)
+    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/logic`)
   } catch (err) {
-    Sentry.captureException(err);
-    console.error('Failed to start Logic Agent:', err);
+    Sentry.captureException(err)
+    console.error('Failed to start Logic Agent:', err)
     await Sentry.close(2000).then(() => {
-      process.exit(1);
-    });
+      process.exit(1)
+    })
   }
 }
 
 bootstrap().catch((err) => {
-  Sentry.captureException(err);
-  console.error('Unhandled error during bootstrap of Logic Agent:', err);
+  Sentry.captureException(err)
+  console.error('Unhandled error during bootstrap of Logic Agent:', err)
   Sentry.close(2000).then(() => {
-    process.exit(1);
-  });
-});
+    process.exit(1)
+  })
+})

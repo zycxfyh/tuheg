@@ -1,26 +1,26 @@
 // 文件路径: packages/common-backend/src/ai/ai-guard.ts
 
-import { Injectable } from '@nestjs/common';
-import { z } from 'zod';
-import { AiGenerationException } from '../exceptions/ai-exception';
-import { PromptInjectionDetectedException } from '../errors/prompt-injection-detected.exception';
+import { Injectable } from '@nestjs/common'
+import { z } from 'zod'
+import { AiGenerationException } from '../exceptions/ai-exception'
+import { PromptInjectionDetectedException } from '../errors/prompt-injection-detected.exception'
 // [核心修正] 从 runnables 导入通用的 Runnable 类型
-import type { Runnable } from '@langchain/core/runnables';
+import type { Runnable } from '@langchain/core/runnables'
 
 /**
  * 提示注入检查结果类型
  */
 export type PromptInjectionCheckResult = {
-  allowed: boolean;
-  score: number;
-  threshold: number;
-  reason: string;
-  inputPreview?: string;
+  allowed: boolean
+  score: number
+  threshold: number
+  reason: string
+  inputPreview?: string
   details?: {
-    preview?: string;
-    context?: string;
-  };
-};
+    preview?: string
+    context?: string
+  }
+}
 
 /**
  * 提示注入防护服务
@@ -28,7 +28,7 @@ export type PromptInjectionCheckResult = {
  */
 @Injectable()
 export class PromptInjectionGuard {
-  private readonly threshold = 0.7;
+  private readonly threshold = 0.7
 
   /**
    * 检查输入是否包含提示注入攻击
@@ -38,7 +38,7 @@ export class PromptInjectionGuard {
    */
   async checkInput(
     input: string,
-    context?: { userId?: string; correlationId?: string },
+    context?: { userId?: string; correlationId?: string }
   ): Promise<PromptInjectionCheckResult> {
     // 简单的实现 - 在实际项目中应该使用更复杂的检测逻辑
     const suspiciousPatterns = [
@@ -46,9 +46,9 @@ export class PromptInjectionGuard {
       /system.*prompt/i,
       /override.*settings/i,
       /bypass.*restrictions/i,
-    ];
+    ]
 
-    const score = suspiciousPatterns.some((pattern) => pattern.test(input)) ? 0.9 : 0.1;
+    const score = suspiciousPatterns.some((pattern) => pattern.test(input)) ? 0.9 : 0.1
 
     if (score >= this.threshold) {
       throw new PromptInjectionDetectedException('Potential prompt injection detected', {
@@ -58,7 +58,7 @@ export class PromptInjectionGuard {
         context: context?.correlationId,
         correlationId: context?.correlationId,
         userId: context?.userId,
-      });
+      })
     }
 
     return {
@@ -69,7 +69,7 @@ export class PromptInjectionGuard {
       details: {
         preview: input.substring(0, 100),
       },
-    };
+    }
   }
 
   /**
@@ -79,9 +79,9 @@ export class PromptInjectionGuard {
    */
   async ensureSafeOrThrow(
     input: string,
-    context?: { userId?: string; correlationId?: string },
+    context?: { userId?: string; correlationId?: string }
   ): Promise<void> {
-    const result = await this.checkInput(input, context);
+    const result = await this.checkInput(input, context)
     if (!result.allowed) {
       throw new PromptInjectionDetectedException('Input failed security check', {
         score: result.score,
@@ -90,12 +90,12 @@ export class PromptInjectionGuard {
         context: context?.correlationId,
         correlationId: context?.correlationId,
         userId: context?.userId,
-      });
+      })
     }
   }
 }
 
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 2
 
 /**
  * [核心护栏] 使用Zod Schema安全地调用LangChain链，并提供自动重试和超时机制。
@@ -110,40 +110,40 @@ export async function callAiWithGuard<T extends z.ZodType>(
   chain: Runnable, // <-- [核心修正] 使用 Runnable 类型
   params: object,
   schema: T,
-  timeoutMs: number = 30000, // 默认30秒超时
+  timeoutMs: number = 30000 // 默认30秒超时
 ): Promise<z.infer<T>> {
-  let lastError: unknown = null;
+  let lastError: unknown = null
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       // [新增] 创建带超时的Promise
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => {
-          reject(new Error(`AI request timed out after ${timeoutMs}ms`));
-        }, timeoutMs);
-      });
+          reject(new Error(`AI request timed out after ${timeoutMs}ms`))
+        }, timeoutMs)
+      })
 
       // 竞态执行：AI调用 vs 超时
-      const response = await Promise.race([chain.invoke(params), timeoutPromise]);
+      const response = await Promise.race([chain.invoke(params), timeoutPromise])
 
       // 尝试解析，无论响应是对象还是字符串
-      const dataToParse = typeof response === 'string' ? JSON.parse(response) : response;
+      const dataToParse = typeof response === 'string' ? JSON.parse(response) : response
 
-      const parseResult = await schema.safeParseAsync(dataToParse);
+      const parseResult = await schema.safeParseAsync(dataToParse)
 
       if (parseResult.success) {
-        return parseResult.data;
+        return parseResult.data
       } else {
-        lastError = parseResult.error;
-        console.warn(`[AI Guard] Attempt ${attempt + 1} failed validation:`, lastError);
+        lastError = parseResult.error
+        console.warn(`[AI Guard] Attempt ${attempt + 1} failed validation:`, lastError)
       }
     } catch (error) {
-      lastError = error;
-      console.error(`[AI Guard] Attempt ${attempt + 1} failed with invocation error:`, error);
+      lastError = error
+      console.error(`[AI Guard] Attempt ${attempt + 1} failed with invocation error:`, error)
 
       // 如果是超时错误，直接抛出，不再重试
       if (error instanceof Error && error.message.includes('timed out')) {
-        throw new AiGenerationException(`AI request timed out after ${timeoutMs}ms`, error);
+        throw new AiGenerationException(`AI request timed out after ${timeoutMs}ms`, error)
       }
     }
   }
@@ -151,6 +151,6 @@ export async function callAiWithGuard<T extends z.ZodType>(
   // 如果所有尝试都失败了，则抛出最终的异常
   throw new AiGenerationException(
     `AI failed to generate valid data after ${MAX_RETRIES + 1} attempts.`,
-    lastError,
-  );
+    lastError
+  )
 }

@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { ContentCreationService } from './content-creation.service';
-import { EducationService } from './education.service';
-import { HealthcareService } from './healthcare.service';
-import { BusinessService } from './business.service';
-import { ManufacturingService } from './manufacturing.service';
-import { IndustryController } from './industry.controller';
+import { Module } from '@nestjs/common'
+import { ContentCreationService } from './content-creation.service'
+import { EducationService } from './education.service'
+import { HealthcareService } from './healthcare.service'
+import { BusinessService } from './business.service'
+import { ManufacturingService } from './manufacturing.service'
+import { IndustryController } from './industry.controller'
 
 @Module({
   providers: [

@@ -1,0 +1,167 @@
+'use strict'
+Object.defineProperty(exports, '__esModule', { value: true })
+exports.DEFAULT_RETRY_CONFIG = exports.ErrorCategory = void 0
+exports.classifyError = classifyError
+exports.calculateRetryDelay = calculateRetryDelay
+exports.getRecommendedDelay = getRecommendedDelay
+exports.delay = delay
+var ErrorCategory
+;(function (ErrorCategory) {
+  ErrorCategory['NETWORK'] = 'network'
+  ErrorCategory['TEMPORARY_API_ERROR'] = 'temporary_api_error'
+  ErrorCategory['JSON_PARSE_ERROR'] = 'json_parse_error'
+  ErrorCategory['VALIDATION_ERROR'] = 'validation_error'
+  ErrorCategory['AUTHENTICATION_ERROR'] = 'authentication_error'
+  ErrorCategory['INVALID_REQUEST'] = 'invalid_request'
+  ErrorCategory['BUSINESS_LOGIC_ERROR'] = 'business_logic_error'
+  ErrorCategory['UNKNOWN'] = 'unknown'
+})(ErrorCategory || (exports.ErrorCategory = ErrorCategory = {}))
+exports.DEFAULT_RETRY_CONFIG = {
+  maxRetries: 2,
+  initialDelayMs: 500,
+  maxDelayMs: 5000,
+  backoffMultiplier: 2,
+  enableJitter: true,
+  jitterRatio: 0.2,
+}
+function classifyError(error, validationFeedback) {
+  if (error && typeof error === 'object' && 'issues' in error) {
+    return {
+      category: ErrorCategory.VALIDATION_ERROR,
+      shouldRetry: true,
+      message: 'Schema validation failed',
+      hasFeedback: true,
+      feedback: validationFeedback,
+    }
+  }
+  if (error instanceof Error) {
+    const errorMessage = error.message.toLowerCase()
+    const errorName = error.name.toLowerCase()
+    if (
+      errorName.includes('network') ||
+      errorMessage.includes('econnrefused') ||
+      errorMessage.includes('etimedout') ||
+      errorMessage.includes('enotfound') ||
+      errorMessage.includes('socket') ||
+      errorMessage.includes('timeout') ||
+      errorMessage.includes('connection')
+    ) {
+      return {
+        category: ErrorCategory.NETWORK,
+        shouldRetry: true,
+        message: `Network error: ${error.message}`,
+        hasFeedback: false,
+      }
+    }
+    const statusCode = error.status || error.statusCode
+    if (statusCode) {
+      if (statusCode === 429) {
+        return {
+          category: ErrorCategory.TEMPORARY_API_ERROR,
+          shouldRetry: true,
+          message: 'Rate limit exceeded (429)',
+          hasFeedback: false,
+        }
+      }
+      if (statusCode === 503 || statusCode === 502 || statusCode === 504) {
+        return {
+          category: ErrorCategory.TEMPORARY_API_ERROR,
+          shouldRetry: true,
+          message: `Service unavailable (${statusCode})`,
+          hasFeedback: false,
+        }
+      }
+      if (statusCode === 401 || statusCode === 403) {
+        return {
+          category: ErrorCategory.AUTHENTICATION_ERROR,
+          shouldRetry: false,
+          message: `Authentication failed (${statusCode})`,
+          hasFeedback: false,
+        }
+      }
+      if (statusCode === 400) {
+        return {
+          category: ErrorCategory.INVALID_REQUEST,
+          shouldRetry: false,
+          message: `Invalid request (${statusCode})`,
+          hasFeedback: false,
+        }
+      }
+    }
+    if (
+      errorName.includes('json') ||
+      errorName.includes('syntax') ||
+      errorMessage.includes('json') ||
+      errorMessage.includes('parse')
+    ) {
+      return {
+        category: ErrorCategory.JSON_PARSE_ERROR,
+        shouldRetry: true,
+        message: `JSON parse error: ${error.message}`,
+        hasFeedback: false,
+      }
+    }
+    if (
+      errorName.includes('business') ||
+      errorName.includes('logic') ||
+      errorMessage.includes('business logic')
+    ) {
+      return {
+        category: ErrorCategory.BUSINESS_LOGIC_ERROR,
+        shouldRetry: false,
+        message: `Business logic error: ${error.message}`,
+        hasFeedback: false,
+      }
+    }
+  }
+  if (typeof error === 'string') {
+    const lowerError = error.toLowerCase()
+    if (lowerError.includes('timeout') || lowerError.includes('network')) {
+      return {
+        category: ErrorCategory.NETWORK,
+        shouldRetry: true,
+        message: `Network error: ${error}`,
+        hasFeedback: false,
+      }
+    }
+  }
+  return {
+    category: ErrorCategory.UNKNOWN,
+    shouldRetry: true,
+    message: error instanceof Error ? error.message : String(error),
+    hasFeedback: false,
+  }
+}
+function calculateRetryDelay(attemptNumber, config = exports.DEFAULT_RETRY_CONFIG) {
+  const baseDelay = Math.min(
+    config.initialDelayMs * config.backoffMultiplier ** attemptNumber,
+    config.maxDelayMs
+  )
+  if (config.enableJitter) {
+    const jitter = baseDelay * config.jitterRatio * (Math.random() - 0.5) * 2
+    return Math.max(0, Math.round(baseDelay + jitter))
+  }
+  return Math.round(baseDelay)
+}
+function getRecommendedDelay(category, attemptNumber, config = exports.DEFAULT_RETRY_CONFIG) {
+  if (category === ErrorCategory.TEMPORARY_API_ERROR) {
+    const rateLimitConfig = {
+      ...config,
+      initialDelayMs: 2000,
+      maxDelayMs: 10000,
+    }
+    return calculateRetryDelay(attemptNumber, rateLimitConfig)
+  }
+  if (category === ErrorCategory.VALIDATION_ERROR) {
+    const validationConfig = {
+      ...config,
+      initialDelayMs: 200,
+    }
+    return calculateRetryDelay(attemptNumber, validationConfig)
+  }
+  return calculateRetryDelay(attemptNumber, config)
+}
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+//# sourceMappingURL=retry-strategy.js.map

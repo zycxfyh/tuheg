@@ -35,13 +35,13 @@ packages/shared-types/
 ```typescript
 interface ApiResponse<T = unknown> {
   /** 数据 */
-  data: T;
+  data: T
   /** 消息 */
-  message?: string;
+  message?: string
   /** 状态码 */
-  status: number;
+  status: number
   /** 时间戳 */
-  timestamp?: string;
+  timestamp?: string
 }
 ```
 
@@ -54,7 +54,7 @@ const response: ApiResponse<User> = {
   message: 'User retrieved successfully',
   status: 200,
   timestamp: '2024-01-01T00:00:00Z',
-};
+}
 
 // 错误响应
 const errorResponse: ApiResponse<null> = {
@@ -62,7 +62,7 @@ const errorResponse: ApiResponse<null> = {
   message: 'User not found',
   status: 404,
   timestamp: '2024-01-01T00:00:00Z',
-};
+}
 ```
 
 #### ApiError - API错误响应
@@ -70,15 +70,15 @@ const errorResponse: ApiResponse<null> = {
 ```typescript
 interface ApiError {
   /** 错误消息 */
-  message: string;
+  message: string
   /** 错误代码 */
-  code?: string;
+  code?: string
   /** 状态码 */
-  status: number;
+  status: number
   /** 错误详情 */
-  details?: Record<string, unknown>;
+  details?: Record<string, unknown>
   /** 时间戳 */
-  timestamp?: string;
+  timestamp?: string
 }
 ```
 
@@ -94,7 +94,7 @@ const validationError: ApiError = {
     password: 'Password too short',
   },
   timestamp: '2024-01-01T00:00:00Z',
-};
+}
 ```
 
 ### 2. 分页类型
@@ -104,15 +104,15 @@ const validationError: ApiError = {
 ```typescript
 interface PaginatedResponse<T> {
   /** 数据列表 */
-  data: T[];
+  data: T[]
   /** 总数 */
-  total: number;
+  total: number
   /** 当前页 */
-  page: number;
+  page: number
   /** 每页数量 */
-  pageSize: number;
+  pageSize: number
   /** 总页数 */
-  totalPages: number;
+  totalPages: number
 }
 ```
 
@@ -121,13 +121,13 @@ interface PaginatedResponse<T> {
 ```typescript
 interface PaginationParams {
   /** 页码 */
-  page?: number;
+  page?: number
   /** 每页数量 */
-  pageSize?: number;
+  pageSize?: number
   /** 排序字段 */
-  sortBy?: string;
+  sortBy?: string
   /** 排序方向 */
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: 'asc' | 'desc'
 }
 ```
 
@@ -140,7 +140,7 @@ const params: PaginationParams = {
   pageSize: 20,
   sortBy: 'createdAt',
   sortOrder: 'desc',
-};
+}
 
 // 分页响应
 const response: PaginatedResponse<Game> = {
@@ -149,7 +149,7 @@ const response: PaginatedResponse<Game> = {
   page: 1,
   pageSize: 20,
   totalPages: 8,
-};
+}
 ```
 
 ### 3. 业务实体类型
@@ -158,10 +158,10 @@ const response: PaginatedResponse<Game> = {
 
 ```typescript
 interface Game {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  name: string
+  createdAt: string
+  updatedAt: string
 }
 ```
 
@@ -169,8 +169,8 @@ interface Game {
 
 ```typescript
 interface GameAction {
-  type: string;
-  payload: Record<string, unknown>;
+  type: string
+  payload: Record<string, unknown>
 }
 ```
 
@@ -178,9 +178,9 @@ interface GameAction {
 
 ```typescript
 interface User {
-  id: string;
-  email: string;
-  name?: string;
+  id: string
+  email: string
+  name?: string
 }
 ```
 
@@ -188,10 +188,10 @@ interface User {
 
 ```typescript
 interface AiConfiguration {
-  id: string;
-  provider: string;
-  modelId: string;
-  baseUrl?: string;
+  id: string
+  provider: string
+  modelId: string
+  baseUrl?: string
 }
 ```
 
@@ -221,10 +221,10 @@ Shared Types包被前端和后端同时依赖：
 
 ```typescript
 // 前端使用
-import { ApiResponse, User, PaginationParams } from '@tuheg/shared-types';
+import { ApiResponse, User, PaginationParams } from '@tuheg/shared-types'
 
 // 后端使用
-import { ApiResponse, ApiError, PaginatedResponse } from '@tuheg/shared-types';
+import { ApiResponse, ApiError, PaginatedResponse } from '@tuheg/shared-types'
 ```
 
 ## Zod运行时验证
@@ -232,7 +232,7 @@ import { ApiResponse, ApiError, PaginatedResponse } from '@tuheg/shared-types';
 虽然Shared Types主要用于类型定义，但也可以配合Zod进行运行时验证：
 
 ```typescript
-import { z } from 'zod';
+import { z } from 'zod'
 
 // API响应验证schema
 export const apiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
@@ -241,7 +241,7 @@ export const apiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
     message: z.string().optional(),
     status: z.number(),
     timestamp: z.string().optional(),
-  });
+  })
 
 // 使用示例
 const userResponseSchema = apiResponseSchema(
@@ -249,12 +249,15 @@ const userResponseSchema = apiResponseSchema(
     id: z.string(),
     email: z.string().email(),
     name: z.string().optional(),
-  }),
-);
+  })
+)
 
 // 验证函数
-export function validateApiResponse<T>(response: unknown, schema: z.ZodSchema<T>): T {
-  return schema.parse(response);
+export function validateApiResponse<T>(
+  response: unknown,
+  schema: z.ZodSchema<T>
+): T {
+  return schema.parse(response)
 }
 ```
 
@@ -271,10 +274,10 @@ export function validateApiResponse<T>(response: unknown, schema: z.ZodSchema<T>
 
 ```typescript
 interface UserProfile {
-  id: string;
-  name?: string; // 可选属性
-  avatar?: string; // 可选属性
-  bio: string; // 必需属性
+  id: string
+  name?: string // 可选属性
+  avatar?: string // 可选属性
+  bio: string // 必需属性
 }
 ```
 
@@ -283,26 +286,28 @@ interface UserProfile {
 ```typescript
 // 通用CRUD操作类型
 interface CrudOperations<T> {
-  create(data: Omit<T, 'id'>): Promise<T>;
-  read(id: string): Promise<T | null>;
-  update(id: string, data: Partial<T>): Promise<T>;
-  delete(id: string): Promise<void>;
+  create(data: Omit<T, 'id'>): Promise<T>
+  read(id: string): Promise<T | null>
+  update(id: string, data: Partial<T>): Promise<T>
+  delete(id: string): Promise<void>
 }
 
 // 使用示例
 const userCrud: CrudOperations<User> = {
   // 实现...
-};
+}
 ```
 
 ### 4. 联合类型和枚举
 
 ```typescript
 // 状态枚举
-type GameStatus = 'active' | 'paused' | 'completed' | 'abandoned';
+type GameStatus = 'active' | 'paused' | 'completed' | 'abandoned'
 
 // 联合类型
-type ActionResult = { success: true; data: any } | { success: false; error: string };
+type ActionResult =
+  | { success: true; data: any }
+  | { success: false; error: string }
 ```
 
 ## 版本管理和兼容性
@@ -324,15 +329,15 @@ Shared Types遵循语义化版本控制：
 ```typescript
 // 版本1
 interface Game {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 // 版本2 (向后兼容)
 interface Game {
-  id: string;
-  name: string;
-  description?: string; // 新增可选属性
+  id: string
+  name: string
+  description?: string // 新增可选属性
 }
 ```
 
@@ -344,20 +349,20 @@ interface Game {
 
 ```typescript
 // types.test-d.ts
-import { expectType, expectError } from 'tsd';
-import { ApiResponse, User } from '@tuheg/shared-types';
+import { expectType, expectError } from 'tsd'
+import { ApiResponse, User } from '@tuheg/shared-types'
 
 // 正确类型
 expectType<ApiResponse<User>>({
   data: { id: '1', email: 'test@example.com' },
   status: 200,
-});
+})
 
 // 错误类型 (应该报错)
 expectError<ApiResponse<User>>({
   data: { id: '1', email: 'test@example.com', invalidProp: true },
   status: 200,
-});
+})
 ```
 
 ### 2. 运行时验证测试
@@ -368,11 +373,11 @@ describe('Shared Types Validation', () => {
     const response = {
       data: { id: '1', email: 'test@example.com' },
       status: 200,
-    };
+    }
 
-    expect(() => validateApiResponse(response, userSchema)).not.toThrow();
-  });
-});
+    expect(() => validateApiResponse(response, userSchema)).not.toThrow()
+  })
+})
 ```
 
 ## 构建和发布
@@ -429,16 +434,16 @@ npm install @tuheg/shared-types
 
 ```typescript
 // 导入所有类型
-import * as Types from '@tuheg/shared-types';
+import * as Types from '@tuheg/shared-types'
 
 // 按需导入
-import { ApiResponse, User, PaginatedResponse } from '@tuheg/shared-types';
+import { ApiResponse, User, PaginatedResponse } from '@tuheg/shared-types'
 
 // 在Vue组件中使用
-import type { ApiResponse } from '@tuheg/shared-types';
+import type { ApiResponse } from '@tuheg/shared-types'
 
 interface ComponentData {
-  response: ApiResponse<User>;
+  response: ApiResponse<User>
 }
 ```
 
@@ -446,20 +451,20 @@ interface ComponentData {
 
 ```typescript
 // 扩展现有类型
-import { User } from '@tuheg/shared-types';
+import { User } from '@tuheg/shared-types'
 
 interface ExtendedUser extends User {
-  avatar?: string;
-  preferences: UserPreferences;
+  avatar?: string
+  preferences: UserPreferences
 }
 
 // 创建新类型
 export interface GameSession {
-  id: string;
-  gameId: string;
-  userId: string;
-  startedAt: string;
-  endedAt?: string;
+  id: string
+  gameId: string
+  userId: string
+  startedAt: string
+  endedAt?: string
 }
 ```
 

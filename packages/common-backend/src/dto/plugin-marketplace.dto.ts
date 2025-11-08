@@ -1,9 +1,15 @@
-import { z } from 'zod';
-import { createZodDto } from 'nestjs-zod';
-import { PluginStatus } from '@prisma/client';
+import { z } from 'zod'
+import { createZodDto } from 'nestjs-zod'
+import { PluginStatus } from '@prisma/client'
 
 // 插件状态枚举
-export const PluginStatusEnum = z.enum(['PENDING_REVIEW', 'APPROVED', 'REJECTED', 'SUSPENDED', 'DEPRECATED']);
+export const PluginStatusEnum = z.enum([
+  'PENDING_REVIEW',
+  'APPROVED',
+  'REJECTED',
+  'SUSPENDED',
+  'DEPRECATED',
+])
 
 // 插件分类创建DTO
 export class CreatePluginCategoryDto extends createZodDto(
@@ -12,7 +18,10 @@ export class CreatePluginCategoryDto extends createZodDto(
     displayName: z.string().min(1).max(100),
     description: z.string().optional(),
     icon: z.string().optional(),
-    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/)
+      .optional(),
     sortOrder: z.number().int().min(0).default(0),
   })
 ) {}
@@ -23,7 +32,10 @@ export class UpdatePluginCategoryDto extends createZodDto(
     displayName: z.string().min(1).max(100).optional(),
     description: z.string().optional(),
     icon: z.string().optional(),
-    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/)
+      .optional(),
     sortOrder: z.number().int().min(0).optional(),
     isActive: z.boolean().optional(),
   })
@@ -34,7 +46,10 @@ export class CreatePluginTagDto extends createZodDto(
   z.object({
     name: z.string().min(1).max(50),
     displayName: z.string().min(1).max(100),
-    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/)
+      .optional(),
   })
 ) {}
 
@@ -46,8 +61,14 @@ export class CreatePluginVersionDto extends createZodDto(
     downloadUrl: z.string().url(),
     fileSize: z.number().int().min(0),
     checksum: z.string().optional(),
-    minVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
-    maxVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
+    minVersion: z
+      .string()
+      .regex(/^\d+\.\d+\.\d+$/)
+      .optional(),
+    maxVersion: z
+      .string()
+      .regex(/^\d+\.\d+\.\d+$/)
+      .optional(),
     isStable: z.boolean().default(true),
   })
 ) {}
@@ -55,7 +76,11 @@ export class CreatePluginVersionDto extends createZodDto(
 // 插件创建DTO
 export class CreatePluginDto extends createZodDto(
   z.object({
-    name: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/), // 只能包含小写字母、数字和连字符
+    name: z
+      .string()
+      .min(1)
+      .max(100)
+      .regex(/^[a-z0-9-]+$/), // 只能包含小写字母、数字和连字符
     displayName: z.string().min(1).max(200),
     description: z.string().min(10).max(5000),
     categoryId: z.string().cuid(),
@@ -63,19 +88,36 @@ export class CreatePluginDto extends createZodDto(
     repository: z.string().url().optional(),
     license: z.string().optional(),
     tags: z.array(z.string().cuid()).max(10).optional(), // 最多10个标签
-    dependencies: z.array(z.object({
-      pluginId: z.string().cuid(),
-      minVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
-      maxVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
-      isRequired: z.boolean().default(true),
-    })).max(20).optional(), // 最多20个依赖
+    dependencies: z
+      .array(
+        z.object({
+          pluginId: z.string().cuid(),
+          minVersion: z
+            .string()
+            .regex(/^\d+\.\d+\.\d+$/)
+            .optional(),
+          maxVersion: z
+            .string()
+            .regex(/^\d+\.\d+\.\d+$/)
+            .optional(),
+          isRequired: z.boolean().default(true),
+        })
+      )
+      .max(20)
+      .optional(), // 最多20个依赖
     version: z.object({
       version: z.string().regex(/^\d+\.\d+\.\d+$/),
       changelog: z.string().optional(),
       fileSize: z.number().int().min(0),
       checksum: z.string().optional(),
-      minVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
-      maxVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
+      minVersion: z
+        .string()
+        .regex(/^\d+\.\d+\.\d+$/)
+        .optional(),
+      maxVersion: z
+        .string()
+        .regex(/^\d+\.\d+\.\d+$/)
+        .optional(),
       isStable: z.boolean().default(true),
     }),
   })
@@ -91,12 +133,23 @@ export class UpdatePluginDto extends createZodDto(
     repository: z.string().url().optional(),
     license: z.string().optional(),
     tags: z.array(z.string().cuid()).max(10).optional(),
-    dependencies: z.array(z.object({
-      pluginId: z.string().cuid(),
-      minVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
-      maxVersion: z.string().regex(/^\d+\.\d+\.\d+$/).optional(),
-      isRequired: z.boolean().default(true),
-    })).max(20).optional(),
+    dependencies: z
+      .array(
+        z.object({
+          pluginId: z.string().cuid(),
+          minVersion: z
+            .string()
+            .regex(/^\d+\.\d+\.\d+$/)
+            .optional(),
+          maxVersion: z
+            .string()
+            .regex(/^\d+\.\d+\.\d+$/)
+            .optional(),
+          isRequired: z.boolean().default(true),
+        })
+      )
+      .max(20)
+      .optional(),
   })
 ) {}
 
@@ -146,7 +199,10 @@ export class UpdatePluginReviewDto extends createZodDto(
 // 插件下载DTO
 export class DownloadPluginDto extends createZodDto(
   z.object({
-    version: z.string().regex(/^\d+\.\d+\.\d+$/).optional(), // 指定版本，不指定则下载最新版本
+    version: z
+      .string()
+      .regex(/^\d+\.\d+\.\d+$/)
+      .optional(), // 指定版本，不指定则下载最新版本
   })
 ) {}
 

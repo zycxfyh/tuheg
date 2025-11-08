@@ -1,23 +1,23 @@
 <!-- 文件路径: src/components/creation/CreationForm.vue -->
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 // --- 组件状态定义 ---
 // 1. 用于双向绑定的核心概念 ref
-const coreConceptInput = ref('');
+const coreConceptInput = ref('')
 
 // 2. 用于控制当前显示哪个 Tab 的 ref
-const activeTab = ref('concept'); // 'concept' or 'params'
+const activeTab = ref('concept') // 'concept' or 'params'
 
 // 3. 用于绑定参数滑块值的 ref
 const worldParams = ref({
   chaos: 50, // 混乱度 (0-100)
   magic: 50, // 魔法浓度 (0-100)
   tech: 50, // 科技水平 (0-100)
-});
+})
 
 // 4. 定义组件可以向父组件发出的事件
-const emit = defineEmits(['back', 'start-creation']);
+const emit = defineEmits(['back', 'start-creation'])
 
 // --- 事件处理函数 ---
 // 5. 点击“生成世界”按钮时触发
@@ -27,11 +27,11 @@ function onStartClick() {
     const creationData = {
       concept: coreConceptInput.value.trim(),
       params: worldParams.value,
-    };
-    emit('start-creation', creationData);
+    }
+    emit('start-creation', creationData)
   } else {
     // 在未来的步骤中，我们会用 uiService.showToast 替换 alert
-    alert('核心概念不能为空！');
+    alert('核心概念不能为空！')
   }
 }
 </script>

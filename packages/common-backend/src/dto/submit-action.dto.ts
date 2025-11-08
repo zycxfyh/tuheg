@@ -1,13 +1,13 @@
 // 文件路径: libs/common/src/dto/submit-action.dto.ts
 
-import { z } from 'zod';
+import { z } from 'zod'
 
 // 自定义验证函数：检查控制字符
 const noControlCharacters = (value: string) => {
   // 检查是否包含控制字符（除了制表符、换行符、回车符）
   // 使用字符码检查来避免ESLint的正则表达式控制字符规则
   for (let i = 0; i < value.length; i++) {
-    const charCode = value.charCodeAt(i);
+    const charCode = value.charCodeAt(i)
     // 排除制表符(\t=9)、换行符(\n=10)、回车符(\r=13)
     if (
       (charCode >= 0 && charCode <= 8) ||
@@ -15,14 +15,14 @@ const noControlCharacters = (value: string) => {
       (charCode >= 14 && charCode <= 31) ||
       charCode === 127
     ) {
-      return false;
+      return false
     }
   }
-  return true;
-};
+  return true
+}
 
 // 自定义验证函数：检查字符串长度
-const maxLength400 = (value: string) => value.length <= 400;
+const maxLength400 = (value: string) => value.length <= 400
 
 /**
  * @name submitActionSchema
@@ -44,8 +44,8 @@ export const submitActionSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Command payload must be a string.',
           path: ['payload'],
-        });
-        return;
+        })
+        return
       }
 
       if (!noControlCharacters(data.payload)) {
@@ -53,7 +53,7 @@ export const submitActionSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Command payload contains invalid control characters.',
           path: ['payload'],
-        });
+        })
       }
     } else if (data.type === 'option') {
       // option类型的payload应该是一个对象，包含text字段
@@ -62,18 +62,18 @@ export const submitActionSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Option payload must be an object.',
           path: ['payload'],
-        });
-        return;
+        })
+        return
       }
 
-      const payload = data.payload as any;
+      const payload = data.payload as any
       if (typeof payload.text !== 'string') {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Option payload text must be a string.',
           path: ['payload', 'text'],
-        });
-        return;
+        })
+        return
       }
 
       if (!maxLength400(payload.text)) {
@@ -81,10 +81,10 @@ export const submitActionSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Option text must be 400 characters or fewer.',
           path: ['payload', 'text'],
-        });
+        })
       }
     }
     // meta类型暂不进行额外验证
-  });
+  })
 
-export type SubmitActionDto = z.infer<typeof submitActionSchema>;
+export type SubmitActionDto = z.infer<typeof submitActionSchema>

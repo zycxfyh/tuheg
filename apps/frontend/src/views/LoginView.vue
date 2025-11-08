@@ -47,46 +47,46 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router'; // <-- [核心修正] 导入 useRouter
-import { useAuthStore } from '@/stores/auth.store';
-import { useToast } from '@/composables/useToast';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router' // <-- [核心修正] 导入 useRouter
+import { useAuthStore } from '@/stores/auth.store'
+import { useToast } from '@/composables/useToast'
 
 // true: 登录模式, false: 注册模式
-const isLoginMode = ref(true);
-const credentials = ref({ email: '', password: '' });
-const isLoading = ref(false);
-const error = ref(null);
+const isLoginMode = ref(true)
+const credentials = ref({ email: '', password: '' })
+const isLoading = ref(false)
+const error = ref(null)
 
-const authStore = useAuthStore();
-const router = useRouter(); // <-- [核心修正] 获取 router 实例
-const { show: showToast } = useToast();
+const authStore = useAuthStore()
+const router = useRouter() // <-- [核心修正] 获取 router 实例
+const { show: showToast } = useToast()
 
 function toggleMode() {
-  isLoginMode.value = !isLoginMode.value;
-  error.value = null;
+  isLoginMode.value = !isLoginMode.value
+  error.value = null
 }
 
 async function handleSubmit() {
-  error.value = null;
-  isLoading.value = true;
+  error.value = null
+  isLoading.value = true
 
   try {
     if (isLoginMode.value) {
-      await authStore.login(credentials.value);
+      await authStore.login(credentials.value)
       // [核心修正] 在登录成功后，手动触发路由跳转
-      await router.push('/nexus');
+      await router.push('/nexus')
     } else {
-      await authStore.register(credentials.value);
-      showToast('注册成功！请使用您的新账户登录。', 'success');
-      toggleMode();
+      await authStore.register(credentials.value)
+      showToast('注册成功！请使用您的新账户登录。', 'success')
+      toggleMode()
     }
   } catch (err) {
     // 捕获AuthStore或API服务抛出的错误
     // 确保 err 是一个对象并且有 message 属性
-    error.value = err && err.message ? err.message : '发生未知错误';
+    error.value = err && err.message ? err.message : '发生未知错误'
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
 }
 </script>

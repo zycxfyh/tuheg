@@ -1,10 +1,10 @@
 // 文件路径: packages/common-backend/src/ai/crew/crew.module.ts
 // 核心理念: 模块化导出，方便其他模块使用
 
-import { Module } from '@nestjs/common';
-import { Agent } from './agent';
-import { Crew } from './crew';
-import { Task } from './task';
+import { Module } from '@nestjs/common'
+import { Agent } from './agent'
+import { Crew } from './crew'
+import { Task } from './task'
 
 /**
  * @module CrewModule

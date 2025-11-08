@@ -60,21 +60,21 @@ node bin/generate-docs.js all "apps/backend-gateway/src" \
 
 ### 命令说明
 
-| 命令 | 描述 | 输出格式 |
-|------|------|----------|
-| `json` | 生成 OpenAPI JSON 规范 | JSON |
-| `html` | 生成交互式 HTML 文档 | HTML + Swagger UI |
-| `all` | 生成完整文档套件 | JSON + HTML |
+| 命令   | 描述                   | 输出格式          |
+| ------ | ---------------------- | ----------------- |
+| `json` | 生成 OpenAPI JSON 规范 | JSON              |
+| `html` | 生成交互式 HTML 文档   | HTML + Swagger UI |
+| `all`  | 生成完整文档套件       | JSON + HTML       |
 
 ### 选项参数
 
-| 选项 | 简写 | 描述 | 默认值 |
-|------|------|------|--------|
-| `--output` | `-o` | 输出文件路径 | `openapi.json` / `api-docs.html` |
-| `--title` | `-t` | API 标题 | `VCPToolBox API` |
-| `--description` | `-d` | API 描述 | `VCPToolBox API Documentation` |
-| `--version` | `-v` | API 版本 | `1.0.0` |
-| `--server` | `-s` | API 服务器地址 | `http://localhost:3000` |
+| 选项            | 简写 | 描述           | 默认值                           |
+| --------------- | ---- | -------------- | -------------------------------- |
+| `--output`      | `-o` | 输出文件路径   | `openapi.json` / `api-docs.html` |
+| `--title`       | `-t` | API 标题       | `VCPToolBox API`                 |
+| `--description` | `-d` | API 描述       | `VCPToolBox API Documentation`   |
+| `--version`     | `-v` | API 版本       | `1.0.0`                          |
+| `--server`      | `-s` | API 服务器地址 | `http://localhost:3000`          |
 
 ### 高级配置
 
@@ -107,13 +107,13 @@ node bin/generate-docs.js all "src" \
 
 ### 支持的 NestJS 装饰器
 
-| 装饰器 | 解析内容 | 示例 |
-|--------|----------|------|
-| `@Controller()` | 基础路径 | `@Controller('users')` |
-| `@Get()`, `@Post()`, etc. | HTTP 方法和路径 | `@Get('profile')` |
-| `@Param()` | 路径参数 | `@Param('id') userId: string` |
-| `@Query()` | 查询参数 | `@Query('page') page: number` |
-| `@Body()` | 请求体 | `@Body() data: CreateUserDto` |
+| 装饰器                    | 解析内容        | 示例                          |
+| ------------------------- | --------------- | ----------------------------- |
+| `@Controller()`           | 基础路径        | `@Controller('users')`        |
+| `@Get()`, `@Post()`, etc. | HTTP 方法和路径 | `@Get('profile')`             |
+| `@Param()`                | 路径参数        | `@Param('id') userId: string` |
+| `@Query()`                | 查询参数        | `@Query('page') page: number` |
+| `@Body()`                 | 请求体          | `@Body() data: CreateUserDto` |
 
 ### 自动生成的响应
 
@@ -220,9 +220,9 @@ if (content.includes('@CustomDecorator()')) {
 ```javascript
 function generateCustomResponses() {
   return {
-    '201': { description: 'Created' },
-    '409': { description: 'Conflict' }
-  };
+    201: { description: 'Created' },
+    409: { description: 'Conflict' },
+  }
 }
 ```
 
@@ -249,6 +249,7 @@ npm run build
 ## 📈 统计信息
 
 当前版本统计：
+
 - 🔍 **扫描能力**: 支持 8+ 控制器文件类型
 - 📊 **解析精度**: 识别 14+ API 端点
 - 🎯 **成功率**: 95%+ 自动解析成功率

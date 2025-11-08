@@ -1,9 +1,9 @@
 // 文件路径: packages/common-backend/src/plugins/plugin.loader.ts
 // 核心理念: 动态加载插件，支持按需激活
 
-import { Injectable, Logger } from '@nestjs/common';
-import type { PluginFactory, PluginManifest } from './plugin.types';
-import { PluginRegistry } from './plugin.registry';
+import { Injectable, Logger } from '@nestjs/common'
+import type { PluginFactory, PluginManifest } from './plugin.types'
+import { PluginRegistry } from './plugin.registry'
 
 /**
  * @class PluginLoader
@@ -11,7 +11,7 @@ import { PluginRegistry } from './plugin.registry';
  */
 @Injectable()
 export class PluginLoader {
-  private readonly logger = new Logger(PluginLoader.name);
+  private readonly logger = new Logger(PluginLoader.name)
 
   constructor(private readonly registry: PluginRegistry) {}
 
@@ -23,40 +23,40 @@ export class PluginLoader {
    */
   public async loadFromManifest(manifest: PluginManifest, factory: PluginFactory): Promise<void> {
     try {
-      this.logger.debug(`Loading plugin "${manifest.id}" from manifest...`);
+      this.logger.debug(`Loading plugin "${manifest.id}" from manifest...`)
 
       // 验证清单
-      this.validateManifest(manifest);
+      this.validateManifest(manifest)
 
       // 创建插件实例
-      const context = this.registry.getPluginContext(manifest.id);
+      const context = this.registry.getPluginContext(manifest.id)
       if (!context) {
-        throw new Error(`Plugin context for "${manifest.id}" not found`);
+        throw new Error(`Plugin context for "${manifest.id}" not found`)
       }
 
-      const plugin = factory(context);
-      plugin.manifest = manifest;
+      const plugin = factory(context)
+      plugin.manifest = manifest
 
       // 注册插件
-      this.registry.register(plugin);
+      this.registry.register(plugin)
 
       // 检查是否需要立即激活
-      const activationEvents = manifest.activationEvents ?? [];
+      const activationEvents = manifest.activationEvents ?? []
       if (activationEvents.includes('*') || activationEvents.length === 0) {
         // 立即激活
-        await this.registry.activatePlugin(manifest.id);
+        await this.registry.activatePlugin(manifest.id)
       } else {
         // 延迟激活（等待激活事件）
         this.logger.debug(
-          `Plugin "${manifest.id}" will be activated on events: ${activationEvents.join(', ')}`,
-        );
+          `Plugin "${manifest.id}" will be activated on events: ${activationEvents.join(', ')}`
+        )
       }
     } catch (error) {
       this.logger.error(
         `Failed to load plugin "${manifest.id}":`,
-        error instanceof Error ? error.message : String(error),
-      );
-      throw error;
+        error instanceof Error ? error.message : String(error)
+      )
+      throw error
     }
   }
 
@@ -66,10 +66,10 @@ export class PluginLoader {
    * @param config - 插件配置
    */
   public async loadFromConfig(config: {
-    manifest: PluginManifest;
-    factory: PluginFactory;
+    manifest: PluginManifest
+    factory: PluginFactory
   }): Promise<void> {
-    await this.loadFromManifest(config.manifest, config.factory);
+    await this.loadFromManifest(config.manifest, config.factory)
   }
 
   /**
@@ -78,22 +78,22 @@ export class PluginLoader {
    */
   private validateManifest(manifest: PluginManifest): void {
     if (!manifest.id) {
-      throw new Error("Plugin manifest must have an 'id' field");
+      throw new Error("Plugin manifest must have an 'id' field")
     }
 
     if (!manifest.name) {
-      throw new Error("Plugin manifest must have a 'name' field");
+      throw new Error("Plugin manifest must have a 'name' field")
     }
 
     if (!manifest.version) {
-      throw new Error("Plugin manifest must have a 'version' field");
+      throw new Error("Plugin manifest must have a 'version' field")
     }
 
     // 验证 ID 格式（类似 npm 包名）
     if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(manifest.id)) {
       throw new Error(
-        `Plugin ID "${manifest.id}" is invalid. Must be a valid identifier (lowercase, alphanumeric, hyphens only).`,
-      );
+        `Plugin ID "${manifest.id}" is invalid. Must be a valid identifier (lowercase, alphanumeric, hyphens only).`
+      )
     }
   }
 
@@ -102,6 +102,6 @@ export class PluginLoader {
    * @description 卸载插件
    */
   public async unloadPlugin(pluginId: string): Promise<void> {
-    await this.registry.unregister(pluginId);
+    await this.registry.unregister(pluginId)
   }
 }

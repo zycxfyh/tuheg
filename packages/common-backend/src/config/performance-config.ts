@@ -9,18 +9,18 @@ export interface SLATargets {
   /** 响应时间目标 (毫秒) */
   responseTime: {
     /** P50响应时间 */
-    p50: number;
+    p50: number
     /** P95响应时间 */
-    p95: number;
+    p95: number
     /** P99响应时间 */
-    p99: number;
-  };
+    p99: number
+  }
   /** 可用性目标 (百分比) */
-  availability: number;
+  availability: number
   /** 错误率目标 (百分比) */
-  errorRate: number;
+  errorRate: number
   /** 吞吐量目标 (RPS) */
-  throughput: number;
+  throughput: number
 }
 
 /**
@@ -29,11 +29,11 @@ export interface SLATargets {
  */
 export interface PerformanceThresholds {
   /** 警告阈值 */
-  warning: number;
+  warning: number
   /** 严重阈值 */
-  critical: number;
+  critical: number
   /** 紧急阈值 */
-  emergency: number;
+  emergency: number
 }
 
 /**
@@ -42,17 +42,17 @@ export interface PerformanceThresholds {
  */
 export interface ServiceSLAs {
   /** API网关 */
-  api: SLATargets;
+  api: SLATargets
   /** AI推理服务 */
-  ai: SLATargets;
+  ai: SLATargets
   /** 数据库查询 */
-  database: SLATargets;
+  database: SLATargets
   /** 缓存操作 */
-  cache: SLATargets;
+  cache: SLATargets
   /** 消息队列 */
-  queue: SLATargets;
+  queue: SLATargets
   /** WebSocket连接 */
-  websocket: SLATargets;
+  websocket: SLATargets
 }
 
 /**
@@ -164,14 +164,14 @@ export const PERFORMANCE_CONFIG = {
     /** 队列并发处理数 */
     queueConcurrency: 20,
   },
-};
+}
 
 /**
  * @function getSLATarget
  * @description 获取指定服务的SLA目标
  */
 export function getSLATarget(service: keyof ServiceSLAs): SLATargets {
-  return PERFORMANCE_CONFIG.slas[service];
+  return PERFORMANCE_CONFIG.slas[service]
 }
 
 /**
@@ -180,9 +180,9 @@ export function getSLATarget(service: keyof ServiceSLAs): SLATargets {
  */
 export function getPerformanceThreshold(
   metric: string,
-  level: keyof PerformanceThresholds,
+  level: keyof PerformanceThresholds
 ): number {
-  return PERFORMANCE_CONFIG.thresholds[metric]?.[level] || 0;
+  return PERFORMANCE_CONFIG.thresholds[metric]?.[level] || 0
 }
 
 /**
@@ -192,34 +192,34 @@ export function getPerformanceThreshold(
 export function isPerformanceHealthy(
   service: keyof ServiceSLAs,
   metric: 'responseTime' | 'errorRate' | 'availability',
-  value: number,
+  value: number
 ): { healthy: boolean; level: 'healthy' | 'warning' | 'critical' | 'emergency' } {
-  const sla = getSLATarget(service);
+  const sla = getSLATarget(service)
 
   switch (metric) {
     case 'responseTime':
-      if (value <= sla.responseTime.p95) return { healthy: true, level: 'healthy' };
+      if (value <= sla.responseTime.p95) return { healthy: true, level: 'healthy' }
       if (value <= getPerformanceThreshold('responseTime', 'warning'))
-        return { healthy: false, level: 'warning' };
+        return { healthy: false, level: 'warning' }
       if (value <= getPerformanceThreshold('responseTime', 'critical'))
-        return { healthy: false, level: 'critical' };
-      return { healthy: false, level: 'emergency' };
+        return { healthy: false, level: 'critical' }
+      return { healthy: false, level: 'emergency' }
 
     case 'errorRate':
-      if (value <= sla.errorRate) return { healthy: true, level: 'healthy' };
+      if (value <= sla.errorRate) return { healthy: true, level: 'healthy' }
       if (value <= getPerformanceThreshold('errorRate', 'warning'))
-        return { healthy: false, level: 'warning' };
+        return { healthy: false, level: 'warning' }
       if (value <= getPerformanceThreshold('errorRate', 'critical'))
-        return { healthy: false, level: 'critical' };
-      return { healthy: false, level: 'emergency' };
+        return { healthy: false, level: 'critical' }
+      return { healthy: false, level: 'emergency' }
 
     case 'availability':
-      if (value >= sla.availability) return { healthy: true, level: 'healthy' };
-      if (value >= sla.availability - 0.1) return { healthy: false, level: 'warning' };
-      if (value >= sla.availability - 0.5) return { healthy: false, level: 'critical' };
-      return { healthy: false, level: 'emergency' };
+      if (value >= sla.availability) return { healthy: true, level: 'healthy' }
+      if (value >= sla.availability - 0.1) return { healthy: false, level: 'warning' }
+      if (value >= sla.availability - 0.5) return { healthy: false, level: 'critical' }
+      return { healthy: false, level: 'emergency' }
 
     default:
-      return { healthy: true, level: 'healthy' };
+      return { healthy: true, level: 'healthy' }
   }
 }

@@ -1,11 +1,16 @@
-import { Injectable, NestMiddleware, UnauthorizedException, BadRequestException } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common'
+import { Request, Response, NextFunction } from 'express'
+import { PrismaService } from '../prisma/prisma.service'
 
 export interface TenantRequest extends Request {
-  tenantId?: string;
-  tenant?: any;
-  userTenantRole?: string;
+  tenantId?: string
+  tenant?: any
+  userTenantRole?: string
 }
 
 @Injectable()
@@ -15,15 +20,15 @@ export class MultiTenantMiddleware implements NestMiddleware {
   async use(req: TenantRequest, res: Response, next: NextFunction) {
     try {
       // 从请求头或子域名中提取租户信息
-      const tenantId = this.extractTenantId(req);
+      const tenantId = this.extractTenantId(req)
 
       if (!tenantId) {
         // 如果是公开API，跳过租户验证
         if (this.isPublicEndpoint(req)) {
-          return next();
+          return next()
         }
 
-        throw new BadRequestException('Tenant ID is required');
+        throw new BadRequestException('Tenant ID is required')
       }
 
       // 验证租户存在且活跃
@@ -36,39 +41,39 @@ export class MultiTenantMiddleware implements NestMiddleware {
           plan: true,
           limits: true,
           features: true,
-          suspendedAt: true
-        }
-      });
+          suspendedAt: true,
+        },
+      })
 
       if (!tenant) {
-        throw new BadRequestException('Tenant not found');
+        throw new BadRequestException('Tenant not found')
       }
 
       if (tenant.status !== 'ACTIVE') {
         if (tenant.status === 'SUSPENDED') {
-          throw new UnauthorizedException('Tenant is suspended');
+          throw new UnauthorizedException('Tenant is suspended')
         }
-        throw new UnauthorizedException('Tenant is not active');
+        throw new UnauthorizedException('Tenant is not active')
       }
 
       // 将租户信息添加到请求对象
-      req.tenantId = tenant.id;
-      req.tenant = tenant;
+      req.tenantId = tenant.id
+      req.tenant = tenant
 
       // 如果用户已认证，验证用户是否属于该租户
       if (req.user) {
-        await this.validateUserTenantAccess(req, tenant.id);
+        await this.validateUserTenantAccess(req, tenant.id)
       }
 
       // 检查租户资源限制
-      await this.checkTenantLimits(req, tenant);
+      await this.checkTenantLimits(req, tenant)
 
       // 设置租户上下文（用于数据库查询隔离）
-      this.setTenantContext(tenant.id);
+      this.setTenantContext(tenant.id)
 
-      next();
+      next()
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 
@@ -79,52 +84,52 @@ export class MultiTenantMiddleware implements NestMiddleware {
    */
   private extractTenantId(req: TenantRequest): string | null {
     // 优先级1: 请求头
-    const headerTenantId = req.headers['x-tenant-id'] as string;
+    const headerTenantId = req.headers['x-tenant-id'] as string
     if (headerTenantId) {
-      return headerTenantId;
+      return headerTenantId
     }
 
     // 优先级2: 查询参数
-    const queryTenantId = req.query.tenantId as string;
+    const queryTenantId = req.query.tenantId as string
     if (queryTenantId) {
-      return queryTenantId;
+      return queryTenantId
     }
 
     // 优先级3: 子域名
-    const subdomain = this.extractSubdomain(req);
+    const subdomain = this.extractSubdomain(req)
     if (subdomain) {
-      return this.resolveTenantFromSubdomain(subdomain);
+      return this.resolveTenantFromSubdomain(subdomain)
     }
 
     // 优先级4: JWT token中的租户信息
-    const tokenTenantId = this.extractTenantFromToken(req);
+    const tokenTenantId = this.extractTenantFromToken(req)
     if (tokenTenantId) {
-      return tokenTenantId;
+      return tokenTenantId
     }
 
-    return null;
+    return null
   }
 
   /**
    * 提取子域名
    */
   private extractSubdomain(req: Request): string | null {
-    const host = req.headers.host;
-    if (!host) return null;
+    const host = req.headers.host
+    if (!host) return null
 
     // 移除端口号
-    const hostname = host.split(':')[0];
+    const hostname = host.split(':')[0]
 
     // 检查是否是子域名
-    const parts = hostname.split('.');
+    const parts = hostname.split('.')
     if (parts.length > 2) {
       // 排除www子域名
       if (parts[0] !== 'www') {
-        return parts[0];
+        return parts[0]
       }
     }
 
-    return null;
+    return null
   }
 
   /**
@@ -137,16 +142,13 @@ export class MultiTenantMiddleware implements NestMiddleware {
       // 假设子域名就是租户ID或租户名称
       const tenant = this.prisma.tenant.findFirst({
         where: {
-          OR: [
-            { id: subdomain },
-            { name: subdomain }
-          ]
-        }
-      });
+          OR: [{ id: subdomain }, { name: subdomain }],
+        },
+      })
 
-      return tenant ? tenant.id : null;
+      return tenant ? tenant.id : null
     } catch {
-      return null;
+      return null
     }
   }
 
@@ -156,10 +158,10 @@ export class MultiTenantMiddleware implements NestMiddleware {
   private extractTenantFromToken(req: TenantRequest): string | null {
     // 如果用户已认证，从用户对象中提取租户信息
     if (req.user && typeof req.user === 'object' && 'tenantId' in req.user) {
-      return (req.user as any).tenantId;
+      return (req.user as any).tenantId
     }
 
-    return null;
+    return null
   }
 
   // ==================== 用户访问验证 ====================
@@ -169,33 +171,33 @@ export class MultiTenantMiddleware implements NestMiddleware {
    */
   private async validateUserTenantAccess(req: TenantRequest, tenantId: string): Promise<void> {
     if (!req.user || typeof req.user !== 'object' || !('id' in req.user)) {
-      return; // 用户未认证，跳过验证
+      return // 用户未认证，跳过验证
     }
 
-    const userId = (req.user as any).id;
+    const userId = (req.user as any).id
 
     const tenantUser = await this.prisma.tenantUser.findUnique({
       where: {
         tenantId_userId: {
           tenantId,
-          userId
-        }
-      }
-    });
+          userId,
+        },
+      },
+    })
 
     if (!tenantUser) {
-      throw new UnauthorizedException('User does not have access to this tenant');
+      throw new UnauthorizedException('User does not have access to this tenant')
     }
 
     if (tenantUser.status !== 'ACTIVE') {
       if (tenantUser.status === 'SUSPENDED') {
-        throw new UnauthorizedException('User access is suspended');
+        throw new UnauthorizedException('User access is suspended')
       }
-      throw new UnauthorizedException('User access is not active');
+      throw new UnauthorizedException('User access is not active')
     }
 
     // 将用户在租户中的角色添加到请求对象
-    req.userTenantRole = tenantUser.role;
+    req.userTenantRole = tenantUser.role
   }
 
   // ==================== 资源限制检查 ====================
@@ -204,29 +206,29 @@ export class MultiTenantMiddleware implements NestMiddleware {
    * 检查租户资源限制
    */
   private async checkTenantLimits(req: TenantRequest, tenant: any): Promise<void> {
-    const limits = tenant.limits as any;
+    const limits = tenant.limits as any
 
     // 检查API调用限制
     if (limits.apiCalls) {
-      const currentUsage = await this.getCurrentApiUsage(tenant.id);
+      const currentUsage = await this.getCurrentApiUsage(tenant.id)
       if (currentUsage >= limits.apiCalls) {
-        throw new BadRequestException('API call limit exceeded for this tenant');
+        throw new BadRequestException('API call limit exceeded for this tenant')
       }
     }
 
     // 检查并发请求限制
     if (limits.concurrentRequests) {
-      const currentConcurrent = await this.getCurrentConcurrentRequests(tenant.id);
+      const currentConcurrent = await this.getCurrentConcurrentRequests(tenant.id)
       if (currentConcurrent >= limits.concurrentRequests) {
-        throw new BadRequestException('Concurrent request limit exceeded for this tenant');
+        throw new BadRequestException('Concurrent request limit exceeded for this tenant')
       }
     }
 
     // 检查请求频率限制
     if (limits.requestsPerMinute) {
-      const recentRequests = await this.getRecentRequests(tenant.id, 60000); // 1分钟
+      const recentRequests = await this.getRecentRequests(tenant.id, 60000) // 1分钟
       if (recentRequests >= limits.requestsPerMinute) {
-        throw new BadRequestException('Request rate limit exceeded for this tenant');
+        throw new BadRequestException('Request rate limit exceeded for this tenant')
       }
     }
   }
@@ -241,9 +243,9 @@ export class MultiTenantMiddleware implements NestMiddleware {
     // 这里可以设置数据库会话变量或连接参数
 
     // 示例：设置租户ID到异步本地存储
-    const asyncLocalStorage = require('async-local-storage');
+    const asyncLocalStorage = require('async-local-storage')
     if (asyncLocalStorage) {
-      asyncLocalStorage.set('tenantId', tenantId);
+      asyncLocalStorage.set('tenantId', tenantId)
     }
   }
 
@@ -253,15 +255,10 @@ export class MultiTenantMiddleware implements NestMiddleware {
    * 判断是否为公开端点
    */
   private isPublicEndpoint(req: Request): boolean {
-    const publicPaths = [
-      '/health',
-      '/api/v1/auth/login',
-      '/api/v1/auth/register',
-      '/api/v1/public'
-    ];
+    const publicPaths = ['/health', '/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/public']
 
-    const path = req.path;
-    return publicPaths.some(publicPath => path.startsWith(publicPath));
+    const path = req.path
+    return publicPaths.some((publicPath) => path.startsWith(publicPath))
   }
 
   /**
@@ -270,7 +267,7 @@ export class MultiTenantMiddleware implements NestMiddleware {
   private async getCurrentApiUsage(tenantId: string): Promise<number> {
     // 这里应该从缓存或数据库中获取当前月的API使用量
     // 暂时返回模拟数据
-    return 500;
+    return 500
   }
 
   /**
@@ -279,7 +276,7 @@ export class MultiTenantMiddleware implements NestMiddleware {
   private async getCurrentConcurrentRequests(tenantId: string): Promise<number> {
     // 这里应该从缓存中获取当前活跃请求数
     // 暂时返回模拟数据
-    return 5;
+    return 5
   }
 
   /**
@@ -288,6 +285,6 @@ export class MultiTenantMiddleware implements NestMiddleware {
   private async getRecentRequests(tenantId: string, timeWindow: number): Promise<number> {
     // 这里应该统计最近时间窗口内的请求数
     // 暂时返回模拟数据
-    return 30;
+    return 30
   }
 }

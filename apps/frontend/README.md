@@ -182,14 +182,14 @@ apps/frontend/
 // 登录流程
 const handleLogin = async (credentials) => {
   try {
-    const response = await apiService.auth.login(credentials);
-    authStore.setToken(response.token);
-    authStore.setUser(response.user);
-    router.push('/nexus');
+    const response = await apiService.auth.login(credentials)
+    authStore.setToken(response.token)
+    authStore.setUser(response.user)
+    router.push('/nexus')
   } catch (error) {
     // 处理登录错误
   }
-};
+}
 ```
 
 ### 2. 游戏创建流程
@@ -205,13 +205,13 @@ const handleLogin = async (credentials) => {
 // 提交玩家行动
 const submitAction = async (action) => {
   try {
-    const response = await apiService.games.submitAction(gameId, action);
+    const response = await apiService.games.submitAction(gameId, action)
     // 处理AI响应
-    handleAiResponse(response);
+    handleAiResponse(response)
   } catch (error) {
     // 处理错误
   }
-};
+}
 ```
 
 ### 4. WebSocket实时通信
@@ -219,8 +219,8 @@ const submitAction = async (action) => {
 ```javascript
 // 实时消息处理
 realtimeStore.on('game:update', (data) => {
-  gameStore.updateGameState(data);
-});
+  gameStore.updateGameState(data)
+})
 ```
 
 ## 🚀 开发指南
@@ -341,7 +341,7 @@ export default defineConfig({
       },
     },
   },
-});
+})
 ```
 
 ## ⚡ 性能优化 - 工业级标准
@@ -369,7 +369,7 @@ const routes = [
     path: '/creation',
     component: () => import('./views/CreationHubView.vue'),
   },
-];
+]
 ```
 
 #### 组件级分割
@@ -377,7 +377,9 @@ const routes = [
 ```vue
 <script setup>
 // AI组件按需加载
-const AiConfigCard = defineAsyncComponent(() => import('./components/common/AiConfigCard.vue'));
+const AiConfigCard = defineAsyncComponent(
+  () => import('./components/common/AiConfigCard.vue')
+)
 </script>
 ```
 
@@ -417,7 +419,7 @@ export default {
     },
     chunkSizeWarningLimit: 1000,
   },
-};
+}
 ```
 
 #### 资源优化
@@ -441,18 +443,18 @@ export default {
 
 ```typescript
 // 组件逻辑测试示例
-import { describe, it, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
-import AiConfigCard from './AiConfigCard.vue';
+import { describe, it, expect } from 'vitest'
+import { mount } from '@vue/test-utils'
+import AiConfigCard from './AiConfigCard.vue'
 
 describe('AiConfigCard', () => {
   it('renders AI configuration correctly', () => {
     const wrapper = mount(AiConfigCard, {
       props: { config: mockAiConfig },
-    });
-    expect(wrapper.text()).toContain('GPT-4');
-  });
-});
+    })
+    expect(wrapper.text()).toContain('GPT-4')
+  })
+})
 ```
 
 #### Store测试
@@ -475,10 +477,10 @@ describe('AiConfigCard', () => {
 // API服务集成测试
 describe('GameAPI Integration', () => {
   it('creates new game successfully', async () => {
-    const response = await apiService.games.create(mockGameData);
-    expect(response.id).toBeDefined();
-  });
-});
+    const response = await apiService.games.create(mockGameData)
+    expect(response.id).toBeDefined()
+  })
+})
 ```
 
 #### WebSocket集成
@@ -494,12 +496,12 @@ describe('GameAPI Integration', () => {
 ```typescript
 // E2E用户旅程测试
 test('complete game creation flow', async ({ page }) => {
-  await page.goto('/creation');
-  await page.fill('[data-testid="concept-input"]', '太空冒险');
-  await page.click('[data-testid="create-game"]');
-  await page.waitForURL('/game/*');
-  expect(page.url()).toMatch(/\/game\/\d+/);
-});
+  await page.goto('/creation')
+  await page.fill('[data-testid="concept-input"]', '太空冒险')
+  await page.click('[data-testid="create-game"]')
+  await page.waitForURL('/game/*')
+  expect(page.url()).toMatch(/\/game\/\d+/)
+})
 ```
 
 #### 性能监控
@@ -691,7 +693,7 @@ http {
 
 ```javascript
 // Sentry配置
-import * as Sentry from '@sentry/vue';
+import * as Sentry from '@sentry/vue'
 
 Sentry.init({
   app: app,
@@ -704,7 +706,7 @@ Sentry.init({
     }),
     new Sentry.Replay(),
   ],
-});
+})
 ```
 
 #### 性能监控

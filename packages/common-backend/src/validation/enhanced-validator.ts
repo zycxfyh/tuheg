@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/validation/enhanced-validator.ts
 // 核心理念: 类型即文档，运行时验证，友好的错误消息
 
-import { z } from 'zod';
-import type { ZodError, ZodSchema } from 'zod';
+import { z } from 'zod'
+import type { ZodError, ZodSchema } from 'zod'
 
 /**
  * @interface ValidationResult
@@ -10,11 +10,11 @@ import type { ZodError, ZodSchema } from 'zod';
  */
 export interface ValidationResult<T> {
   /** 验证是否成功 */
-  success: boolean;
+  success: boolean
   /** 验证后的数据（如果成功） */
-  data?: T;
+  data?: T
   /** 验证错误（如果失败） */
-  errors?: ValidationError[];
+  errors?: ValidationError[]
 }
 
 /**
@@ -23,17 +23,17 @@ export interface ValidationResult<T> {
  */
 export interface ValidationError {
   /** 字段路径 */
-  path: (string | number)[];
+  path: (string | number)[]
   /** 错误消息 */
-  message: string;
+  message: string
   /** 错误代码 */
-  code: string;
+  code: string
   /** 期望的类型或值 */
-  expected?: string;
+  expected?: string
   /** 实际收到的值 */
-  received?: unknown;
+  received?: unknown
   /** 嵌套错误（如果有） */
-  nested?: ValidationError[];
+  nested?: ValidationError[]
 }
 
 /**
@@ -50,17 +50,17 @@ export class EnhancedValidator {
    */
   public static validate<T>(schema: ZodSchema<T>, data: unknown): ValidationResult<T> {
     try {
-      const parsed = schema.parse(data);
+      const parsed = schema.parse(data)
       return {
         success: true,
         data: parsed,
-      };
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return {
           success: false,
           errors: this.formatZodErrors(error),
-        };
+        }
       }
 
       return {
@@ -72,7 +72,7 @@ export class EnhancedValidator {
             code: 'UNKNOWN_ERROR',
           },
         ],
-      };
+      }
     }
   }
 
@@ -85,20 +85,20 @@ export class EnhancedValidator {
    */
   public static async validateAsync<T>(
     schema: ZodSchema<T>,
-    data: unknown,
+    data: unknown
   ): Promise<ValidationResult<T>> {
     try {
-      const parsed = await schema.parseAsync(data);
+      const parsed = await schema.parseAsync(data)
       return {
         success: true,
         data: parsed,
-      };
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return {
           success: false,
           errors: this.formatZodErrors(error),
-        };
+        }
       }
 
       return {
@@ -110,7 +110,7 @@ export class EnhancedValidator {
             code: 'UNKNOWN_ERROR',
           },
         ],
-      };
+      }
     }
   }
 
@@ -122,19 +122,19 @@ export class EnhancedValidator {
    * @returns 验证结果
    */
   public static safeParse<T>(schema: ZodSchema<T>, data: unknown): ValidationResult<T> {
-    const result = schema.safeParse(data);
+    const result = schema.safeParse(data)
 
     if (result.success) {
       return {
         success: true,
         data: result.data,
-      };
+      }
     }
 
     return {
       success: false,
       errors: this.formatZodErrors(result.error),
-    };
+    }
   }
 
   /**
@@ -147,23 +147,23 @@ export class EnhancedValidator {
         path: err.path,
         message: this.formatErrorMessage(err),
         code: err.code,
-      };
+      }
 
       // 添加类型信息
       if (err.code === 'invalid_type') {
-        validationError.expected = err.expected;
-        validationError.received = err.received;
+        validationError.expected = err.expected
+        validationError.received = err.received
       }
 
       // 添加约束信息
       if (err.code === 'too_small' || err.code === 'too_big') {
-        const constraintErr = err as { minimum?: number; maximum?: number; received?: unknown };
-        validationError.expected = `minimum: ${constraintErr.minimum ?? 'N/A'}, maximum: ${constraintErr.maximum ?? 'N/A'}`;
-        validationError.received = constraintErr.received;
+        const constraintErr = err as { minimum?: number; maximum?: number; received?: unknown }
+        validationError.expected = `minimum: ${constraintErr.minimum ?? 'N/A'}, maximum: ${constraintErr.maximum ?? 'N/A'}`
+        validationError.received = constraintErr.received
       }
 
-      return validationError;
-    });
+      return validationError
+    })
   }
 
   /**
@@ -171,68 +171,68 @@ export class EnhancedValidator {
    * @description 格式化错误消息，使其更友好
    */
   private static formatErrorMessage(err: z.ZodIssue): string {
-    const path = err.path.length > 0 ? err.path.join('.') : 'root';
+    const path = err.path.length > 0 ? err.path.join('.') : 'root'
 
     switch (err.code) {
       case 'invalid_type':
-        return `${path}: 期望类型 "${err.expected}"，但收到类型 "${err.received}"`;
+        return `${path}: 期望类型 "${err.expected}"，但收到类型 "${err.received}"`
 
       case 'invalid_string':
         if (err.validation === 'email') {
-          return `${path}: 无效的电子邮件地址`;
+          return `${path}: 无效的电子邮件地址`
         }
         if (err.validation === 'url') {
-          return `${path}: 无效的 URL`;
+          return `${path}: 无效的 URL`
         }
         if (err.validation === 'uuid') {
-          return `${path}: 无效的 UUID`;
+          return `${path}: 无效的 UUID`
         }
-        return `${path}: 字符串验证失败`;
+        return `${path}: 字符串验证失败`
 
       case 'too_small':
         if (err.type === 'string') {
-          return `${path}: 字符串长度至少为 ${err.minimum} 个字符`;
+          return `${path}: 字符串长度至少为 ${err.minimum} 个字符`
         }
         if (err.type === 'number') {
-          return `${path}: 数值必须大于或等于 ${err.minimum}`;
+          return `${path}: 数值必须大于或等于 ${err.minimum}`
         }
         if (err.type === 'array') {
-          return `${path}: 数组至少需要 ${err.minimum} 个元素`;
+          return `${path}: 数组至少需要 ${err.minimum} 个元素`
         }
-        return `${path}: 值太小（最小: ${err.minimum}）`;
+        return `${path}: 值太小（最小: ${err.minimum}）`
 
       case 'too_big':
         if (err.type === 'string') {
-          return `${path}: 字符串长度不能超过 ${err.maximum} 个字符`;
+          return `${path}: 字符串长度不能超过 ${err.maximum} 个字符`
         }
         if (err.type === 'number') {
-          return `${path}: 数值不能超过 ${err.maximum}`;
+          return `${path}: 数值不能超过 ${err.maximum}`
         }
         if (err.type === 'array') {
-          return `${path}: 数组最多只能包含 ${err.maximum} 个元素`;
+          return `${path}: 数组最多只能包含 ${err.maximum} 个元素`
         }
-        return `${path}: 值太大（最大: ${err.maximum}）`;
+        return `${path}: 值太大（最大: ${err.maximum}）`
 
       case 'invalid_enum_value':
-        return `${path}: 无效的枚举值。允许的值: ${err.options?.join(', ') ?? 'N/A'}`;
+        return `${path}: 无效的枚举值。允许的值: ${err.options?.join(', ') ?? 'N/A'}`
 
       case 'invalid_literal':
-        return `${path}: 必须是字面量值 "${err.expected}"`;
+        return `${path}: 必须是字面量值 "${err.expected}"`
 
       case 'unrecognized_keys':
-        return `${path}: 未知的键: ${err.keys.join(', ')}`;
+        return `${path}: 未知的键: ${err.keys.join(', ')}`
 
       case 'invalid_union':
-        return `${path}: 值不匹配任何联合类型选项`;
+        return `${path}: 值不匹配任何联合类型选项`
 
       case 'invalid_date':
-        return `${path}: 无效的日期格式`;
+        return `${path}: 无效的日期格式`
 
       case 'custom':
-        return err.message ?? `${path}: 自定义验证失败`;
+        return err.message ?? `${path}: 自定义验证失败`
 
       default:
-        return err.message ?? `${path}: 验证失败`;
+        return err.message ?? `${path}: 验证失败`
     }
   }
 
@@ -243,19 +243,19 @@ export class EnhancedValidator {
   public static formatErrorsAsString(errors: ValidationError[]): string {
     return errors
       .map((err) => {
-        const path = err.path.length > 0 ? err.path.join('.') : 'root';
-        let message = `${path}: ${err.message}`;
+        const path = err.path.length > 0 ? err.path.join('.') : 'root'
+        let message = `${path}: ${err.message}`
 
         if (err.expected) {
-          message += ` (期望: ${err.expected})`;
+          message += ` (期望: ${err.expected})`
         }
 
         if (err.received !== undefined) {
-          message += ` (收到: ${JSON.stringify(err.received)})`;
+          message += ` (收到: ${JSON.stringify(err.received)})`
         }
 
-        return message;
+        return message
       })
-      .join('\n');
+      .join('\n')
   }
 }
