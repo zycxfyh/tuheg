@@ -23,10 +23,10 @@ export const ALL_AI_ROLES = [
   'creation-agent',
   'logic-agent',
   'narrative-agent',
-  'backend-gateway'
+  'backend-gateway',
 ] as const
 
-export type AIRole = typeof ALL_AI_ROLES[number]
+export type AIRole = (typeof ALL_AI_ROLES)[number]
 
 export const useSettingsStore = defineStore('settings', () => {
   // AI设置状态
@@ -41,8 +41,8 @@ export const useSettingsStore = defineStore('settings', () => {
         maxTokens: 2000,
         topP: 1,
         frequencyPenalty: 0,
-        presencePenalty: 0
-      }
+        presencePenalty: 0,
+      },
     },
     'logic-agent': {
       role: 'logic-agent',
@@ -54,8 +54,8 @@ export const useSettingsStore = defineStore('settings', () => {
         maxTokens: 1500,
         topP: 1,
         frequencyPenalty: 0,
-        presencePenalty: 0
-      }
+        presencePenalty: 0,
+      },
     },
     'narrative-agent': {
       role: 'narrative-agent',
@@ -67,8 +67,8 @@ export const useSettingsStore = defineStore('settings', () => {
         maxTokens: 3000,
         topP: 1,
         frequencyPenalty: 0,
-        presencePenalty: 0
-      }
+        presencePenalty: 0,
+      },
     },
     'backend-gateway': {
       role: 'backend-gateway',
@@ -80,9 +80,9 @@ export const useSettingsStore = defineStore('settings', () => {
         maxTokens: 1000,
         topP: 1,
         frequencyPenalty: 0,
-        presencePenalty: 0
-      }
-    }
+        presencePenalty: 0,
+      },
+    },
   })
 
   // UI设置
@@ -92,17 +92,16 @@ export const useSettingsStore = defineStore('settings', () => {
     animations: true,
     soundEffects: true,
     autoSave: true,
-    showTips: true
+    showTips: true,
   })
 
   // 计算属性
   const enabledAgents = computed(() =>
-    Object.values(agentConfigs.value).filter(config => config.enabled)
+    Object.values(agentConfigs.value).filter((config) => config.enabled)
   )
 
   const sortedAgents = computed(() =>
-    Object.values(agentConfigs.value)
-      .sort((a, b) => a.priority - b.priority)
+    Object.values(agentConfigs.value).sort((a, b) => a.priority - b.priority)
   )
 
   // Agent配置方法
@@ -187,8 +186,8 @@ export const useSettingsStore = defineStore('settings', () => {
           maxTokens: 2000,
           topP: 1,
           frequencyPenalty: 0,
-          presencePenalty: 0
-        }
+          presencePenalty: 0,
+        },
       },
       'logic-agent': {
         role: 'logic-agent',
@@ -200,8 +199,8 @@ export const useSettingsStore = defineStore('settings', () => {
           maxTokens: 1500,
           topP: 1,
           frequencyPenalty: 0,
-          presencePenalty: 0
-        }
+          presencePenalty: 0,
+        },
       },
       'narrative-agent': {
         role: 'narrative-agent',
@@ -213,8 +212,8 @@ export const useSettingsStore = defineStore('settings', () => {
           maxTokens: 3000,
           topP: 1,
           frequencyPenalty: 0,
-          presencePenalty: 0
-        }
+          presencePenalty: 0,
+        },
       },
       'backend-gateway': {
         role: 'backend-gateway',
@@ -226,9 +225,9 @@ export const useSettingsStore = defineStore('settings', () => {
           maxTokens: 1000,
           topP: 1,
           frequencyPenalty: 0,
-          presencePenalty: 0
-        }
-      }
+          presencePenalty: 0,
+        },
+      },
     }
 
     // 重置UI设置
@@ -238,7 +237,7 @@ export const useSettingsStore = defineStore('settings', () => {
       animations: true,
       soundEffects: true,
       autoSave: true,
-      showTips: true
+      showTips: true,
     }
 
     saveToLocalStorage()
@@ -268,6 +267,6 @@ export const useSettingsStore = defineStore('settings', () => {
 
     // 其他方法
     init,
-    resetToDefaults
+    resetToDefaults,
   }
 })

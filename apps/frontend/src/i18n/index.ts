@@ -8,12 +8,12 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'zh-CN', name: '中文', nativeName: '中文', rtl: false },
   { code: 'en-US', name: 'English', nativeName: 'English', rtl: false },
   { code: 'ja-JP', name: '日本語', nativeName: '日本語', rtl: false },
-  { code: 'ko-KR', name: '한국어', nativeName: '한국어', rtl: false }
+  { code: 'ko-KR', name: '한국어', nativeName: '한국어', rtl: false },
 ]
 
 // 检查是否为RTL语言
 export const isRTL = (locale: string): boolean => {
-  return SUPPORTED_LANGUAGES.find(lang => lang.code === locale)?.rtl ?? false
+  return SUPPORTED_LANGUAGES.find((lang) => lang.code === locale)?.rtl ?? false
 }
 
 // 设置语言

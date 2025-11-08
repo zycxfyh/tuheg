@@ -37,8 +37,8 @@ class ApiService {
       baseURL,
       timeout: 30000,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
 
     this.setupInterceptors()
@@ -116,10 +116,7 @@ class ApiService {
   }
 
   // GET 请求
-  async get<T = any>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.axiosInstance.get<ApiResponse<T>>(url, config)
     return response.data
   }
@@ -155,10 +152,7 @@ class ApiService {
   }
 
   // DELETE 请求
-  async delete<T = any>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  async delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.axiosInstance.delete<ApiResponse<T>>(url, config)
     return response.data
   }
@@ -174,8 +168,8 @@ class ApiService {
 
     const config: AxiosRequestConfig = {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      },
     }
 
     if (onProgress) {
@@ -240,5 +234,5 @@ export const api = {
   setAuthToken: apiService.setAuthToken.bind(apiService),
   getAuthToken: apiService.getAuthToken.bind(apiService),
   clearAuth: apiService.clearAuth.bind(apiService),
-  isAuthenticated: apiService.isAuthenticated.bind(apiService)
+  isAuthenticated: apiService.isAuthenticated.bind(apiService),
 }

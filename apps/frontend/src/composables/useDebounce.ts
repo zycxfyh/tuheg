@@ -36,7 +36,7 @@ export function useDebounce<T>(value: Ref<T>, options: DebounceOptions = {}): Re
           timeoutId = null
         }, delay)
       }
-    }
+    },
   }))
 }
 
@@ -119,14 +119,17 @@ export function useThrottle<T extends (...args: any[]) => any>(
         clearTimeout(timeoutId)
       }
 
-      timeoutId = window.setTimeout(() => {
-        if (lastArgs) {
-          fn(...lastArgs)
-          lastExecuted = Date.now()
-        }
-        timeoutId = null
-        lastArgs = null
-      }, delay - (now - lastExecuted))
+      timeoutId = window.setTimeout(
+        () => {
+          if (lastArgs) {
+            fn(...lastArgs)
+            lastExecuted = Date.now()
+          }
+          timeoutId = null
+          lastArgs = null
+        },
+        delay - (now - lastExecuted)
+      )
     }
   }
 }

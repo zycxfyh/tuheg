@@ -11,7 +11,7 @@ export function useToast() {
     info: toastStore.info,
     add: toastStore.addToast,
     remove: toastStore.removeToast,
-    clear: toastStore.clearToasts
+    clear: toastStore.clearToasts,
   }
 }
 
@@ -32,5 +32,5 @@ export const toast = {
   info: (title: string, message?: string) => {
     const toastStore = useToastStore()
     return toastStore.info(title, message)
-  }
+  },
 }

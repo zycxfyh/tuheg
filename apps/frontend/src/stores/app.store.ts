@@ -29,8 +29,8 @@ export const useAppStore = defineStore('app', () => {
       autoSave: true,
       enableNotifications: true,
       language: 'zh-CN',
-      theme: 'auto'
-    }
+      theme: 'auto',
+    },
   })
 
   // UI状态
@@ -83,11 +83,14 @@ export const useAppStore = defineStore('app', () => {
   // 本地存储
   const saveToLocalStorage = () => {
     try {
-      localStorage.setItem('app-state', JSON.stringify({
-        userPreferences: appState.value.userPreferences,
-        sidebarOpen: sidebarOpen.value,
-        currentView: currentView.value
-      }))
+      localStorage.setItem(
+        'app-state',
+        JSON.stringify({
+          userPreferences: appState.value.userPreferences,
+          sidebarOpen: sidebarOpen.value,
+          currentView: currentView.value,
+        })
+      )
     } catch (error) {
       console.error('Failed to save app state to localStorage:', error)
     }
@@ -123,7 +126,7 @@ export const useAppStore = defineStore('app', () => {
 
     // 监听用户活动
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart']
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, updateLastActivity, true)
     })
 
@@ -144,7 +147,7 @@ export const useAppStore = defineStore('app', () => {
       autoSave: true,
       enableNotifications: true,
       language: 'zh-CN',
-      theme: 'auto'
+      theme: 'auto',
     }
     saveToLocalStorage()
   }
@@ -187,6 +190,6 @@ export const useAppStore = defineStore('app', () => {
     // 其他方法
     init,
     resetUserPreferences,
-    cleanup
+    cleanup,
   }
 })

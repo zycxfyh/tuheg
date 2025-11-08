@@ -81,8 +81,8 @@ class AgentCollaborationApi {
           performance: {
             responseTime: 1200,
             successRate: 0.95,
-            tasksCompleted: 156
-          }
+            tasksCompleted: 156,
+          },
         },
         {
           id: 'logic-agent-001',
@@ -93,8 +93,8 @@ class AgentCollaborationApi {
           performance: {
             responseTime: 800,
             successRate: 0.98,
-            tasksCompleted: 203
-          }
+            tasksCompleted: 203,
+          },
         },
         {
           id: 'narrative-agent-001',
@@ -106,8 +106,8 @@ class AgentCollaborationApi {
           performance: {
             responseTime: 1500,
             successRate: 0.92,
-            tasksCompleted: 89
-          }
+            tasksCompleted: 89,
+          },
         },
         {
           id: 'backend-gateway-001',
@@ -118,9 +118,9 @@ class AgentCollaborationApi {
           performance: {
             responseTime: 300,
             successRate: 0.99,
-            tasksCompleted: 1247
-          }
-        }
+            tasksCompleted: 1247,
+          },
+        },
       ]
     }
   }
@@ -143,14 +143,16 @@ class AgentCollaborationApi {
           tasks: [],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          progress: 65
-        }
+          progress: 65,
+        },
       ]
     }
   }
 
   // 获取任务列表
-  async getTasks(options: { limit?: number; status?: string; assignedTo?: string } = {}): Promise<Task[]> {
+  async getTasks(
+    options: { limit?: number; status?: string; assignedTo?: string } = {}
+  ): Promise<Task[]> {
     try {
       const params = new URLSearchParams()
       if (options.limit) params.append('limit', options.limit.toString())
@@ -173,7 +175,7 @@ class AgentCollaborationApi {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           estimatedDuration: 1800000, // 30分钟
-          actualDuration: 1500000
+          actualDuration: 1500000,
         },
         {
           id: 'task-002',
@@ -184,8 +186,8 @@ class AgentCollaborationApi {
           priority: 'medium',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          estimatedDuration: 900000 // 15分钟
-        }
+          estimatedDuration: 900000, // 15分钟
+        },
       ]
     }
   }
@@ -203,19 +205,19 @@ class AgentCollaborationApi {
         agents: {
           total: 4,
           online: 3,
-          busy: 1
+          busy: 1,
         },
         tasks: {
           total: 24,
           pending: 3,
           inProgress: 2,
-          completed: 19
+          completed: 19,
         },
         performance: {
           averageResponseTime: 950,
           successRate: 0.96,
-          throughput: 45
-        }
+          throughput: 45,
+        },
       }
     }
   }
@@ -249,17 +251,21 @@ class AgentCollaborationApi {
         id: 'task-' + Date.now(),
         status: 'pending',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       }
     }
   }
 
   // 分配协作任务
-  async assignCollaborationTask(collaborationsId: string, taskId: string, agentId: string): Promise<void> {
+  async assignCollaborationTask(
+    collaborationsId: string,
+    taskId: string,
+    agentId: string
+  ): Promise<void> {
     try {
       await axios.post(`${this.baseURL}/collaborations/${collaborationsId}/assign-task`, {
         taskId,
-        agentId
+        agentId,
       })
     } catch (error) {
       console.error('Failed to assign collaboration task:', error)
@@ -268,12 +274,16 @@ class AgentCollaborationApi {
   }
 
   // 更新任务状态
-  async updateTaskStatus(taskId: string, status: Task['status'], updates?: Partial<Task>): Promise<Task> {
+  async updateTaskStatus(
+    taskId: string,
+    status: Task['status'],
+    updates?: Partial<Task>
+  ): Promise<Task> {
     try {
       const response = await axios.patch(`${this.baseURL}/tasks/${taskId}`, {
         status,
         ...updates,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       })
       return response.data
     } catch (error) {

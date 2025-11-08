@@ -22,21 +22,13 @@ export const useJobsStore = defineStore('jobs', () => {
   const activeJobs = ref<Set<string>>(new Set())
 
   // 计算属性
-  const pendingJobs = computed(() =>
-    jobs.value.filter(job => job.status === 'pending')
-  )
+  const pendingJobs = computed(() => jobs.value.filter((job) => job.status === 'pending'))
 
-  const runningJobs = computed(() =>
-    jobs.value.filter(job => job.status === 'running')
-  )
+  const runningJobs = computed(() => jobs.value.filter((job) => job.status === 'running'))
 
-  const completedJobs = computed(() =>
-    jobs.value.filter(job => job.status === 'completed')
-  )
+  const completedJobs = computed(() => jobs.value.filter((job) => job.status === 'completed'))
 
-  const failedJobs = computed(() =>
-    jobs.value.filter(job => job.status === 'failed')
-  )
+  const failedJobs = computed(() => jobs.value.filter((job) => job.status === 'failed'))
 
   const totalProgress = computed(() => {
     if (jobs.value.length === 0) return 0
@@ -51,7 +43,7 @@ export const useJobsStore = defineStore('jobs', () => {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       status: 'pending',
       progress: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
 
     jobs.value.push(job)
@@ -61,7 +53,7 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const startJob = (jobId: string) => {
-    const job = jobs.value.find(j => j.id === jobId)
+    const job = jobs.value.find((j) => j.id === jobId)
     if (job && job.status === 'pending') {
       job.status = 'running'
       job.startedAt = new Date()
@@ -71,7 +63,7 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const updateJobProgress = (jobId: string, progress: number, metadata?: Record<string, any>) => {
-    const job = jobs.value.find(j => j.id === jobId)
+    const job = jobs.value.find((j) => j.id === jobId)
     if (job) {
       job.progress = Math.max(0, Math.min(100, progress))
       if (metadata) {
@@ -82,7 +74,7 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const completeJob = (jobId: string, result?: any) => {
-    const job = jobs.value.find(j => j.id === jobId)
+    const job = jobs.value.find((j) => j.id === jobId)
     if (job) {
       job.status = 'completed'
       job.progress = 100
@@ -94,7 +86,7 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const failJob = (jobId: string, error: string) => {
-    const job = jobs.value.find(j => j.id === jobId)
+    const job = jobs.value.find((j) => j.id === jobId)
     if (job) {
       job.status = 'failed'
       job.error = error
@@ -105,7 +97,7 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const cancelJob = (jobId: string) => {
-    const job = jobs.value.find(j => j.id === jobId)
+    const job = jobs.value.find((j) => j.id === jobId)
     if (job && (job.status === 'pending' || job.status === 'running')) {
       job.status = 'cancelled'
       job.completedAt = new Date()
@@ -115,7 +107,7 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const removeJob = (jobId: string) => {
-    const index = jobs.value.findIndex(j => j.id === jobId)
+    const index = jobs.value.findIndex((j) => j.id === jobId)
     if (index > -1) {
       jobs.value.splice(index, 1)
       activeJobs.value.delete(jobId)
@@ -124,12 +116,12 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const clearCompletedJobs = () => {
-    jobs.value = jobs.value.filter(job => job.status !== 'completed')
+    jobs.value = jobs.value.filter((job) => job.status !== 'completed')
     saveToLocalStorage()
   }
 
   const retryJob = (jobId: string) => {
-    const job = jobs.value.find(j => j.id === jobId)
+    const job = jobs.value.find((j) => j.id === jobId)
     if (job && job.status === 'failed') {
       job.status = 'pending'
       job.progress = 0
@@ -142,7 +134,7 @@ export const useJobsStore = defineStore('jobs', () => {
 
   // 批量操作
   const cancelAllJobs = () => {
-    jobs.value.forEach(job => {
+    jobs.value.forEach((job) => {
       if (job.status === 'pending' || job.status === 'running') {
         job.status = 'cancelled'
         job.completedAt = new Date()
@@ -153,18 +145,18 @@ export const useJobsStore = defineStore('jobs', () => {
   }
 
   const removeAllCompletedJobs = () => {
-    jobs.value = jobs.value.filter(job => job.status !== 'completed')
+    jobs.value = jobs.value.filter((job) => job.status !== 'completed')
     saveToLocalStorage()
   }
 
   // 本地存储
   const saveToLocalStorage = () => {
     try {
-      const jobsToSave = jobs.value.map(job => ({
+      const jobsToSave = jobs.value.map((job) => ({
         ...job,
         createdAt: job.createdAt.toISOString(),
         startedAt: job.startedAt?.toISOString(),
-        completedAt: job.completedAt?.toISOString()
+        completedAt: job.completedAt?.toISOString(),
       }))
       localStorage.setItem('jobs', JSON.stringify(jobsToSave))
     } catch (error) {
@@ -181,14 +173,12 @@ export const useJobsStore = defineStore('jobs', () => {
           ...job,
           createdAt: new Date(job.createdAt),
           startedAt: job.startedAt ? new Date(job.startedAt) : undefined,
-          completedAt: job.completedAt ? new Date(job.completedAt) : undefined
+          completedAt: job.completedAt ? new Date(job.completedAt) : undefined,
         }))
 
         // 恢复活跃任务状态
         activeJobs.value = new Set(
-          jobs.value
-            .filter(job => job.status === 'running')
-            .map(job => job.id)
+          jobs.value.filter((job) => job.status === 'running').map((job) => job.id)
         )
       }
     } catch (error) {
@@ -233,6 +223,6 @@ export const useJobsStore = defineStore('jobs', () => {
     loadFromLocalStorage,
 
     // 初始化
-    init
+    init,
   }
 })

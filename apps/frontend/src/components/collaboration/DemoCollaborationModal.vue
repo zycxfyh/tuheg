@@ -98,7 +98,7 @@ import { ref, onMounted } from 'vue'
 
 // Props
 const props = defineProps({
-  visible: { type: Boolean, required: true }
+  visible: { type: Boolean, required: true },
 })
 
 // Emits
@@ -114,7 +114,7 @@ const demoAgents = ref([
     icon: '🌍',
     color: '#4CAF50',
     status: 'ready',
-    statusText: '准备就绪'
+    statusText: '准备就绪',
   },
   {
     id: 'logic-agent',
@@ -124,7 +124,7 @@ const demoAgents = ref([
     icon: '🧠',
     color: '#2196F3',
     status: 'ready',
-    statusText: '准备就绪'
+    statusText: '准备就绪',
   },
   {
     id: 'narrative-agent',
@@ -134,7 +134,7 @@ const demoAgents = ref([
     icon: '📚',
     color: '#FF9800',
     status: 'ready',
-    statusText: '准备就绪'
+    statusText: '准备就绪',
   },
   {
     id: 'backend-gateway',
@@ -144,8 +144,8 @@ const demoAgents = ref([
     icon: '⚙️',
     color: '#9C27B0',
     status: 'ready',
-    statusText: '准备就绪'
-  }
+    statusText: '准备就绪',
+  },
 ])
 
 // 协作流程步骤
@@ -153,23 +153,23 @@ const processSteps = ref([
   {
     title: '世界构建',
     description: 'Creation Agent分析用户需求，构建游戏世界框架',
-    agents: ['Creation Agent']
+    agents: ['Creation Agent'],
   },
   {
     title: '逻辑验证',
     description: 'Logic Agent检查世界设定的逻辑一致性',
-    agents: ['Logic Agent']
+    agents: ['Logic Agent'],
   },
   {
     title: '故事创作',
     description: 'Narrative Agent基于世界设定创作引人入胜的故事',
-    agents: ['Narrative Agent']
+    agents: ['Narrative Agent'],
   },
   {
     title: '协作优化',
     description: '各Agent协作优化，确保最终结果的完美呈现',
-    agents: ['所有Agent']
-  }
+    agents: ['所有Agent'],
+  },
 ])
 
 const currentStep = ref(0)

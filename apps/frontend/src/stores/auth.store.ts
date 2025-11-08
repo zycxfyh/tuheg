@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
         id: '1',
         email,
         username: email.split('@')[0],
-        avatar: undefined
+        avatar: undefined,
       }
       token.value = 'mock-token'
     } catch (error) {
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
         id: '1',
         email,
         username,
-        avatar: undefined
+        avatar: undefined,
       }
       token.value = 'mock-token'
     } catch (error) {
@@ -82,6 +82,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     signup,
     logout,
-    verifyAuthOnLoad
+    verifyAuthOnLoad,
   }
 })

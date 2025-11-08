@@ -13,13 +13,15 @@ export const useUIStore = defineStore('ui', () => {
   const loadingMessage = ref('')
 
   // 通知状态
-  const notifications = ref<Array<{
-    id: string
-    type: 'success' | 'error' | 'warning' | 'info'
-    title: string
-    message: string
-    duration?: number
-  }>>([])
+  const notifications = ref<
+    Array<{
+      id: string
+      type: 'success' | 'error' | 'warning' | 'info'
+      title: string
+      message: string
+      duration?: number
+    }>
+  >([])
 
   // 模态框控制方法
   const showCharacterSheetModal = () => {
@@ -66,11 +68,11 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   // 通知管理
-  const addNotification = (notification: Omit<typeof notifications.value[0], 'id'>) => {
+  const addNotification = (notification: Omit<(typeof notifications.value)[0], 'id'>) => {
     const id = Date.now().toString()
     notifications.value.push({
       id,
-      ...notification
+      ...notification,
     })
 
     // 自动移除通知
@@ -82,7 +84,7 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   const removeNotification = (id: string) => {
-    const index = notifications.value.findIndex(n => n.id === id)
+    const index = notifications.value.findIndex((n) => n.id === id)
     if (index > -1) {
       notifications.value.splice(index, 1)
     }
@@ -144,6 +146,6 @@ export const useUIStore = defineStore('ui', () => {
     showSuccess,
     showError,
     showWarning,
-    showInfo
+    showInfo,
   }
 })

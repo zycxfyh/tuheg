@@ -84,7 +84,7 @@ export const useAssets = () => {
         yOffset += 20
         ctx.fillText('技能:', 20, yOffset)
         yOffset += 20
-        characterData.skills.forEach(skill => {
+        characterData.skills.forEach((skill) => {
           ctx.fillText(`• ${skill}`, 40, yOffset)
           yOffset += 18
         })
@@ -95,7 +95,6 @@ export const useAssets = () => {
       const quality = options.quality || (options.format === 'jpg' ? 0.8 : undefined)
 
       return canvas.toDataURL(mimeType, quality)
-
     } catch (error) {
       console.error('Failed to export character card:', error)
       throw error
@@ -155,7 +154,6 @@ export const useAssets = () => {
 
       const mimeType = options.format === 'jpg' ? 'image/jpeg' : 'image/png'
       return canvas.toDataURL(mimeType, options.quality || 0.8)
-
     } catch (error) {
       console.error('Failed to export world map:', error)
       throw error
@@ -175,12 +173,17 @@ export const useAssets = () => {
   }
 
   // 文本换行辅助函数
-  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, lineHeight: number): string[] => {
+  const wrapText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number,
+    lineHeight: number
+  ): string[] => {
     const words = text.split(' ')
     const lines: string[] = []
     let currentLine = ''
 
-    words.forEach(word => {
+    words.forEach((word) => {
       const testLine = currentLine + (currentLine ? ' ' : '') + word
       const metrics = ctx.measureText(testLine)
 
@@ -206,6 +209,6 @@ export const useAssets = () => {
     // 方法
     exportCharacterCard,
     exportWorldMap,
-    downloadAsset
+    downloadAsset,
   }
 }

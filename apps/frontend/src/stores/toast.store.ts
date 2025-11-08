@@ -23,7 +23,7 @@ export const useToastStore = defineStore('toast', () => {
       id,
       type: 'info',
       duration: 5000,
-      ...toast
+      ...toast,
     }
 
     toasts.value.push(newToast)
@@ -45,7 +45,7 @@ export const useToastStore = defineStore('toast', () => {
 
   // 移除通知
   const removeToast = (id: string) => {
-    const index = toasts.value.findIndex(toast => toast.id === id)
+    const index = toasts.value.findIndex((toast) => toast.id === id)
     if (index > -1) {
       toasts.value.splice(index, 1)
     }
@@ -62,7 +62,7 @@ export const useToastStore = defineStore('toast', () => {
       type: 'success',
       title,
       message,
-      duration: duration ?? 5000
+      duration: duration ?? 5000,
     })
   }
 
@@ -71,7 +71,7 @@ export const useToastStore = defineStore('toast', () => {
       type: 'error',
       title,
       message,
-      duration: duration ?? 7000
+      duration: duration ?? 7000,
     })
   }
 
@@ -80,7 +80,7 @@ export const useToastStore = defineStore('toast', () => {
       type: 'warning',
       title,
       message,
-      duration: duration ?? 6000
+      duration: duration ?? 6000,
     })
   }
 
@@ -89,7 +89,7 @@ export const useToastStore = defineStore('toast', () => {
       type: 'info',
       title,
       message,
-      duration: duration ?? 5000
+      duration: duration ?? 5000,
     })
   }
 
@@ -99,7 +99,7 @@ export const useToastStore = defineStore('toast', () => {
       type,
       title,
       message,
-      persistent: true
+      persistent: true,
     })
   }
 
@@ -118,6 +118,6 @@ export const useToastStore = defineStore('toast', () => {
     error,
     warning,
     info,
-    persistent
+    persistent,
   }
 })

@@ -53,7 +53,7 @@ export const useGameStore = defineStore('game', () => {
         characters: [],
         worldState: {},
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       }
 
       currentGame.value = newGame
@@ -98,7 +98,7 @@ export const useGameStore = defineStore('game', () => {
         id: Date.now().toString(),
         type: 'player',
         content: action,
-        timestamp: new Date()
+        timestamp: new Date(),
       }
       actions.value.push(playerAction)
 
@@ -111,12 +111,11 @@ export const useGameStore = defineStore('game', () => {
           id: (Date.now() + 1).toString(),
           type: 'ai',
           content: `AI响应：你选择了"${action}"，故事继续发展...`,
-          timestamp: new Date()
+          timestamp: new Date(),
         }
         actions.value.push(aiResponse)
         isAiThinking.value = false
       }, 2000)
-
     } catch (error) {
       console.error('Failed to submit action:', error)
       isAiThinking.value = false
@@ -149,7 +148,7 @@ export const useGameStore = defineStore('game', () => {
 
   const updateCharacter = (characterId: string, updates: Partial<GameState['characters'][0]>) => {
     if (!currentGame.value) return
-    const character = currentGame.value.characters.find(c => c.id === characterId)
+    const character = currentGame.value.characters.find((c) => c.id === characterId)
     if (character) {
       Object.assign(character, updates)
     }
@@ -157,7 +156,7 @@ export const useGameStore = defineStore('game', () => {
 
   const removeCharacter = (characterId: string) => {
     if (!currentGame.value) return
-    currentGame.value.characters = currentGame.value.characters.filter(c => c.id !== characterId)
+    currentGame.value.characters = currentGame.value.characters.filter((c) => c.id !== characterId)
   }
 
   return {
@@ -182,6 +181,6 @@ export const useGameStore = defineStore('game', () => {
     // 角色管理
     addCharacter,
     updateCharacter,
-    removeCharacter
+    removeCharacter,
   }
 })
