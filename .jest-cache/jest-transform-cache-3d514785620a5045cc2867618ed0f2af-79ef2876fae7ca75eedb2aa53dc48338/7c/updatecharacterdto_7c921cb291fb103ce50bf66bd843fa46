@@ -1,0 +1,18 @@
+bd69549221ee1344fc68e9ced96fa1cc
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateCharacterSchema = void 0;
+const zod_1 = require("zod");
+exports.updateCharacterSchema = zod_1.z
+    .object({
+    hp: zod_1.z.number().int().min(0).optional(),
+    mp: zod_1.z.number().int().min(0).optional(),
+    maxHp: zod_1.z.number().int().min(1).optional(),
+    maxMp: zod_1.z.number().int().min(0).optional(),
+    status: zod_1.z.string().max(50).optional(),
+})
+    .strict()
+    .refine((data) => Object.keys(data).length > 0, {
+    message: 'Request body cannot be empty.',
+});
+//# sourceMappingURL=update-character.dto.js.map

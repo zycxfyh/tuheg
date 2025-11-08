@@ -259,14 +259,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import MetricCard from '../components/MetricCard.vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import InsightCard from '../components/InsightCard.vue'
-import SubscriptionPlanChart from './charts/SubscriptionPlanChart.vue'
-import SubscriptionLifecycleChart from './charts/SubscriptionLifecycleChart.vue'
-import RetentionTrendChart from './charts/RetentionTrendChart.vue'
-import PluginDownloadChart from './charts/PluginDownloadChart.vue'
+import MetricCard from '../components/MetricCard.vue'
 import PluginCategoryChart from './charts/PluginCategoryChart.vue'
+import PluginDownloadChart from './charts/PluginDownloadChart.vue'
+import RetentionTrendChart from './charts/RetentionTrendChart.vue'
+import SubscriptionLifecycleChart from './charts/SubscriptionLifecycleChart.vue'
+import SubscriptionPlanChart from './charts/SubscriptionPlanChart.vue'
 
 // Props
 const props = defineProps({

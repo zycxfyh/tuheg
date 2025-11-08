@@ -15,7 +15,7 @@
 
 import { PromptTemplate } from '@langchain/core/prompts'
 import { Injectable, Logger } from '@nestjs/common'
-import type { ConfigService } from '@nestjs/config'
+import type { ConfigService } from '../config/configuration.service'
 // [注意] MemoryHierarchyService 由调用方（如 NarrativeService）使用，不在这里导入
 import type { User } from '@prisma/client'
 import { z } from 'zod'
@@ -265,7 +265,7 @@ export class ContextSummarizerService {
       summary: result.summary,
       entryCount: entries.length,
       timestamp: new Date(),
-      keyPoints: result.keyPoints,
+      keyPoints: result.keyPoints ?? undefined,
     }
 
     // 缓存结果

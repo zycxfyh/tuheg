@@ -1,15 +1,43 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes_disabled": true,
     "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedSideEffectImports": true
-  }
+    "noUncheckedSideEffectImports": true,
+    "noImplicitUseStrict": false,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "skipDefaultLibCheck": false,
+    "skipLibCheck": false
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "**/*.d.ts",
+    "vcptoolbox-core/**",
+    "packages/common-backend/src/vcp/**",
+    "packages/common-backend/src/plugins/**",
+    "packages/common-backend/src/resilience/**",
+    "packages/common-backend/src/rate-limit/**",
+    "packages/common-backend/src/validation/**",
+    "packages/common-backend/src/types/**"
+  ]
 }

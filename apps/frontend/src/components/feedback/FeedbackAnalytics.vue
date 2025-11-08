@@ -137,12 +137,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import MetricCard from './MetricCard.vue'
+import { onMounted, ref } from 'vue'
 import FeedbackTrendChart from './charts/FeedbackTrendChart.vue'
 import FeedbackTypeChart from './charts/FeedbackTypeChart.vue'
 import SatisfactionTrendChart from './charts/SatisfactionTrendChart.vue'
 import InsightCard from './InsightCard.vue'
+import MetricCard from './MetricCard.vue'
 
 // 状态
 const timeRange = ref('30d')

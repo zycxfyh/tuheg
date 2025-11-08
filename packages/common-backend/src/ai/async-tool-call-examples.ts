@@ -88,7 +88,7 @@ export class AsyncToolCallExamples {
       console.log(`找到占位符: ${fullMatch}`)
       console.log(`工具: ${toolName}, 任务ID: ${taskId}`)
 
-      const task = this.asyncToolService.getTaskStatus(taskId)
+      const task = taskId ? this.asyncToolService.getTaskStatus(taskId) : null
       if (task && task.status === AsyncToolCallStatus.COMPLETED) {
         const resultText = this.formatToolResult(task.toolName, task.result)
         processedResponse = processedResponse.replace(fullMatch, resultText)

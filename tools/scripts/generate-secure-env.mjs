@@ -10,7 +10,7 @@
 //   - 16字节的ENCRYPTION_SALT (base64编码)
 //   - 32字节的JWT_SECRET
 
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'node:crypto'
 
 console.log('🔐 生成安全的加密密钥和配置')
 console.log('='.repeat(50))

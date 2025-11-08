@@ -220,8 +220,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import { NarrativeSegment, MultimodalType } from '../../services/multimodal/types'
+import { computed, onMounted, ref, watch } from 'vue'
+import type { MultimodalType, NarrativeSegment } from '../../services/multimodal/types'
 
 interface Props {
   segment: NarrativeSegment

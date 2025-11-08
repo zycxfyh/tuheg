@@ -9,26 +9,26 @@ import { EventEmitter } from 'events'
 // VCP六大插件协议 - 完全遵循开源VCPToolBox的设计
 export type PluginType =
   // VCP六大基础协议 (核心协议)
-  | 'static'              // 静态插件：实时世界知识注入，提供静态数据和知识库
+  | 'static' // 静态插件：实时世界知识注入，提供静态数据和知识库
   | 'messagePreprocessor' // 消息预处理器：多模态输入处理，预处理用户输入
-  | 'synchronous'         // 同步插件：快速任务执行，实时响应
-  | 'asynchronous'        // 异步插件：耗时任务并行处理，后台执行复杂任务
-  | 'service'             // 服务插件：后台持续服务，提供长期运行的服务
-  | 'dynamic'             // 动态插件：AI自主学习和创造，具备学习能力的智能插件
+  | 'synchronous' // 同步插件：快速任务执行，实时响应
+  | 'asynchronous' // 异步插件：耗时任务并行处理，后台执行复杂任务
+  | 'service' // 服务插件：后台持续服务，提供长期运行的服务
+  | 'dynamic' // 动态插件：AI自主学习和创造，具备学习能力的智能插件
 
   // AI叙事创作专用插件类型
-  | 'story-generator'     // 故事生成器：基于Agent协作生成叙事内容
-  | 'character-creator'   // 角色创建器：智能角色设计和性格分析
-  | 'world-builder'       // 世界构建器：构建完整的世界观和设定
-  | 'narrative-logic'     // 叙事逻辑：处理故事逻辑和情节推理
-  | 'dialogue-system'     // 对话系统：智能对话生成和管理
-  | 'plot-engine'         // 情节引擎：情节设计和分支管理
-  | 'style-template'      // 风格模板：写作风格和语言模板
-  | 'export-format'       // 导出格式：多种输出格式支持
-  | 'ui-theme'           // UI主题：界面主题和样式定制
-  | 'localization'       // 本地化：多语言支持和本地化
-  | 'analytics'          // 分析工具：创作数据分析和统计
-  | 'integration'        // 第三方集成：外部工具和服务集成
+  | 'story-generator' // 故事生成器：基于Agent协作生成叙事内容
+  | 'character-creator' // 角色创建器：智能角色设计和性格分析
+  | 'world-builder' // 世界构建器：构建完整的世界观和设定
+  | 'narrative-logic' // 叙事逻辑：处理故事逻辑和情节推理
+  | 'dialogue-system' // 对话系统：智能对话生成和管理
+  | 'plot-engine' // 情节引擎：情节设计和分支管理
+  | 'style-template' // 风格模板：写作风格和语言模板
+  | 'export-format' // 导出格式：多种输出格式支持
+  | 'ui-theme' // UI主题：界面主题和样式定制
+  | 'localization' // 本地化：多语言支持和本地化
+  | 'analytics' // 分析工具：创作数据分析和统计
+  | 'integration' // 第三方集成：外部工具和服务集成
 
 // ============================================================================
 // Tar*变量系统 - 借鉴VCPToolBox的核心特性
@@ -257,7 +257,7 @@ export class CrossMemoryNetwork {
       ...entry,
       id,
       timestamp: new Date(),
-      fingerprint: await this.generateFingerprint(entry.content)
+      fingerprint: await this.generateFingerprint(entry.content),
     }
 
     this.memories.set(id, memory)
@@ -304,14 +304,14 @@ export class CrossMemoryNetwork {
       const tagCandidates = new Set<string>()
       for (const tag of query.tags) {
         const taggedMems = this.memoryIndex.get(tag) || []
-        taggedMems.forEach(id => tagCandidates.add(id))
+        taggedMems.forEach((id) => tagCandidates.add(id))
       }
-      candidates = candidates.filter(id => tagCandidates.has(id))
+      candidates = candidates.filter((id) => tagCandidates.has(id))
     }
 
     // 根据类型过滤
     if (query.type) {
-      candidates = candidates.filter(id => {
+      candidates = candidates.filter((id) => {
         const memory = this.memories.get(id)
         return memory?.type === query.type
       })
@@ -319,21 +319,23 @@ export class CrossMemoryNetwork {
 
     // 根据时间范围过滤
     if (query.timeRange) {
-      candidates = candidates.filter(id => {
+      candidates = candidates.filter((id) => {
         const memory = this.memories.get(id)
         if (!memory) return false
-        return memory.timestamp >= query.timeRange!.start &&
-               memory.timestamp <= query.timeRange!.end
+        return (
+          memory.timestamp >= query.timeRange!.start && memory.timestamp <= query.timeRange!.end
+        )
       })
     }
 
     // 根据重要性过滤
     if (query.importance) {
-      candidates = candidates.filter(id => {
+      candidates = candidates.filter((id) => {
         const memory = this.memories.get(id)
         if (!memory) return false
-        return memory.importance >= query.importance!.min &&
-               memory.importance <= query.importance!.max
+        return (
+          memory.importance >= query.importance!.min && memory.importance <= query.importance!.max
+        )
       })
     }
 
@@ -364,9 +366,7 @@ export class CrossMemoryNetwork {
     const paginatedCandidates = candidates.slice(offset, offset + limit)
 
     // 获取完整记忆对象
-    return paginatedCandidates
-      .map(id => this.memories.get(id))
-      .filter(Boolean) as MemoryEntry[]
+    return paginatedCandidates.map((id) => this.memories.get(id)).filter(Boolean) as MemoryEntry[]
   }
 
   // 更新记忆重要性
@@ -419,7 +419,7 @@ export class CrossMemoryNetwork {
             from: memory.id,
             to: connectionId,
             type: 'reference',
-            weight: 1.0
+            weight: 1.0,
           })
         }
       }
@@ -427,7 +427,7 @@ export class CrossMemoryNetwork {
 
     return {
       nodes: memories,
-      edges
+      edges,
     }
   }
 
@@ -450,7 +450,7 @@ export class CrossMemoryNetwork {
     const query: MemoryQuery = {
       agentId: memory.agentId,
       tags: memory.tags,
-      limit: 5
+      limit: 5,
     }
 
     // 查找相同标签的记忆
@@ -461,9 +461,9 @@ export class CrossMemoryNetwork {
       agentId: memory.agentId,
       similarity: {
         content: JSON.stringify(memory.content),
-        threshold: 0.7
+        threshold: 0.7,
       },
-      limit: 3
+      limit: 3,
     }
     const similarityRelated = await this.queryMemories(similarityQuery)
 
@@ -485,7 +485,7 @@ export class CrossMemoryNetwork {
     let hash = 0
     for (let i = 0; i < contentStr.length; i++) {
       const char = contentStr.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash = hash & hash // 转换为32位整数
     }
     return Math.abs(hash).toString(36)
@@ -525,8 +525,8 @@ export class CrossMemoryNetwork {
         } else {
           matrix[i][j] = Math.min(
             matrix[i - 1][j - 1] + 1, // 替换
-            matrix[i][j - 1] + 1,     // 插入
-            matrix[i - 1][j] + 1      // 删除
+            matrix[i][j - 1] + 1, // 插入
+            matrix[i - 1][j] + 1 // 删除
           )
         }
       }
@@ -549,9 +549,7 @@ export class CrossMemoryNetwork {
       candidates = Array.from(this.memories.keys())
     }
 
-    return candidates
-      .map(id => this.memories.get(id))
-      .filter(Boolean) as MemoryEntry[]
+    return candidates.map((id) => this.memories.get(id)).filter(Boolean) as MemoryEntry[]
   }
 
   // 事件发射器

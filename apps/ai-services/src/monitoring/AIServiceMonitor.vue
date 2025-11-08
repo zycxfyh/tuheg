@@ -251,10 +251,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import LatencyTrendChart from './charts/LatencyTrendChart.vue'
 import RequestTypeChart from './charts/RequestTypeChart.vue'
 import ServiceUsageChart from './charts/ServiceUsageChart.vue'
-import LatencyTrendChart from './charts/LatencyTrendChart.vue'
 
 // Props
 const props = defineProps({

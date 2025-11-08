@@ -21,10 +21,12 @@ import type {
 } from '@tuheg/common-backend'
 // [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
 // 导入DTO类型和Zod schema
-import { 
+import {
   createAiSettingsSchema,
   testAiConnectionSchema,
-  updateAiSettingsSchema,ZodValidationPipe, } from '@tuheg/common-backend'
+  updateAiSettingsSchema,
+  ZodValidationPipe,
+} from '@tuheg/common-backend'
 import type { Request } from 'express'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import type { SettingsService } from './settings.service'

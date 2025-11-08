@@ -1,17 +1,17 @@
 // VCPToolBox SDK - VCP协议实现
 // 基于开源VCPToolBox的核心协议，为开发者提供完整的VCP协议支持
 
-import {
+import type {
+  VCPAsyncTask,
+  VCPAsyncTaskStatus,
+  VCPFile,
+  VCPFileHandle,
+  VCPFileQuery,
+  VCPMemoryEntry,
+  VCPPlugin,
   VCPProtocolAPI,
   VCPToolRequest,
   VCPToolResponse,
-  VCPMemoryEntry,
-  VCPFileHandle,
-  VCPFile,
-  VCPFileQuery,
-  VCPAsyncTask,
-  VCPAsyncTaskStatus,
-  VCPPlugin,
 } from '../types'
 
 export class VCPProtocol implements VCPProtocolAPI {

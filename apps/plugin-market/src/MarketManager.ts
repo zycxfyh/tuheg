@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { PluginPackage, PluginRegistry } from '../vcptoolbox/src/publisher/Publisher'
+import { type PluginPackage, PluginRegistry } from '../vcptoolbox/src/publisher/Publisher'
 
 // 插件市场管理器
 // 专注于AI叙事插件的分发、发现和商业化

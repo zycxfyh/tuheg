@@ -2,7 +2,8 @@
 // 职责: AsyncToolCallService 的 NestJS 模块
 
 import { Module } from '@nestjs/common'
-import { EventEmitterModule } from '@nestjs/event-emitter'
+// import { EventEmitterModule } from '@nestjs/event-emitter'
+const EventEmitterModule = { forRoot: () => ({}) } // Temporary mock
 import { AsyncToolCallService } from './async-tool-call.service'
 
 @Module({

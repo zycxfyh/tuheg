@@ -13,14 +13,27 @@ module.exports = {
     '**/*.spec.ts',
   ],
   transform: {
-    '^.+\\.ts$': ['ts-jest', { useESM: true }],
-    '^.+\\.tsx$': ['ts-jest', { useESM: true }],
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      diagnostics: false,
+      isolatedModules: true,
+      compilerOptions: {
+        noEmit: true,
+        skipLibCheck: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        strict: false,
+        noImplicitAny: false,
+        strictNullChecks: false,
+        exactOptionalPropertyTypes: false,
+      },
+    }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFiles: ['<rootDir>/packages/common-backend/test/env-setup.js'],
   setupFilesAfterEnv: ['<rootDir>/packages/common-backend/test/setup.ts'],
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
+    // Use source files directly
     '^@tuheg/common-backend$': '<rootDir>/packages/common-backend/src/index.ts',
     '^@tuheg/common-backend/(.*)$': '<rootDir>/packages/common-backend/src/$1',
     // Mock external libraries

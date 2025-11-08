@@ -1,21 +1,21 @@
 // 多模态叙事服务核心类
 // 负责管理多模态叙事内容的创建、编辑、播放和分析
 
-import {
+import { apiService } from '../api.service'
+import type { MultimodalGenerator } from './generators'
+import type { MultimodalProcessor } from './processors'
+import type { MultimodalRenderer } from './renderers'
+import type {
+  GenerationOptions,
+  MultimodalContent,
   MultimodalNarrative,
+  MultimodalType,
+  NarrativeAnalytics,
   NarrativeSegment,
   PlaybackState,
-  UserProgress,
-  GenerationOptions,
   RenderOptions,
-  MultimodalType,
-  MultimodalContent,
-  NarrativeAnalytics,
+  UserProgress,
 } from './types'
-import { MultimodalProcessor } from './processors'
-import { MultimodalGenerator } from './generators'
-import { MultimodalRenderer } from './renderers'
-import { apiService } from '../api.service'
 
 export class MultimodalNarrativeService {
   private narratives: Map<string, MultimodalNarrative> = new Map()

@@ -2,7 +2,7 @@
 // 测试增强验证器的功能
 
 import { z } from 'zod'
-import { EnhancedValidator } from './enhanced-validator'
+import { EnhancedValidator } from './enhanced-validator.ts'
 
 describe('EnhancedValidator', () => {
   describe('validate', () => {

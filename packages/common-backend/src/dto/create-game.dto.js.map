@@ -1,1 +1,0 @@
-{"version":3,"file":"create-game.dto.js","sourceRoot":"","sources":["create-game.dto.ts"],"names":[],"mappings":";;;AAEA,6BAAwB;AAGX,QAAA,yBAAyB,GAAG,OAAC,CAAC,MAAM,CAAC;IAChD,OAAO,EAAE,OAAC;SACP,MAAM,EAAE;SACR,GAAG,CAAC,EAAE,EAAE,EAAE,OAAO,EAAE,8CAA8C,EAAE,CAAC;SACpE,GAAG,CAAC,GAAG,EAAE,EAAE,OAAO,EAAE,yCAAyC,EAAE,CAAC;CAIpE,CAAC,CAAC"}

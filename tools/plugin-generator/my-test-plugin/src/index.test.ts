@@ -1,8 +1,8 @@
 import { createMyTestPluginPlugin, MyTestPluginPlugin } from './index'
 
 describe('MyTestPluginPlugin', () => {
-  let plugin: MyTestPluginPlugin
-  let mockContext: any
+  let plugin: MyTestPluginPlugin;
+  let mockContext: any;
 
   beforeEach(() => {
     mockContext = {

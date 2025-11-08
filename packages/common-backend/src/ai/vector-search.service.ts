@@ -89,7 +89,7 @@ export class VectorSearchService {
     try {
       // 获取用户的 AI 配置（优先使用 narrative_synthesis 角色的配置，因为它通常支持 embedding）
       let apiKey: string
-      let baseUrl: string | undefined
+      let baseUrl: string
 
       try {
         // 验证用户是否有有效的AI配置

@@ -205,7 +205,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { marketManager } from '../MarketManager'
 import PluginCard from './PluginCard.vue'
 import PluginDetailsModal from './PluginDetailsModal.vue'

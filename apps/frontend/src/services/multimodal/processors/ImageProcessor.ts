@@ -1,7 +1,7 @@
 // 图像处理器
 // 处理图像内容的分析、转换和增强
 
-import { MultimodalProcessor, MultimodalContent, MultimodalType, ImageContent } from '../types'
+import type { ImageContent, MultimodalContent, MultimodalProcessor, MultimodalType } from '../types'
 
 export class ImageProcessor implements MultimodalProcessor {
   canProcess(type: MultimodalType): boolean {
@@ -311,9 +311,7 @@ export class ImageProcessor implements MultimodalProcessor {
     let minDistance = Infinity
 
     for (const color of colors) {
-      const distance = Math.sqrt(
-        Math.pow(r - color.r, 2) + Math.pow(g - color.g, 2) + Math.pow(b - color.b, 2)
-      )
+      const distance = Math.sqrt((r - color.r) ** 2 + (g - color.g) ** 2 + (b - color.b) ** 2)
 
       if (distance < minDistance) {
         minDistance = distance

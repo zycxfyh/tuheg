@@ -1,10 +1,16 @@
 // VCPToolBox SDK - 插件管理器
 // 为开发者提供插件开发、测试和调试的完整工具链
 
-import { VCPPlugin, PluginContext, PluginType, PluginMetadata } from '../types'
-import { VCPProtocol } from './VCPProtocol'
+import type {
+  PluginContext,
+  PluginMetadata,
+  PluginType,
+  ValidationError,
+  ValidationResult,
+  VCPPlugin,
+} from '../types'
 import { TestFramework } from './TestFramework'
-import { ValidationResult, ValidationError } from '../types'
+import { VCPProtocol } from './VCPProtocol'
 
 export class SDKPluginManager {
   private plugins: Map<string, VCPPlugin> = new Map()

@@ -7,7 +7,7 @@
     "generate-api-docs": "./bin/generate-docs.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "dev": "tsc --watch",
     "test": "jest",
     "lint": "eslint src/**/*.ts"

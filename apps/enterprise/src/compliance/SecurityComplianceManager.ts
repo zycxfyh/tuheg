@@ -17,7 +17,13 @@ export interface ComplianceFramework {
 
 export interface ComplianceRequirement {
   id: string
-  category: 'data-protection' | 'access-control' | 'audit-logging' | 'encryption' | 'privacy' | 'security'
+  category:
+    | 'data-protection'
+    | 'access-control'
+    | 'audit-logging'
+    | 'encryption'
+    | 'privacy'
+    | 'security'
   title: string
   description: string
   severity: 'critical' | 'high' | 'medium' | 'low'
@@ -31,7 +37,12 @@ export interface ComplianceRequirement {
 
 export interface SecurityIncident {
   id: string
-  type: 'unauthorized-access' | 'data-breach' | 'suspicious-activity' | 'policy-violation' | 'system-compromise'
+  type:
+    | 'unauthorized-access'
+    | 'data-breach'
+    | 'suspicious-activity'
+    | 'policy-violation'
+    | 'system-compromise'
   severity: 'critical' | 'high' | 'medium' | 'low'
   title: string
   description: string
@@ -146,7 +157,7 @@ class SecurityComplianceManager extends EventEmitter {
         auditFrequency: 'quarterly',
         lastAudit: new Date(),
         complianceScore: 85,
-        status: 'compliant'
+        status: 'compliant',
       },
       {
         id: 'ccpa',
@@ -157,7 +168,7 @@ class SecurityComplianceManager extends EventEmitter {
         auditFrequency: 'quarterly',
         lastAudit: new Date(),
         complianceScore: 90,
-        status: 'compliant'
+        status: 'compliant',
       },
       {
         id: 'sox',
@@ -168,7 +179,7 @@ class SecurityComplianceManager extends EventEmitter {
         auditFrequency: 'quarterly',
         lastAudit: new Date(),
         complianceScore: 88,
-        status: 'compliant'
+        status: 'compliant',
       },
       {
         id: 'iso27001',
@@ -179,11 +190,11 @@ class SecurityComplianceManager extends EventEmitter {
         auditFrequency: 'monthly',
         lastAudit: new Date(),
         complianceScore: 82,
-        status: 'compliant'
-      }
+        status: 'compliant',
+      },
     ]
 
-    frameworks.forEach(framework => {
+    frameworks.forEach((framework) => {
       this.complianceFrameworks.set(framework.id, framework)
     })
   }
@@ -200,7 +211,7 @@ class SecurityComplianceManager extends EventEmitter {
         deletionMethod: 'scheduled',
         exceptions: ['legal-hold', 'ongoing-litigation'],
         lastReview: new Date(),
-        nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       },
       {
         id: 'content-data',
@@ -211,7 +222,7 @@ class SecurityComplianceManager extends EventEmitter {
         deletionMethod: 'archival',
         exceptions: ['premium-user', 'featured-content'],
         lastReview: new Date(),
-        nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       },
       {
         id: 'audit-logs',
@@ -222,11 +233,11 @@ class SecurityComplianceManager extends EventEmitter {
         deletionMethod: 'archival',
         exceptions: ['ongoing-investigation', 'regulatory-requirement'],
         lastReview: new Date(),
-        nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-      }
+        nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      },
     ]
 
-    policies.forEach(policy => {
+    policies.forEach((policy) => {
       this.dataRetentionPolicies.set(policy.id, policy)
     })
   }
@@ -236,7 +247,7 @@ class SecurityComplianceManager extends EventEmitter {
     const auditLog: AuditLog = {
       ...event,
       id: `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     const userLogs = this.auditLogs.get(event.userId) || []
@@ -251,14 +262,16 @@ class SecurityComplianceManager extends EventEmitter {
   }
 
   // 报告安全事件
-  async reportSecurityIncident(incident: Omit<SecurityIncident, 'id' | 'reportedAt'>): Promise<string> {
+  async reportSecurityIncident(
+    incident: Omit<SecurityIncident, 'id' | 'reportedAt'>
+  ): Promise<string> {
     const securityIncident: SecurityIncident = {
       ...incident,
       id: `incident-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       reportedAt: new Date(),
       status: 'detected',
       evidence: incident.evidence || [],
-      notifications: []
+      notifications: [],
     }
 
     this.securityIncidents.set(securityIncident.id, securityIncident)
@@ -271,7 +284,11 @@ class SecurityComplianceManager extends EventEmitter {
   }
 
   // 更新事件状态
-  async updateIncidentStatus(incidentId: string, status: SecurityIncident['status'], updates?: Partial<SecurityIncident>): Promise<void> {
+  async updateIncidentStatus(
+    incidentId: string,
+    status: SecurityIncident['status'],
+    updates?: Partial<SecurityIncident>
+  ): Promise<void> {
     const incident = this.securityIncidents.get(incidentId)
     if (!incident) {
       throw new Error(`Incident ${incidentId} not found`)
@@ -294,7 +311,7 @@ class SecurityComplianceManager extends EventEmitter {
   async recordPrivacyConsent(consent: Omit<PrivacyConsent, 'id'>): Promise<string> {
     const privacyConsent: PrivacyConsent = {
       ...consent,
-      id: `consent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      id: `consent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     }
 
     const userConsents = this.privacyConsents.get(consent.userId) || []
@@ -306,9 +323,12 @@ class SecurityComplianceManager extends EventEmitter {
   }
 
   // 撤销隐私同意
-  async withdrawPrivacyConsent(userId: string, consentType: PrivacyConsent['consentType']): Promise<void> {
+  async withdrawPrivacyConsent(
+    userId: string,
+    consentType: PrivacyConsent['consentType']
+  ): Promise<void> {
     const userConsents = this.privacyConsents.get(userId) || []
-    const consent = userConsents.find(c => c.consentType === consentType && !c.withdrawnAt)
+    const consent = userConsents.find((c) => c.consentType === consentType && !c.withdrawnAt)
 
     if (consent) {
       consent.withdrawnAt = new Date()
@@ -321,7 +341,10 @@ class SecurityComplianceManager extends EventEmitter {
   }
 
   // 执行数据删除
-  async executeDataDeletion(userId: string, reason: 'consent-withdrawal' | 'account-deletion' | 'legal-request'): Promise<void> {
+  async executeDataDeletion(
+    userId: string,
+    reason: 'consent-withdrawal' | 'account-deletion' | 'legal-request'
+  ): Promise<void> {
     console.log(`Executing data deletion for user ${userId}, reason: ${reason}`)
 
     // 记录删除操作
@@ -334,7 +357,7 @@ class SecurityComplianceManager extends EventEmitter {
       userAgent: 'system',
       success: true,
       metadata: { reason, deletedAt: new Date() },
-      complianceTags: ['data-deletion', 'privacy']
+      complianceTags: ['data-deletion', 'privacy'],
     })
 
     // 删除用户数据
@@ -412,7 +435,7 @@ class SecurityComplianceManager extends EventEmitter {
       frameworks: Array.from(this.complianceFrameworks.values()),
       overallScore: this.calculateOverallComplianceScore(),
       lastAudit: new Date(),
-      summary: this.generateComplianceSummary()
+      summary: this.generateComplianceSummary(),
     }
   }
 
@@ -421,7 +444,7 @@ class SecurityComplianceManager extends EventEmitter {
     const incidents = Array.from(this.securityIncidents.values())
 
     const filteredIncidents = timeRange
-      ? incidents.filter(i => i.detectedAt >= timeRange.start && i.detectedAt <= timeRange.end)
+      ? incidents.filter((i) => i.detectedAt >= timeRange.start && i.detectedAt <= timeRange.end)
       : incidents
 
     return {
@@ -430,7 +453,9 @@ class SecurityComplianceManager extends EventEmitter {
       byType: this.groupIncidentsByType(filteredIncidents),
       byStatus: this.groupIncidentsByStatus(filteredIncidents),
       responseTime: this.calculateAverageResponseTime(filteredIncidents),
-      unresolvedIncidents: filteredIncidents.filter(i => i.status !== 'resolved' && i.status !== 'closed')
+      unresolvedIncidents: filteredIncidents.filter(
+        (i) => i.status !== 'resolved' && i.status !== 'closed'
+      ),
     }
   }
 
@@ -448,7 +473,7 @@ class SecurityComplianceManager extends EventEmitter {
         remediationSteps: ['启用TLS 1.3', '实施数据加密', '定期轮换加密密钥'],
         status: 'passed',
         lastChecked: new Date(),
-        evidence: []
+        evidence: [],
       },
       {
         id: 'gdpr-consent-management',
@@ -461,8 +486,8 @@ class SecurityComplianceManager extends EventEmitter {
         remediationSteps: ['实现同意管理界面', '添加同意撤销功能', '记录同意历史'],
         status: 'passed',
         lastChecked: new Date(),
-        evidence: []
-      }
+        evidence: [],
+      },
     ]
   }
 
@@ -479,8 +504,8 @@ class SecurityComplianceManager extends EventEmitter {
         remediationSteps: ['实现数据导出功能', '添加数据删除API', '创建不销售选择界面'],
         status: 'passed',
         lastChecked: new Date(),
-        evidence: []
-      }
+        evidence: [],
+      },
     ]
   }
 
@@ -497,8 +522,8 @@ class SecurityComplianceManager extends EventEmitter {
         remediationSteps: ['启用详细审计日志', '实施日志完整性检查', '定期审计日志审查'],
         status: 'passed',
         lastChecked: new Date(),
-        evidence: []
-      }
+        evidence: [],
+      },
     ]
   }
 
@@ -515,8 +540,8 @@ class SecurityComplianceManager extends EventEmitter {
         remediationSteps: ['实现RBAC', '启用MFA', '定期权限审查'],
         status: 'passed',
         lastChecked: new Date(),
-        evidence: []
-      }
+        evidence: [],
+      },
     ]
   }
 
@@ -538,14 +563,16 @@ class SecurityComplianceManager extends EventEmitter {
         rootCause: '地理位置异常',
         remediation: ['通知用户', '要求额外验证'],
         assignedTo: ['security-team'],
-        evidence: [{
-          id: `evidence-${Date.now()}`,
-          type: 'log',
-          timestamp: new Date(),
-          location: auditLog.id,
-          description: '登录审计日志',
-          metadata: auditLog
-        }]
+        evidence: [
+          {
+            id: `evidence-${Date.now()}`,
+            type: 'log',
+            timestamp: new Date(),
+            location: auditLog.id,
+            description: '登录审计日志',
+            metadata: auditLog,
+          },
+        ],
       })
     }
 
@@ -563,7 +590,7 @@ class SecurityComplianceManager extends EventEmitter {
         rootCause: '权限策略违反',
         remediation: ['暂停用户权限', '安全审查'],
         assignedTo: ['security-team', 'compliance-officer'],
-        evidence: []
+        evidence: [],
       })
     }
   }
@@ -577,11 +604,11 @@ class SecurityComplianceManager extends EventEmitter {
     if (!auditLog.location || recentLogs.length < 3) return false
 
     const recentLocations = recentLogs
-      .filter(log => log.location)
-      .map(log => log.location!.country)
+      .filter((log) => log.location)
+      .map((log) => log.location!.country)
 
     const currentCountry = auditLog.location.country
-    const commonCountries = recentLocations.filter(country => country === currentCountry)
+    const commonCountries = recentLocations.filter((country) => country === currentCountry)
 
     // 如果当前登录国家与最近登录不符，标记为异常
     return commonCountries.length / recentLocations.length < 0.5
@@ -589,8 +616,8 @@ class SecurityComplianceManager extends EventEmitter {
 
   private detectPermissionAbuse(auditLog: AuditLog, recentLogs: AuditLog[]): boolean {
     // 简化的权限滥用检测逻辑
-    const recentFailedActions = recentLogs.filter(log =>
-      !log.success && log.action.includes('delete') || log.action.includes('admin')
+    const recentFailedActions = recentLogs.filter(
+      (log) => (!log.success && log.action.includes('delete')) || log.action.includes('admin')
     )
 
     return recentFailedActions.length > 3
@@ -607,7 +634,7 @@ class SecurityComplianceManager extends EventEmitter {
         recipient,
         sentAt: new Date(),
         status: 'sent',
-        content: `安全事件告警: ${incident.title} - 严重程度: ${incident.severity}`
+        content: `安全事件告警: ${incident.title} - 严重程度: ${incident.severity}`,
       }
 
       incident.notifications.push(notification)
@@ -645,7 +672,9 @@ class SecurityComplianceManager extends EventEmitter {
     }
   }
 
-  private async checkRequirement(requirement: ComplianceRequirement): Promise<{ passed: boolean; evidence: string[] }> {
+  private async checkRequirement(
+    requirement: ComplianceRequirement
+  ): Promise<{ passed: boolean; evidence: string[] }> {
     // 简化的合规检查逻辑
     // 实际实现应该包含具体的检查逻辑
 
@@ -679,37 +708,47 @@ class SecurityComplianceManager extends EventEmitter {
   private generateComplianceSummary(): any {
     return {
       totalFrameworks: this.complianceFrameworks.size,
-      compliantFrameworks: Array.from(this.complianceFrameworks.values())
-        .filter(fw => fw.status === 'compliant').length,
+      compliantFrameworks: Array.from(this.complianceFrameworks.values()).filter(
+        (fw) => fw.status === 'compliant'
+      ).length,
       criticalRequirements: Array.from(this.complianceFrameworks.values())
-        .flatMap(fw => fw.requirements)
-        .filter(req => req.severity === 'critical' && req.status === 'failed').length
+        .flatMap((fw) => fw.requirements)
+        .filter((req) => req.severity === 'critical' && req.status === 'failed').length,
     }
   }
 
   private groupIncidentsBySeverity(incidents: SecurityIncident[]): Record<string, number> {
-    return incidents.reduce((acc, inc) => {
-      acc[inc.severity] = (acc[inc.severity] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    return incidents.reduce(
+      (acc, inc) => {
+        acc[inc.severity] = (acc[inc.severity] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
   }
 
   private groupIncidentsByType(incidents: SecurityIncident[]): Record<string, number> {
-    return incidents.reduce((acc, inc) => {
-      acc[inc.type] = (acc[inc.type] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    return incidents.reduce(
+      (acc, inc) => {
+        acc[inc.type] = (acc[inc.type] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
   }
 
   private groupIncidentsByStatus(incidents: SecurityIncident[]): Record<string, number> {
-    return incidents.reduce((acc, inc) => {
-      acc[inc.status] = (acc[inc.status] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    return incidents.reduce(
+      (acc, inc) => {
+        acc[inc.status] = (acc[inc.status] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
   }
 
   private calculateAverageResponseTime(incidents: SecurityIncident[]): number {
-    const resolvedIncidents = incidents.filter(inc => inc.resolvedAt)
+    const resolvedIncidents = incidents.filter((inc) => inc.resolvedAt)
     if (resolvedIncidents.length === 0) return 0
 
     const totalResponseTime = resolvedIncidents.reduce((sum, inc) => {
@@ -721,24 +760,30 @@ class SecurityComplianceManager extends EventEmitter {
 
   private startAutomatedChecks(): void {
     // 启动自动合规检查
-    setInterval(async () => {
-      for (const [frameworkId, framework] of this.complianceFrameworks) {
-        try {
-          await this.runComplianceCheck(frameworkId)
-        } catch (error) {
-          console.error(`Automated compliance check failed for ${frameworkId}:`, error)
+    setInterval(
+      async () => {
+        for (const [frameworkId, framework] of this.complianceFrameworks) {
+          try {
+            await this.runComplianceCheck(frameworkId)
+          } catch (error) {
+            console.error(`Automated compliance check failed for ${frameworkId}:`, error)
+          }
         }
-      }
-    }, 24 * 60 * 60 * 1000) // 每天检查一次
+      },
+      24 * 60 * 60 * 1000
+    ) // 每天检查一次
 
     // 启动自动数据保留执行
-    setInterval(async () => {
-      try {
-        await this.executeDataRetention()
-      } catch (error) {
-        console.error('Automated data retention failed:', error)
-      }
-    }, 7 * 24 * 60 * 60 * 1000) // 每周执行一次
+    setInterval(
+      async () => {
+        try {
+          await this.executeDataRetention()
+        } catch (error) {
+          console.error('Automated data retention failed:', error)
+        }
+      },
+      7 * 24 * 60 * 60 * 1000
+    ) // 每周执行一次
   }
 }
 

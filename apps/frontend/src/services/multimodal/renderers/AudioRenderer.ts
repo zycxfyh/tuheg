@@ -1,12 +1,12 @@
 // 音频渲染器
 // 将音频内容渲染到DOM中
 
-import {
-  MultimodalRenderer,
+import type {
+  AudioContent,
   MultimodalContent,
+  MultimodalRenderer,
   MultimodalType,
   RenderOptions,
-  AudioContent,
 } from '../types'
 
 export class AudioRenderer implements MultimodalRenderer {

@@ -309,7 +309,7 @@ export class MultimodalService {
     }
 
     const nodeId = pathParts[0]
-    const filePath = pathParts[1].replace(/\\/g, '/') // 统一路径分隔符
+    const filePath = pathParts[1]?.replace(/\\/g, '/') // 统一路径分隔符
 
     return { nodeId, filePath }
   }

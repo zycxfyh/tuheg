@@ -52,7 +52,7 @@ export class AiMetricsService {
   /**
    * 记录模型使用
    */
-  async recordModelUsage(userId: string | undefined, usage: UsageRecord): Promise<ModelUsage> {
+  async recordModelUsage(userId: string, usage: UsageRecord): Promise<ModelUsage> {
     const totalTokens = usage.requestTokens + usage.responseTokens
 
     const usageRecord = await this.prisma.modelUsage.create({

@@ -1,8 +1,30 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-# 在每次提交前，强制对所有暂存的文件进行格式化和 lint 检查
-# (注意: lint-staged 需要额外配置，我们先用一个简单的 lint 命令占位)
-echo "Running pre-commit hooks..."
-pnpm format
-pnpm lint
+echo "🔍 Running pre-commit checks..."
+
+# 运行健康检查
+echo "🏥 Health check..."
+node scripts/health-check.js || exit 1
+
+# 运行严格linting
+echo "🔧 Strict linting..."
+pnpm run lint:strict || exit 1
+
+# 运行格式检查
+echo "📝 Format check..."
+pnpm run format:check || exit 1
+
+# 运行严格TypeScript检查
+echo "🔷 TypeScript strict check..."
+pnpm run type-check:strict || exit 1
+
+# 运行快速失败测试
+echo "🧪 Fail-fast tests..."
+pnpm run test:fail-fast || exit 1
+
+# 运行安全审计
+echo "🔒 Security audit..."
+pnpm audit --audit-level high || exit 1
+
+echo "✅ All pre-commit checks passed!"

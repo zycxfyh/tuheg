@@ -1,6 +1,6 @@
 // 相机服务 - 移动端相机功能封装
 
-import { Camera, CameraResultType, CameraSource, CameraDirection } from '@capacitor/camera'
+import { Camera, CameraDirection, CameraResultType, CameraSource } from '@capacitor/camera'
 import { PlatformService } from './PlatformService'
 
 export interface CameraOptions {

@@ -2,7 +2,7 @@
 // 职责: ContextSummarizerService 的 NestJS 模块
 
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule } from '../config/config.module'
 import { PrismaModule } from '../prisma/prisma.module'
 import { AiProviderFactory } from './ai-provider.factory'
 import { ContextSummarizerService } from './context-summarizer.service'

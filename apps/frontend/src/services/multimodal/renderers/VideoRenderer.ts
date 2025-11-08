@@ -1,9 +1,9 @@
 // 视频渲染器
 // 将视频内容渲染到DOM中
 
-import {
-  MultimodalRenderer,
+import type {
   MultimodalContent,
+  MultimodalRenderer,
   MultimodalType,
   RenderOptions,
   VideoContent,

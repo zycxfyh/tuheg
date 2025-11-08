@@ -1,11 +1,11 @@
 // VCPToolBox SDK - 创世星环开发者工具包
 // 主入口文件
 
-export * from './types'
-export * from './core/PluginManager'
-export * from './core/VCPProtocol'
-export * from './core/TestFramework'
 export * from './cli/commands'
+export * from './core/PluginManager'
+export * from './core/TestFramework'
+export * from './core/VCPProtocol'
+export * from './types'
 export * from './utils'
 
 // SDK版本信息

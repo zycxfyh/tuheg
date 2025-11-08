@@ -15,9 +15,18 @@ import {
 } from '@nestjs/common'
 import type { User } from '@prisma/client'
 // [修正] 从 common-backend 导入游戏相关的 DTO 和 schema
-import type { CreateNarrativeGameDto, SubmitActionDto, UpdateCharacterDto } from '@tuheg/common-backend'
+import type {
+  CreateNarrativeGameDto,
+  SubmitActionDto,
+  UpdateCharacterDto,
+} from '@tuheg/common-backend'
 // [核心修正] 从 @tuheg/common-backend 导入所有共享的 DTO 和管道
-import { createNarrativeGameSchema, submitActionSchema, updateCharacterSchema, ZodValidationPipe } from '@tuheg/common-backend'
+import {
+  createNarrativeGameSchema,
+  submitActionSchema,
+  updateCharacterSchema,
+  ZodValidationPipe,
+} from '@tuheg/common-backend'
 import type { Request } from 'express'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import type { GamesService } from './games.service'

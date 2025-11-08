@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { PluginType, VCPPlugin } from '../PluginFramework'
+import { type PluginType, VCPPlugin } from '../PluginFramework'
 
 // VCPToolBox 插件生成器
 // 专注于AI叙事创作的插件模板生成
@@ -422,7 +422,7 @@ export class PluginGenerator {
       await fs.promises.mkdir(fileDir, { recursive: true })
 
       // 处理模板变量
-      let content = this.processTemplate(file.content, finalConfig)
+      const content = this.processTemplate(file.content, finalConfig)
 
       // 写入文件
       await fs.promises.writeFile(filePath, content, 'utf-8')

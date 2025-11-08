@@ -1,9 +1,9 @@
 // 文件路径: tools/scripts/dev-tools.ts
 // 核心理念: 统一的开发工具脚本，提升开发效率
 
-import { execSync } from 'child_process'
-import { existsSync, readFileSync } from 'fs'
-import { join } from 'path'
+import { execSync } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 /**
  * @class DevTools

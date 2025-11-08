@@ -1,7 +1,7 @@
 // VCPToolBox SDK - 测试框架
 // 为插件开发提供完整的测试工具链
 
-import { VCPPlugin, PluginContext } from '../types'
+import type { PluginContext, VCPPlugin } from '../types'
 
 export interface TestResult {
   success: boolean

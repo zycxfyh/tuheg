@@ -1,12 +1,12 @@
 // 图像生成器
 // 使用AI生成各种风格的图像内容
 
-import {
-  MultimodalGenerator,
-  MultimodalContent,
-  MultimodalType,
+import type {
   GenerationOptions,
   ImageContent,
+  MultimodalContent,
+  MultimodalGenerator,
+  MultimodalType,
 } from '../types'
 
 export class ImageGenerator implements MultimodalGenerator {

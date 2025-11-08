@@ -85,7 +85,7 @@ export class MemoryHierarchyService {
     })
 
     let memories: string[] = []
-    let averageSimilarity: number | undefined
+    let averageSimilarity = 0
 
     switch (mode) {
       case MemoryRecallMode.FULL_TEXT: {
@@ -267,7 +267,7 @@ export class MemoryHierarchyService {
     for (const pattern of patterns) {
       const matches = [...result.matchAll(pattern.regex)]
       for (const match of matches) {
-        const memoryName = match[1].trim()
+        const memoryName = match[1]?.trim()
         const fullMatch = match[0]
 
         try {

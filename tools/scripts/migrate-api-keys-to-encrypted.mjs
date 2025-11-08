@@ -12,10 +12,10 @@
 
 // 使用动态导入，因为 Prisma 客户端需要在运行时生成
 // import { PrismaClient } from '@prisma/client';
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto'
-import { readFileSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 import dotenv from 'dotenv'
 
 const __filename = fileURLToPath(import.meta.url)

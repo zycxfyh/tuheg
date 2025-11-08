@@ -98,12 +98,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { MultimodalNarrativeService } from '../../services/multimodal/MultimodalNarrativeService'
-import {
+import type {
   MultimodalNarrative,
-  NarrativeSegment,
   MultimodalType,
+  NarrativeSegment,
 } from '../../services/multimodal/types'
 import SegmentEditor from './SegmentEditor.vue'
 

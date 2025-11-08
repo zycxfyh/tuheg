@@ -139,7 +139,7 @@ export class Task {
         agent: agent.getName(),
         executionTime,
         error: errorMessage,
-        metadata: this.config.metadata,
+        metadata: this.config.metadata ?? undefined,
       }
     }
   }

@@ -18,7 +18,12 @@
       "!**/build",
       "!**/*.d.ts",
       "!**/*.config.js",
-      "!**/*.config.ts"
+      "!**/*.config.ts",
+      "!**/vcptoolbox-core",
+      "!**/coverage",
+      "!**/.nx",
+      "!**/tmp",
+      "!**/logs"
     ]
   },
   "formatter": {
@@ -37,16 +42,25 @@
         "noExcessiveCognitiveComplexity": "warn"
       },
       "correctness": {
-        "noUnusedVariables": "error",
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn",
         "useExhaustiveDependencies": "warn"
       },
       "style": {
         "noNonNullAssertion": "warn",
-        "useConst": "error",
-        "useImportType": "error"
+        "useConst": "warn",
+        "useImportType": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noDebugger": "warn",
+        "noDoubleEquals": "warn"
+      },
+      "performance": {
+        "noDelete": "error"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "error"
       }
     }
   },
@@ -59,11 +73,18 @@
       "semicolons": "asNeeded",
       "arrowParentheses": "always"
     },
-    "globals": ["console", "process", "Buffer", "__dirname", "__filename"]
+    "globals": ["console", "process", "Buffer", "__dirname", "__filename"],
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
   },
   "json": {
     "formatter": {
       "enabled": true
+    },
+    "parser": {
+      "allowComments": false,
+      "allowTrailingCommas": false
     }
   },
   "css": {

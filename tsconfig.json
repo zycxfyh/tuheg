@@ -41,12 +41,7 @@
     { "path": "./apps/frontend" },
     { "path": "./apps/logic-agent" },
     { "path": "./apps/narrative-agent" },
-    { "path": "./packages/ai-services" },
     { "path": "./packages/common-backend" },
-    { "path": "./packages/game-core" },
-    { "path": "./packages/shared-types" },
-    { "path": "./packages/vcptoolbox-sdk" },
-    { "path": "./tools/api-doc-generator" },
-    { "path": "./tools/plugin-generator" }
+    { "path": "./packages/vcptoolbox-sdk" }
   ]
 }

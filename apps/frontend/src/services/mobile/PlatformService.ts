@@ -2,8 +2,8 @@
 
 import { Capacitor } from '@capacitor/core'
 import { Device } from '@capacitor/device'
-import { StatusBar, Style } from '@capacitor/status-bar'
 import { SplashScreen } from '@capacitor/splash-screen'
+import { StatusBar, Style } from '@capacitor/status-bar'
 
 export interface PlatformInfo {
   isNative: boolean

@@ -314,8 +314,8 @@ export class TimeAwareVectorSearchService {
     const recommendations: string[] = []
 
     // 生成优化建议
-    const recentCount = buckets[0].count + buckets[1].count + buckets[2].count
-    const oldCount = buckets[3].count + buckets[4].count
+    const recentCount = (buckets[0]?.count || 0) + (buckets[1]?.count || 0) + (buckets[2]?.count || 0)
+    const oldCount = (buckets[3]?.count || 0) + (buckets[4]?.count || 0)
 
     if (recentCount > oldCount * 2) {
       recommendations.push('建议增加时间衰减因子，降低新内容的权重')

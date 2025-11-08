@@ -2,7 +2,7 @@
 // 实现企业级的团队协作功能，支持多用户实时协作创作
 
 import { EventEmitter } from 'events'
-import { crossMemoryNetwork, MemoryEntry } from '../../vcptoolbox/src/PluginFramework'
+import { crossMemoryNetwork, type MemoryEntry } from '../../vcptoolbox/src/PluginFramework'
 
 export interface TeamMember {
   id: string
@@ -130,23 +130,26 @@ class TeamCollaborationManager extends EventEmitter {
   private sessionTimeouts: Map<string, NodeJS.Timeout> = new Map()
 
   // 创建团队
-  async createTeam(ownerId: string, teamData: {
-    name: string
-    description: string
-    settings?: Partial<TeamSettings>
-  }): Promise<Team> {
+  async createTeam(
+    ownerId: string,
+    teamData: {
+      name: string
+      description: string
+      settings?: Partial<TeamSettings>
+    }
+  ): Promise<Team> {
     const teamId = `team-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
     const defaultSettings: TeamSettings = {
       defaultPermissions: [
         { resource: 'project', action: 'read', scope: 'shared' },
-        { resource: 'narrative', action: 'read', scope: 'shared' }
+        { resource: 'narrative', action: 'read', scope: 'shared' },
       ],
       collaborationEnabled: true,
       maxProjects: 50,
       storageLimit: 100,
       apiRateLimit: 1000,
-      customRoles: []
+      customRoles: [],
     }
 
     const team: Team = {
@@ -166,8 +169,8 @@ class TeamCollaborationManager extends EventEmitter {
         storageUsed: 0,
         collaborationHours: 0,
         avgSessionDuration: 0,
-        topContributors: []
-      }
+        topContributors: [],
+      },
     }
 
     // 添加所有者为团队成员
@@ -181,7 +184,7 @@ class TeamCollaborationManager extends EventEmitter {
         { resource: 'project', action: 'read', scope: 'all' },
         { resource: 'project', action: 'update', scope: 'all' },
         { resource: 'project', action: 'delete', scope: 'all' },
-        { resource: 'settings', action: 'update', scope: 'all' }
+        { resource: 'settings', action: 'update', scope: 'all' },
       ],
       joinedAt: new Date(),
       lastActive: new Date(),
@@ -189,8 +192,8 @@ class TeamCollaborationManager extends EventEmitter {
         projectsCreated: 0,
         editsMade: 0,
         commentsPosted: 0,
-        timeSpent: 0
-      }
+        timeSpent: 0,
+      },
     }
 
     team.members.push(ownerMember)
@@ -203,18 +206,22 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 邀请团队成员
-  async inviteMember(teamId: string, inviterId: string, inviteeData: {
-    email: string
-    role: TeamMember['role']
-    customPermissions?: TeamPermission[]
-  }): Promise<{ invitationId: string; inviteLink: string }> {
+  async inviteMember(
+    teamId: string,
+    inviterId: string,
+    inviteeData: {
+      email: string
+      role: TeamMember['role']
+      customPermissions?: TeamPermission[]
+    }
+  ): Promise<{ invitationId: string; inviteLink: string }> {
     const team = this.teams.get(teamId)
     if (!team) {
       throw new Error(`Team ${teamId} not found`)
     }
 
     // 检查邀请者权限
-    const inviter = team.members.find(m => m.userId === inviterId)
+    const inviter = team.members.find((m) => m.userId === inviterId)
     if (!inviter || (inviter.role !== 'owner' && inviter.role !== 'admin')) {
       throw new Error('Insufficient permissions to invite members')
     }
@@ -242,7 +249,7 @@ class TeamCollaborationManager extends EventEmitter {
     }
 
     // 检查是否已经是成员
-    const existingMember = team.members.find(m => m.userId === userId)
+    const existingMember = team.members.find((m) => m.userId === userId)
     if (existingMember) {
       throw new Error('Already a member of this team')
     }
@@ -260,8 +267,8 @@ class TeamCollaborationManager extends EventEmitter {
         projectsCreated: 0,
         editsMade: 0,
         commentsPosted: 0,
-        timeSpent: 0
-      }
+        timeSpent: 0,
+      },
     }
 
     team.members.push(newMember)
@@ -272,24 +279,28 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 创建协作项目
-  async createProject(teamId: string, creatorId: string, projectData: {
-    name: string
-    description: string
-    initialMembers?: string[]
-  }): Promise<TeamProject> {
+  async createProject(
+    teamId: string,
+    creatorId: string,
+    projectData: {
+      name: string
+      description: string
+      initialMembers?: string[]
+    }
+  ): Promise<TeamProject> {
     const team = this.teams.get(teamId)
     if (!team) {
       throw new Error(`Team ${teamId} not found`)
     }
 
     // 检查创建者权限
-    const creator = team.members.find(m => m.userId === creatorId)
+    const creator = team.members.find((m) => m.userId === creatorId)
     if (!creator) {
       throw new Error('Not a member of this team')
     }
 
-    const canCreate = creator.permissions.some(p =>
-      p.resource === 'project' && p.action === 'create'
+    const canCreate = creator.permissions.some(
+      (p) => p.resource === 'project' && p.action === 'create'
     )
     if (!canCreate) {
       throw new Error('Insufficient permissions to create projects')
@@ -305,14 +316,14 @@ class TeamCollaborationManager extends EventEmitter {
       permissions: {},
       collaborationHistory: [],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     // 设置默认权限
-    project.members.forEach(memberId => {
-      const member = team.members.find(m => m.userId === memberId)
+    project.members.forEach((memberId) => {
+      const member = team.members.find((m) => m.userId === memberId)
       if (member) {
-        project.permissions[memberId] = member.permissions.filter(p =>
+        project.permissions[memberId] = member.permissions.filter((p) =>
           ['project', 'narrative', 'character', 'world'].includes(p.resource)
         )
       }
@@ -337,13 +348,13 @@ class TeamCollaborationManager extends EventEmitter {
       throw new Error(`Team ${teamId} not found`)
     }
 
-    const project = team.projects.find(p => p.id === projectId)
+    const project = team.projects.find((p) => p.id === projectId)
     if (!project) {
       throw new Error(`Project ${projectId} not found`)
     }
 
     // 检查主机权限
-    const host = team.members.find(m => m.userId === hostId)
+    const host = team.members.find((m) => m.userId === hostId)
     if (!host) {
       throw new Error('Not a member of this team')
     }
@@ -354,7 +365,7 @@ class TeamCollaborationManager extends EventEmitter {
       autoSave: true,
       notifications: true,
       maxParticipants: 10,
-      sessionTimeout: 120
+      sessionTimeout: 120,
     }
 
     const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -363,34 +374,41 @@ class TeamCollaborationManager extends EventEmitter {
       projectId,
       teamId,
       status: 'active',
-      participants: [{
-        memberId: host.id,
-        userId: hostId,
-        joinedAt: new Date(),
-        role: 'host',
-        currentFocus: '',
-        isActive: true
-      }],
+      participants: [
+        {
+          memberId: host.id,
+          userId: hostId,
+          joinedAt: new Date(),
+          role: 'host',
+          currentFocus: '',
+          isActive: true,
+        },
+      ],
       startedAt: new Date(),
       lastActivity: new Date(),
       settings: { ...defaultSettings, ...settings },
-      activityLog: [{
-        id: `activity-${Date.now()}`,
-        timestamp: new Date(),
-        participantId: host.id,
-        action: 'join',
-        targetType: 'narrative',
-        targetId: projectId,
-        details: { role: 'host' }
-      }]
+      activityLog: [
+        {
+          id: `activity-${Date.now()}`,
+          timestamp: new Date(),
+          participantId: host.id,
+          action: 'join',
+          targetType: 'narrative',
+          targetId: projectId,
+          details: { role: 'host' },
+        },
+      ],
     }
 
     this.activeSessions.set(sessionId, session)
 
     // 设置会话超时
-    const timeout = setTimeout(() => {
-      this.endCollaborationSession(sessionId, 'timeout')
-    }, session.settings.sessionTimeout * 60 * 1000)
+    const timeout = setTimeout(
+      () => {
+        this.endCollaborationSession(sessionId, 'timeout')
+      },
+      session.settings.sessionTimeout * 60 * 1000
+    )
 
     this.sessionTimeouts.set(sessionId, timeout)
 
@@ -399,7 +417,11 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 加入协作会话
-  async joinCollaborationSession(sessionId: string, userId: string, teamId: string): Promise<SessionParticipant> {
+  async joinCollaborationSession(
+    sessionId: string,
+    userId: string,
+    teamId: string
+  ): Promise<SessionParticipant> {
     const session = this.activeSessions.get(sessionId)
     if (!session) {
       throw new Error(`Session ${sessionId} not found`)
@@ -420,12 +442,12 @@ class TeamCollaborationManager extends EventEmitter {
     }
 
     // 检查用户权限
-    const member = team.members.find(m => m.userId === userId)
+    const member = team.members.find((m) => m.userId === userId)
     if (!member) {
       throw new Error('Not a member of this team')
     }
 
-    const project = team.projects.find(p => p.id === session.projectId)
+    const project = team.projects.find((p) => p.id === session.projectId)
     if (!project || !project.members.includes(userId)) {
       throw new Error('No access to this project')
     }
@@ -437,7 +459,7 @@ class TeamCollaborationManager extends EventEmitter {
       joinedAt: new Date(),
       role: 'collaborator',
       currentFocus: '',
-      isActive: true
+      isActive: true,
     }
 
     session.participants.push(participant)
@@ -451,7 +473,7 @@ class TeamCollaborationManager extends EventEmitter {
       action: 'join',
       targetType: 'narrative',
       targetId: session.projectId,
-      details: { role: 'collaborator' }
+      details: { role: 'collaborator' },
     })
 
     this.emit('participantJoined', { sessionId, participant })
@@ -459,21 +481,24 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 记录协作活动
-  async recordActivity(sessionId: string, activity: Omit<CollaborationActivity, 'id' | 'timestamp'>): Promise<void> {
+  async recordActivity(
+    sessionId: string,
+    activity: Omit<CollaborationActivity, 'id' | 'timestamp'>
+  ): Promise<void> {
     const session = this.activeSessions.get(sessionId)
     if (!session) return
 
     const fullActivity: CollaborationActivity = {
       ...activity,
       id: `activity-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     session.activityLog.push(fullActivity)
     session.lastActivity = new Date()
 
     // 更新参与者统计
-    const participant = session.participants.find(p => p.memberId === activity.participantId)
+    const participant = session.participants.find((p) => p.memberId === activity.participantId)
     if (participant) {
       participant.isActive = true
     }
@@ -484,9 +509,12 @@ class TeamCollaborationManager extends EventEmitter {
       clearTimeout(timeout)
     }
 
-    const newTimeout = setTimeout(() => {
-      this.endCollaborationSession(sessionId, 'timeout')
-    }, session.settings.sessionTimeout * 60 * 1000)
+    const newTimeout = setTimeout(
+      () => {
+        this.endCollaborationSession(sessionId, 'timeout')
+      },
+      session.settings.sessionTimeout * 60 * 1000
+    )
 
     this.sessionTimeouts.set(sessionId, newTimeout)
 
@@ -494,7 +522,10 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 结束协作会话
-  async endCollaborationSession(sessionId: string, reason: 'manual' | 'timeout' | 'error' = 'manual'): Promise<void> {
+  async endCollaborationSession(
+    sessionId: string,
+    reason: 'manual' | 'timeout' | 'error' = 'manual'
+  ): Promise<void> {
     const session = this.activeSessions.get(sessionId)
     if (!session) return
 
@@ -502,7 +533,7 @@ class TeamCollaborationManager extends EventEmitter {
 
     // 计算会话统计
     const duration = Date.now() - session.startedAt.getTime()
-    const activeParticipants = session.participants.filter(p => p.isActive).length
+    const activeParticipants = session.participants.filter((p) => p.isActive).length
 
     // 清理超时定时器
     const timeout = this.sessionTimeouts.get(sessionId)
@@ -514,7 +545,7 @@ class TeamCollaborationManager extends EventEmitter {
     // 记录到项目历史
     const team = this.teams.get(session.teamId)
     if (team) {
-      const project = team.projects.find(p => p.id === session.projectId)
+      const project = team.projects.find((p) => p.id === session.projectId)
       if (project) {
         project.collaborationHistory.push(session)
         project.updatedAt = new Date()
@@ -537,7 +568,7 @@ class TeamCollaborationManager extends EventEmitter {
     const sessions = Array.from(this.activeSessions.values())
 
     if (teamId) {
-      return sessions.filter(s => s.teamId === teamId)
+      return sessions.filter((s) => s.teamId === teamId)
     }
 
     return sessions
@@ -545,12 +576,16 @@ class TeamCollaborationManager extends EventEmitter {
 
   // 获取用户的所有团队
   getUserTeams(userId: string): Team[] {
-    return Array.from(this.teams.values())
-      .filter(team => team.members.some(member => member.userId === userId))
+    return Array.from(this.teams.values()).filter((team) =>
+      team.members.some((member) => member.userId === userId)
+    )
   }
 
   // 团队记忆共享
-  async shareMemoryToTeam(teamId: string, memory: Omit<MemoryEntry, 'id' | 'agentId'>): Promise<string> {
+  async shareMemoryToTeam(
+    teamId: string,
+    memory: Omit<MemoryEntry, 'id' | 'agentId'>
+  ): Promise<string> {
     const team = this.teams.get(teamId)
     if (!team) {
       throw new Error(`Team ${teamId} not found`)
@@ -563,17 +598,19 @@ class TeamCollaborationManager extends EventEmitter {
       metadata: {
         ...memory.metadata,
         sharedByTeam: teamId,
-        sharedAt: new Date()
-      }
+        sharedAt: new Date(),
+      },
     }
 
     // 为团队中每个活跃成员创建记忆副本
     const memoryPromises = team.members
-      .filter(member => member.role !== 'viewer') // 不为只读成员创建
-      .map(member => crossMemoryNetwork.addMemory({
-        ...teamMemory,
-        agentId: member.userId
-      }))
+      .filter((member) => member.role !== 'viewer') // 不为只读成员创建
+      .map((member) =>
+        crossMemoryNetwork.addMemory({
+          ...teamMemory,
+          agentId: member.userId,
+        })
+      )
 
     const memoryIds = await Promise.all(memoryPromises)
 
@@ -583,13 +620,16 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 团队冲突解决
-  async resolveConflict(sessionId: string, conflictData: {
-    targetId: string
-    conflictType: 'edit' | 'delete' | 'merge'
-    participants: string[]
-    resolution: 'merge' | 'override' | 'version'
-    resolverId: string
-  }): Promise<void> {
+  async resolveConflict(
+    sessionId: string,
+    conflictData: {
+      targetId: string
+      conflictType: 'edit' | 'delete' | 'merge'
+      participants: string[]
+      resolution: 'merge' | 'override' | 'version'
+      resolverId: string
+    }
+  ): Promise<void> {
     const session = this.activeSessions.get(sessionId)
     if (!session) {
       throw new Error(`Session ${sessionId} not found`)
@@ -604,8 +644,8 @@ class TeamCollaborationManager extends EventEmitter {
       details: {
         conflictType: conflictData.conflictType,
         resolution: conflictData.resolution,
-        participants: conflictData.participants
-      }
+        participants: conflictData.participants,
+      },
     })
 
     this.emit('conflictResolved', { sessionId, conflict: conflictData })
@@ -624,22 +664,22 @@ class TeamCollaborationManager extends EventEmitter {
         name: team.name,
         description: team.description,
         stats: team.stats,
-        exportedAt: new Date()
+        exportedAt: new Date(),
       },
-      members: team.members.map(member => ({
+      members: team.members.map((member) => ({
         id: member.id,
         userId: member.userId,
         role: member.role,
         joinedAt: member.joinedAt,
-        contributionStats: member.contributionStats
+        contributionStats: member.contributionStats,
       })),
-      projects: team.projects.map(project => ({
+      projects: team.projects.map((project) => ({
         id: project.id,
         name: project.name,
         status: project.status,
         members: project.members,
-        createdAt: project.createdAt
-      }))
+        createdAt: project.createdAt,
+      })),
     }
 
     // 根据格式处理数据
@@ -681,9 +721,12 @@ class TeamCollaborationManager extends EventEmitter {
 
   // 初始化清理定时器
   private startCleanupTimer(): void {
-    setInterval(() => {
-      this.cleanupInactiveSessions()
-    }, 5 * 60 * 1000) // 每5分钟清理一次
+    setInterval(
+      () => {
+        this.cleanupInactiveSessions()
+      },
+      5 * 60 * 1000
+    ) // 每5分钟清理一次
   }
 
   constructor() {

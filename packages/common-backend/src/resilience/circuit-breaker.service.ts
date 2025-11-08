@@ -237,7 +237,7 @@ export class CircuitBreakerService {
    */
   private async saveCircuitToRedis(
     name: string,
-    circuit: ReturnType<typeof this.getOrCreateCircuit>
+    circuit: Awaited<ReturnType<typeof this.getOrCreateCircuit>>
   ): Promise<void> {
     if (!this.redisClient) return
 
@@ -270,7 +270,7 @@ export class CircuitBreakerService {
    */
   private async recordSuccess(
     name: string,
-    circuit: ReturnType<typeof this.getOrCreateCircuit>,
+    circuit: Awaited<ReturnType<typeof this.getOrCreateCircuit>>,
     successThreshold: number
   ): Promise<void> {
     circuit.metrics.totalRequests++
@@ -305,7 +305,7 @@ export class CircuitBreakerService {
    */
   private async recordFailure(
     name: string,
-    circuit: ReturnType<typeof this.getOrCreateCircuit>,
+    circuit: Awaited<ReturnType<typeof this.getOrCreateCircuit>>,
     failureThreshold: number,
     failureRateThreshold: number
   ): Promise<void> {

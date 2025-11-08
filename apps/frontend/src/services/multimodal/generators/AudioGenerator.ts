@@ -1,12 +1,12 @@
 // 音频生成器
 // 使用AI生成各种类型的音频内容
 
-import {
-  MultimodalGenerator,
-  MultimodalContent,
-  MultimodalType,
-  GenerationOptions,
+import type {
   AudioContent,
+  GenerationOptions,
+  MultimodalContent,
+  MultimodalGenerator,
+  MultimodalType,
 } from '../types'
 
 export class AudioGenerator implements MultimodalGenerator {

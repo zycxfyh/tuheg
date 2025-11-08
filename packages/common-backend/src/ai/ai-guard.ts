@@ -55,8 +55,8 @@ export class PromptInjectionGuard {
         score,
         threshold: this.threshold,
         preview: input.substring(0, 100),
-        context: context?.correlationId,
-        correlationId: context?.correlationId,
+        context: context?.correlationId ?? undefined,
+        correlationId: context?.correlationId ?? undefined,
         userId: context?.userId,
       })
     }
@@ -86,10 +86,10 @@ export class PromptInjectionGuard {
       throw new PromptInjectionDetectedException('Input failed security check', {
         score: result.score,
         threshold: result.threshold,
-        preview: result.details?.preview,
-        context: context?.correlationId,
-        correlationId: context?.correlationId,
-        userId: context?.userId,
+        preview: result.details?.preview ?? undefined,
+        context: context?.correlationId ?? undefined,
+        correlationId: context?.correlationId ?? undefined,
+        userId: context?.userId ?? undefined,
       })
     }
   }

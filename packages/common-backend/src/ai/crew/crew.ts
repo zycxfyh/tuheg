@@ -153,7 +153,7 @@ export class Crew {
           // 启动新任务
           while (taskQueue.length > 0 && executingTasks.size < maxConcurrency) {
             const task = taskQueue[0]
-            if (!task.canExecute(completedTasks)) {
+            if (!task || !task.canExecute(completedTasks)) {
               taskQueue.shift()
               continue
             }

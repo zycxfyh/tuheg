@@ -1,7 +1,7 @@
 // 文本处理器
 // 处理文本内容的分析、转换和增强
 
-import { MultimodalProcessor, MultimodalContent, MultimodalType } from '../types'
+import type { MultimodalContent, MultimodalProcessor, MultimodalType } from '../types'
 
 export class TextProcessor implements MultimodalProcessor {
   canProcess(type: MultimodalType): boolean {

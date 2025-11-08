@@ -100,7 +100,7 @@ export function validatePassword(
     errors.push('密码必须包含数字')
   }
 
-  if (requireSpecialChars && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+  if (requireSpecialChars && !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
     errors.push('密码必须包含特殊字符')
   }
 
@@ -140,7 +140,7 @@ export function isValidUUID(uuid: string): boolean {
  * @returns 是否有效
  */
 export function isValidVersion(version: string): boolean {
-  const versionRegex = /^\d+\.\d+\.\d+(-[\w\.\-]+)?(\+[\w\.\-]+)?$/
+  const versionRegex = /^\d+\.\d+\.\d+(-[\w.-]+)?(\+[\w.-]+)?$/
   return versionRegex.test(version)
 }
 

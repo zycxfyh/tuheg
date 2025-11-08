@@ -1,11 +1,11 @@
 // 视频生成器
 // 使用AI生成各种类型的视频内容
 
-import {
-  MultimodalGenerator,
-  MultimodalContent,
-  MultimodalType,
+import type {
   GenerationOptions,
+  MultimodalContent,
+  MultimodalGenerator,
+  MultimodalType,
   VideoContent,
 } from '../types'
 

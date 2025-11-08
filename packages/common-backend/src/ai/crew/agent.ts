@@ -181,15 +181,17 @@ export class Agent {
 
     let match
     while ((match = toolCallRegex.exec(output)) !== null) {
-      const toolName = match[1].trim()
-      const inputStr = match[2].trim()
+      const toolName = match[1]?.trim()
+      const inputStr = match[2]?.trim()
 
-      try {
-        const input = JSON.parse(inputStr)
-        toolCalls.push({ toolName, input })
-      } catch {
-        // 如果不是 JSON，直接使用字符串
-        toolCalls.push({ toolName, input: inputStr })
+      if (toolName && inputStr) {
+        try {
+          const input = JSON.parse(inputStr)
+          toolCalls.push({ toolName, input })
+        } catch {
+          // 如果不是 JSON，直接使用字符串
+          toolCalls.push({ toolName, input: inputStr })
+        }
       }
     }
 

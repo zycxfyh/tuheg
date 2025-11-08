@@ -1,8 +1,8 @@
+import * as crypto from 'crypto'
+import { EventEmitter } from 'events'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as crypto from 'crypto'
-import { VCPPlugin, PluginMetadata } from '../PluginFramework'
-import { EventEmitter } from 'events'
+import type { PluginMetadata, VCPPlugin } from '../PluginFramework'
 
 // VCPToolBox 发布系统
 // 处理插件的打包、分发和版本管理
@@ -281,7 +281,7 @@ export class Publisher extends EventEmitter {
           files.push({
             path: itemRelativePath.replace(/\\/g, '/'), // 统一路径分隔符
             content,
-            executable: !!(stat.mode & parseInt('111', 8)), // 检查是否可执行
+            executable: !!(stat.mode & 0o111), // 检查是否可执行
           })
         }
       }

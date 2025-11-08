@@ -2,7 +2,7 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
-import { PluginType } from '../../types'
+import type { PluginType } from '../../types'
 
 export interface CreateOptions {
   type: PluginType

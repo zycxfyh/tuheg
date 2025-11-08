@@ -1,9 +1,9 @@
 // 视频处理器
 // 处理视频内容的分析、转换和增强
 
-import {
-  MultimodalProcessor,
+import type {
   MultimodalContent,
+  MultimodalProcessor,
   MultimodalType,
   VideoContent,
   VideoScene,

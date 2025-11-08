@@ -1,5 +1,5 @@
-import { VCPPlugin, PluginContext, PluginRuntime } from '../PluginFramework'
 import { EventEmitter } from 'events'
+import { PluginContext, PluginRuntime, type VCPPlugin } from '../PluginFramework'
 
 // VCPToolBox 开发工具包
 // 提供插件开发的调试、测试和辅助功能

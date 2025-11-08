@@ -47,6 +47,10 @@ jspm_packages/
 
 # TypeScript cache
 *.tsbuildinfo
+packages/common-backend/dist/
+packages/common-backend/src/**/*.d.ts
+packages/common-backend/src/**/*.js
+packages/common-backend/src/**/*.map
 
 # Optional npm cache directory
 .npm

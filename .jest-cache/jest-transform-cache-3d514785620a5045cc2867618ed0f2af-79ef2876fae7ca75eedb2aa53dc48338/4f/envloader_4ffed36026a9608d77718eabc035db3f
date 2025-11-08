@@ -1,0 +1,66 @@
+dfd2d21fad5fe1391b3b762845409388
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnvLoader = void 0;
+const dotenv_1 = require("dotenv");
+const dotenv_expand_1 = require("dotenv-expand");
+const fs_1 = require("fs");
+const path_1 = require("path");
+class EnvLoader {
+    static load(options = {}) {
+        const { env = process.env.NODE_ENV || 'development', configDir = process.cwd(), override = false, silent = false, } = options;
+        const envFiles = ['.env', '.env.local', `.env.${env}`, `.env.${env}.local`];
+        for (const envFile of envFiles) {
+            const envPath = (0, path_1.resolve)(configDir, envFile);
+            if ((0, fs_1.existsSync)(envPath)) {
+                try {
+                    const result = (0, dotenv_1.config)({
+                        path: envPath,
+                        override,
+                    });
+                    if (result.error && !silent) {
+                        console.warn(`Failed to load ${envFile}:`, result.error.message);
+                    }
+                    else if (result.parsed) {
+                        (0, dotenv_expand_1.expand)(result);
+                        console.log(`✓ Loaded ${envFile}`);
+                    }
+                }
+                catch (error) {
+                    if (!silent) {
+                        console.warn(`Error loading ${envFile}:`, error);
+                    }
+                }
+            }
+        }
+    }
+    static loadForApp(appName, options = {}) {
+        const { env = process.env.NODE_ENV || 'development', configDir = process.cwd() } = options;
+        const appEnvFiles = [
+            `.env.${appName}`,
+            `.env.${appName}.local`,
+            `.env.${appName}.${env}`,
+            `.env.${appName}.${env}.local`,
+        ];
+        for (const envFile of appEnvFiles) {
+            const envPath = (0, path_1.resolve)(configDir, envFile);
+            if ((0, fs_1.existsSync)(envPath)) {
+                try {
+                    const result = (0, dotenv_1.config)({
+                        path: envPath,
+                        override: true,
+                    });
+                    if (result.parsed) {
+                        (0, dotenv_expand_1.expand)(result);
+                        console.log(`✓ Loaded ${envFile} for ${appName}`);
+                    }
+                }
+                catch (error) {
+                    console.warn(`Error loading ${envFile}:`, error);
+                }
+            }
+        }
+    }
+}
+exports.EnvLoader = EnvLoader;
+//# sourceMappingURL=env-loader.js.map

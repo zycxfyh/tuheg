@@ -1,7 +1,12 @@
 // 文本生成器
 // 使用AI生成各种类型的文本内容
 
-import { MultimodalGenerator, MultimodalContent, MultimodalType, GenerationOptions } from '../types'
+import type {
+  GenerationOptions,
+  MultimodalContent,
+  MultimodalGenerator,
+  MultimodalType,
+} from '../types'
 
 export class TextGenerator implements MultimodalGenerator {
   canGenerate(type: MultimodalType): boolean {

@@ -1,12 +1,12 @@
 // 图像渲染器
 // 将图像内容渲染到DOM中
 
-import {
-  MultimodalRenderer,
+import type {
+  ImageContent,
   MultimodalContent,
+  MultimodalRenderer,
   MultimodalType,
   RenderOptions,
-  ImageContent,
 } from '../types'
 
 export class ImageRenderer implements MultimodalRenderer {

@@ -443,7 +443,7 @@ export class AICacheManager {
     if (this.config.storageBackend === 'memory') return
 
     try {
-      let cacheData: any = null
+      const cacheData: any = null
 
       if (this.config.storageBackend === 'redis') {
         // 实现Redis加载

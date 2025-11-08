@@ -1,7 +1,7 @@
 // VCPToolBox SDK - 测试命令
 
-import { TestFramework } from '../../core/TestFramework'
 import { SDKPluginManager } from '../../core/PluginManager'
+import { TestFramework } from '../../core/TestFramework'
 
 export interface TestOptions {
   unit: boolean

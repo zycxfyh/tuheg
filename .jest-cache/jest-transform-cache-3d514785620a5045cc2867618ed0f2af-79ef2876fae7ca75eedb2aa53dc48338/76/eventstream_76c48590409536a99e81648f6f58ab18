@@ -1,0 +1,106 @@
+54030412640bf16ec764e020b56af6dd
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var EventStream_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EventStream = void 0;
+const common_1 = require("@nestjs/common");
+const rxjs_1 = require("rxjs");
+let EventStream = EventStream_1 = class EventStream {
+    logger = new common_1.Logger(EventStream_1.name);
+    streams = new Map();
+    createStream(eventName) {
+        if (!this.streams.has(eventName)) {
+            this.streams.set(eventName, new rxjs_1.Subject());
+        }
+        return this.streams.get(eventName);
+    }
+    emit(eventName, data) {
+        const stream = this.streams.get(eventName);
+        if (stream) {
+            stream.next(data);
+            this.logger.debug(`Emitted event "${eventName}"`);
+        }
+        else {
+            this.logger.warn(`Stream "${eventName}" not found`);
+        }
+    }
+    subscribe(eventName, handler, config) {
+        const stream = this.createStream(eventName);
+        const subscription = stream.subscribe({
+            next: async (data) => {
+                try {
+                    await handler(data);
+                }
+                catch (error) {
+                    this.logger.error(`Error handling event "${eventName}":`, error instanceof Error ? error.message : String(error));
+                    if (config?.autoRetry) {
+                        await this.retryHandler(eventName, handler, data, config);
+                    }
+                }
+            },
+            error: (error) => {
+                this.logger.error(`Stream error for "${eventName}":`, error instanceof Error ? error.message : String(error));
+            },
+        });
+        return () => subscription.unsubscribe();
+    }
+    pipe(eventName, transform) {
+        const stream = this.createStream(eventName);
+        return stream.pipe((0, rxjs_1.mergeMap)(async (data) => {
+            try {
+                return await transform(data);
+            }
+            catch (error) {
+                this.logger.error(`Error in pipe for "${eventName}":`, error instanceof Error ? error.message : String(error));
+                throw error;
+            }
+        }), (0, rxjs_1.catchError)((error) => {
+            this.logger.error(`Pipe error for "${eventName}":`, error instanceof Error ? error.message : String(error));
+            throw error;
+        }));
+    }
+    async retryHandler(eventName, handler, data, config) {
+        const maxRetries = config.maxRetries ?? 3;
+        const retryDelay = config.retryDelay ?? 1000;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt));
+            try {
+                await handler(data);
+                this.logger.log(`Successfully retried event "${eventName}" after ${attempt} attempts`);
+                return;
+            }
+            catch (error) {
+                if (attempt === maxRetries) {
+                    this.logger.error(`Failed to handle event "${eventName}" after ${maxRetries} attempts`, error instanceof Error ? error.message : String(error));
+                    throw error;
+                }
+            }
+        }
+    }
+    close(eventName) {
+        const stream = this.streams.get(eventName);
+        if (stream) {
+            stream.complete();
+            this.streams.delete(eventName);
+            this.logger.debug(`Closed stream "${eventName}"`);
+        }
+    }
+    closeAll() {
+        for (const [eventName, stream] of this.streams.entries()) {
+            stream.complete();
+            this.logger.debug(`Closed stream "${eventName}"`);
+        }
+        this.streams.clear();
+    }
+};
+exports.EventStream = EventStream;
+exports.EventStream = EventStream = EventStream_1 = __decorate([
+    (0, common_1.Injectable)()
+], EventStream);
+//# sourceMappingURL=event-stream.js.map

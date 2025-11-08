@@ -1,8 +1,8 @@
 // VCPToolBox SDK - 构建插件命令
 
+import { execSync } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
-import { execSync } from 'child_process'
 
 export interface BuildOptions {
   outDir: string

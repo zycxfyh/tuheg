@@ -1,7 +1,7 @@
 // 文本渲染器
 // 将文本内容渲染到DOM中
 
-import { MultimodalRenderer, MultimodalContent, MultimodalType, RenderOptions } from '../types'
+import type { MultimodalContent, MultimodalRenderer, MultimodalType, RenderOptions } from '../types'
 
 export class TextRenderer implements MultimodalRenderer {
   canRender(type: MultimodalType): boolean {

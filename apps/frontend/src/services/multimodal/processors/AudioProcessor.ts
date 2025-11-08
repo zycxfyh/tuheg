@@ -1,7 +1,7 @@
 // 音频处理器
 // 处理音频内容的分析、转换和增强
 
-import { MultimodalProcessor, MultimodalContent, MultimodalType, AudioContent } from '../types'
+import type { AudioContent, MultimodalContent, MultimodalProcessor, MultimodalType } from '../types'
 
 export class AudioProcessor implements MultimodalProcessor {
   canProcess(type: MultimodalType): boolean {

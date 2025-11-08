@@ -25,7 +25,7 @@ export interface FormattedValidationError {
     /** 期望的类型或格式 */
     expected: string
     /** 实际收到的值 */
-    received: string | undefined
+    received: string
     /** 错误消息 */
     message: string
   }>
@@ -92,7 +92,7 @@ export function formatZodError(error: z.ZodError): FormattedValidationError {
     }
 
     // 确定实际收到的值（截断过长的值）
-    let received: string | undefined
+    let received = issue.received
     if (issue.path.length > 0 && inputData !== undefined) {
       try {
         // 从原始数据中提取对应字段的值

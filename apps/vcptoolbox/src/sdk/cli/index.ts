@@ -2,13 +2,13 @@
 // 命令行接口，为开发者提供便捷的开发工具
 
 import { Command } from 'commander'
-import { CreateCommand } from './commands/create'
 import { BuildCommand } from './commands/build'
-import { TestCommand } from './commands/test'
-import { PublishCommand } from './commands/publish'
-import { ValidateCommand } from './commands/validate'
+import { CreateCommand } from './commands/create'
 import { DevCommand } from './commands/dev'
 import { InfoCommand } from './commands/info'
+import { PublishCommand } from './commands/publish'
+import { TestCommand } from './commands/test'
+import { ValidateCommand } from './commands/validate'
 
 const program = new Command()
 

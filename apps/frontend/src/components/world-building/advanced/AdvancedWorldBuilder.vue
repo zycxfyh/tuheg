@@ -163,13 +163,13 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import WorldBasicsEditor from './editors/WorldBasicsEditor.vue'
+import { computed, ref, watch } from 'vue'
 import GeographyEditor from './editors/GeographyEditor.vue'
-import SocietyEditor from './editors/SocietyEditor.vue'
-import MagicTechEditor from './editors/MagicTechEditor.vue'
 import HistoryEditor from './editors/HistoryEditor.vue'
+import MagicTechEditor from './editors/MagicTechEditor.vue'
 import RulesEditor from './editors/RulesEditor.vue'
+import SocietyEditor from './editors/SocietyEditor.vue'
+import WorldBasicsEditor from './editors/WorldBasicsEditor.vue'
 
 // Props
 const props = defineProps({
