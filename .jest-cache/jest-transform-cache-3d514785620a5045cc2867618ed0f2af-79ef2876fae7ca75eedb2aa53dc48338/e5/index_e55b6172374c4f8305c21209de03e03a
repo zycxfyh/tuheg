@@ -1,0 +1,86 @@
+4ee35fd9b31e489cf7ebc214b40942ed
+"use strict";
+// 文件路径: packages/common-backend/src/index.ts
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PromptInjectionGuard = void 0;
+// Core exports
+__exportStar(require("./config/config.module"), exports);
+__exportStar(require("./config/configuration.service"), exports);
+__exportStar(require("./config/env.schema"), exports);
+__exportStar(require("./config/env-loader"), exports);
+__exportStar(require("./prisma/prisma.module"), exports);
+__exportStar(require("./prisma/prisma.service"), exports);
+// AI exports (excluding problematic LangChain dependencies)
+__exportStar(require("./ai/ai-guard"), exports);
+var ai_guard_1 = require("./ai/ai-guard");
+Object.defineProperty(exports, "PromptInjectionGuard", { enumerable: true, get: function () { return ai_guard_1.PromptInjectionGuard; } });
+__exportStar(require("./ai/ai-provider.factory"), exports);
+__exportStar(require("./ai/dynamic-ai-scheduler.service"), exports);
+__exportStar(require("./ai/json-cleaner"), exports);
+__exportStar(require("./ai/retry-strategy"), exports);
+// Cache exports
+__exportStar(require("./cache/cache.decorator"), exports);
+__exportStar(require("./cache/cache.module"), exports);
+__exportStar(require("./cache/cache.service"), exports);
+// Event Bus exports
+__exportStar(require("./event-bus/event-bus.module"), exports);
+__exportStar(require("./event-bus/event-bus.service"), exports);
+// Exceptions exports
+__exportStar(require("./exceptions/ai-exception"), exports);
+__exportStar(require("./exceptions/rule-engine-exception"), exports);
+// Health exports
+// export * from './health/health.module' // Temporarily disabled for testing
+// export * from './health/health.controller' // Temporarily disabled for testing
+// DTO exports
+__exportStar(require("./dto/create-ai-settings.dto"), exports);
+__exportStar(require("./dto/create-game.dto"), exports);
+__exportStar(require("./dto/submit-action.dto"), exports);
+__exportStar(require("./dto/update-ai-settings.dto"), exports);
+__exportStar(require("./dto/update-character.dto"), exports);
+// Pipes exports
+__exportStar(require("./pipes/zod-validation.pipe"), exports);
+// Prompts exports
+__exportStar(require("./prompts/prompt-manager.module"), exports);
+__exportStar(require("./prompts/prompt-manager.service"), exports);
+// Rate limit exports
+__exportStar(require("./rate-limit/rate-limit.guard"), exports);
+__exportStar(require("./rate-limit/rate-limit.module"), exports);
+__exportStar(require("./rate-limit/rate-limit.service"), exports);
+// Reactive exports
+__exportStar(require("./reactive/event-stream"), exports);
+__exportStar(require("./reactive/reactive.module"), exports);
+// Resilience exports
+__exportStar(require("./resilience/circuit-breaker.service"), exports);
+// Types exports
+__exportStar(require("./types/index"), exports);
+// Utils exports
+__exportStar(require("./utils/error-utils"), exports);
+// Validation exports
+__exportStar(require("./validation/enhanced-validator"), exports);
+// Observability exports
+__exportStar(require("./observability/observability.module"), exports);
+__exportStar(require("./observability/performance-monitor.service"), exports);
+__exportStar(require("./observability/sentry.config"), exports);
+__exportStar(require("./observability/sentry.module"), exports);
+// Error exports
+__exportStar(require("./errors/error-classification"), exports);
+__exportStar(require("./errors/prompt-injection-detected.exception"), exports);
+__exportStar(require("./errors/message-handler-helper"), exports);
+__exportStar(require("./errors/websocket-error-helper"), exports);
+// Plugin exports
+__exportStar(require("./plugins/plugin-sandbox.service"), exports);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxpbmRleC50cyIsIm1hcHBpbmdzIjoiO0FBQUEsNkNBQTZDOzs7Ozs7Ozs7Ozs7Ozs7OztBQUU3QyxlQUFlO0FBQ2YseURBQXNDO0FBQ3RDLGlFQUE4QztBQUM5QyxzREFBbUM7QUFDbkMsc0RBQW1DO0FBQ25DLHlEQUFzQztBQUN0QywwREFBdUM7QUFFdkMsNERBQTREO0FBQzVELGdEQUE2QjtBQUM3QiwwQ0FBb0Q7QUFBM0MsZ0hBQUEsb0JBQW9CLE9BQUE7QUFDN0IsMkRBQXdDO0FBQ3hDLG9FQUFpRDtBQUNqRCxvREFBaUM7QUFDakMsc0RBQW1DO0FBRW5DLGdCQUFnQjtBQUNoQiwwREFBdUM7QUFDdkMsdURBQW9DO0FBQ3BDLHdEQUFxQztBQUVyQyxvQkFBb0I7QUFDcEIsK0RBQTRDO0FBQzVDLGdFQUE2QztBQUU3QyxxQkFBcUI7QUFDckIsNERBQXlDO0FBQ3pDLHFFQUFrRDtBQUVsRCxpQkFBaUI7QUFDakIsNkVBQTZFO0FBQzdFLGlGQUFpRjtBQUVqRixjQUFjO0FBQ2QsK0RBQTRDO0FBQzVDLHdEQUFxQztBQUNyQywwREFBdUM7QUFDdkMsK0RBQTRDO0FBQzVDLDZEQUEwQztBQUUxQyxnQkFBZ0I7QUFDaEIsOERBQTJDO0FBRTNDLGtCQUFrQjtBQUNsQixrRUFBK0M7QUFDL0MsbUVBQWdEO0FBRWhELHFCQUFxQjtBQUNyQixnRUFBNkM7QUFDN0MsaUVBQThDO0FBQzlDLGtFQUErQztBQUUvQyxtQkFBbUI7QUFDbkIsMERBQXVDO0FBQ3ZDLDZEQUEwQztBQUUxQyxxQkFBcUI7QUFDckIsdUVBQW9EO0FBRXBELGdCQUFnQjtBQUNoQixnREFBNkI7QUFFN0IsZ0JBQWdCO0FBQ2hCLHNEQUFtQztBQUVuQyxxQkFBcUI7QUFDckIsa0VBQStDO0FBRS9DLHdCQUF3QjtBQUN4Qix1RUFBb0Q7QUFDcEQsOEVBQTJEO0FBQzNELGdFQUE2QztBQUM3QyxnRUFBNkM7QUFFN0MsZ0JBQWdCO0FBQ2hCLGdFQUE2QztBQUM3QywrRUFBNEQ7QUFDNUQsa0VBQStDO0FBQy9DLGtFQUErQztBQUUvQyxpQkFBaUI7QUFDakIsbUVBQWdEIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcMTY2NjNcXERlc2t0b3BcXHR1aGVnXFxwYWNrYWdlc1xcY29tbW9uLWJhY2tlbmRcXHNyY1xcaW5kZXgudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBwYWNrYWdlcy9jb21tb24tYmFja2VuZC9zcmMvaW5kZXgudHNcblxuLy8gQ29yZSBleHBvcnRzXG5leHBvcnQgKiBmcm9tICcuL2NvbmZpZy9jb25maWcubW9kdWxlJ1xuZXhwb3J0ICogZnJvbSAnLi9jb25maWcvY29uZmlndXJhdGlvbi5zZXJ2aWNlJ1xuZXhwb3J0ICogZnJvbSAnLi9jb25maWcvZW52LnNjaGVtYSdcbmV4cG9ydCAqIGZyb20gJy4vY29uZmlnL2Vudi1sb2FkZXInXG5leHBvcnQgKiBmcm9tICcuL3ByaXNtYS9wcmlzbWEubW9kdWxlJ1xuZXhwb3J0ICogZnJvbSAnLi9wcmlzbWEvcHJpc21hLnNlcnZpY2UnXG5cbi8vIEFJIGV4cG9ydHMgKGV4Y2x1ZGluZyBwcm9ibGVtYXRpYyBMYW5nQ2hhaW4gZGVwZW5kZW5jaWVzKVxuZXhwb3J0ICogZnJvbSAnLi9haS9haS1ndWFyZCdcbmV4cG9ydCB7IFByb21wdEluamVjdGlvbkd1YXJkIH0gZnJvbSAnLi9haS9haS1ndWFyZCdcbmV4cG9ydCAqIGZyb20gJy4vYWkvYWktcHJvdmlkZXIuZmFjdG9yeSdcbmV4cG9ydCAqIGZyb20gJy4vYWkvZHluYW1pYy1haS1zY2hlZHVsZXIuc2VydmljZSdcbmV4cG9ydCAqIGZyb20gJy4vYWkvanNvbi1jbGVhbmVyJ1xuZXhwb3J0ICogZnJvbSAnLi9haS9yZXRyeS1zdHJhdGVneSdcblxuLy8gQ2FjaGUgZXhwb3J0c1xuZXhwb3J0ICogZnJvbSAnLi9jYWNoZS9jYWNoZS5kZWNvcmF0b3InXG5leHBvcnQgKiBmcm9tICcuL2NhY2hlL2NhY2hlLm1vZHVsZSdcbmV4cG9ydCAqIGZyb20gJy4vY2FjaGUvY2FjaGUuc2VydmljZSdcblxuLy8gRXZlbnQgQnVzIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vZXZlbnQtYnVzL2V2ZW50LWJ1cy5tb2R1bGUnXG5leHBvcnQgKiBmcm9tICcuL2V2ZW50LWJ1cy9ldmVudC1idXMuc2VydmljZSdcblxuLy8gRXhjZXB0aW9ucyBleHBvcnRzXG5leHBvcnQgKiBmcm9tICcuL2V4Y2VwdGlvbnMvYWktZXhjZXB0aW9uJ1xuZXhwb3J0ICogZnJvbSAnLi9leGNlcHRpb25zL3J1bGUtZW5naW5lLWV4Y2VwdGlvbidcblxuLy8gSGVhbHRoIGV4cG9ydHNcbi8vIGV4cG9ydCAqIGZyb20gJy4vaGVhbHRoL2hlYWx0aC5tb2R1bGUnIC8vIFRlbXBvcmFyaWx5IGRpc2FibGVkIGZvciB0ZXN0aW5nXG4vLyBleHBvcnQgKiBmcm9tICcuL2hlYWx0aC9oZWFsdGguY29udHJvbGxlcicgLy8gVGVtcG9yYXJpbHkgZGlzYWJsZWQgZm9yIHRlc3RpbmdcblxuLy8gRFRPIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vZHRvL2NyZWF0ZS1haS1zZXR0aW5ncy5kdG8nXG5leHBvcnQgKiBmcm9tICcuL2R0by9jcmVhdGUtZ2FtZS5kdG8nXG5leHBvcnQgKiBmcm9tICcuL2R0by9zdWJtaXQtYWN0aW9uLmR0bydcbmV4cG9ydCAqIGZyb20gJy4vZHRvL3VwZGF0ZS1haS1zZXR0aW5ncy5kdG8nXG5leHBvcnQgKiBmcm9tICcuL2R0by91cGRhdGUtY2hhcmFjdGVyLmR0bydcblxuLy8gUGlwZXMgZXhwb3J0c1xuZXhwb3J0ICogZnJvbSAnLi9waXBlcy96b2QtdmFsaWRhdGlvbi5waXBlJ1xuXG4vLyBQcm9tcHRzIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vcHJvbXB0cy9wcm9tcHQtbWFuYWdlci5tb2R1bGUnXG5leHBvcnQgKiBmcm9tICcuL3Byb21wdHMvcHJvbXB0LW1hbmFnZXIuc2VydmljZSdcblxuLy8gUmF0ZSBsaW1pdCBleHBvcnRzXG5leHBvcnQgKiBmcm9tICcuL3JhdGUtbGltaXQvcmF0ZS1saW1pdC5ndWFyZCdcbmV4cG9ydCAqIGZyb20gJy4vcmF0ZS1saW1pdC9yYXRlLWxpbWl0Lm1vZHVsZSdcbmV4cG9ydCAqIGZyb20gJy4vcmF0ZS1saW1pdC9yYXRlLWxpbWl0LnNlcnZpY2UnXG5cbi8vIFJlYWN0aXZlIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vcmVhY3RpdmUvZXZlbnQtc3RyZWFtJ1xuZXhwb3J0ICogZnJvbSAnLi9yZWFjdGl2ZS9yZWFjdGl2ZS5tb2R1bGUnXG5cbi8vIFJlc2lsaWVuY2UgZXhwb3J0c1xuZXhwb3J0ICogZnJvbSAnLi9yZXNpbGllbmNlL2NpcmN1aXQtYnJlYWtlci5zZXJ2aWNlJ1xuXG4vLyBUeXBlcyBleHBvcnRzXG5leHBvcnQgKiBmcm9tICcuL3R5cGVzL2luZGV4J1xuXG4vLyBVdGlscyBleHBvcnRzXG5leHBvcnQgKiBmcm9tICcuL3V0aWxzL2Vycm9yLXV0aWxzJ1xuXG4vLyBWYWxpZGF0aW9uIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vdmFsaWRhdGlvbi9lbmhhbmNlZC12YWxpZGF0b3InXG5cbi8vIE9ic2VydmFiaWxpdHkgZXhwb3J0c1xuZXhwb3J0ICogZnJvbSAnLi9vYnNlcnZhYmlsaXR5L29ic2VydmFiaWxpdHkubW9kdWxlJ1xuZXhwb3J0ICogZnJvbSAnLi9vYnNlcnZhYmlsaXR5L3BlcmZvcm1hbmNlLW1vbml0b3Iuc2VydmljZSdcbmV4cG9ydCAqIGZyb20gJy4vb2JzZXJ2YWJpbGl0eS9zZW50cnkuY29uZmlnJ1xuZXhwb3J0ICogZnJvbSAnLi9vYnNlcnZhYmlsaXR5L3NlbnRyeS5tb2R1bGUnXG5cbi8vIEVycm9yIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vZXJyb3JzL2Vycm9yLWNsYXNzaWZpY2F0aW9uJ1xuZXhwb3J0ICogZnJvbSAnLi9lcnJvcnMvcHJvbXB0LWluamVjdGlvbi1kZXRlY3RlZC5leGNlcHRpb24nXG5leHBvcnQgKiBmcm9tICcuL2Vycm9ycy9tZXNzYWdlLWhhbmRsZXItaGVscGVyJ1xuZXhwb3J0ICogZnJvbSAnLi9lcnJvcnMvd2Vic29ja2V0LWVycm9yLWhlbHBlcidcblxuLy8gUGx1Z2luIGV4cG9ydHNcbmV4cG9ydCAqIGZyb20gJy4vcGx1Z2lucy9wbHVnaW4tc2FuZGJveC5zZXJ2aWNlJ1xuIl0sInZlcnNpb24iOjN9

@@ -19,7 +19,7 @@ const processingSteps = [
   { step: '即将完成...', tip: 'AI正在最后润色', progress: 95 },
 ]
 
-const tips = [
+const _tips = [
   'AI正在理解你的指令，请稍候',
   'AI正在计算行动后果',
   'AI正在为你编写故事',
@@ -84,7 +84,7 @@ onUnmounted(() => {
   stopProgressAnimation()
 })
 
-function submitCommand() {
+function _submitCommand() {
   const commandText = gameStore.commandInputValue.trim()
   if (commandText && gameStore.currentGame) {
     // [新增] 立即显示操作确认反馈
@@ -94,7 +94,7 @@ function submitCommand() {
   }
 }
 
-function handleOptionClick(option) {
+function _handleOptionClick(option) {
   if (gameStore.currentGame) {
     // [新增] 立即显示操作确认反馈
     gameStore.addNarrativeEntry(`🎯 选择选项: ${option.text}`, true)

@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { platformService } from '@/services/mobile/PlatformService'
 
 // Props
@@ -74,7 +74,7 @@ const platformMessage = ref({
 const isNative = computed(() => platformInfo.value?.isNative || false)
 const currentPlatform = computed(() => platformInfo.value?.platform || 'web')
 
-const platformClasses = computed(() => ({
+const _platformClasses = computed(() => ({
   'platform-adapter': true,
   'native-platform': isNative.value,
   'web-platform': !isNative.value,
@@ -82,22 +82,22 @@ const platformClasses = computed(() => ({
   'adaptive-layout': props.adaptiveLayout,
 }))
 
-const platformStyles = computed(() => ({
+const _platformStyles = computed(() => ({
   ...props.customPlatformStyles,
-  '--safe-area-top': safeAreaInsets.value.top + 'px',
-  '--safe-area-bottom': safeAreaInsets.value.bottom + 'px',
-  '--safe-area-left': safeAreaInsets.value.left + 'px',
-  '--safe-area-right': safeAreaInsets.value.right + 'px',
+  '--safe-area-top': `${safeAreaInsets.value.top}px`,
+  '--safe-area-bottom': `${safeAreaInsets.value.bottom}px`,
+  '--safe-area-left': `${safeAreaInsets.value.left}px`,
+  '--safe-area-right': `${safeAreaInsets.value.right}px`,
 }))
 
-const mainContentStyles = computed(() => ({
+const _mainContentStyles = computed(() => ({
   paddingTop: isNative.value ? '0px' : '20px',
   paddingBottom: isNative.value ? '0px' : '20px',
-  paddingLeft: isNative.value ? safeAreaInsets.value.left + 'px' : '20px',
-  paddingRight: isNative.value ? safeAreaInsets.value.right + 'px' : '20px',
+  paddingLeft: isNative.value ? `${safeAreaInsets.value.left}px` : '20px',
+  paddingRight: isNative.value ? `${safeAreaInsets.value.right}px` : '20px',
 }))
 
-const platformIcon = computed(() => {
+const _platformIcon = computed(() => {
   switch (currentPlatform.value) {
     case 'ios':
       return '📱'
@@ -151,7 +151,7 @@ const hidePlatformOverlay = () => {
   showPlatformOverlay.value = false
 }
 
-const handlePlatformAction = () => {
+const _handlePlatformAction = () => {
   emit('nativeAction', 'platform_hint_acknowledged')
   hidePlatformOverlay()
 }
@@ -182,7 +182,7 @@ const share = async (data: { title: string; text?: string; url?: string }) => {
         await navigator.share(data)
       } else {
         // 降级处理：复制到剪贴板
-        const text = `${data.title}${data.text ? '\n' + data.text : ''}${data.url ? '\n' + data.url : ''}`
+        const text = `${data.title}${data.text ? `\n${data.text}` : ''}${data.url ? `\n${data.url}` : ''}`
         await navigator.clipboard.writeText(text)
         alert('内容已复制到剪贴板')
       }

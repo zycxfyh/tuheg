@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/node' // [Sentry] 导入 Sentry
 import type { Channel } from 'amqplib' // [核心修正] 导入 Channel 类型
 import { CreationAgentModule } from './creation-agent.module'
 
-async function bootstrap() {
+async function _bootstrap() {
   const app = await NestFactory.create(CreationAgentModule)
   const configService = app.get(ConfigService)
 
@@ -64,31 +64,29 @@ async function bootstrap() {
         ])
       },
     },
-    })
-  }
+  })
+}
 
-  // [新增] 配置HTTP服务器
-  const httpPort = configService.get<number>('CREATION_AGENT_HTTP_PORT', 8080)
-  app.setGlobalPrefix('api/v1/creation') // API前缀
+// [新增] 配置HTTP服务器
+const httpPort = configService.get<number>('CREATION_AGENT_HTTP_PORT', 8080)
+app.setGlobalPrefix('api/v1/creation') // API前缀
 
-  // [Sentry] 使用 try...catch 块包裹启动过程
-  try {
-    await app.startAllMicroservices()
-    await app.listen(httpPort)
+// [Sentry] 使用 try...catch 块包裹启动过程
+try {
+  await app.startAllMicroservices()
+  await app.listen(httpPort)
 
-    console.log('🚀 Creation Agent is running:')
-    console.log(`   📡 Microservices: listening for tasks on the event bus`)
-    console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/creation`)
-  } catch (err) {
-    // [Sentry] 如果启动失败，捕获异常并上报
-    Sentry.captureException(err)
-    console.error('Failed to start Creation Agent:', err)
-    // 确保在启动失败时进程退出
-    await Sentry.close(2000).then(() => {
-      process.exit(1)
-      })
-  }
-  }
+  console.log('🚀 Creation Agent is running:')
+  console.log(`   📡 Microservices: listening for tasks on the event bus`)
+  console.log(`   🌐 HTTP API: http://localhost:${httpPort}/api/v1/creation`)
+} catch (err) {
+  // [Sentry] 如果启动失败，捕获异常并上报
+  Sentry.captureException(err)
+  console.error('Failed to start Creation Agent:', err)
+  // 确保在启动失败时进程退出
+  await Sentry.close(2000).then(() => {
+    process.exit(1)
+  })
 }
 
 // [Sentry] 使用 try...catch 包裹顶层bootstrap调用
@@ -97,6 +95,5 @@ bootstrap().catch((err) => {
   console.error('Unhandled error during bootstrap of Creation Agent:', err)
   Sentry.close(2000).then(() => {
     process.exit(1)
-    })
-  }
+  })
 })

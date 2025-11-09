@@ -29,7 +29,7 @@ defineProps<{
   data: Array<{ type: string; count: number; percentage: number }>
 }>()
 
-const getTypeColor = (type: string) => {
+const _getTypeColor = (type: string) => {
   const colors = {
     experience: '#3182ce',
     bug: '#e53e3e',
@@ -38,7 +38,7 @@ const getTypeColor = (type: string) => {
   return colors[type] || '#718096'
 }
 
-const getTypeName = (type: string) => {
+const _getTypeName = (type: string) => {
   const names = {
     experience: '体验反馈',
     bug: '问题报告',

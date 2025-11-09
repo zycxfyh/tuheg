@@ -108,6 +108,7 @@ export class AudioGenerator implements MultimodalGenerator {
       volume?: number
     } = {}
   ): Promise<AudioContent> {
+    // biome-ignore lint/correctness/noUnusedVariables: 预留用于将来语音合成功能
     const { voice = 'default', speed = 1.0, pitch = 1.0, volume = 1.0 } = voiceOptions
 
     const audioContent: AudioContent = {
@@ -231,8 +232,8 @@ export class AudioGenerator implements MultimodalGenerator {
 
   private analyzeTextForMusic(text: string): { theme: string; mood: string } {
     // 简化的文本音乐分析
-    const themes = ['冒险', '爱情', '神秘', '战斗', '和平', '悲伤', '喜悦']
-    const moods = ['紧张', '舒缓', '激昂', '忧郁', '欢快']
+    const _themes = ['冒险', '爱情', '神秘', '战斗', '和平', '悲伤', '喜悦']
+    const _moods = ['紧张', '舒缓', '激昂', '忧郁', '欢快']
 
     // 简单的关键词匹配
     let theme = '通用'

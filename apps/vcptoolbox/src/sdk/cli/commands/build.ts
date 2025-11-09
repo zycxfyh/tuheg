@@ -1,8 +1,8 @@
 // VCPToolBox SDK - 构建插件命令
 
-import { execSync } from 'child_process'
-import * as fs from 'fs'
-import * as path from 'path'
+import { execSync } from 'node:child_process'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 
 export interface BuildOptions {
   outDir: string
@@ -39,7 +39,9 @@ export class BuildCommand {
 
       console.log(`✅ 构建完成！输出目录: ${outDir}`)
     } catch (error: any) {
-      console.error(`❌ 构建失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
+      console.error(
+        `❌ 构建失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
+      )
       process.exit(1)
     }
   }
@@ -70,9 +72,9 @@ export class BuildCommand {
       } else {
         console.log('👀 启动监听模式...')
         // 在监听模式下，我们不阻塞进程
-        const child = execSync(command, { stdio: 'inherit', cwd: process.cwd() })
+        const _child = execSync(command, { stdio: 'inherit', cwd: process.cwd() })
       }
-    } catch (error) {
+    } catch (_error) {
       throw new Error('TypeScript编译失败')
     }
   }

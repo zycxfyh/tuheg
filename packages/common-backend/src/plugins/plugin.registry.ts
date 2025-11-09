@@ -73,7 +73,11 @@ export class PluginRegistry implements OnModuleInit {
       } catch (error) {
         this.logger.error(
           `Error deactivating plugin "${pluginId}":`,
-          error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error)
         )
       }
     }
@@ -129,7 +133,11 @@ export class PluginRegistry implements OnModuleInit {
     } catch (error) {
       this.logger.error(
         `Failed to activate plugin "${pluginId}":`,
-        error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
       )
       throw error
     }

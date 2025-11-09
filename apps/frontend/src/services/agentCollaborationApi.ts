@@ -248,7 +248,7 @@ class AgentCollaborationApi {
       // 返回模拟数据
       return {
         ...data,
-        id: 'task-' + Date.now(),
+        id: `task-${Date.now()}`,
         status: 'pending',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

@@ -9,7 +9,7 @@ export class EventBusService implements OnModuleInit {
   private readonly logger = new Logger(EventBusService.name)
 
   // [核心] 注入我们刚刚在module里定义的“信号发射器”
-  constructor(@Inject(NEXUS_EVENT_BUS) private readonly client: ClientProxy) {}
+  constructor(@Inject(NEXUS_EVENT_BUS) private readonly _client: ClientProxy) {}
 
   // [核心] 在模块初始化时，确保与 RabbitMQ 的连接已建立
   async onModuleInit() {

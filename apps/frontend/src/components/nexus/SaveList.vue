@@ -13,11 +13,11 @@ defineProps({
 
 const emit = defineEmits(['load-game', 'delete-game'])
 
-function onLoadGame(gameId) {
+function _onLoadGame(gameId) {
   emit('load-game', gameId)
 }
 
-function onDeleteGame(gameId) {
+function _onDeleteGame(gameId) {
   emit('delete-game', gameId)
 }
 </script>

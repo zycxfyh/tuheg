@@ -8,7 +8,6 @@ import {
   NetworkError,
   type RequestConfig,
   type SDKEventMap,
-  TokenResponse,
   VCPToolBoxError,
 } from './types.js'
 
@@ -20,7 +19,6 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
   private axiosInstance: AxiosInstance
   private config: ClientConfig
   private token?: string
-  private refreshToken?: string
   private isAuthenticated = false
 
   constructor(config: ClientConfig) {
@@ -270,7 +268,7 @@ export class VCPToolBoxClient extends EventEmitter<SDKEventMap> {
     try {
       const response = await this.get('/health')
       return response.status === 200
-    } catch (error) {
+    } catch (_error) {
       return false
     }
   }

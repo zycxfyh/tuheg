@@ -96,7 +96,7 @@ export class AudioRenderer implements MultimodalRenderer {
     return playerContainer
   }
 
-  private createCustomControls(audioElement: HTMLAudioElement, audio: AudioContent): HTMLElement {
+  private createCustomControls(audioElement: HTMLAudioElement, _audio: AudioContent): HTMLElement {
     const controls = document.createElement('div')
     controls.className = 'audio-controls'
     controls.style.cssText = `

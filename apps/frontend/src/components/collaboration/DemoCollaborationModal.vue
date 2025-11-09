@@ -105,7 +105,7 @@ const props = defineProps({
 const emit = defineEmits(['close', 'start'])
 
 // 演示Agent数据
-const demoAgents = ref([
+const _demoAgents = ref([
   {
     id: 'creation-agent',
     name: 'Creation Agent',
@@ -190,7 +190,7 @@ const animateSteps = () => {
 }
 
 // 开始演示
-const handleStart = () => {
+const _handleStart = () => {
   animateSteps()
   emit('start')
 }

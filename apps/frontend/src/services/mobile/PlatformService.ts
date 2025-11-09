@@ -43,6 +43,7 @@ export class PlatformService {
   private checkFeatureSupport(feature: string): boolean {
     if (!this.platformInfo) return false
 
+    // biome-ignore lint/correctness/noUnusedVariables: 预留用于将来平台特性扩展
     const { isNative, platform, deviceInfo } = this.platformInfo
 
     switch (feature) {
@@ -114,7 +115,7 @@ export class PlatformService {
     }
   }
 
-  private async initializeWebPlatform(platformInfo: PlatformInfo): Promise<void> {
+  private async initializeWebPlatform(_platformInfo: PlatformInfo): Promise<void> {
     // 检查PWA支持
     if ('serviceWorker' in navigator) {
       try {
@@ -157,10 +158,10 @@ export class PlatformService {
 
       const styles = getComputedStyle(testEl)
       const insets = {
-        top: parseInt(styles.top || '0'),
-        bottom: parseInt(styles.bottom || '0'),
-        left: parseInt(styles.left || '0'),
-        right: parseInt(styles.right || '0'),
+        top: parseInt(styles.top || '0', 10),
+        bottom: parseInt(styles.bottom || '0', 10),
+        left: parseInt(styles.left || '0', 10),
+        right: parseInt(styles.right || '0', 10),
       }
 
       document.body.removeChild(testEl)
@@ -186,10 +187,10 @@ export class PlatformService {
 
       const styles = getComputedStyle(testEl)
       const insets = {
-        top: parseInt(styles.paddingTop || '0'),
-        bottom: parseInt(styles.paddingBottom || '0'),
-        left: parseInt(styles.paddingLeft || '0'),
-        right: parseInt(styles.paddingRight || '0'),
+        top: parseInt(styles.paddingTop || '0', 10),
+        bottom: parseInt(styles.paddingBottom || '0', 10),
+        left: parseInt(styles.paddingLeft || '0', 10),
+        right: parseInt(styles.paddingRight || '0', 10),
       }
 
       document.body.removeChild(testEl)

@@ -66,7 +66,7 @@ defineEmits<{
   dismiss: []
 }>()
 
-const getStatusLabel = (status: string) => {
+const _getStatusLabel = (status: string) => {
   const labels = {
     pending: '待处理',
     'in-progress': '进行中',
@@ -76,7 +76,7 @@ const getStatusLabel = (status: string) => {
   return labels[status] || status
 }
 
-const getImpactLabel = (impact: string) => {
+const _getImpactLabel = (impact: string) => {
   const labels = {
     low: '低',
     medium: '中',

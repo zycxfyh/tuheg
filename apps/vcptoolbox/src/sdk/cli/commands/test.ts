@@ -14,7 +14,6 @@ export interface TestOptions {
 
 export class TestCommand {
   private testFramework: TestFramework
-  private pluginManager: SDKPluginManager
 
   constructor() {
     this.testFramework = new TestFramework()
@@ -46,7 +45,9 @@ export class TestCommand {
         console.log('✅ 所有测试通过')
       }
     } catch (error: any) {
-      console.error(`❌ 测试失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
+      console.error(
+        `❌ 测试失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
+      )
       process.exit(1)
     }
   }
@@ -62,7 +63,7 @@ export class TestCommand {
         const PluginClass = require(pluginPath).default || require(pluginPath)
         return new PluginClass()
       }
-    } catch (error) {
+    } catch (_error) {
       // 忽略错误
     }
     return null
@@ -139,4 +140,4 @@ export class TestCommand {
 }
 
 // 导入path模块
-import * as path from 'path'
+import * as path from 'node:path'

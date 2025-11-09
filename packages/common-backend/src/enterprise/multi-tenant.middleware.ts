@@ -17,7 +17,7 @@ export interface TenantRequest extends Request {
 export class MultiTenantMiddleware implements NestMiddleware {
   constructor(private prisma: PrismaService) {}
 
-  async use(req: TenantRequest, res: Response, next: NextFunction) {
+  async use(req: TenantRequest, _res: Response, next: NextFunction) {
     try {
       // 从请求头或子域名中提取租户信息
       const tenantId = this.extractTenantId(req)
@@ -205,7 +205,7 @@ export class MultiTenantMiddleware implements NestMiddleware {
   /**
    * 检查租户资源限制
    */
-  private async checkTenantLimits(req: TenantRequest, tenant: any): Promise<void> {
+  private async checkTenantLimits(_req: TenantRequest, tenant: any): Promise<void> {
     const limits = tenant.limits as any
 
     // 检查API调用限制
@@ -264,7 +264,7 @@ export class MultiTenantMiddleware implements NestMiddleware {
   /**
    * 获取当前API使用量
    */
-  private async getCurrentApiUsage(tenantId: string): Promise<number> {
+  private async getCurrentApiUsage(_tenantId: string): Promise<number> {
     // 这里应该从缓存或数据库中获取当前月的API使用量
     // 暂时返回模拟数据
     return 500
@@ -273,7 +273,7 @@ export class MultiTenantMiddleware implements NestMiddleware {
   /**
    * 获取当前并发请求数
    */
-  private async getCurrentConcurrentRequests(tenantId: string): Promise<number> {
+  private async getCurrentConcurrentRequests(_tenantId: string): Promise<number> {
     // 这里应该从缓存中获取当前活跃请求数
     // 暂时返回模拟数据
     return 5
@@ -282,7 +282,7 @@ export class MultiTenantMiddleware implements NestMiddleware {
   /**
    * 获取最近请求数
    */
-  private async getRecentRequests(tenantId: string, timeWindow: number): Promise<number> {
+  private async getRecentRequests(_tenantId: string, _timeWindow: number): Promise<number> {
     // 这里应该统计最近时间窗口内的请求数
     // 暂时返回模拟数据
     return 30

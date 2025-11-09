@@ -142,7 +142,7 @@ describe('Authentication Security Tests (e2e)', () => {
 
   describe('Authentication Bypass Attempts', () => {
     it('should reject extremely long tokens', () => {
-      const longToken = 'Bearer ' + 'a'.repeat(10000)
+      const longToken = `Bearer ${'a'.repeat(10000)}`
       return request(app.getHttpServer()).get('/health').set('Authorization', longToken).expect(400) // Should fail with bad request due to length
     })
 
@@ -190,7 +190,7 @@ describe('Authentication Security Tests (e2e)', () => {
         'Bearer password',
         'Bearer admin',
         'Bearer test',
-        'Bearer ' + 'a'.repeat(64), // All same character
+        `Bearer ${'a'.repeat(64)}`, // All same character
       ]
 
       const promises = weakTokens.map((token) =>

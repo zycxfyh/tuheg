@@ -1,8 +1,8 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import { type DeepMockProxy, mockDeep } from 'jest-mock-extended'
-import { AuthController } from './auth.controller'
-import { AuthService } from './auth.service'
+import { AuthController } from '../auth.controller'
+import { AuthService } from '../auth.service'
 
 describe('AuthController', () => {
   let controller: AuthController

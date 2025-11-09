@@ -41,7 +41,9 @@ export class CameraService {
       // Web平台使用MediaDevices API
       try {
         const result = await navigator.mediaDevices.getUserMedia({ video: true })
-        result.getTracks().forEach((track) => track.stop())
+        result.getTracks().forEach((track) => {
+          track.stop()
+        })
         return { camera: 'granted', photos: 'granted' }
       } catch {
         return { camera: 'denied', photos: 'denied' }
@@ -119,7 +121,7 @@ export class CameraService {
     }
   }
 
-  private async takePhotoWeb(options: CameraOptions): Promise<CameraResult> {
+  private async takePhotoWeb(_options: CameraOptions): Promise<CameraResult> {
     return new Promise((resolve, reject) => {
       // 创建文件输入元素
       const input = document.createElement('input')
@@ -204,7 +206,9 @@ export class CameraService {
             const url = URL.createObjectURL(blob)
 
             // 停止所有媒体轨道
-            stream.getTracks().forEach((track) => track.stop())
+            stream.getTracks().forEach((track) => {
+              track.stop()
+            })
 
             resolve({
               dataUrl: url,
@@ -212,7 +216,7 @@ export class CameraService {
             })
           }
 
-          mediaRecorder.onerror = (event) => {
+          mediaRecorder.onerror = (_event) => {
             reject(new Error('Video recording failed'))
           }
 
@@ -234,7 +238,11 @@ export class CameraService {
           }, 5000) // 5秒后询问是否停止
         })
         .catch((error) => {
-          reject(new Error(`Failed to access camera: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`))
+          reject(
+            new Error(
+              `Failed to access camera: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
+            )
+          )
         })
     })
   }

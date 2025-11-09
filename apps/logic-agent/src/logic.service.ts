@@ -112,7 +112,13 @@ export class LogicService {
       )
       throw new InternalServerErrorException(
         `LogicAI failed to generate directives: ${
-          error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : 'Unknown error'
+          error instanceof Error
+            ? error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : String(error)
+            : 'Unknown error'
         }`
       )
     }

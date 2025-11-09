@@ -187,7 +187,7 @@ const screenshots = ref([])
 const unreadCount = ref(0)
 
 // 反馈类型配置
-const feedbackTypes = ref([
+const _feedbackTypes = ref([
   {
     value: 'experience',
     label: '使用体验',
@@ -209,13 +209,13 @@ const feedbackTypes = ref([
 ])
 
 // 计算属性
-const widgetClasses = computed(() => ({
+const _widgetClasses = computed(() => ({
   'feedback-widget': true,
   [`position-${props.position}`]: true,
 }))
 
 // 方法
-const toggleFeedback = () => {
+const _toggleFeedback = () => {
   visible.value = !visible.value
   if (visible.value) {
     // 标记为已读
@@ -237,7 +237,7 @@ const resetForm = () => {
   selectedType.value = 'experience'
 }
 
-const handleScreenshotUpload = (event) => {
+const _handleScreenshotUpload = (event) => {
   const files = Array.from(event.target.files)
 
   files.forEach((file) => {
@@ -255,11 +255,11 @@ const handleScreenshotUpload = (event) => {
   })
 }
 
-const removeScreenshot = (index) => {
+const _removeScreenshot = (index) => {
   screenshots.value.splice(index, 1)
 }
 
-const submitFeedback = async () => {
+const _submitFeedback = async () => {
   if (!title.value.trim() || !description.value.trim()) {
     error('请填写完整的反馈信息')
     return

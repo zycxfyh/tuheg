@@ -29,7 +29,7 @@ import { CacheService } from './cache.service'
         return {
           store: redisStore,
           host: url.hostname,
-          port: parseInt(url.port || '6379'),
+          port: parseInt(url.port || '6379', 10),
           password: url.password || undefined,
           ttl: 3600, // 默认 1 小时
           max: 1000, // Redis可以处理更多缓存项

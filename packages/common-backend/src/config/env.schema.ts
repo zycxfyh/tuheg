@@ -39,6 +39,10 @@ export const envSchema = z.object({
     .pipe(z.number().min(0).max(1))
     .default('1.0'),
 
+  // AI Provider 配置
+  DEEPSEEK_API_KEY: z.string().optional(),
+  DEEPSEEK_BASE_URL: z.string().url().default('https://api.deepseek.com/v1'),
+
   // AI Provider 后备配置
   FALLBACK_API_KEY: z.string().optional(),
   FALLBACK_MODEL_ID: z.string().default('deepseek-chat'),

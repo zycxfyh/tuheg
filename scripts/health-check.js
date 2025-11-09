@@ -5,9 +5,9 @@
  * 检查项目的整体健康状态
  */
 
-const fs = require('fs')
-const path = require('path')
-const { execSync } = require('child_process')
+const fs = require('node:fs')
+const path = require('node:path')
+const { execSync } = require('node:child_process')
 
 console.log('🏥 Running health check...\n')
 
@@ -61,7 +61,7 @@ function checkCriticalFiles() {
 // 3. 检查Node.js版本
 function checkNodeVersion() {
   const version = process.version
-  const major = parseInt(version.slice(1).split('.')[0])
+  const major = parseInt(version.slice(1).split('.')[0], 10)
   check(major >= 18, `Node.js version ${version} is >= 18 (required for modern features)`)
 }
 
@@ -106,7 +106,7 @@ function checkTypeScriptConfig() {
           tsconfig.extends?.includes('tsconfig.base.json') ||
           tsconfig.extends?.includes('tsconfig.json')
         check(hasStrict, `${file} has strict mode enabled (directly or via inheritance)`)
-      } catch (error) {
+      } catch (_error) {
         check(false, `${file} is invalid JSON`)
       }
     }
@@ -172,7 +172,9 @@ console.log('')
 // 总结
 if (hasErrors) {
   console.log(`❌ Health check failed with ${errors.length} error(s):`)
-  errors.forEach((error) => console.log(`   - ${error}`))
+  errors.forEach((error) => {
+    console.log(`   - ${error}`)
+  })
   process.exit(1)
 } else {
   console.log('🎉 Health check passed! All systems are go.')

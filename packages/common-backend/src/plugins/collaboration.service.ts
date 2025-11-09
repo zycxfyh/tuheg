@@ -6,7 +6,6 @@ import {
   CollaborationStatus,
   CollaborationType,
   MessageType,
-  Prisma,
   type TaskCollaboration,
 } from '@prisma/client'
 import type { PrismaService } from '../prisma/prisma.service'
@@ -426,7 +425,7 @@ export class CollaborationService {
   async getCollaborationResult(collaborationId: string): Promise<CollaborationResult> {
     const collaboration = await this.getCollaboration(collaborationId)
 
-    const [taskStats, messageCount] = await Promise.all([
+    const [taskStats, _messageCount] = await Promise.all([
       this.prisma.taskCollaboration.groupBy({
         by: ['status'],
         where: { collaborationId },
@@ -566,7 +565,7 @@ export class CollaborationService {
     }
 
     const strategy = collaboration.strategy || 'round-robin'
-    const config = collaboration.config as any
+    const _config = collaboration.config as any
 
     switch (strategy) {
       case 'leader-driven':
@@ -737,24 +736,24 @@ export class CollaborationService {
   }
 
   private async resolveTaskAssignmentConflict(
-    collaboration: AgentCollaboration,
-    conflict: any
+    _collaboration: AgentCollaboration,
+    _conflict: any
   ): Promise<string> {
     // 重新分配任务给其他Agent
     return 'task_reassigned'
   }
 
   private async resolveDecisionMakingConflict(
-    collaboration: AgentCollaboration,
-    conflict: any
+    _collaboration: AgentCollaboration,
+    _conflict: any
   ): Promise<string> {
     // 领导者做出最终决定
     return 'leader_decision'
   }
 
   private async resolveResourceConflict(
-    collaboration: AgentCollaboration,
-    conflict: any
+    _collaboration: AgentCollaboration,
+    _conflict: any
   ): Promise<string> {
     // 协商资源分配
     return 'resource_renegotiated'

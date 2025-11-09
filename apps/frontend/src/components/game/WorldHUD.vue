@@ -31,11 +31,11 @@ import { useGameStore } from '@/stores/game.store'
 import { useUIStore } from '@/stores/ui.store'
 
 // [核心修正] 获取正确的 store 实例
-const uiStore = useUIStore()
-const gameStore = useGameStore()
+const _uiStore = useUIStore()
+const _gameStore = useGameStore()
 const router = useRouter()
 
-function returnToNexus() {
+function _returnToNexus() {
   if (confirm('确定要中断当前化身，返回中枢系统吗？')) {
     router.push('/nexus')
   }

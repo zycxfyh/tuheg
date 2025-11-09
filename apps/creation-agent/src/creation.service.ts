@@ -1,7 +1,5 @@
 // 文件路径: apps/creation-agent/src/creation.service.ts (已修复 unknown 类型)
 
-import { StructuredOutputParser } from '@langchain/core/output_parsers'
-import { PromptTemplate } from '@langchain/core/prompts'
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
 import type { Prisma, User } from '@prisma/client'
 import {
@@ -9,6 +7,8 @@ import {
   callAiWithGuard,
   type DynamicAiSchedulerService,
   type EventBusService,
+  getErrorMessage,
+  getErrorStack,
   type PrismaService,
   type PromptInjectionGuard,
   type PromptManagerService,
@@ -103,11 +103,10 @@ export class CreationService {
       // Execute compensation actions based on saga context
       await this.executeSagaCompensation(sagaContext, userId)
 
-      const errorMessage =
-        error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : 'An unknown error occurred during world creation'
+      const errorMessage = getErrorMessage(error, 'An unknown error occurred during world creation')
       this.logger.error(
         `Game creation saga ${sagaId} failed for user ${userId}: ${errorMessage}`,
-        error instanceof Error ? error.stack : undefined,
+        getErrorStack(error),
         error instanceof AiGenerationException ? error.details : undefined
       )
 
@@ -137,10 +136,7 @@ export class CreationService {
    * 这个方法确保即使消息被发送到DLQ，用户也能收到失败通知
    */
   public async notifyCreationFailure(userId: string, error: unknown): Promise<void> {
-    let errorMessage = 'An unknown error occurred during world creation'
-    if (error instanceof Error) {
-      errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
-    }
+    const errorMessage = getErrorMessage(error, 'An unknown error occurred during world creation')
 
     try {
       await this.eventBus.publish('NOTIFY_USER', {
@@ -208,7 +204,7 @@ export class CreationService {
   /**
    * Execute compensation actions for failed saga steps
    */
-  private async executeSagaCompensation(sagaContext: SagaContext, userId: string): Promise<void> {
+  private async executeSagaCompensation(sagaContext: SagaContext, _userId: string): Promise<void> {
     try {
       this.logger.log(
         `Executing compensation for saga ${sagaContext.sagaId}, step: ${sagaContext.step}`
@@ -277,11 +273,10 @@ export class CreationService {
       )
       return response
     } catch (error: unknown) {
-      // <-- [核心修正] 明确 error 类型为 unknown
-      const errorMessage = error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : 'Unknown AI error'
+      const errorMessage = getErrorMessage(error, 'Unknown AI error')
       this.logger.error(
         `AI generation failed inside generateInitialWorld: ${errorMessage}`,
-        error instanceof Error ? error.stack : undefined
+        getErrorStack(error)
       )
       throw new InternalServerErrorException(`AI failed to generate initial world: ${errorMessage}`)
     }

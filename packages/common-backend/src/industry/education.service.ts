@@ -92,9 +92,9 @@ export interface PerformanceRecord {
 @Injectable()
 export class EducationService {
   constructor(
-    private aiProviderService: AiProviderService,
+    _aiProviderService: AiProviderService,
     private modelRouterService: ModelRouterService,
-    private eventEmitter: EventEmitter2
+    _eventEmitter: EventEmitter2
   ) {}
 
   // ==================== 课程内容生成 ====================
@@ -419,7 +419,7 @@ Include description, hints, and solution.`
   /**
    * 生成内容
    */
-  private async generateContent(prompt: string, modelId: string): Promise<string> {
+  private async generateContent(prompt: string, _modelId: string): Promise<string> {
     // 这里应该调用实际的AI模型API
     // 暂时返回模拟内容
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -445,7 +445,7 @@ Include description, hints, and solution.`
   /**
    * 解析课程大纲
    */
-  private parseCourseOutline(content: string, request: any): LearningPath {
+  private parseCourseOutline(_content: string, request: any): LearningPath {
     // 简化的解析逻辑
     return {
       id: `course-${Date.now()}`,
@@ -478,7 +478,7 @@ Include description, hints, and solution.`
    * 解析学习路径
    */
   private parseLearningPath(
-    content: string,
+    _content: string,
     profile: LearnerProfile,
     subject: string
   ): LearningPath {
@@ -498,7 +498,7 @@ Include description, hints, and solution.`
   /**
    * 应用路径调整
    */
-  private applyPathAdjustments(currentPath: LearningPath, adjustments: string): LearningPath {
+  private applyPathAdjustments(currentPath: LearningPath, _adjustments: string): LearningPath {
     // 简化的调整逻辑
     return {
       ...currentPath,
@@ -509,7 +509,7 @@ Include description, hints, and solution.`
   /**
    * 解析评估
    */
-  private parseAssessment(content: string, request: any): Assessment {
+  private parseAssessment(_content: string, request: any): Assessment {
     return {
       type: 'quiz',
       questions: [],
@@ -537,7 +537,7 @@ Include description, hints, and solution.`
   /**
    * 生成课程资源
    */
-  private async generateCourseResources(outline: LearningPath): Promise<LearningResource[]> {
+  private async generateCourseResources(_outline: LearningPath): Promise<LearningResource[]> {
     return [
       {
         type: 'article',
@@ -573,7 +573,7 @@ Include description, hints, and solution.`
    * 生成学习推荐
    */
   private generateLearningRecommendations(
-    strengths: string[],
+    _strengths: string[],
     weaknesses: string[],
     profile: LearnerProfile
   ): string[] {
@@ -610,7 +610,7 @@ Include description, hints, and solution.`
    */
   private generateAdaptiveSuggestions(
     performanceData: PerformanceRecord[],
-    profile: LearnerProfile
+    _profile: LearnerProfile
   ): string[] {
     const suggestions: string[] = []
 

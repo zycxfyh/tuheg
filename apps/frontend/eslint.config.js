@@ -1,4 +1,4 @@
-const eslint = require('@eslint/js')
+const _eslint = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const vueParser = require('vue-eslint-parser')
 

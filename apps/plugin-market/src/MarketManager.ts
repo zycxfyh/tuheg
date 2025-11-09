@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events'
-import { type PluginPackage, PluginRegistry } from '../vcptoolbox/src/publisher/Publisher'
+import { EventEmitter } from 'node:events'
+import type { PluginPackage } from '../vcptoolbox/src/publisher/Publisher'
 
 // 插件市场管理器
 // 专注于AI叙事插件的分发、发现和商业化
@@ -157,7 +157,6 @@ export interface DeveloperBadge {
 export class MarketManager extends EventEmitter {
   private plugins: Map<string, MarketPlugin> = new Map()
   private categories: Map<string, MarketCategory> = new Map()
-  private developers: Map<string, DeveloperProfile> = new Map()
   private featuredPlugins: string[] = []
   private trendingPlugins: string[] = []
 
@@ -515,7 +514,7 @@ export class MarketManager extends EventEmitter {
     }
 
     if (filters.tags && filters.tags.length > 0) {
-      plugins = plugins.filter((p) => filters.tags!.some((tag) => p.tags.includes(tag)))
+      plugins = plugins.filter((p) => filters.tags?.some((tag) => p.tags.includes(tag)))
     }
 
     // 只返回已批准的插件
@@ -575,7 +574,7 @@ export class MarketManager extends EventEmitter {
   }
 
   // 获取推荐插件
-  getRecommendedPlugins(userId?: string, limit = 10): MarketPlugin[] {
+  getRecommendedPlugins(_userId?: string, limit = 10): MarketPlugin[] {
     // 简化版推荐算法
     // 实际实现应该基于用户行为、偏好等
     const plugins = Array.from(this.plugins.values())

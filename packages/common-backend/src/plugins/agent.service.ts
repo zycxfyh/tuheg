@@ -242,7 +242,7 @@ export class AgentService {
     const avgCompletionTime =
       completionTimes.length > 0
         ? completionTimes.reduce((sum, task) => {
-            const duration = task.completedAt!.getTime() - task.startedAt!.getTime()
+            const duration = task.completedAt?.getTime() - task.startedAt?.getTime()
             return sum + duration / (1000 * 60) // 转换为分钟
           }, 0) / completionTimes.length
         : 0

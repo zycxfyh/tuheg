@@ -1,13 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { EventEmitter2 } from '@nestjs/event-emitter'
-import {
-  type AiModel,
-  type AiProvider,
-  type ApiEndpoint,
-  type HttpMethod,
-  ModelStatus,
-  type Prisma,
-  type ProviderStatus,
+import type {
+  AiModel,
+  AiProvider,
+  ApiEndpoint,
+  HttpMethod,
+  Prisma,
+  ProviderStatus,
 } from '@prisma/client'
 import type { PrismaService } from '../prisma/prisma.service'
 
@@ -422,7 +421,7 @@ export class AiProviderService {
     latency: number
     uptime: number
   }> {
-    const provider = await this.getProvider(providerId)
+    const _provider = await this.getProvider(providerId)
 
     try {
       // 简化的健康检查逻辑
@@ -628,7 +627,7 @@ export class AiProviderService {
         await this.registerProvider(providerConfig)
       } catch (error) {
         // 忽略已存在的提供商
-        if (!error instanceof Error ? error.message : String(error).includes('already exists')) {
+        if ((!error) instanceof Error ? error.message : String(error).includes('already exists')) {
           console.error(`Failed to register provider ${providerConfig.name}:`, error)
         }
       }

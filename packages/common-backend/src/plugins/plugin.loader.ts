@@ -54,7 +54,11 @@ export class PluginLoader {
     } catch (error) {
       this.logger.error(
         `Failed to load plugin "${manifest.id}":`,
-        error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
       )
       throw error
     }

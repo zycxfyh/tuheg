@@ -38,14 +38,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import SaveList from '@/components/nexus/SaveList.vue'
 import { useToast } from '@/composables/useToast'
 import { apiService } from '@/services/api.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useSettingsStore } from '@/stores/settings.store'
 
-const authStore = useAuthStore()
-const settingsStore = useSettingsStore()
+const _authStore = useAuthStore()
+const _settingsStore = useSettingsStore()
 const router = useRouter()
 const { show: showToast } = useToast()
 
@@ -63,11 +62,11 @@ async function fetchGames() {
   }
 }
 
-function loadGame(gameId) {
+function _loadGame(gameId) {
   router.push(`/game/${gameId}`)
 }
 
-async function deleteGame(gameId) {
+async function _deleteGame(gameId) {
   if (!confirm(`确定要永久删除此化身档案吗？此操作无法撤销。`)) {
     return
   }

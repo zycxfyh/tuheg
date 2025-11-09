@@ -59,7 +59,7 @@ export class IntelligentRecommendationService {
   constructor(
     private prisma: PrismaService,
     private modelService: AiModelService,
-    private agentService: AgentService,
+    _agentService: AgentService,
     private taskService: TaskService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -235,7 +235,7 @@ export class IntelligentRecommendationService {
    */
   async generateMLBasedRecommendations(
     userId: string,
-    featureVector: number[]
+    _featureVector: number[]
   ): Promise<ModelRecommendation[]> {
     // 这里可以集成机器学习模型
     // 暂时使用简化的协同过滤算法
@@ -452,7 +452,7 @@ export class IntelligentRecommendationService {
    */
   private async predictModelPerformance(
     modelId: string,
-    context: RecommendationContext
+    _context: RecommendationContext
   ): Promise<{
     accuracy: number
     latency: number

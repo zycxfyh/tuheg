@@ -19,15 +19,17 @@ services:
   # Backend Gateway
   backend-gateway:
     build:
-      context: ./apps/backend-gateway
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/backend-gateway/Dockerfile
     ports:
       - '4000:4000'
     environment:
       - NODE_ENV=production
+      - PORT=4000
       - DATABASE_URL=postgresql://user:password@postgres:5432/creation_ring
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
     depends_on:
       - postgres
       - redis
@@ -39,13 +41,17 @@ services:
   # AI Agents
   creation-agent:
     build:
-      context: ./apps/creation-agent
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/creation-agent/Dockerfile
+    ports:
+      - '8080:8080'
     environment:
       - NODE_ENV=production
+      - CREATION_AGENT_HTTP_PORT=8080
       - DATABASE_URL=postgresql://user:password@postgres:5432/creation_ring
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
     depends_on:
       - postgres
       - redis
@@ -57,13 +63,17 @@ services:
 
   logic-agent:
     build:
-      context: ./apps/logic-agent
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/logic-agent/Dockerfile
+    ports:
+      - '8081:8081'
     environment:
       - NODE_ENV=production
+      - LOGIC_AGENT_HTTP_PORT=8081
       - DATABASE_URL=postgresql://user:password@postgres:5432/creation_ring
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
     depends_on:
       - postgres
       - redis
@@ -75,13 +85,17 @@ services:
 
   narrative-agent:
     build:
-      context: ./apps/narrative-agent
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/narrative-agent/Dockerfile
+    ports:
+      - '8082:8082'
     environment:
       - NODE_ENV=production
+      - NARRATIVE_AGENT_HTTP_PORT=8082
       - DATABASE_URL=postgresql://user:password@postgres:5432/creation_ring
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
     depends_on:
       - postgres
       - redis

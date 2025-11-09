@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!user.value && !!token.value)
 
   // 动作
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, _password: string) => {
     try {
       // TODO: 实现实际登录逻辑
       console.log('Login attempt:', email)
@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const signup = async (email: string, password: string, username: string) => {
+  const signup = async (email: string, _password: string, username: string) => {
     try {
       // TODO: 实现实际注册逻辑
       console.log('Signup attempt:', email, username)

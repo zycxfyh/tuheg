@@ -139,7 +139,7 @@ export class SDKPluginManager {
     }
 
     // 兼容性验证
-    if (metadata && metadata.compatibility) {
+    if (metadata?.compatibility) {
       const compat = metadata.compatibility
 
       if (!compat.vcpProtocolVersion) {
@@ -160,8 +160,8 @@ export class SDKPluginManager {
     }
 
     // 功能验证
-    if (metadata && metadata.capabilities) {
-      const capabilities = metadata.capabilities
+    if (metadata?.capabilities) {
+      const _capabilities = metadata.capabilities
 
       // 检查必需的方法
       if (typeof plugin.activate !== 'function') {
@@ -174,7 +174,7 @@ export class SDKPluginManager {
     }
 
     // 依赖验证
-    if (metadata && metadata.dependencies) {
+    if (metadata?.dependencies) {
       for (const dep of metadata.dependencies) {
         if (!this.plugins.has(dep.name) && dep.required) {
           errors.push({
@@ -227,90 +227,90 @@ export class SDKPluginManager {
   }
 
   // 创建插件API
-  private createPluginAPI(plugin: VCPPlugin): any {
+  private createPluginAPI(_plugin: VCPPlugin): any {
     return {
       stories: {
-        create: async (data: any) => `story-${Date.now()}`,
-        update: async (id: string, data: any) => {},
-        get: async (id: string) => ({}),
-        list: async (filters: any) => [],
-        delete: async (id: string) => {},
+        create: async (_data: any) => `story-${Date.now()}`,
+        update: async (_id: string, _data: any) => {},
+        get: async (_id: string) => ({}),
+        list: async (_filters: any) => [],
+        delete: async (_id: string) => {},
       },
       characters: {
-        create: async (data: any) => `character-${Date.now()}`,
-        update: async (id: string, data: any) => {},
-        get: async (id: string) => ({}),
-        list: async (filters: any) => [],
-        delete: async (id: string) => {},
+        create: async (_data: any) => `character-${Date.now()}`,
+        update: async (_id: string, _data: any) => {},
+        get: async (_id: string) => ({}),
+        list: async (_filters: any) => [],
+        delete: async (_id: string) => {},
       },
       worlds: {
-        create: async (data: any) => `world-${Date.now()}`,
-        update: async (id: string, data: any) => {},
-        get: async (id: string) => ({}),
-        list: async (filters: any) => [],
-        delete: async (id: string) => {},
+        create: async (_data: any) => `world-${Date.now()}`,
+        update: async (_id: string, _data: any) => {},
+        get: async (_id: string) => ({}),
+        list: async (_filters: any) => [],
+        delete: async (_id: string) => {},
       },
       ai: {
-        generateStory: async (prompt: string, options: any) => `Generated story for: ${prompt}`,
-        generateCharacter: async (traits: any, options: any) => ({}),
-        generateWorld: async (theme: string, options: any) => ({}),
-        analyzeText: async (text: string, type: string) => ({}),
+        generateStory: async (prompt: string, _options: any) => `Generated story for: ${prompt}`,
+        generateCharacter: async (_traits: any, _options: any) => ({}),
+        generateWorld: async (_theme: string, _options: any) => ({}),
+        analyzeText: async (_text: string, _type: string) => ({}),
       },
       utils: {
-        validateJSON: (data: any) => true,
+        validateJSON: (_data: any) => true,
         sanitizeHTML: (html: string) => html,
         generateUUID: () => `uuid-${Date.now()}`,
-        formatDate: (date: Date, format: string) => date.toISOString(),
+        formatDate: (date: Date, _format: string) => date.toISOString(),
       },
     }
   }
 
   // 创建插件配置
-  private createPluginConfig(plugin: VCPPlugin): any {
+  private createPluginConfig(_plugin: VCPPlugin): any {
     return {
-      get: (key: string, defaultValue: any) => defaultValue,
-      set: (key: string, value: any) => {},
-      update: (updates: any) => {},
+      get: (_key: string, defaultValue: any) => defaultValue,
+      set: (_key: string, _value: any) => {},
+      update: (_updates: any) => {},
       reset: () => {},
       export: () => ({}),
-      import: (config: any) => {},
+      import: (_config: any) => {},
     }
   }
 
   // 创建插件事件
-  private createPluginEvents(plugin: VCPPlugin): any {
+  private createPluginEvents(_plugin: VCPPlugin): any {
     return {
-      emit: (event: string, data: any) => {},
-      on: (event: string, handler: Function) => {},
-      off: (event: string, handler: Function) => {},
-      once: (event: string, handler: Function) => {},
+      emit: (_event: string, _data: any) => {},
+      on: (_event: string, _handler: Function) => {},
+      off: (_event: string, _handler: Function) => {},
+      once: (_event: string, _handler: Function) => {},
     }
   }
 
   // 创建插件存储
-  private createPluginStorage(plugin: VCPPlugin): any {
+  private createPluginStorage(_plugin: VCPPlugin): any {
     return {
-      get: (key: string, defaultValue: any) => defaultValue,
-      set: (key: string, value: any) => {},
-      delete: (key: string) => {},
+      get: (_key: string, defaultValue: any) => defaultValue,
+      set: (_key: string, _value: any) => {},
+      delete: (_key: string) => {},
       clear: () => {},
       keys: () => [],
       export: () => ({}),
-      import: (data: any) => {},
+      import: (_data: any) => {},
     }
   }
 
   // 创建插件UI
-  private createPluginUI(plugin: VCPPlugin): any {
+  private createPluginUI(_plugin: VCPPlugin): any {
     return {
-      registerComponent: (name: string, component: any) => {},
-      unregisterComponent: (name: string) => {},
-      addMenuItem: (menuId: string, item: any) => {},
-      removeMenuItem: (menuId: string, itemId: string) => {},
-      addToolbarButton: (button: any) => {},
-      removeToolbarButton: (buttonId: string) => {},
-      showModal: (modal: any) => {},
-      showNotification: (notification: any) => {},
+      registerComponent: (_name: string, _component: any) => {},
+      unregisterComponent: (_name: string) => {},
+      addMenuItem: (_menuId: string, _item: any) => {},
+      removeMenuItem: (_menuId: string, _itemId: string) => {},
+      addToolbarButton: (_button: any) => {},
+      removeToolbarButton: (_buttonId: string) => {},
+      showModal: (_modal: any) => {},
+      showNotification: (_notification: any) => {},
     }
   }
 

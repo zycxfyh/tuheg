@@ -4,8 +4,6 @@
 
 import { Injectable, Logger } from '@nestjs/common'
 import type { ConfigService } from '@nestjs/config'
-import type { AiProvider } from '../../types/ai-providers.types'
-import { CallAiWithGuard } from './ai-guard'
 
 /**
  * 思维节点接口
@@ -110,7 +108,7 @@ export class VcpMetaThinkingService {
     adaptiveLearning: true,
   }
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(readonly _configService: ConfigService) {
     this.initializeDefaultComponents()
   }
 
@@ -213,13 +211,13 @@ export class VcpMetaThinkingService {
 
     for (const group of this.semanticGroups.values()) {
       let activationScore = 0
-      let matchedKeywords = 0
+      let _matchedKeywords = 0
 
       // 计算关键词匹配度
       for (const keyword of group.keywords) {
         if (query.toLowerCase().includes(keyword.toLowerCase())) {
           activationScore += 1
-          matchedKeywords++
+          _matchedKeywords++
         }
       }
 
@@ -412,7 +410,7 @@ export class VcpMetaThinkingService {
    */
   private async performRecursiveFusion(
     chain: RecursiveThinkingChain,
-    config: VcpMetaThinkingConfig
+    _config: VcpMetaThinkingConfig
   ): Promise<any> {
     const nodes = Array.from(chain.nodes.values())
 
@@ -585,7 +583,7 @@ export class VcpMetaThinkingService {
   private isModuleApplicable(
     module: LogicModule,
     node: ThinkingNode,
-    context: Record<string, unknown>
+    _context: Record<string, unknown>
   ): boolean {
     // 简化的适用性检查
     const content = node.content.toLowerCase()
@@ -613,7 +611,7 @@ export class VcpMetaThinkingService {
   private async executeLogicModule(
     module: LogicModule,
     node: ThinkingNode,
-    context: Record<string, unknown>
+    _context: Record<string, unknown>
   ): Promise<any> {
     // 模拟逻辑模块执行
     await new Promise((resolve) => setTimeout(resolve, 50)) // 模拟处理时间
@@ -628,8 +626,8 @@ export class VcpMetaThinkingService {
   private async createChildThinkingNode(
     parentNode: ThinkingNode,
     strategy: string,
-    logicResult: any,
-    config: VcpMetaThinkingConfig,
+    _logicResult: any,
+    _config: VcpMetaThinkingConfig,
     context: Record<string, unknown>
   ): Promise<ThinkingNode> {
     const nodeId = `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -677,7 +675,7 @@ export class VcpMetaThinkingService {
     return node
   }
 
-  private async fuseThinkingResults(results: any[], parentNode: ThinkingNode): Promise<any> {
+  private async fuseThinkingResults(results: any[], _parentNode: ThinkingNode): Promise<any> {
     // 简化的融合逻辑
     const fusedContent = results.join('; ')
     return `融合结果: ${fusedContent}`

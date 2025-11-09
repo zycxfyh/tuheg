@@ -1,0 +1,63 @@
+9113458a01810c854782f4fdeb77a34c
+"use strict";
+// 文件路径: libs/common/src/prompts/prompt-manager.module.ts
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PromptManagerModule = void 0;
+const common_1 = require("@nestjs/common");
+const prompt_manager_service_1 = require("./prompt-manager.service");
+let PromptManagerModule = (() => {
+    let _classDecorators = [(0, common_1.Module)({
+            providers: [prompt_manager_service_1.PromptManagerService],
+            exports: [prompt_manager_service_1.PromptManagerService],
+        })];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var PromptManagerModule = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            PromptManagerModule = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+    };
+    return PromptManagerModule = _classThis;
+})();
+exports.PromptManagerModule = PromptManagerModule;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxwcm9tcHRzXFxwcm9tcHQtbWFuYWdlci5tb2R1bGUudHMiLCJtYXBwaW5ncyI6IjtBQUFBLHlEQUF5RDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUV6RCwyQ0FBdUM7QUFDdkMscUVBQStEO0lBTWxELG1CQUFtQjs0QkFKL0IsSUFBQSxlQUFNLEVBQUM7WUFDTixTQUFTLEVBQUUsQ0FBQyw2Q0FBb0IsQ0FBQztZQUNqQyxPQUFPLEVBQUUsQ0FBQyw2Q0FBb0IsQ0FBQztTQUNoQyxDQUFDOzs7Ozs7OztZQUNGLDZLQUFtQzs7O1lBQXRCLHVEQUFtQjs7Ozs7QUFBbkIsa0RBQW1CIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcMTY2NjNcXERlc2t0b3BcXHR1aGVnXFxwYWNrYWdlc1xcY29tbW9uLWJhY2tlbmRcXHNyY1xccHJvbXB0c1xccHJvbXB0LW1hbmFnZXIubW9kdWxlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogbGlicy9jb21tb24vc3JjL3Byb21wdHMvcHJvbXB0LW1hbmFnZXIubW9kdWxlLnRzXG5cbmltcG9ydCB7IE1vZHVsZSB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHsgUHJvbXB0TWFuYWdlclNlcnZpY2UgfSBmcm9tICcuL3Byb21wdC1tYW5hZ2VyLnNlcnZpY2UnXG5cbkBNb2R1bGUoe1xuICBwcm92aWRlcnM6IFtQcm9tcHRNYW5hZ2VyU2VydmljZV0sXG4gIGV4cG9ydHM6IFtQcm9tcHRNYW5hZ2VyU2VydmljZV0sXG59KVxuZXhwb3J0IGNsYXNzIFByb21wdE1hbmFnZXJNb2R1bGUge31cbiJdLCJ2ZXJzaW9uIjozfQ==

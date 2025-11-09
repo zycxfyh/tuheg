@@ -1,52 +1,58 @@
-# 📝 Pull Request 描述
+## Description
+<!-- Provide a detailed description of the changes in this PR -->
 
-## 🎯 变更类型
+## Type of Change
+<!-- Mark the relevant option with an "x" -->
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📝 Documentation update
+- [ ] ♻️ Code refactoring (no functional changes)
+- [ ] ⚡ Performance improvement
+- [ ] ✅ Test update
+- [ ] 🔧 Configuration change
 
-- [ ] 🐛 Bug fix (非破坏性变更，修复问题)
-- [ ] ✨ Feature (非破坏性变更，添加功能)
-- [ ] 💥 Breaking change (破坏性变更)
-- [ ] 📚 Documentation (文档更新)
-- [ ] 🎨 Style (代码风格更新)
-- [ ] ♻️ Refactor (重构)
-- [ ] ⚡ Performance (性能优化)
-- [ ] ✅ Test (测试相关)
+## Related Issues
+<!-- Link to related issues. Use "Fixes #123" to auto-close issues when PR is merged -->
+Fixes #
 
-## 📋 变更描述
+## Changes Made
+<!-- List the specific changes made in this PR -->
+- 
+- 
+- 
 
-请详细描述这次PR做了什么变更。
+## Testing
+<!-- Describe the tests you ran to verify your changes -->
+- [ ] Unit tests pass (`pnpm test`)
+- [ ] Integration tests pass
+- [ ] Linting passes (`pnpm lint`)
+- [ ] Type checking passes (`pnpm type-check`)
+- [ ] Manual testing completed
 
-### 🔧 主要变更
+### Test Coverage
+<!-- If applicable, include test coverage information -->
+```
+Paste test results here
+```
 
-- 变更1
-- 变更2
-- 变更3
+## Breaking Changes
+<!-- If this PR introduces breaking changes, describe them here and provide migration instructions -->
+None / List breaking changes
 
-### 🎯 解决的问题
+## Checklist
+<!-- Mark completed items with an "x" -->
+- [ ] My code follows the project's coding standards
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings or errors
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published
 
-- 问题1 (Issue #123)
-- 问题2 (Issue #456)
+## Screenshots
+<!-- If applicable, add screenshots to help explain your changes -->
 
-## 🧪 测试
-
-- [ ] 单元测试通过
-- [ ] 集成测试通过
-- [ ] E2E测试通过
-- [ ] 手动测试完成
-
-## 📸 截图 (如果适用)
-
-如果UI有变更，请提供截图。
-
-## 🔗 相关链接
-
-- Issue: #
-- 文档: [链接]
-- 设计稿: [链接]
-
-## ✅ 检查清单
-
-- [ ] 代码遵循项目的编码规范
-- [ ] 提交信息符合 [Conventional Commits](https://conventionalcommits.org/) 规范
-- [ ] 更新了相关文档
-- [ ] 添加了必要的测试
-- [ ] 所有CI检查通过
+## Additional Notes
+<!-- Add any additional notes for reviewers here -->

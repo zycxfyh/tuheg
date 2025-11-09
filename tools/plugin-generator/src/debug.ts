@@ -1,8 +1,8 @@
-import chalk from 'chalk'
-import * as fs from 'fs'
-import ora from 'ora'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import { PluginSandboxService } from '@tuheg/common-backend'
+import chalk from 'chalk'
+import ora from 'ora'
 
 export interface DebugOptions {
   port?: number
@@ -95,7 +95,9 @@ export class PluginDebugTool {
                 toolSpinner.fail(`${tool.name}: ${toolResult.error}`)
               }
             } catch (error) {
-              toolSpinner.fail(`${tool.name}: ${error instanceof Error ? error.message : String(error)}`)
+              toolSpinner.fail(
+                `${tool.name}: ${error instanceof Error ? error.message : String(error)}`
+              )
             }
           }
         }
@@ -150,7 +152,7 @@ export class PluginDebugTool {
   /**
    * 启动监听模式
    */
-  private startWatchMode(pluginPath: string, options: DebugOptions) {
+  private startWatchMode(pluginPath: string, _options: DebugOptions) {
     console.log(chalk.blue('👀 Starting watch mode...\n'))
     console.log(chalk.gray('Press Ctrl+C to exit\n'))
 
@@ -167,7 +169,7 @@ export class PluginDebugTool {
     runTest()
 
     // 监听文件变化
-    fs.watch(path.dirname(pluginPath), { recursive: true }, (eventType, filename) => {
+    fs.watch(path.dirname(pluginPath), { recursive: true }, (_eventType, filename) => {
       if (filename && (filename.endsWith('.ts') || filename.endsWith('.js'))) {
         console.log(chalk.yellow(`\n📝 File changed: ${filename}`))
         runTest()
@@ -200,7 +202,9 @@ export class PluginDebugTool {
         throw new Error(result.error)
       }
     } catch (error) {
-      throw new Error(`Failed to get plugin info: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `Failed to get plugin info: ${error instanceof Error ? error.message : String(error)}`
+      )
     }
   }
 }

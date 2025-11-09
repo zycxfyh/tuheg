@@ -3,7 +3,7 @@
 // 实现复杂任务编排、动态执行和状态管理
 // ============================================================================
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 export interface WorkflowNode {
   id: string
@@ -380,7 +380,12 @@ export class AsyncWorkflowEngine extends EventEmitter {
 
       this.emit('nodeCompleted', { instanceId: instance.id, nodeId, result })
     } catch (error: any) {
-      node.error = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+      node.error =
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
       node.endTime = new Date()
 
       // 处理重试逻辑
@@ -412,7 +417,7 @@ export class AsyncWorkflowEngine extends EventEmitter {
     // 从依赖节点收集输出
     for (const depId of node.dependencies) {
       const depNode = instance.nodes.get(depId)
-      if (depNode && depNode.result) {
+      if (depNode?.result) {
         Object.assign(inputData, depNode.result)
       }
     }
@@ -566,7 +571,7 @@ export class AsyncWorkflowEngine extends EventEmitter {
   private async handleNodeError(
     instance: WorkflowInstance,
     node: WorkflowNode,
-    error: any
+    _error: any
   ): Promise<void> {
     switch (instance.context.errorHandling.onError) {
       case 'stop':
@@ -962,7 +967,7 @@ class TaskNodeExecutor implements NodeExecutor {
     return func(inputData, context)
   }
 
-  private async executeAiTask(config: any, inputData: any): Promise<any> {
+  private async executeAiTask(_config: any, inputData: any): Promise<any> {
     // 模拟AI任务
     return { ai_result: `AI processed: ${JSON.stringify(inputData)}` }
   }
@@ -972,7 +977,7 @@ class DecisionNodeExecutor implements NodeExecutor {
   async execute(
     node: WorkflowNode,
     inputData: Record<string, any>,
-    context: WorkflowContext
+    _context: WorkflowContext
   ): Promise<any> {
     const conditions = node.config.conditions || []
 
@@ -1010,14 +1015,14 @@ class ParallelNodeExecutor implements NodeExecutor {
   async execute(
     node: WorkflowNode,
     inputData: Record<string, any>,
-    context: WorkflowContext
+    _context: WorkflowContext
   ): Promise<any> {
     const tasks = node.config.tasks || []
     const results = await Promise.all(tasks.map((task: any) => this.executeTask(task, inputData)))
     return { results, parallelExecution: true }
   }
 
-  private async executeTask(task: any, inputData: any): Promise<any> {
+  private async executeTask(task: any, _inputData: any): Promise<any> {
     // 模拟并行任务执行
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -1031,7 +1036,7 @@ class LoopNodeExecutor implements NodeExecutor {
   async execute(
     node: WorkflowNode,
     inputData: Record<string, any>,
-    context: WorkflowContext
+    _context: WorkflowContext
   ): Promise<any> {
     const { loopCondition, maxIterations = 10 } = node.config
     const results = []
@@ -1049,12 +1054,12 @@ class LoopNodeExecutor implements NodeExecutor {
     return { results, iterations: iteration, completed: iteration < maxIterations }
   }
 
-  private evaluateLoopCondition(condition: any, inputData: any, results: any[]): boolean {
+  private evaluateLoopCondition(condition: any, _inputData: any, results: any[]): boolean {
     // 简化的循环条件评估
     return results.length < (condition.maxItems || 5)
   }
 
-  private async executeIteration(task: any, inputData: any, iteration: number): Promise<any> {
+  private async executeIteration(_task: any, _inputData: any, iteration: number): Promise<any> {
     // 模拟循环迭代执行
     return { iteration, result: `Iteration ${iteration} completed` }
   }
@@ -1063,8 +1068,8 @@ class LoopNodeExecutor implements NodeExecutor {
 class SubprocessNodeExecutor implements NodeExecutor {
   async execute(
     node: WorkflowNode,
-    inputData: Record<string, any>,
-    context: WorkflowContext
+    _inputData: Record<string, any>,
+    _context: WorkflowContext
   ): Promise<any> {
     // 这里应该调用子工作流
     // 简化实现
@@ -1075,8 +1080,8 @@ class SubprocessNodeExecutor implements NodeExecutor {
 class EventNodeExecutor implements NodeExecutor {
   async execute(
     node: WorkflowNode,
-    inputData: Record<string, any>,
-    context: WorkflowContext
+    _inputData: Record<string, any>,
+    _context: WorkflowContext
   ): Promise<any> {
     // 等待事件触发
     return new Promise((resolve) => {
@@ -1092,7 +1097,7 @@ class GatewayNodeExecutor implements NodeExecutor {
   async execute(
     node: WorkflowNode,
     inputData: Record<string, any>,
-    context: WorkflowContext
+    _context: WorkflowContext
   ): Promise<any> {
     // 网关节点，根据条件决定下一步
     const { gatewayType } = node.config
@@ -1126,7 +1131,7 @@ class GatewayNodeExecutor implements NodeExecutor {
     return { gateway: 'inclusive', selectedBranches }
   }
 
-  private evaluateBranchCondition(condition: any, inputData: any): boolean {
+  private evaluateBranchCondition(_condition: any, _inputData: any): boolean {
     // 简化的分支条件评估
     return true // 总是为true，实际应该根据condition评估
   }

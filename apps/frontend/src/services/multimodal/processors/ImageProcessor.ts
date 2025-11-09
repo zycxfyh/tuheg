@@ -209,7 +209,7 @@ export class ImageProcessor implements MultimodalProcessor {
     return colors.slice(0, 5).map((color) => color.name)
   }
 
-  private async detectText(file: File): Promise<string> {
+  private async detectText(_file: File): Promise<string> {
     // 简化的OCR实现
     // 在实际应用中，应该调用OCR服务
     return '图像中可能包含文本，但需要OCR服务进行识别'
@@ -286,7 +286,7 @@ export class ImageProcessor implements MultimodalProcessor {
 
     // 转换为数组并排序
     return Array.from(colorMap.entries())
-      .map(([key, color]) => ({
+      .map(([_key, color]) => ({
         ...color,
         name: this.colorToName(color.r, color.g, color.b),
       }))

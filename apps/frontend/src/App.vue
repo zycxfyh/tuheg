@@ -22,27 +22,16 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { RouterView } from 'vue-router'
-// [核心] 导入新创建的模态框组件
-import AISettingsModal from '@/components/common/AISettingsModal.vue'
-// 导入所有模态框和覆盖层组件
-import CharacterSheetModal from '@/components/common/CharacterSheetModal.vue'
-import JournalModal from '@/components/common/JournalModal.vue'
-import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
-import ProcessingOverlay from '@/components/common/ProcessingOverlay.vue'
-import ToastContainer from '@/components/common/ToastContainer.vue'
-import WeaverConsoleModal from '@/components/common/WeaverConsoleModal.vue'
-import FeedbackWidget from '@/components/feedback/FeedbackWidget.vue'
 import { useAuthStore } from '@/stores/auth.store'
 import { useThemeStore } from '@/stores/theme.store'
 import { useUIStore } from '@/stores/ui.store'
 
 const authStore = useAuthStore()
-const uiStore = useUIStore()
+const _uiStore = useUIStore()
 const themeStore = useThemeStore()
 
 // 语言切换器显示控制 (开发环境显示，生产环境可隐藏)
-const showLanguageSwitcher = ref(import.meta.env.DEV)
+const _showLanguageSwitcher = ref(import.meta.env.DEV)
 
 onMounted(() => {
   // 初始化主题系统

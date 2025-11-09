@@ -1,9 +1,9 @@
 // 文件路径: packages/common-backend/src/observability/performance-monitor.service.ts
 // 职责: 性能监控服务，实现SLA指标收集和告警
 
+import * as os from 'node:os'
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import * as os from 'os'
 import {
   getSLATarget,
   isPerformanceHealthy,

@@ -244,13 +244,23 @@ export class SettingsService {
     } catch (err) {
       const error = this.parseConnectionError(err)
       this.logger.warn(`testAndFetchModels failed for provider ${provider}`, {
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
         statusCode: error.statusCode,
         details: error.details,
       })
 
       throw new BadRequestException({
-        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        message:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
         details: error.details,
         statusCode: error.statusCode,
         provider,
@@ -262,7 +272,7 @@ export class SettingsService {
    * Fetch models from OpenAI-compatible APIs
    */
   private async fetchOpenAICompatibleModels(baseUrl: string, apiKey: string): Promise<string[]> {
-    const url = baseUrl.replace(/\/+$/, '') + '/v1/models'
+    const url = `${baseUrl.replace(/\/+$/, '')}/v1/models`
     const resp$ = this.httpService.get(url, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -419,7 +429,7 @@ export class SettingsService {
    * Fetch models from Ollama API
    */
   private async fetchOllamaModels(baseUrl: string | null): Promise<string[]> {
-    const url = (baseUrl || 'http://localhost:11434').replace(/\/+$/, '') + '/api/tags'
+    const url = `${(baseUrl || 'http://localhost:11434').replace(/\/+$/, '')}/api/tags`
     const resp$ = this.httpService.get(url, {
       timeout: 5000,
     })

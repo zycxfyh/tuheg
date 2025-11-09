@@ -6,7 +6,7 @@ export interface ValidateOptions {
 }
 
 export class ValidateCommand {
-  async execute(options: ValidateOptions): Promise<void> {
+  async execute(_options: ValidateOptions): Promise<void> {
     console.log('🔍 验证VCPToolBox插件...')
 
     // 实现验证逻辑

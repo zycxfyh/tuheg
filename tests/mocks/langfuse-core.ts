@@ -1,9 +1,5 @@
 // Mock implementation of langfuse-core for testing
 export class LangfuseCore {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-
   // Mock methods that might be called via dynamic import
   async dynamicImport() {
     return Promise.resolve({})
@@ -13,10 +9,6 @@ export class LangfuseCore {
 }
 
 export class LangfuseWebStateless {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-
   // Mock methods
   authCheck() {
     return Promise.resolve({ valid: true })
@@ -24,70 +16,34 @@ export class LangfuseWebStateless {
 }
 
 export class LangfuseTraceClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-
   end() {
     return this
   }
 }
 
 export class LangfuseSpanClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-
   end() {
     return this
   }
 }
 
 export class LangfuseGenerationClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-
   end() {
     return this
   }
 }
 
-export class LangfusePromptClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-}
+export class LangfusePromptClient {}
 
-export class ChatPromptClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-}
+export class ChatPromptClient {}
 
-export class TextPromptClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-}
+export class TextPromptClient {}
 
-export class LangfuseEventClient {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-}
+export class LangfuseEventClient {}
 
-export class LangfuseMedia {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-}
+export class LangfuseMedia {}
 
-export class LangfusePromptRecord {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-}
+export class LangfusePromptRecord {}
 
 // Type definitions
 export type LangfuseCoreOptions = any

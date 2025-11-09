@@ -1,0 +1,39 @@
+32bbf4cb628ab4d43639f94510f36ef0
+"use strict";
+// 文件路径: packages/common-backend/src/cache/cache.decorator.ts
+// 核心理念: 缓存装饰器，简化缓存使用
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Cache = exports.CACHE_TTL = exports.CACHE_KEY = void 0;
+const common_1 = require("@nestjs/common");
+/**
+ * @constant CACHE_KEY
+ * @description 缓存键元数据键
+ */
+exports.CACHE_KEY = 'cache:key';
+/**
+ * @constant CACHE_TTL
+ * @description 缓存 TTL 元数据键
+ */
+exports.CACHE_TTL = 'cache:ttl';
+/**
+ * @decorator Cache
+ * @description 缓存装饰器
+ *
+ * @example
+ * ```typescript
+ * @Cache({ key: 'user::id', ttl: 3600 })
+ * @Get(':id')
+ * async findOne(@Param('id') id: string) {
+ *   return this.service.findOne(id);
+ * }
+ * ```
+ */
+const Cache = (options = {}) => {
+    return (target, propertyKey, descriptor) => {
+        (0, common_1.SetMetadata)(exports.CACHE_KEY, options.key || propertyKey)(target, propertyKey, descriptor);
+        (0, common_1.SetMetadata)(exports.CACHE_TTL, options.ttl)(target, propertyKey, descriptor);
+        (0, common_1.SetMetadata)('cache:prefix', options.prefix)(target, propertyKey, descriptor);
+    };
+};
+exports.Cache = Cache;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxjYWNoZVxcY2FjaGUuZGVjb3JhdG9yLnRzIiwibWFwcGluZ3MiOiI7QUFBQSw2REFBNkQ7QUFDN0QscUJBQXFCOzs7QUFFckIsMkNBQTRDO0FBRTVDOzs7R0FHRztBQUNVLFFBQUEsU0FBUyxHQUFHLFdBQVcsQ0FBQTtBQUVwQzs7O0dBR0c7QUFDVSxRQUFBLFNBQVMsR0FBRyxXQUFXLENBQUE7QUFlcEM7Ozs7Ozs7Ozs7OztHQVlHO0FBQ0ksTUFBTSxLQUFLLEdBQUcsQ0FBQyxVQUFpQyxFQUFFLEVBQUUsRUFBRTtJQUMzRCxPQUFPLENBQUMsTUFBZSxFQUFFLFdBQW1CLEVBQUUsVUFBOEIsRUFBRSxFQUFFO1FBQzlFLElBQUEsb0JBQVcsRUFBQyxpQkFBUyxFQUFFLE9BQU8sQ0FBQyxHQUFHLElBQUksV0FBVyxDQUFDLENBQUMsTUFBZ0IsRUFBRSxXQUFXLEVBQUUsVUFBVSxDQUFDLENBQUE7UUFDN0YsSUFBQSxvQkFBVyxFQUFDLGlCQUFTLEVBQUUsT0FBTyxDQUFDLEdBQUcsQ0FBQyxDQUFDLE1BQWdCLEVBQUUsV0FBVyxFQUFFLFVBQVUsQ0FBQyxDQUFBO1FBQzlFLElBQUEsb0JBQVcsRUFBQyxjQUFjLEVBQUUsT0FBTyxDQUFDLE1BQU0sQ0FBQyxDQUFDLE1BQWdCLEVBQUUsV0FBVyxFQUFFLFVBQVUsQ0FBQyxDQUFBO0lBQ3hGLENBQUMsQ0FBQTtBQUNILENBQUMsQ0FBQTtBQU5ZLFFBQUEsS0FBSyxTQU1qQiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXDE2NjYzXFxEZXNrdG9wXFx0dWhlZ1xccGFja2FnZXNcXGNvbW1vbi1iYWNrZW5kXFxzcmNcXGNhY2hlXFxjYWNoZS5kZWNvcmF0b3IudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBwYWNrYWdlcy9jb21tb24tYmFja2VuZC9zcmMvY2FjaGUvY2FjaGUuZGVjb3JhdG9yLnRzXG4vLyDmoLjlv4PnkIblv7U6IOe8k+WtmOijhemlsOWZqO+8jOeugOWMlue8k+WtmOS9v+eUqFxuXG5pbXBvcnQgeyBTZXRNZXRhZGF0YSB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuXG4vKipcbiAqIEBjb25zdGFudCBDQUNIRV9LRVlcbiAqIEBkZXNjcmlwdGlvbiDnvJPlrZjplK7lhYPmlbDmja7plK5cbiAqL1xuZXhwb3J0IGNvbnN0IENBQ0hFX0tFWSA9ICdjYWNoZTprZXknXG5cbi8qKlxuICogQGNvbnN0YW50IENBQ0hFX1RUTFxuICogQGRlc2NyaXB0aW9uIOe8k+WtmCBUVEwg5YWD5pWw5o2u6ZSuXG4gKi9cbmV4cG9ydCBjb25zdCBDQUNIRV9UVEwgPSAnY2FjaGU6dHRsJ1xuXG4vKipcbiAqIEBpbnRlcmZhY2UgQ2FjaGVPcHRpb25zXG4gKiBAZGVzY3JpcHRpb24g57yT5a2Y6KOF6aWw5Zmo6YCJ6aG5XG4gKi9cbmV4cG9ydCBpbnRlcmZhY2UgQ2FjaGVEZWNvcmF0b3JPcHRpb25zIHtcbiAgLyoqIOe8k+WtmOmUru+8iOaUr+aMgeWPguaVsOWNoOS9jeespu+8jOWmgiAnOmlkJ++8iSAqL1xuICBrZXk/OiBzdHJpbmdcbiAgLyoqIFRUTO+8iOenku+8iSAqL1xuICB0dGw/OiBudW1iZXJcbiAgLyoqIOe8k+WtmOmUruWJjee8gCAqL1xuICBwcmVmaXg/OiBzdHJpbmdcbn1cblxuLyoqXG4gKiBAZGVjb3JhdG9yIENhY2hlXG4gKiBAZGVzY3JpcHRpb24g57yT5a2Y6KOF6aWw5ZmoXG4gKlxuICogQGV4YW1wbGVcbiAqIGBgYHR5cGVzY3JpcHRcbiAqIEBDYWNoZSh7IGtleTogJ3VzZXI6OmlkJywgdHRsOiAzNjAwIH0pXG4gKiBAR2V0KCc6aWQnKVxuICogYXN5bmMgZmluZE9uZShAUGFyYW0oJ2lkJykgaWQ6IHN0cmluZykge1xuICogICByZXR1cm4gdGhpcy5zZXJ2aWNlLmZpbmRPbmUoaWQpO1xuICogfVxuICogYGBgXG4gKi9cbmV4cG9ydCBjb25zdCBDYWNoZSA9IChvcHRpb25zOiBDYWNoZURlY29yYXRvck9wdGlvbnMgPSB7fSkgPT4ge1xuICByZXR1cm4gKHRhcmdldDogdW5rbm93biwgcHJvcGVydHlLZXk6IHN0cmluZywgZGVzY3JpcHRvcjogUHJvcGVydHlEZXNjcmlwdG9yKSA9PiB7XG4gICAgU2V0TWV0YWRhdGEoQ0FDSEVfS0VZLCBvcHRpb25zLmtleSB8fCBwcm9wZXJ0eUtleSkodGFyZ2V0IGFzIG9iamVjdCwgcHJvcGVydHlLZXksIGRlc2NyaXB0b3IpXG4gICAgU2V0TWV0YWRhdGEoQ0FDSEVfVFRMLCBvcHRpb25zLnR0bCkodGFyZ2V0IGFzIG9iamVjdCwgcHJvcGVydHlLZXksIGRlc2NyaXB0b3IpXG4gICAgU2V0TWV0YWRhdGEoJ2NhY2hlOnByZWZpeCcsIG9wdGlvbnMucHJlZml4KSh0YXJnZXQgYXMgb2JqZWN0LCBwcm9wZXJ0eUtleSwgZGVzY3JpcHRvcilcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

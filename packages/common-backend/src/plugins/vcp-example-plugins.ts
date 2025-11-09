@@ -51,7 +51,7 @@ export class ContentFilterStaticPlugin implements VcpStaticPlugin {
 
   async handleStaticResource(
     resource: string,
-    context: PluginContext
+    _context: PluginContext
   ): Promise<PluginExecutionResult> {
     const startTime = Date.now()
 
@@ -77,7 +77,12 @@ export class ContentFilterStaticPlugin implements VcpStaticPlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -139,7 +144,12 @@ export class SentimentAnalyzerPreprocessorPlugin implements VcpMessagePreprocess
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -220,7 +230,12 @@ export class KeywordExtractorSyncPlugin implements VcpSynchronousPlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -379,7 +394,12 @@ export class DeepContentAnalyzerAsyncPlugin implements VcpAsynchronousPlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -512,7 +532,12 @@ export class CleanupServicePlugin implements VcpServicePlugin {
     } catch (error) {
       return {
         healthy: false,
-        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        message:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -613,7 +638,12 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -700,7 +730,12 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
     } catch (error) {
       return {
         healthy: false,
-        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        message:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -778,7 +813,7 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
       this.logger.debug(`Starting cache prewarm for ${keys.length} keys`)
 
       // 模拟预热操作
-      for (const key of keys) {
+      for (const _key of keys) {
         // 这里可以实现实际的数据预热逻辑
         // 例如：预加载热门数据、预测性缓存等
         await new Promise((resolve) => setTimeout(resolve, 100))
@@ -800,7 +835,12 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
       }
     }
   }
@@ -820,6 +860,7 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
 /**
  * 插件工厂类 - 用于创建和配置示例插件
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: 这个类包含了插件工厂的静态方法，适合作为工具类
 export class VcpExamplePluginFactory {
   static createAllExamplePlugins(): VcpBasePlugin[] {
     return [

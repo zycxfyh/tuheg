@@ -1,0 +1,167 @@
+77e63d8314df64aeb8374f034178784e
+"use strict";
+// 文件路径: packages/common-backend/src/cache/cache.service.ts
+// 核心理念: 多级缓存策略，支持内存和 Redis
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var CacheService_1;
+var _a, _b, _c, _d, _e;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CacheService = void 0;
+const cache_manager_1 = require("@nestjs/cache-manager");
+const common_1 = require("@nestjs/common");
+/**
+ * 装饰器：为方法添加统一的错误日志记录
+ */
+function withErrorLogging(operation, returnValue) {
+    return (target, propertyKey, descriptor) => {
+        if (!descriptor || typeof descriptor.value !== 'function') {
+            return descriptor;
+        }
+        const originalMethod = descriptor.value;
+        const logger = new common_1.Logger(target.constructor.name);
+        descriptor.value = async function (...args) {
+            try {
+                return await originalMethod.apply(this, args);
+            }
+            catch (error) {
+                logger.error(`Failed to ${operation}:`, error);
+                return returnValue;
+            }
+        };
+        return descriptor;
+    };
+}
+/**
+ * @service CacheService
+ * @description 缓存服务
+ * 提供统一的缓存接口，支持内存和 Redis
+ */
+let CacheService = CacheService_1 = class CacheService {
+    cacheManager;
+    logger = new common_1.Logger(CacheService_1.name);
+    constructor(cacheManager) {
+        this.cacheManager = cacheManager;
+    }
+    /**
+     * @method get
+     * @description 获取缓存值
+     *
+     * @example
+     * ```typescript
+     * const value = await cacheService.get<string>('user:123');
+     * ```
+     */
+    async get(key, options) {
+        const fullKey = this.buildKey(key, options?.prefix);
+        const value = await this.cacheManager.get(fullKey);
+        return value;
+    }
+    /**
+     * @method set
+     * @description 设置缓存值
+     *
+     * @example
+     * ```typescript
+     * await cacheService.set('user:123', userData, { ttl: 3600 });
+     * ```
+     */
+    async set(key, value, options) {
+        const fullKey = this.buildKey(key, options?.prefix);
+        const ttl = options?.ttl ? options.ttl * 1000 : undefined; // 转换为毫秒
+        await this.cacheManager.set(fullKey, value, ttl);
+    }
+    /**
+     * @method delete
+     * @description 删除缓存
+     */
+    async delete(key, prefix) {
+        const fullKey = this.buildKey(key, prefix);
+        await this.cacheManager.del(fullKey);
+    }
+    /**
+     * @method clear
+     * @description 清空所有缓存
+     */
+    async clear() {
+        // 使用cache-manager的store接口来清空缓存
+        const store = this.cacheManager.store;
+        if (store && typeof store.reset === 'function') {
+            await store.reset();
+        }
+        else {
+            // 如果没有reset方法，记录警告但不抛出错误
+            this.logger.warn('Cache store does not support reset operation');
+        }
+    }
+    /**
+     * @method getOrSet
+     * @description 获取缓存，如果不存在则设置
+     *
+     * @example
+     * ```typescript
+     * const user = await cacheService.getOrSet(
+     *   'user:123',
+     *   async () => await this.userService.findById('123'),
+     *   { ttl: 3600 },
+     * );
+     * ```
+     */
+    async getOrSet(key, factory, options) {
+        const cached = await this.get(key, options);
+        if (cached !== undefined) {
+            return cached;
+        }
+        const value = await factory();
+        await this.set(key, value, options);
+        return value;
+    }
+    /**
+     * @method buildKey
+     * @description 构建完整的缓存键
+     */
+    buildKey(key, prefix) {
+        return prefix ? `${prefix}:${key}` : key;
+    }
+};
+exports.CacheService = CacheService;
+__decorate([
+    withErrorLogging('get cache key', undefined),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", typeof (_a = typeof Promise !== "undefined" && Promise) === "function" ? _a : Object)
+], CacheService.prototype, "get", null);
+__decorate([
+    withErrorLogging('set cache key'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_b = typeof T !== "undefined" && T) === "function" ? _b : Object, Object]),
+    __metadata("design:returntype", typeof (_c = typeof Promise !== "undefined" && Promise) === "function" ? _c : Object)
+], CacheService.prototype, "set", null);
+__decorate([
+    withErrorLogging('delete cache key'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", typeof (_d = typeof Promise !== "undefined" && Promise) === "function" ? _d : Object)
+], CacheService.prototype, "delete", null);
+__decorate([
+    withErrorLogging('clear cache'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", typeof (_e = typeof Promise !== "undefined" && Promise) === "function" ? _e : Object)
+], CacheService.prototype, "clear", null);
+exports.CacheService = CacheService = CacheService_1 = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)(cache_manager_1.CACHE_MANAGER)),
+    __metadata("design:paramtypes", [Object])
+], CacheService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxjYWNoZVxcY2FjaGUuc2VydmljZS50cyIsIm1hcHBpbmdzIjoiO0FBQUEsMkRBQTJEO0FBQzNELDJCQUEyQjs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFFM0IseURBQXFEO0FBQ3JELDJDQUEyRDtBQUczRDs7R0FFRztBQUNILFNBQVMsZ0JBQWdCLENBQUMsU0FBaUIsRUFBRSxXQUFpQjtJQUM1RCxPQUFPLENBQUMsTUFBVyxFQUFFLFdBQW1CLEVBQUUsVUFBOEIsRUFBRSxFQUFFO1FBQzFFLElBQUksQ0FBQyxVQUFVLElBQUksT0FBTyxVQUFVLENBQUMsS0FBSyxLQUFLLFVBQVUsRUFBRSxDQUFDO1lBQzFELE9BQU8sVUFBVSxDQUFBO1FBQ25CLENBQUM7UUFFRCxNQUFNLGNBQWMsR0FBRyxVQUFVLENBQUMsS0FBSyxDQUFBO1FBQ3ZDLE1BQU0sTUFBTSxHQUFHLElBQUksZUFBTSxDQUFDLE1BQU0sQ0FBQyxXQUFXLENBQUMsSUFBSSxDQUFDLENBQUE7UUFFbEQsVUFBVSxDQUFDLEtBQUssR0FBRyxLQUFLLFdBQVcsR0FBRyxJQUFXO1lBQy9DLElBQUksQ0FBQztnQkFDSCxPQUFPLE1BQU0sY0FBYyxDQUFDLEtBQUssQ0FBQyxJQUFJLEVBQUUsSUFBSSxDQUFDLENBQUE7WUFDL0MsQ0FBQztZQUFDLE9BQU8sS0FBSyxFQUFFLENBQUM7Z0JBQ2YsTUFBTSxDQUFDLEtBQUssQ0FBQyxhQUFhLFNBQVMsR0FBRyxFQUFFLEtBQUssQ0FBQyxDQUFBO2dCQUM5QyxPQUFPLFdBQVcsQ0FBQTtZQUNwQixDQUFDO1FBQ0gsQ0FBQyxDQUFBO1FBRUQsT0FBTyxVQUFVLENBQUE7SUFDbkIsQ0FBQyxDQUFBO0FBQ0gsQ0FBQztBQWFEOzs7O0dBSUc7QUFFSSxJQUFNLFlBQVksb0JBQWxCLE1BQU0sWUFBWTtJQUc2QjtJQUZuQyxNQUFNLEdBQUcsSUFBSSxlQUFNLENBQUMsY0FBWSxDQUFDLElB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QVAsT0FBTzt1Q0FJbkU7QUFPSztJQURMLGdCQUFnQixDQUFDLGtCQUFrQixDQUFDOzs7d0RBQ08sT0FBTyxvQkFBUCxPQUFPOzBDQUdsRDtBQU9LO0lBREwsZ0JBQWdCLENBQUMsYUFBYSxDQUFDOzs7d0RBQ2pCLE9BQU8sb0JBQVAsT0FBTzt5Q0FTckI7dUJBN0RVLFlBQVk7SUFEeEIsSUFBQSxtQkFBVSxHQUFFO0lBSUUsV0FBQSxJQUFBLGVBQU0sRUFBQyw2QkFBYSxDQUFDLENBQUE7O0dBSHZCLFlBQVksQ0E4RnhCIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcMTY2NjNcXERlc2t0b3BcXHR1aGVnXFxwYWNrYWdlc1xcY29tbW9uLWJhY2tlbmRcXHNyY1xcY2FjaGVcXGNhY2hlLnNlcnZpY2UudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBwYWNrYWdlcy9jb21tb24tYmFja2VuZC9zcmMvY2FjaGUvY2FjaGUuc2VydmljZS50c1xuLy8g5qC45b+D55CG5b+1OiDlpJrnuqfnvJPlrZjnrZbnlaXvvIzmlK/mjIHlhoXlrZjlkowgUmVkaXNcblxuaW1wb3J0IHsgQ0FDSEVfTUFOQUdFUiB9IGZyb20gJ0BuZXN0anMvY2FjaGUtbWFuYWdlcidcbmltcG9ydCB7IEluamVjdCwgSW5qZWN0YWJsZSwgTG9nZ2VyIH0gZnJvbSAnQG5lc3Rqcy9jb21tb24nXG5pbXBvcnQgdHlwZSB7IENhY2hlIH0gZnJvbSAnY2FjaGUtbWFuYWdlcidcblxuLyoqXG4gKiDoo4XppbDlmajvvJrkuLrmlrnms5Xmt7vliqDnu5/kuIDnmoTplJnor6/ml6Xlv5forrDlvZVcbiAqL1xuZnVuY3Rpb24gd2l0aEVycm9yTG9nZ2luZyhvcGVyYXRpb246IHN0cmluZywgcmV0dXJuVmFsdWU/OiBhbnkpIHtcbiAgcmV0dXJuICh0YXJnZXQ6IGFueSwgcHJvcGVydHlLZXk6IHN0cmluZywgZGVzY3JpcHRvcjogUHJvcGVydHlEZXNjcmlwdG9yKSA9PiB7XG4gICAgaWYgKCFkZXNjcmlwdG9yIHx8IHR5cGVvZiBkZXNjcmlwdG9yLnZhbHVlICE9PSAnZnVuY3Rpb24nKSB7XG4gICAgICByZXR1cm4gZGVzY3JpcHRvclxuICAgIH1cblxuICAgIGNvbnN0IG9yaWdpbmFsTWV0aG9kID0gZGVzY3JpcHRvci52YWx1ZVxuICAgIGNvbnN0IGxvZ2dlciA9IG5ldyBMb2dnZXIodGFyZ2V0LmNvbnN0cnVjdG9yLm5hbWUpXG5cbiAgICBkZXNjcmlwdG9yLnZhbHVlID0gYXN5bmMgZnVuY3Rpb24gKC4uLmFyZ3M6IGFueVtdKSB7XG4gICAgICB0cnkge1xuICAgICAgICByZXR1cm4gYXdhaXQgb3JpZ2luYWxNZXRob2QuYXBwbHkodGhpcywgYXJncylcbiAgICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICAgIGxvZ2dlci5lcnJvcihgRmFpbGVkIHRvICR7b3BlcmF0aW9ufTpgLCBlcnJvcilcbiAgICAgICAgcmV0dXJuIHJldHVyblZhbHVlXG4gICAgICB9XG4gICAgfVxuXG4gICAgcmV0dXJuIGRlc2NyaXB0b3JcbiAgfVxufVxuXG4vKipcbiAqIEBpbnRlcmZhY2UgQ2FjaGVPcHRpb25zXG4gKiBAZGVzY3JpcHRpb24g57yT5a2Y6YCJ6aG5XG4gKi9cbmV4cG9ydCBpbnRlcmZhY2UgQ2FjaGVPcHRpb25zIHtcbiAgLyoqIFRUTO+8iOenku+8iSAqL1xuICB0dGw/OiBudW1iZXJcbiAgLyoqIOe8k+WtmOmUruWJjee8gCAqL1xuICBwcmVmaXg/OiBzdHJpbmdcbn1cblxuLyoqXG4gKiBAc2VydmljZSBDYWNoZVNlcnZpY2VcbiAqIEBkZXNjcmlwdGlvbiDnvJPlrZjmnI3liqFcbiAqIOaPkOS+m+e7n+S4gOeahOe8k+WtmOaOpeWPo++8jOaUr+aMgeWGheWtmOWSjCBSZWRpc1xuICovXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgQ2FjaGVTZXJ2aWNlIHtcbiAgcHJpdmF0ZSByZWFkb25seSBsb2dnZXIgPSBuZXcgTG9nZ2VyKENhY2hlU2VydmljZS5uYW1lKVxuXG4gIGNvbnN0cnVjdG9yKEBJbmplY3QoQ0FDSEVfTUFOQUdFUikgcHJpdmF0ZSByZWFkb25seSBjYWNoZU1hbmFnZXI6IENhY2hlKSB7fVxuXG4gIC8qKlxuICAgKiBAbWV0aG9kIGdldFxuICAgKiBAZGVzY3JpcHRpb24g6I635Y+W57yT5a2Y5YC8XG4gICAqXG4gICAqIEBleGFtcGxlXG4gICAqIGBgYHR5cGVzY3JpcHRcbiAgICogY29uc3QgdmFsdWUgPSBhd2FpdCBjYWNoZVNlcnZpY2UuZ2V0PHN0cmluZz4oJ3VzZXI6MTIzJyk7XG4gICAqIGBgYFxuICAgKi9cbiAgQHdpdGhFcnJvckxvZ2dpbmcoJ2dldCBjYWNoZSBrZXknLCB1bmRlZmluZWQpXG4gIGFzeW5jIGdldDxUPihrZXk6IHN0cmluZywgb3B0aW9ucz86IENhY2hlT3B0aW9ucyk6IFByb21pc2U8VCB8IHVuZGVmaW5lZD4ge1xuICAgIGNvbnN0IGZ1bGxLZXkgPSB0aGlzLmJ1aWxkS2V5KGtleSwgb3B0aW9ucz8ucHJlZml4KVxuICAgIGNvbnN0IHZhbHVlID0gYXdhaXQgdGhpcy5jYWNoZU1hbmFnZXIuZ2V0PFQ+KGZ1bGxLZXkpXG4gICAgcmV0dXJuIHZhbHVlXG4gIH1cblxuICAvKipcbiAgICogQG1ldGhvZCBzZXRcbiAgICogQGRlc2NyaXB0aW9uIOiuvue9rue8k+WtmOWAvFxuICAgKlxuICAgKiBAZXhhbXBsZVxuICAgKiBgYGB0eXBlc2NyaXB0XG4gICAqIGF3YWl0IGNhY2hlU2VydmljZS5zZXQoJ3VzZXI6MTIzJywgdXNlckRhdGEsIHsgdHRsOiAzNjAwIH0pO1xuICAgKiBgYGBcbiAgICovXG4gIEB3aXRoRXJyb3JMb2dnaW5nKCdzZXQgY2FjaGUga2V5JylcbiAgYXN5bmMgc2V0PFQ+KGtleTogc3RyaW5nLCB2YWx1ZTogVCwgb3B0aW9ucz86IENhY2hlT3B0aW9ucyk6IFByb21pc2U8dm9pZD4ge1xuICAgIGNvbnN0IGZ1bGxLZXkgPSB0aGlzLmJ1aWxkS2V5KGtleSwgb3B0aW9ucz8ucHJlZml4KVxuICAgIGNvbnN0IHR0bCA9IG9wdGlvbnM/LnR0bCA/IG9wdGlvbnMudHRsICogMTAwMCA6IHVuZGVmaW5lZCAvLyDovazmjaLkuLrmr6vnp5JcbiAgICBhd2FpdCB0aGlzLmNhY2hlTWFuYWdlci5zZXQoZnVsbEtleSwgdmFsdWUsIHR0bClcbiAgfVxuXG4gIC8qKlxuICAgKiBAbWV0aG9kIGRlbGV0ZVxuICAgKiBAZGVzY3JpcHRpb24g5Yig6Zmk57yT5a2YXG4gICAqL1xuICBAd2l0aEVycm9yTG9nZ2luZygnZGVsZXRlIGNhY2hlIGtleScpXG4gIGFzeW5jIGRlbGV0ZShrZXk6IHN0cmluZywgcHJlZml4Pzogc3RyaW5nKTogUHJvbWlzZTx2b2lkPiB7XG4gICAgY29uc3QgZnVsbEtleSA9IHRoaXMuYnVpbGRLZXkoa2V5LCBwcmVmaXgpXG4gICAgYXdhaXQgdGhpcy5jYWNoZU1hbmFnZXIuZGVsKGZ1bGxLZXkpXG4gIH1cblxuICAvKipcbiAgICogQG1ldGhvZCBjbGVhclxuICAgKiBAZGVzY3JpcHRpb24g5riF56m65omA5pyJ57yT5a2YXG4gICAqL1xuICBAd2l0aEVycm9yTG9nZ2luZygnY2xlYXIgY2FjaGUnKVxuICBhc3luYyBjbGVhcigpOiBQcm9taXNlPHZvaWQ+IHtcbiAgICAvLyDkvb/nlKhjYWNoZS1tYW5hZ2Vy55qEc3RvcmXmjqXlj6PmnaXmuIXnqbrnvJPlrZhcbiAgICBjb25zdCBzdG9yZSA9ICh0aGlzLmNhY2hlTWFuYWdlciBhcyBhbnkpLnN0b3JlXG4gICAgaWYgKHN0b3JlICYmIHR5cGVvZiBzdG9yZS5yZXNldCA9PT0gJ2Z1bmN0aW9uJykge1xuICAgICAgYXdhaXQgc3RvcmUucmVzZXQoKVxuICAgIH0gZWxzZSB7XG4gICAgICAvLyDlpoLmnpzmsqHmnIlyZXNldOaWueazle+8jOiusOW9leitpuWRiuS9huS4jeaKm+WHuumUmeivr1xuICAgICAgdGhpcy5sb2dnZXIud2FybignQ2FjaGUgc3RvcmUgZG9lcyBub3Qgc3VwcG9ydCByZXNldCBvcGVyYXRpb24nKVxuICAgIH1cbiAgfVxuXG4gIC8qKlxuICAgKiBAbWV0aG9kIGdldE9yU2V0XG4gICAqIEBkZXNjcmlwdGlvbiDojrflj5bnvJPlrZjvvIzlpoLmnpzkuI3lrZjlnKjliJnorr7nva5cbiAgICpcbiAgICogQGV4YW1wbGVcbiAgICogYGBgdHlwZXNjcmlwdFxuICAgKiBjb25zdCB1c2VyID0gYXdhaXQgY2FjaGVTZXJ2aWNlLmdldE9yU2V0KFxuICAgKiAgICd1c2VyOjEyMycsXG4gICAqICAgYXN5bmMgKCkgPT4gYXdhaXQgdGhpcy51c2VyU2VydmljZS5maW5kQnlJZCgnMTIzJyksXG4gICAqICAgeyB0dGw6IDM2MDAgfSxcbiAgICogKTtcbiAgICogYGBgXG4gICAqL1xuICBhc3luYyBnZXRPclNldDxUPihrZXk6IHN0cmluZywgZmFjdG9yeTogKCkgPT4gUHJvbWlzZTxUPiwgb3B0aW9ucz86IENhY2hlT3B0aW9ucyk6IFByb21pc2U8VD4ge1xuICAgIGNvbnN0IGNhY2hlZCA9IGF3YWl0IHRoaXMuZ2V0PFQ+KGtleSwgb3B0aW9ucylcbiAgICBpZiAoY2FjaGVkICE9PSB1bmRlZmluZWQpIHtcbiAgICAgIHJldHVybiBjYWNoZWRcbiAgICB9XG5cbiAgICBjb25zdCB2YWx1ZSA9IGF3YWl0IGZhY3RvcnkoKVxuICAgIGF3YWl0IHRoaXMuc2V0KGtleSwgdmFsdWUsIG9wdGlvbnMpXG4gICAgcmV0dXJuIHZhbHVlXG4gIH1cblxuICAvKipcbiAgICogQG1ldGhvZCBidWlsZEtleVxuICAgKiBAZGVzY3JpcHRpb24g5p6E5bu65a6M5pW055qE57yT5a2Y6ZSuXG4gICAqL1xuICBwcml2YXRlIGJ1aWxkS2V5KGtleTogc3RyaW5nLCBwcmVmaXg/OiBzdHJpbmcpOiBzdHJpbmcge1xuICAgIHJldHVybiBwcmVmaXggPyBgJHtwcmVmaXh9OiR7a2V5fWAgOiBrZXlcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

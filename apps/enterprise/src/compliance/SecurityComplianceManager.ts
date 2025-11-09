@@ -1,7 +1,7 @@
 // 安全合规管理器
 // 确保企业级应用符合各种安全标准和法规要求
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 export interface ComplianceFramework {
   id: string
@@ -605,7 +605,7 @@ class SecurityComplianceManager extends EventEmitter {
 
     const recentLocations = recentLogs
       .filter((log) => log.location)
-      .map((log) => log.location!.country)
+      .map((log) => log.location?.country)
 
     const currentCountry = auditLog.location.country
     const commonCountries = recentLocations.filter((country) => country === currentCountry)
@@ -614,7 +614,7 @@ class SecurityComplianceManager extends EventEmitter {
     return commonCountries.length / recentLocations.length < 0.5
   }
 
-  private detectPermissionAbuse(auditLog: AuditLog, recentLogs: AuditLog[]): boolean {
+  private detectPermissionAbuse(_auditLog: AuditLog, recentLogs: AuditLog[]): boolean {
     // 简化的权限滥用检测逻辑
     const recentFailedActions = recentLogs.filter(
       (log) => (!log.success && log.action.includes('delete')) || log.action.includes('admin')
@@ -688,7 +688,10 @@ class SecurityComplianceManager extends EventEmitter {
     }
   }
 
-  private async findDataForDeletion(policy: DataRetentionPolicy, cutoffDate: Date): Promise<any[]> {
+  private async findDataForDeletion(
+    _policy: DataRetentionPolicy,
+    _cutoffDate: Date
+  ): Promise<any[]> {
     // 查找需要删除的数据
     // 实际实现应该查询数据库
     return []
@@ -752,7 +755,7 @@ class SecurityComplianceManager extends EventEmitter {
     if (resolvedIncidents.length === 0) return 0
 
     const totalResponseTime = resolvedIncidents.reduce((sum, inc) => {
-      return sum + (inc.resolvedAt!.getTime() - inc.detectedAt.getTime())
+      return sum + (inc.resolvedAt?.getTime() - inc.detectedAt.getTime())
     }, 0)
 
     return totalResponseTime / resolvedIncidents.length
@@ -762,7 +765,7 @@ class SecurityComplianceManager extends EventEmitter {
     // 启动自动合规检查
     setInterval(
       async () => {
-        for (const [frameworkId, framework] of this.complianceFrameworks) {
+        for (const [frameworkId, _framework] of this.complianceFrameworks) {
           try {
             await this.runComplianceCheck(frameworkId)
           } catch (error) {

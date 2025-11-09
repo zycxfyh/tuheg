@@ -1,17 +1,13 @@
 // Mock implementation of Langfuse for testing
 export class Langfuse {
-  constructor(options?: any) {
-    // Mock constructor
-  }
-
-  trace(options: any) {
+  trace(_options: any) {
     return {
-      generation: (options: any) => ({
+      generation: (_options: any) => ({
         end: () => ({
           // Mock trace object
         }),
       }),
-      span: (options: any) => ({
+      span: (_options: any) => ({
         end: () => ({
           // Mock span object
         }),

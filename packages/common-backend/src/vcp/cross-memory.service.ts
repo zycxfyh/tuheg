@@ -4,7 +4,7 @@
 // ============================================================================
 
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import type { ConfigService } from '@nestjs/config'
 import {
   crossMemoryNetwork,
   type MemoryEntry,
@@ -31,9 +31,9 @@ export class CrossMemoryService implements OnModuleInit {
    */
   private async initializeMemorySystem(): Promise<void> {
     // 设置记忆网络参数
-    const similarityThreshold = this.configService.get('MEMORY_SIMILARITY_THRESHOLD', 0.7)
-    const maxConnections = this.configService.get('MEMORY_MAX_CONNECTIONS', 10)
-    const decayRate = this.configService.get('MEMORY_DECAY_RATE', 0.95)
+    const _similarityThreshold = this.configService.get('MEMORY_SIMILARITY_THRESHOLD', 0.7)
+    const _maxConnections = this.configService.get('MEMORY_MAX_CONNECTIONS', 10)
+    const _decayRate = this.configService.get('MEMORY_DECAY_RATE', 0.95)
 
     // 重新配置记忆网络（如果需要）
     // 注意：crossMemoryNetwork 已经在模块中初始化，这里可以设置参数
@@ -380,7 +380,7 @@ export class CrossMemoryService implements OnModuleInit {
     }
 
     if (preferenceType) {
-      query.tags!.push(preferenceType)
+      query.tags?.push(preferenceType)
     }
 
     const results = await this.queryMemories(query)
@@ -447,7 +447,7 @@ export class CrossMemoryService implements OnModuleInit {
    * 获取创作灵感
    */
   async getCreativeInspiration(
-    storyId: string,
+    _storyId: string,
     theme: string,
     limit: number = 10
   ): Promise<MemorySearchResult[]> {

@@ -122,10 +122,10 @@ export class FailFastGuard implements CanActivate {
   private checkRateLimit(request: any): boolean {
     // 简单的内存速率限制实现
     // 在实际应用中，应该使用Redis或其他持久化存储
-    const key = `ratelimit:${request.ip}`
-    const now = Date.now()
-    const windowMs = 15 * 60 * 1000 // 15分钟
-    const maxRequests = 100 // 每15分钟最多100个请求
+    const _key = `ratelimit:${request.ip}`
+    const _now = Date.now()
+    const _windowMs = 15 * 60 * 1000 // 15分钟
+    const _maxRequests = 100 // 每15分钟最多100个请求
 
     // 这是一个简化的实现，实际应用中应该使用更复杂的逻辑
     return true // 暂时允许所有请求
@@ -134,9 +134,9 @@ export class FailFastGuard implements CanActivate {
   private sanitizeHeaders(headers: any): any {
     // 移除敏感信息
     const sanitized = { ...headers }
-    delete sanitized.authorization
-    delete sanitized.cookie
-    delete sanitized['x-api-key']
+    sanitized.authorization = undefined
+    sanitized.cookie = undefined
+    sanitized['x-api-key'] = undefined
     return sanitized
   }
 }

@@ -1,7 +1,7 @@
 // VCPToolBox SDK - 创建插件命令
 
-import * as fs from 'fs'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import type { PluginType } from '../../types'
 
 export interface CreateOptions {
@@ -36,7 +36,9 @@ export class CreateCommand {
       console.log(`📖 运行 'cd ${name} && npm install' 安装依赖`)
       console.log(`🚀 运行 'npm run dev' 启动开发服务器`)
     } catch (error: any) {
-      console.error(`❌ 创建插件失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
+      console.error(
+        `❌ 创建插件失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
+      )
       process.exit(1)
     }
   }
@@ -271,7 +273,7 @@ MIT
 `
   }
 
-  private getIndexContent(name: string, options: CreateOptions): string {
+  private getIndexContent(name: string, _options: CreateOptions): string {
     return `// ${name} - VCPToolBox Plugin
 export { ${this.capitalize(name)}Plugin } from './plugin'
 export type { ${this.capitalize(name)}PluginConfig } from './plugin'
@@ -517,17 +519,17 @@ describe('${className}Plugin', () => {
   }
 
   private async createPackageJson(
-    projectDir: string,
-    name: string,
-    options: CreateOptions
+    _projectDir: string,
+    _name: string,
+    _options: CreateOptions
   ): Promise<void> {
     // package.json 已经在 createProjectFiles 中创建，这里可以添加额外逻辑
   }
 
   private async createReadme(
-    projectDir: string,
-    name: string,
-    options: CreateOptions
+    _projectDir: string,
+    _name: string,
+    _options: CreateOptions
   ): Promise<void> {
     // README.md 已经在 createProjectFiles 中创建，这里可以添加额外逻辑
   }
@@ -535,7 +537,7 @@ describe('${className}Plugin', () => {
   private async createExampleCode(
     projectDir: string,
     name: string,
-    options: CreateOptions
+    _options: CreateOptions
   ): Promise<void> {
     // 创建示例代码目录和文件
     const examplesDir = path.join(projectDir, 'examples')

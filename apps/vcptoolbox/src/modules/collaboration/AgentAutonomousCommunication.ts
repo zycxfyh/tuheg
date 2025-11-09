@@ -3,8 +3,7 @@
 // 实现Agent间的智能协商、冲突解决和自主协作机制
 // ============================================================================
 
-import { EventEmitter } from 'events'
-import { tarVariableManager } from '../core/TarVariableSystem'
+import { EventEmitter } from 'node:events'
 import { crossMemoryNetwork } from '../storage/CrossMemoryNetwork'
 
 export interface CommunicationChannel {
@@ -505,7 +504,11 @@ export class AgentAutonomousCommunication extends EventEmitter {
   /**
    * 解决冲突
    */
-  async resolveConflict(conflictId: string, solutionId: string, resolverId: string): Promise<void> {
+  async resolveConflict(
+    conflictId: string,
+    solutionId: string,
+    _resolverId: string
+  ): Promise<void> {
     const conflict = this.conflicts.get(conflictId)
     if (!conflict || conflict.status !== 'open') {
       throw new Error(`Conflict ${conflictId} not found or not open`)
@@ -964,7 +967,7 @@ export class AgentAutonomousCommunication extends EventEmitter {
    */
   private async evaluateSolution(
     solution: any,
-    conflict: ConflictResolution
+    _conflict: ConflictResolution
   ): Promise<{ score: number; reasoning: string }> {
     // 简化的解决方案评估
     let score = 0.5

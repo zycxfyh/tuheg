@@ -64,15 +64,15 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isRTL, SUPPORTED_LANGUAGES, setLanguage } from '@/i18n'
+import { SUPPORTED_LANGUAGES, setLanguage } from '@/i18n'
 
 // Vue i18n composable
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 
 // 计算属性
 const currentLanguage = computed(() => locale.value)
 const supportedLanguages = computed(() => SUPPORTED_LANGUAGES)
-const currentLanguageInfo = computed(() => {
+const _currentLanguageInfo = computed(() => {
   return (
     SUPPORTED_LANGUAGES.find((lang) => lang.code === currentLanguage.value) ||
     SUPPORTED_LANGUAGES[0]
@@ -86,7 +86,7 @@ const setLanguageHandler = (langCode) => {
   locale.value = langCode
 }
 
-const getLanguageRegion = (langCode) => {
+const _getLanguageRegion = (langCode) => {
   const regions = {
     'zh-CN': '中国大陆',
     'zh-TW': '台灣',

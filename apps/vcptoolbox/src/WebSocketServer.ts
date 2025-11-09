@@ -3,8 +3,8 @@
 // 实现实时双向通信、事件驱动架构、分布式消息传递
 // ============================================================================
 
-import { EventEmitter } from 'events'
-import type { IncomingMessage } from 'http'
+import { EventEmitter } from 'node:events'
+import type { IncomingMessage } from 'node:http'
 import WebSocket from 'ws'
 
 export interface WSConnection {
@@ -122,7 +122,7 @@ export class WebSocketServer extends EventEmitter {
 
     if (this.wss) {
       // 关闭所有连接
-      for (const [connectionId, connection] of this.connections) {
+      for (const [connectionId, _connection] of this.connections) {
         await this.closeConnection(connectionId, 'server_shutdown')
       }
 
@@ -263,7 +263,16 @@ export class WebSocketServer extends EventEmitter {
       })
     } catch (error: any) {
       console.error(`Request handling failed:`, error)
-      this.sendError(connectionId, message.id, 'request_processing_error', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
+      this.sendError(
+        connectionId,
+        message.id,
+        'request_processing_error',
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
+      )
     }
   }
 
@@ -442,7 +451,7 @@ export class WebSocketServer extends EventEmitter {
   /**
    * 获取Agent状态
    */
-  private async getAgentStatus(connection: WSConnection, payload: any): Promise<any> {
+  private async getAgentStatus(connection: WSConnection, _payload: any): Promise<any> {
     // 返回Agent状态信息
     return {
       agentId: connection.agentId,
@@ -623,7 +632,7 @@ export class WebSocketServer extends EventEmitter {
   /**
    * 列出房间
    */
-  private async listRooms(connection: WSConnection): Promise<any> {
+  private async listRooms(_connection: WSConnection): Promise<any> {
     const rooms = Array.from(this.rooms.values()).map((room) => ({
       id: room.id,
       name: room.name,
@@ -841,7 +850,7 @@ export class WebSocketServer extends EventEmitter {
     }
 
     // 清理待处理的请求
-    for (const [requestId, pendingRequest] of connection.pendingRequests) {
+    for (const [_requestId, pendingRequest] of connection.pendingRequests) {
       clearTimeout(pendingRequest.timeout)
       pendingRequest.reject(new Error('Connection closed'))
     }
@@ -864,7 +873,7 @@ export class WebSocketServer extends EventEmitter {
     this.heartbeatInterval = setInterval(() => {
       const now = Date.now()
 
-      for (const [connectionId, connection] of this.connections) {
+      for (const [_connectionId, connection] of this.connections) {
         const timeSinceActivity = now - connection.metadata.lastActivity.getTime()
 
         // 如果超过60秒没有活动，发送ping

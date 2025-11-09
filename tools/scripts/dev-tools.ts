@@ -130,7 +130,7 @@ export class DevTools {
       console.log('\n')
       this.runTests()
       console.log('\n✅ All checks passed!')
-    } catch (error) {
+    } catch (_error) {
       console.error('\n❌ Validation failed')
       process.exit(1)
     }
@@ -176,7 +176,7 @@ export class DevTools {
       console.log('\n🏗️  Running build...')
       try {
         execSync(`pnpm --filter ${packageName} build`, { stdio: 'inherit' })
-      } catch (error) {
+      } catch (_error) {
         console.error('❌ Build failed')
       }
     }

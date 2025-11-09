@@ -20,7 +20,7 @@ import {
   PromptManagerService,
 } from '@tuheg/common-backend'
 import { type DeepMockProxy, mockDeep } from 'jest-mock-extended'
-import { NarrativeService } from './narrative.service'
+import { NarrativeService } from '../narrative.service'
 
 jest.mock('@tuheg/common-backend', () => ({
   ...jest.requireActual('@tuheg/common-backend'),

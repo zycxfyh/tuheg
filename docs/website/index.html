@@ -479,7 +479,7 @@
             // Track beta signup form
             const form = document.getElementById('beta-signup-form');
             if (form) {
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', (_e) => {
                     console.log('Beta signup submitted');
                     // Here you would send data to your analytics service
                     alert('感谢您的申请！我们会在24小时内发送邀请邮件。');

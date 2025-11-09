@@ -1,7 +1,7 @@
 import { ZodError } from 'zod'
-import { createAiSettingsSchema } from './create-ai-settings.dto'
-import { submitActionSchema } from './submit-action.dto'
-import { testAiConnectionSchema, updateAiSettingsSchema } from './update-ai-settings.dto'
+import { createAiSettingsSchema } from '../create-ai-settings.dto'
+import { submitActionSchema } from '../submit-action.dto'
+import { testAiConnectionSchema, updateAiSettingsSchema } from '../update-ai-settings.dto'
 
 describe('AI settings validation schemas', () => {
   const basePayload = {

@@ -12,8 +12,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly prisma: PrismaService,
-    // @ts-expect-error - configService is used in super() call
-    private readonly configService: ConfigService
+    readonly configService: ConfigService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -32,7 +31,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('User not found.')
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // Remove password from user object before returning
+    // biome-ignore lint/correctness/noUnusedVariables: password is intentionally destructured and not used
     const { password, ...result } = user
     return result
   }

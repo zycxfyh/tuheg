@@ -298,16 +298,16 @@ const settings = ref({
 })
 
 // 计算属性
-const currentStory = computed(() => props.story)
-const currentNarrative = computed(() => props.narrative)
+const _currentStory = computed(() => props.story)
+const _currentNarrative = computed(() => props.narrative)
 const currentDialogue = computed(() => props.dialogue)
 const currentChoices = computed(() => props.choices)
-const currentScene = computed(() => props.scene)
-const isAIThinking = computed(() => props.aiThinking)
-const currentThinkingStep = computed(() => props.thinkingStep || thinkingSteps.value[0])
+const _currentScene = computed(() => props.scene)
+const _isAIThinking = computed(() => props.aiThinking)
+const _currentThinkingStep = computed(() => props.thinkingStep || thinkingSteps.value[0])
 
-const currentChapter = computed(() => props.story.currentChapter || 1)
-const storyProgress = computed(() => {
+const _currentChapter = computed(() => props.story.currentChapter || 1)
+const _storyProgress = computed(() => {
   if (!props.story.chapters || props.story.chapters.length === 0) return 0
   const totalSections = props.story.chapters.reduce(
     (sum, chapter) => sum + chapter.sections.length,
@@ -379,7 +379,7 @@ const previousSection = () => {
   }
 }
 
-const showSettings = () => {
+const _showSettings = () => {
   showSettingsPanel.value = true
 }
 
@@ -393,7 +393,7 @@ const applySettings = () => {
   hideSettings()
 }
 
-const resetSettings = () => {
+const _resetSettings = () => {
   settings.value = {
     textSize: 16,
     lineHeight: 1.6,
@@ -405,21 +405,21 @@ const resetSettings = () => {
   applySettings()
 }
 
-const saveProgress = () => {
+const _saveProgress = () => {
   emit('save-progress')
 }
 
-const showHistory = () => {
+const _showHistory = () => {
   // TODO: 显示历史记录
   console.log('Show history')
 }
 
-const showNotes = () => {
+const _showNotes = () => {
   // TODO: 显示笔记
   console.log('Show notes')
 }
 
-const shareStory = () => {
+const _shareStory = () => {
   // TODO: 分享故事
   console.log('Share story')
 }
@@ -502,7 +502,7 @@ onMounted(() => {
   if (savedSettings) {
     try {
       Object.assign(settings.value, JSON.parse(savedSettings))
-    } catch (e) {
+    } catch (_e) {
       console.warn('Failed to load narrative settings')
     }
   }

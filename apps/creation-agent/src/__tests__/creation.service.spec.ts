@@ -1,12 +1,12 @@
 // 文件路径: apps/creation-agent/src/__tests__/creation.service.spec.ts
 // 描述: CreationService 的单元测试，专注于世界生成逻辑和数据库交互
 
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { InternalServerErrorException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import type { Game, PrismaClient } from '@prisma/client'
 import {
   AiGenerationException,
+  type AiProvider,
   callAiWithGuard,
   DynamicAiSchedulerService,
   EventBusService,
@@ -16,7 +16,7 @@ import {
   PromptManagerService,
 } from '@tuheg/common-backend'
 import { type DeepMockProxy, mockDeep } from 'jest-mock-extended'
-import { CreationService } from './creation.service'
+import { CreationService } from '../creation.service'
 
 jest.mock('@tuheg/common-backend', () => ({
   ...jest.requireActual('@tuheg/common-backend'),
@@ -32,7 +32,12 @@ describe('CreationService', () => {
   let promptInjectionGuardMock: DeepMockProxy<PromptInjectionGuard>
   const mockedCallAiWithGuard = callAiWithGuard as jest.Mock
 
-  const MOCK_CHAT_MODEL = {} as unknown as BaseChatModel
+  // Mock AI Provider following actual AiProvider interface
+  const MOCK_AI_PROVIDER: AiProvider = {
+    name: 'test-model',
+    provider: 'OpenAI',
+    generate: jest.fn().mockResolvedValue('mocked AI response'),
+  }
 
   const MOCK_PAYLOAD = {
     userId: 'user-123',
@@ -73,7 +78,13 @@ describe('CreationService', () => {
 
     service = module.get<CreationService>(CreationService)
 
-    prismaMock.$transaction.mockImplementation((fn: any) => fn(prismaMock))
+    // Mock $transaction to execute the callback immediately
+    prismaMock.$transaction.mockImplementation((callback: unknown) => {
+      if (typeof callback === 'function') {
+        return callback(prismaMock)
+      }
+      return Promise.resolve([])
+    })
   })
 
   afterEach(() => {
@@ -86,7 +97,7 @@ describe('CreationService', () => {
 
   describe('Happy Path', () => {
     it('should create a new world, save it, and publish completion event', async () => {
-      schedulerMock.getProviderForRole.mockResolvedValue({ model: MOCK_CHAT_MODEL })
+      schedulerMock.getProviderForRole.mockResolvedValue(MOCK_AI_PROVIDER)
       promptManagerMock.getPrompt.mockReturnValue('persona prompt')
       mockedCallAiWithGuard.mockResolvedValue(MOCK_AI_RESPONSE)
       const mockGame: Game = {
@@ -123,7 +134,7 @@ describe('CreationService', () => {
   describe('Error Handling', () => {
     it('should throw and publish failure event if AI generation fails', async () => {
       const aiError = new AiGenerationException('AI failed')
-      schedulerMock.getProviderForRole.mockResolvedValue({ model: MOCK_CHAT_MODEL })
+      schedulerMock.getProviderForRole.mockResolvedValue(MOCK_AI_PROVIDER)
       promptManagerMock.getPrompt.mockReturnValue('persona prompt')
       mockedCallAiWithGuard.mockRejectedValue(aiError)
 
@@ -146,7 +157,7 @@ describe('CreationService', () => {
 
     it('should throw and publish failure event if database transaction fails', async () => {
       const dbError = new Error('DB connection lost')
-      schedulerMock.getProviderForRole.mockResolvedValue({ model: MOCK_CHAT_MODEL })
+      schedulerMock.getProviderForRole.mockResolvedValue(MOCK_AI_PROVIDER)
       promptManagerMock.getPrompt.mockReturnValue('persona prompt')
       mockedCallAiWithGuard.mockResolvedValue(MOCK_AI_RESPONSE)
       prismaMock.$transaction.mockRejectedValue(dbError)

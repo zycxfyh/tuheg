@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const _path = require('node:path')
 
 function shouldKeepFile(filePath) {
   // Remove test files

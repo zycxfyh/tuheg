@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { formatZodError, formatZodErrorAsJson } from './schema-error-formatter'
+import { formatZodError, formatZodErrorAsJson } from './schema-error-formatter.ts'
 
 describe('formatZodError', () => {
   it('should format missing field error', () => {

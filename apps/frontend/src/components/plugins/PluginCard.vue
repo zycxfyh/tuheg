@@ -114,12 +114,12 @@ const emit = defineEmits(['install', 'viewDetails'])
 const installing = ref(false)
 
 // 计算属性
-const truncatedDescription = computed(() => {
+const _truncatedDescription = computed(() => {
   const description = props.plugin.description || ''
-  return description.length > 100 ? description.substring(0, 100) + '...' : description
+  return description.length > 100 ? `${description.substring(0, 100)}...` : description
 })
 
-const pluginIconClass = computed(() => {
+const _pluginIconClass = computed(() => {
   // 根据插件分类返回不同的图标
   const categoryIcons = {
     'ai-tools': 'icon-brain',
@@ -133,16 +133,16 @@ const pluginIconClass = computed(() => {
 })
 
 // 方法
-function formatNumber(num) {
+function _formatNumber(num) {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M'
+    return `${(num / 1000000).toFixed(1)}M`
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K'
+    return `${(num / 1000).toFixed(1)}K`
   }
   return num.toString()
 }
 
-function formatDate(dateString) {
+function _formatDate(dateString) {
   const date = new Date(dateString)
   const now = new Date()
   const diffTime = Math.abs(now - date)
@@ -163,7 +163,7 @@ function formatDate(dateString) {
   }
 }
 
-async function handleInstall() {
+async function _handleInstall() {
   installing.value = true
   try {
     emit('install', props.plugin)

@@ -3,7 +3,7 @@
 // 实现可扩展架构，支持六种基本协议和AI叙事插件生态
 // ============================================================================
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 export interface PluginManifest {
   id: string
@@ -462,7 +462,7 @@ export class PluginFrameworkCore extends EventEmitter {
    */
   private updateDependencyGraph(pluginId: string, dependencies: string[]): void {
     // 清除旧依赖
-    for (const [dep, dependents] of this.dependencyGraph) {
+    for (const [_dep, dependents] of this.dependencyGraph) {
       dependents.delete(pluginId)
     }
 
@@ -471,7 +471,7 @@ export class PluginFrameworkCore extends EventEmitter {
       if (!this.dependencyGraph.has(dep)) {
         this.dependencyGraph.set(dep, new Set())
       }
-      this.dependencyGraph.get(dep)!.add(pluginId)
+      this.dependencyGraph.get(dep)?.add(pluginId)
     }
   }
 
@@ -494,7 +494,7 @@ export class PluginFrameworkCore extends EventEmitter {
    */
   private createPluginContext(
     instanceId: string,
-    manifest: PluginManifest,
+    _manifest: PluginManifest,
     config: any
   ): PluginContext {
     return {
@@ -511,39 +511,39 @@ export class PluginFrameworkCore extends EventEmitter {
   /**
    * 创建插件API
    */
-  private createPluginAPI(instanceId: string): PluginAPI {
+  private createPluginAPI(_instanceId: string): PluginAPI {
     // 简化的API实现，实际应该连接到真实的服务
     return {
       stories: {
         create: async (data) => ({ id: 'story-1', ...data }),
         update: async (id, data) => ({ id, ...data }),
-        delete: async (id) => true,
+        delete: async (_id) => true,
         get: async (id) => ({ id, title: 'Sample Story' }),
-        list: async (filters) => [{ id: 'story-1', title: 'Sample Story' }],
+        list: async (_filters) => [{ id: 'story-1', title: 'Sample Story' }],
       },
       characters: {
         create: async (data) => ({ id: 'char-1', ...data }),
         update: async (id, data) => ({ id, ...data }),
-        delete: async (id) => true,
+        delete: async (_id) => true,
         get: async (id) => ({ id, name: 'Sample Character' }),
-        list: async (filters) => [{ id: 'char-1', name: 'Sample Character' }],
+        list: async (_filters) => [{ id: 'char-1', name: 'Sample Character' }],
       },
       worlds: {
         create: async (data) => ({ id: 'world-1', ...data }),
         update: async (id, data) => ({ id, ...data }),
-        delete: async (id) => true,
+        delete: async (_id) => true,
         get: async (id) => ({ id, name: 'Sample World' }),
-        list: async (filters) => [{ id: 'world-1', name: 'Sample World' }],
+        list: async (_filters) => [{ id: 'world-1', name: 'Sample World' }],
       },
       ai: {
-        generate: async (prompt, options) => ({ result: `Generated: ${prompt}` }),
-        analyze: async (content, type) => ({ analysis: `Analyzed ${type}` }),
+        generate: async (prompt, _options) => ({ result: `Generated: ${prompt}` }),
+        analyze: async (_content, type) => ({ analysis: `Analyzed ${type}` }),
         translate: async (text, targetLang) => `${text} (${targetLang})`,
       },
       utils: {
-        validate: (data, schema) => true,
-        format: (data, format) => JSON.stringify(data),
-        parse: (data, format) => JSON.parse(data),
+        validate: (_data, _schema) => true,
+        format: (data, _format) => JSON.stringify(data),
+        parse: (data, _format) => JSON.parse(data),
       },
     }
   }
@@ -624,29 +624,29 @@ export class PluginFrameworkCore extends EventEmitter {
   /**
    * 创建VCP协议API
    */
-  private createVCPProtocolAPI(instanceId: string): VCPProtocolAPI {
+  private createVCPProtocolAPI(_instanceId: string): VCPProtocolAPI {
     // 简化的VCP协议实现
     return {
       callTool: async (request) => ({ result: 'Tool called', request }),
-      replaceVariables: async (template, context) => template,
+      replaceVariables: async (template, _context) => template,
       memory: {
         read: async (key) => ({ key, value: 'mock_value' }),
-        write: async (key, value) => true,
-        search: async (query) => [{ key: 'mock', value: 'data' }],
+        write: async (_key, _value) => true,
+        search: async (_query) => [{ key: 'mock', value: 'data' }],
       },
       files: {
         upload: async (file) => ({ fileId: 'file-1', ...file }),
         download: async (fileId) => ({ fileId, data: 'mock_data' }),
         get: async (fileId) => ({ fileId, metadata: {} }),
-        list: async (query) => [{ fileId: 'file-1' }],
+        list: async (_query) => [{ fileId: 'file-1' }],
       },
       push: (event, data) => {
         this.emit(`vcp:${event}`, data)
       },
       asyncTasks: {
-        create: async (task) => `task-${Date.now()}`,
+        create: async (_task) => `task-${Date.now()}`,
         get: async (taskId) => ({ taskId, status: 'running' }),
-        cancel: async (taskId) => true,
+        cancel: async (_taskId) => true,
       },
     }
   }

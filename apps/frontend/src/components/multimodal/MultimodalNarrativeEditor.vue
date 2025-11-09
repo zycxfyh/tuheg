@@ -105,7 +105,6 @@ import type {
   MultimodalType,
   NarrativeSegment,
 } from '../../services/multimodal/types'
-import SegmentEditor from './SegmentEditor.vue'
 
 interface Props {
   narrativeId?: string
@@ -152,7 +151,7 @@ const narrative = ref<MultimodalNarrative>({
   assets: [],
 })
 
-const isEditing = computed(() => !!props.narrativeId)
+const _isEditing = computed(() => !!props.narrativeId)
 const activeSegmentIndex = ref<number | null>(null)
 const showPreview = ref(false)
 const previewContainer = ref<HTMLElement>()
@@ -170,13 +169,13 @@ onMounted(async () => {
   }
 })
 
-const activeSegment = computed(() => {
+const _activeSegment = computed(() => {
   return activeSegmentIndex.value !== null
     ? narrative.value.segments[activeSegmentIndex.value]
     : null
 })
 
-const addSegment = () => {
+const _addSegment = () => {
   const newSegment: NarrativeSegment = {
     id: `segment-${Date.now()}`,
     type: 'text',
@@ -194,17 +193,17 @@ const addSegment = () => {
   activeSegmentIndex.value = narrative.value.segments.length - 1
 }
 
-const setActiveSegment = (index: number) => {
+const _setActiveSegment = (index: number) => {
   activeSegmentIndex.value = index
 }
 
-const updateSegment = (segment: NarrativeSegment) => {
+const _updateSegment = (segment: NarrativeSegment) => {
   if (activeSegmentIndex.value !== null) {
     narrative.value.segments[activeSegmentIndex.value] = segment
   }
 }
 
-const deleteSegment = (index: number) => {
+const _deleteSegment = (index: number) => {
   if (confirm('确定要删除这个片段吗？')) {
     narrative.value.segments.splice(index, 1)
     if (activeSegmentIndex.value === index) {
@@ -215,7 +214,7 @@ const deleteSegment = (index: number) => {
   }
 }
 
-const duplicateSegment = (index: number) => {
+const _duplicateSegment = (index: number) => {
   const segment = narrative.value.segments[index]
   const duplicated: NarrativeSegment = {
     ...segment,
@@ -230,7 +229,7 @@ const duplicateSegment = (index: number) => {
   narrative.value.segments.splice(index + 1, 0, duplicated)
 }
 
-const moveSegmentUp = (index: number) => {
+const _moveSegmentUp = (index: number) => {
   if (index > 0) {
     const segment = narrative.value.segments.splice(index, 1)[0]
     narrative.value.segments.splice(index - 1, 0, segment)
@@ -240,7 +239,7 @@ const moveSegmentUp = (index: number) => {
   }
 }
 
-const moveSegmentDown = (index: number) => {
+const _moveSegmentDown = (index: number) => {
   if (index < narrative.value.segments.length - 1) {
     const segment = narrative.value.segments.splice(index, 1)[0]
     narrative.value.segments.splice(index + 1, 0, segment)
@@ -250,7 +249,7 @@ const moveSegmentDown = (index: number) => {
   }
 }
 
-const generateContent = async (type: MultimodalType, prompt: string) => {
+const _generateContent = async (type: MultimodalType, prompt: string) => {
   if (activeSegmentIndex.value === null) return
 
   try {
@@ -278,7 +277,7 @@ const generateContent = async (type: MultimodalType, prompt: string) => {
   }
 }
 
-const saveNarrative = async () => {
+const _saveNarrative = async () => {
   try {
     await service.saveNarrative(narrative.value)
     alert('叙事已保存')
@@ -288,7 +287,7 @@ const saveNarrative = async () => {
   }
 }
 
-const previewNarrative = async () => {
+const _previewNarrative = async () => {
   if (!previewContainer.value) return
 
   showPreview.value = true
@@ -300,7 +299,7 @@ const previewNarrative = async () => {
   }
 }
 
-const closePreview = () => {
+const _closePreview = () => {
   showPreview.value = false
   if (previewContainer.value) {
     service.getPlaybackState(narrative.value.id)?.isPlaying &&
@@ -308,7 +307,7 @@ const closePreview = () => {
   }
 }
 
-const exportNarrative = async () => {
+const _exportNarrative = async () => {
   try {
     const exported = await service.exportNarrative(narrative.value.id, 'html')
     const blob = new Blob([exported], { type: 'text/html' })
@@ -324,7 +323,7 @@ const exportNarrative = async () => {
   }
 }
 
-const getSegmentTypeIcon = (type: MultimodalType): string => {
+const _getSegmentTypeIcon = (type: MultimodalType): string => {
   const icons = {
     text: '📝',
     image: '🖼️',
@@ -335,7 +334,7 @@ const getSegmentTypeIcon = (type: MultimodalType): string => {
   return icons[type] || '📄'
 }
 
-const getSegmentTitle = (segment: NarrativeSegment, index: number): string => {
+const _getSegmentTitle = (segment: NarrativeSegment, index: number): string => {
   if (segment.type === 'text' && typeof segment.content === 'string') {
     return segment.content.substring(0, 50) + (segment.content.length > 50 ? '...' : '')
   }

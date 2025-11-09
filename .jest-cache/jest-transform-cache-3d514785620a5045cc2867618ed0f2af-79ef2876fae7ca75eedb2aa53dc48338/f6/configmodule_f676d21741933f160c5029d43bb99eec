@@ -1,0 +1,88 @@
+f6fb2378866a12e83ab87f2479a5a8ca
+"use strict";
+// 文件路径: packages/common-backend/src/config/config.module.ts
+// 核心理念: 类型安全的环境配置模块
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConfigModule = void 0;
+const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const configuration_service_1 = require("./configuration.service");
+const env_schema_1 = require("./env.schema");
+const env_loader_1 = require("./env-loader");
+/**
+ * @module ConfigModule
+ * @description 类型安全的环境配置模块
+ * 提供环境变量验证、加载和类型安全访问功能
+ */
+let ConfigModule = (() => {
+    let _classDecorators = [(0, common_1.Module)({
+            imports: [
+                config_1.ConfigModule.forRoot({
+                    isGlobal: true,
+                    validate: env_schema_1.validateEnv,
+                    validationOptions: {
+                        allowUnknown: false,
+                        abortEarly: false,
+                    },
+                }),
+            ],
+            providers: [configuration_service_1.ConfigurationService],
+            exports: [config_1.ConfigModule, configuration_service_1.ConfigurationService],
+        })];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var ConfigModule = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            ConfigModule = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        onModuleInit() {
+            // 加载环境变量（支持扩展）
+            env_loader_1.EnvLoader.load({
+                env: process.env.NODE_ENV || 'development',
+            });
+        }
+    };
+    return ConfigModule = _classThis;
+})();
+exports.ConfigModule = ConfigModule;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxjb25maWdcXGNvbmZpZy5tb2R1bGUudHMiLCJtYXBwaW5ncyI6IjtBQUFBLDREQUE0RDtBQUM1RCxvQkFBb0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFFcEIsMkNBQTBEO0FBQzFELDJDQUFpRTtBQUNqRSxtRUFBOEQ7QUFDOUQsNkNBQTBDO0FBQzFDLDZDQUF3QztBQUV4Qzs7OztHQUlHO0lBZVUsWUFBWTs0QkFkeEIsSUFBQSxlQUFNLEVBQUM7WUFDTixPQUFPLEVBQUU7Z0JBQ1AscUJBQWdCLENBQUMsT0FBTyxDQUFDO29CQUN2QixRQUFRLEVBQUUsSUFBSTtvQkFDZCxRQUFRLEVBQUUsd0JBQVc7b0JBQ3JCLGlCQUFpQixFQUFFO3dCQUNqQixZQUFZLEVBQUUsS0FBSzt3QkFDbkIsVUFBVSxFQUFFLEtBQUs7cUJBQ2xCO2lCQUNGLENBQUM7YUFDSDtZQUNELFNBQVMsRUFBRSxDQUFDLDRDQUFvQixDQUFDO1lBQ2pDLE9BQU8sRUFBRSxDQUFDLHFCQUFnQixFQUFFLDRDQUFvQixDQUFDO1NBQ2xELENBQUM7Ozs7Ozs7O1lBQ0YsNktBT0M7OztZQVBZLHVEQUFZOztRQUN2QixZQUFZO1lBQ1YsZUFBZTtZQUNmLHNCQUFTLENBQUMsSUFBSSxDQUFDO2dCQUNiLEdBQUcsRUFBRSxPQUFPLENBQUMsR0FBRyxDQUFDLFFBQVEsSUFBSSxhQUFhO2FBQzNDLENBQUMsQ0FBQTtRQUNKLENBQUM7Ozs7QUFOVSxvQ0FBWSIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXDE2NjYzXFxEZXNrdG9wXFx0dWhlZ1xccGFja2FnZXNcXGNvbW1vbi1iYWNrZW5kXFxzcmNcXGNvbmZpZ1xcY29uZmlnLm1vZHVsZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyDmlofku7bot6/lvoQ6IHBhY2thZ2VzL2NvbW1vbi1iYWNrZW5kL3NyYy9jb25maWcvY29uZmlnLm1vZHVsZS50c1xuLy8g5qC45b+D55CG5b+1OiDnsbvlnovlronlhajnmoTnjq/looPphY3nva7mqKHlnZdcblxuaW1wb3J0IHsgTW9kdWxlLCB0eXBlIE9uTW9kdWxlSW5pdCB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHsgQ29uZmlnTW9kdWxlIGFzIE5lc3RDb25maWdNb2R1bGUgfSBmcm9tICdAbmVzdGpzL2NvbmZpZydcbmltcG9ydCB7IENvbmZpZ3VyYXRpb25TZXJ2aWNlIH0gZnJvbSAnLi9jb25maWd1cmF0aW9uLnNlcnZpY2UnXG5pbXBvcnQgeyB2YWxpZGF0ZUVudiB9IGZyb20gJy4vZW52LnNjaGVtYSdcbmltcG9ydCB7IEVudkxvYWRlciB9IGZyb20gJy4vZW52LWxvYWRlcidcblxuLyoqXG4gKiBAbW9kdWxlIENvbmZpZ01vZHVsZVxuICogQGRlc2NyaXB0aW9uIOexu+Wei+WuieWFqOeahOeOr+Wig+mFjee9ruaooeWdl1xuICog5o+Q5L6b546v5aKD5Y+Y6YeP6aqM6K+B44CB5Yqg6L295ZKM57G75Z6L5a6J5YWo6K6/6Zeu5Yqf6IO9XG4gKi9cbkBNb2R1bGUoe1xuICBpbXBvcnRzOiBbXG4gICAgTmVzdENvbmZpZ01vZHVsZS5mb3JSb290KHtcbiAgICAgIGlzR2xvYmFsOiB0cnVlLFxuICAgICAgdmFsaWRhdGU6IHZhbGlkYXRlRW52LFxuICAgICAgdmFsaWRhdGlvbk9wdGlvbnM6IHtcbiAgICAgICAgYWxsb3dVbmtub3duOiBmYWxzZSxcbiAgICAgICAgYWJvcnRFYXJseTogZmFsc2UsXG4gICAgICB9LFxuICAgIH0pLFxuICBdLFxuICBwcm92aWRlcnM6IFtDb25maWd1cmF0aW9uU2VydmljZV0sXG4gIGV4cG9ydHM6IFtOZXN0Q29uZmlnTW9kdWxlLCBDb25maWd1cmF0aW9uU2VydmljZV0sXG59KVxuZXhwb3J0IGNsYXNzIENvbmZpZ01vZHVsZSBpbXBsZW1lbnRzIE9uTW9kdWxlSW5pdCB7XG4gIG9uTW9kdWxlSW5pdCgpIHtcbiAgICAvLyDliqDovb3njq/looPlj5jph4/vvIjmlK/mjIHmianlsZXvvIlcbiAgICBFbnZMb2FkZXIubG9hZCh7XG4gICAgICBlbnY6IHByb2Nlc3MuZW52Lk5PREVfRU5WIHx8ICdkZXZlbG9wbWVudCcsXG4gICAgfSlcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

@@ -15,6 +15,7 @@ export class ImageGenerator implements MultimodalGenerator {
   }
 
   async generate(prompt: string, options: GenerationOptions = {}): Promise<MultimodalContent> {
+    // biome-ignore lint/correctness/noUnusedVariables: 预留用于将来图像质量控制
     const { style = 'realistic', mood, quality = 'high' } = options
 
     // 构建图像生成提示词
@@ -107,7 +108,7 @@ export class ImageGenerator implements MultimodalGenerator {
 
   private generateCaption(prompt: string, style: string): string {
     // 根据提示词和风格生成合适的图片说明
-    const baseCaption = prompt.length > 100 ? prompt.substring(0, 97) + '...' : prompt
+    const baseCaption = prompt.length > 100 ? `${prompt.substring(0, 97)}...` : prompt
 
     const styleDescriptions: Record<string, string> = {
       realistic: '写实风格',

@@ -1,9 +1,9 @@
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import * as vm from 'node:vm'
 import { Injectable, Logger } from '@nestjs/common'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as vm from 'vm'
 import type { PluginRegistry } from './plugin.registry'
-import { Plugin, type PluginContext, type PluginManifest } from './plugin.types'
+import type { PluginContext, PluginManifest } from './plugin.types'
 
 export interface SandboxOptions {
   timeout?: number
@@ -29,7 +29,7 @@ export class PluginSandboxService {
   private readonly logger = new Logger(PluginSandboxService.name)
   private readonly sandboxes = new Map<string, vm.Context>()
 
-  constructor(private readonly pluginRegistry: PluginRegistry) {}
+  constructor(readonly _pluginRegistry: PluginRegistry) {}
 
   /**
    * 在沙盒中测试插件激活
@@ -106,7 +106,9 @@ export class PluginSandboxService {
       }
     } catch (error) {
       const executionTime = Date.now() - startTime
-      this.logger.error(`Plugin activation test failed: ${error instanceof Error ? error.message : String(error)}`)
+      this.logger.error(
+        `Plugin activation test failed: ${error instanceof Error ? error.message : String(error)}`
+      )
 
       return {
         success: false,
@@ -187,7 +189,9 @@ export class PluginSandboxService {
       }
     } catch (error) {
       const executionTime = Date.now() - startTime
-      this.logger.error(`Plugin tool test failed: ${error instanceof Error ? error.message : String(error)}`)
+      this.logger.error(
+        `Plugin tool test failed: ${error instanceof Error ? error.message : String(error)}`
+      )
 
       return {
         success: false,
@@ -200,7 +204,7 @@ export class PluginSandboxService {
   /**
    * 创建沙盒上下文
    */
-  private createSandboxContext(sandboxId: string, options: SandboxOptions): vm.Context {
+  private createSandboxContext(sandboxId: string, _options: SandboxOptions): vm.Context {
     const context = vm.createContext({
       console: {
         log: (...args: any[]) => this.logger.log(`[Sandbox:${sandboxId}]`, ...args),
@@ -254,7 +258,9 @@ export class PluginSandboxService {
       try {
         return require(moduleId)
       } catch (error) {
-        throw new Error(`Failed to load module '${moduleId}': ${error instanceof Error ? error.message : String(error)}`)
+        throw new Error(
+          `Failed to load module '${moduleId}': ${error instanceof Error ? error.message : String(error)}`
+        )
       }
     }
   }

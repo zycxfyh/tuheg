@@ -5,9 +5,9 @@
  * 验证Jest配置、测试文件和依赖是否正确设置
  */
 
-const fs = require('fs')
-const path = require('path')
-const { execSync } = require('child_process')
+const fs = require('node:fs')
+const path = require('node:path')
+const { execSync } = require('node:child_process')
 
 // 使用assert进行简单检查
 
@@ -109,7 +109,7 @@ function checkTestFiles() {
         if (!hasIt) log(colors.yellow, `   - 缺少 it/test 块`)
         if (!hasExpect) log(colors.yellow, `   - 缺少 expect 断言`)
       }
-    } catch (error) {
+    } catch (_error) {
       log(colors.red, `❌ 无法读取测试文件: ${file}`)
       success = false
     }
@@ -233,7 +233,7 @@ async function main() {
   overallSuccess &= checkTestRunner()
   overallSuccess &= runDryTest()
 
-  console.log('\n' + '='.repeat(50))
+  console.log(`\n${'='.repeat(50)}`)
 
   if (overallSuccess) {
     log(colors.green, '🎉 所有测试配置验证通过！')

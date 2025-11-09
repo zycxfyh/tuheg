@@ -385,9 +385,9 @@ export class MultimodalExamples {
 
   private previewData(data: any): string {
     if (data.type === MultimodalDataType.TEXT) {
-      return (data.content as string).substring(0, 50) + '...'
+      return `${(data.content as string).substring(0, 50)}...`
     } else if (typeof data.content === 'string' && data.content.length > 50) {
-      return data.content.substring(0, 50) + '...'
+      return `${data.content.substring(0, 50)}...`
     } else {
       return `数据类型: ${data.type}, 大小: ${data.metadata?.size || '未知'} 字节`
     }

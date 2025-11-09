@@ -1,0 +1,136 @@
+b786f3137060156904ac27c71657145f
+"use strict";
+// 文件路径: packages/common-backend/src/ai/dynamic-ai-scheduler.service.ts
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DynamicAiSchedulerService = void 0;
+const common_1 = require("@nestjs/common");
+let DynamicAiSchedulerService = (() => {
+    let _classDecorators = [(0, common_1.Injectable)()];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var DynamicAiSchedulerService = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            DynamicAiSchedulerService = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        prisma;
+        aiProviderFactory;
+        configService;
+        logger = new common_1.Logger(DynamicAiSchedulerService.name);
+        constructor(prisma, aiProviderFactory, configService) {
+            this.prisma = prisma;
+            this.aiProviderFactory = aiProviderFactory;
+            this.configService = configService;
+        }
+        async getProviderForRole(user, role) {
+            this.logger.debug(`[Scheduler] New request for role: "${role}" from user ${user.id}`);
+            // [!] 核心改造 1: 查询逻辑翻译
+            // 我们不再查询一个字符串数组，而是查询一个关系。
+            // 我们要找的是：一个 AiConfiguration，它的 'roles' 关系中，
+            // 'some' (至少有一个) Role 的 'name' 字段等于我们想要的 'role'。
+            const dedicatedConfig = await this.prisma.aiConfiguration.findFirst({
+                where: {
+                    ownerId: user.id,
+                    roles: {
+                        some: {
+                            name: role, // 这就是新的、正确的 Prisma 关系查询语法
+                        },
+                    },
+                },
+            });
+            if (dedicatedConfig) {
+                this.logger.log(`[Scheduler] Priority 1 (Dedicated): Found dedicated config "${dedicatedConfig.provider}/${dedicatedConfig.modelId}" for role "${role}".`);
+                return this.aiProviderFactory.createProvider(dedicatedConfig);
+            }
+            this.logger.debug(`[Scheduler] Priority 1 (Dedicated): No dedicated AI found for role "${role}".`);
+            // 优先级 2: 征用逻辑保持不变
+            const anyUserConfig = await this.prisma.aiConfiguration.findFirst({
+                where: { ownerId: user.id },
+                orderBy: { createdAt: 'asc' },
+            });
+            if (anyUserConfig) {
+                this.logger.log(`[Scheduler] Priority 2 (Requisition): Requisitioning general-purpose AI "${anyUserConfig.provider}/${anyUserConfig.modelId}" for role "${role}".`);
+                return this.aiProviderFactory.createProvider(anyUserConfig);
+            }
+            this.logger.debug(`[Scheduler] Priority 2 (Requisition): User has no AI configurations at all.`);
+            // 优先级 3: 后备逻辑保持不变，但模拟对象结构需要改变
+            this.logger.warn(`[Scheduler] Priority 3 (System Fallback): Falling back to system default AI for role "${role}".`);
+            try {
+                return this.createFallbackProvider();
+            }
+            catch (error) {
+                this.logger.error(`[Scheduler] CRITICAL FAILURE: System fallback AI failed to initialize.`, error instanceof Error ? error.stack : undefined);
+                throw new common_1.InternalServerErrorException('AI processing failed: No AI is available or configured correctly.');
+            }
+        }
+        createFallbackProvider() {
+            try {
+                const apiKey = this.configService.getOrThrow('FALLBACK_API_KEY');
+                const modelId = this.configService.get('FALLBACK_MODEL_ID', 'deepseek-chat');
+                const baseUrlFromEnv = this.configService.get('FALLBACK_BASE_URL');
+                // [!] 核心改造 2: 模拟对象结构翻译
+                // 新的 AiConfiguration 类型没有 `assignedRoles` 字段。
+                // 我们创建一个不包含任何角色信息的、纯粹的配置对象。
+                // 注意：这个模拟对象缺少 'roles' 属性，所以我们需要告诉 TypeScript
+                // 它符合 AiConfiguration 的形状（通过类型断言 as AiConfiguration）。
+                const fallbackConfig = {
+                    id: 'system-fallback',
+                    provider: 'DeepSeek',
+                    apiKey,
+                    baseUrl: baseUrlFromEnv ?? null,
+                    modelId,
+                    ownerId: 'system',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                }; // 类型断言，表示我们确信这个对象的结构是兼容的
+                return this.aiProviderFactory.createProvider(fallbackConfig);
+            }
+            catch (error) {
+                this.logger.error('System fallback AI configuration is missing or invalid. Check your .env file for FALLBACK_... variables.', error);
+                throw new Error('System default AI is not configured.');
+            }
+        }
+    };
+    return DynamicAiSchedulerService = _classThis;
+})();
+exports.DynamicAiSchedulerService = DynamicAiSchedulerService;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxhaVxcZHluYW1pYy1haS1zY2hlZHVsZXIuc2VydmljZS50cyIsIm1hcHBpbmdzIjoiO0FBQUEsdUVBQXVFOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBRXZFLDJDQUFpRjtJQVFwRSx5QkFBeUI7NEJBRHJDLElBQUEsbUJBQVUsR0FBRTs7Ozs7Ozs7WUFDYiw2S0FtR0M7OztZQW5HWSx1REFBeUI7O1FBSWpCLE1BQU07UUFDTixpQkFBaUI7UUFDakIsYUFBYTtRQUxmLE1BQU0sR0FBRyxJQUFJLGVBQU0sQ0FBQyx5QkFBeUIsQ0FBQyxJQUFJLENBQUMsQ0FBQTtRQUVwRSxZQUNtQixNQUFxQixFQUNyQixpQkFBb0MsRUFDcEMsYUFBNEI7WUFGNUIsV0FBTSxHQUFOLE1BQU0sQ0FBZTtZQUNyQixzQkFBaUIsR0FBakIsaUJBQWlCLENBQW1CO1lBQ3BDLGtCQUFhLEdBQWIsYUFBYSxDQUFlO1FBQzVDLENBQUM7UUFFRyxLQUFLLENBQUMsa0JBQWtCLENBQUMsSUFBVSxFQUFFLElBQVk7WUFDdEQsSUFBSSxDQUFDLE1BQU0sQ0FBQyxLQUFLLENBQUMsc0NBQXNDLElBQUksZUFBZSxJQUFJLENBQUMsRUFBRSxFQUFFLENBQUMsQ0FBQTtZQUVyRixxQkFBcUI7WUFDckIsMEJBQTBCO1lBQzFCLDRDQUE0QztZQUM1QyxpREFBaUQ7WUFDakQsTUFBTSxlQUFlLEdBQUcsTUFBTSxJQUFJLENBQUMsTUFBTSxDQUFDLGVBQWUsQ0FBQyxTQUFTLENBQUM7Z0JBQ2xFLEtBQUssRUFBRTtvQkFDTCxPQUFPLEVBQUUsSUFBSSxDQUFDLEVBQUU7b0JBQ2hCLEtBQUssRUFBRTt3QkFDTCxJQUFJLEVBQUU7NEJBQ0osSUFBSSxFQUFFLElBQUksRUFBRSwwQkFBMEI7eUJBQ3ZDO3FCQUNGO2lCQUNGO2FBQ0YsQ0FBQyxDQUFBO1lBRUYsSUFBSSxlQUFlLEVBQUUsQ0FB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QUFDOzs7O0FBbEdVLDhEQUF5QiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXDE2NjYzXFxEZXNrdG9wXFx0dWhlZ1xccGFja2FnZXNcXGNvbW1vbi1iYWNrZW5kXFxzcmNcXGFpXFxkeW5hbWljLWFpLXNjaGVkdWxlci5zZXJ2aWNlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogcGFja2FnZXMvY29tbW9uLWJhY2tlbmQvc3JjL2FpL2R5bmFtaWMtYWktc2NoZWR1bGVyLnNlcnZpY2UudHNcblxuaW1wb3J0IHsgSW5qZWN0YWJsZSwgSW50ZXJuYWxTZXJ2ZXJFcnJvckV4Y2VwdGlvbiwgTG9nZ2VyIH0gZnJvbSAnQG5lc3Rqcy9jb21tb24nXG5pbXBvcnQgdHlwZSB7IENvbmZpZ1NlcnZpY2UgfSBmcm9tICdAbmVzdGpzL2NvbmZpZydcbmltcG9ydCB0eXBlIHsgQWlDb25maWd1cmF0aW9uLCBVc2VyIH0gZnJvbSAnQHByaXNtYS9jbGllbnQnXG5pbXBvcnQgdHlwZSB7IFByaXNtYVNlcnZpY2UgfSBmcm9tICcuLi9wcmlzbWEvcHJpc21hLnNlcnZpY2UnXG5pbXBvcnQgdHlwZSB7IEFpUHJvdmlkZXIsIEFpUm9sZSB9IGZyb20gJy4uL3R5cGVzL2FpLXByb3ZpZGVycy50eXBlcydcbmltcG9ydCB0eXBlIHsgQWlQcm92aWRlckZhY3RvcnkgfSBmcm9tICcuL2FpLXByb3ZpZGVyLmZhY3RvcnknXG5cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBEeW5hbWljQWlTY2hlZHVsZXJTZXJ2aWNlIHtcbiAgcHJpdmF0ZSByZWFkb25seSBsb2dnZXIgPSBuZXcgTG9nZ2VyKER5bmFtaWNBaVNjaGVkdWxlclNlcnZpY2UubmFtZSlcblxuICBjb25zdHJ1Y3RvcihcbiAgICBwcml2YXRlIHJlYWRvbmx5IHByaXNtYTogUHJpc21hU2VydmljZSxcbiAgICBwcml2YXRlIHJlYWRvbmx5IGFpUHJvdmlkZXJGYWN0b3J5OiBBaVByb3ZpZGVyRmFjdG9yeSxcbiAgICBwcml2YXRlIHJlYWRvbmx5IGNvbmZpZ1NlcnZpY2U6IENvbmZpZ1NlcnZpY2VcbiAgKSB7fVxuXG4gIHB1YmxpYyBhc3luYyBnZXRQcm92aWRlckZvclJvbGUodXNlcjogVXNlciwgcm9sZTogQWlSb2xlKTogUHJvbWlzZTxBaVByb3ZpZGVyPiB7XG4gICAgdGhpcy5sb2dnZXIuZGVidWcoYFtTY2hlZHVsZXJdIE5ldyByZXF1ZXN0IGZvciByb2xlOiBcIiR7cm9sZX1cIiBmcm9tIHVzZXIgJHt1c2VyLmlkfWApXG5cbiAgICAvLyBbIV0g5qC45b+D5pS56YCgIDE6IOafpeivoumAu+i+kee/u+ivkVxuICAgIC8vIOaIkeS7rOS4jeWGjeafpeivouS4gOS4quWtl+espuS4suaVsOe7hO+8jOiAjOaYr+afpeivouS4gOS4quWFs+ezu+OAglxuICAgIC8vIOaIkeS7rOimgeaJvueahOaYr++8muS4gOS4qiBBaUNvbmZpZ3VyYXRpb27vvIzlroPnmoQgJ3JvbGVzJyDlhbPns7vkuK3vvIxcbiAgICAvLyAnc29tZScgKOiHs+WwkeacieS4gOS4qikgUm9sZSDnmoQgJ25hbWUnIOWtl+auteetieS6juaIkeS7rOaDs+imgeeahCAncm9sZSfjgIJcbiAgICBjb25zdCBkZWRpY2F0ZWRDb25maWcgPSBhd2FpdCB0aGlzLnByaXNtYS5haUNvbmZpZ3VyYXRpb24uZmluZEZpcnN0KHtcbiAgICAgIHdoZXJlOiB7XG4gICAgICAgIG93bmVySWQ6IHVzZXIuaWQsXG4gICAgICAgIHJvbGVzOiB7XG4gICAgICAgICAgc29tZToge1xuICAgICAgICAgICAgbmFtZTogcm9sZSwgLy8g6L+Z5bCx5piv5paw55qE44CB5q2j56Gu55qEIFByaXNtYSDlhbPns7vmn6Xor6Lor63ms5VcbiAgICAgICAgICB9LFxuICAgICAgICB9LFxuICAgICAgfSxcbiAgICB9KVxuXG4gICAgaWYgKGRlZGljYXRlZENvbmZpZykge1xuICAgICAgdGhpcy5sb2dnZXIubG9nKFxuICAgICAgICBgW1NjaGVkdWxlcl0gUHJpb3JpdHkgMSAoRGVkaWNhdGVkKTogRm91bmQgZGVkaWNhdGVkIGNvbmZpZyBcIiR7ZGVkaWNhdGVkQ29uZmlnLnByb3ZpZGVyfS8ke2RlZGljYXRlZENvbmZpZy5tb2RlbElkfVwiIGZvciByb2xlIFwiJHtyb2xlfVwiLmBcbiAgICAgIClcbiAgICAgIHJldHVybiB0aGlzLmFpUHJvdmlkZXJGYWN0b3J5LmNyZWF0ZVByb3ZpZGVyKGRlZGljYXRlZENvbmZpZylcbiAgICB9XG4gICAgdGhpcy5sb2dnZXIuZGVidWcoXG4gICAgICBgW1NjaGVkdWxlcl0gUHJpb3JpdHkgMSAoRGVkaWNhdGVkKTogTm8gZGVkaWNhdGVkIEFJIGZvdW5kIGZvciByb2xlIFwiJHtyb2xlfVwiLmBcbiAgICApXG5cbiAgICAvLyDkvJjlhYjnuqcgMjog5b6B55So6YC76L6R5L+d5oyB5LiN5Y+YXG4gICAgY29uc3QgYW55VXNlckNvbmZpZyA9IGF3YWl0IHRoaXMucHJpc21hLmFpQ29uZmlndXJhdGlvbi5maW5kRmlyc3Qoe1xuICAgICAgd2hlcmU6IHsgb3duZXJJZDogdXNlci5pZCB9LFxuICAgICAgb3JkZXJCeTogeyBjcmVhdGVkQXQ6ICdhc2MnIH0sXG4gICAgfSlcblxuICAgIGlmIChhbnlVc2VyQ29uZmlnKSB7XG4gICAgICB0aGlzLmxvZ2dlci5sb2coXG4gICAgICAgIGBbU2NoZWR1bGVyXSBQcmlvcml0eSAyIChSZXF1aXNpdGlvbik6IFJlcXVpc2l0aW9uaW5nIGdlbmVyYWwtcHVycG9zZSBBSSBcIiR7YW55VXNlckNvbmZpZy5wcm92aWRlcn0vJHthbnlVc2VyQ29uZmlnLm1vZGVsSWR9XCIgZm9yIHJvbGUgXCIke3JvbGV9XCIuYFxuICAgICAgKVxuICAgICAgcmV0dXJuIHRoaXMuYWlQcm92aWRlckZhY3RvcnkuY3JlYXRlUHJvdmlkZXIoYW55VXNlckNvbmZpZylcbiAgICB9XG4gICAgdGhpcy5sb2dnZXIuZGVidWcoYFtTY2hlZHVsZXJdIFByaW9yaXR5IDIgKFJlcXVpc2l0aW9uKTogVXNlciBoYXMgbm8gQUkgY29uZmlndXJhdGlvbnMgYXQgYWxsLmApXG5cbiAgICAvLyDkvJjlhYjnuqcgMzog5ZCO5aSH6YC76L6R5L+d5oyB5LiN5Y+Y77yM5L2G5qih5ouf5a+56LGh57uT5p6E6ZyA6KaB5pS55Y+YXG4gICAgdGhpcy5sb2dnZXIud2FybihcbiAgICAgIGBbU2NoZWR1bGVyXSBQcmlvcml0eSAzIChTeXN0ZW0gRmFsbGJhY2spOiBGYWxsaW5nIGJhY2sgdG8gc3lzdGVtIGRlZmF1bHQgQUkgZm9yIHJvbGUgXCIke3JvbGV9XCIuYFxuICAgIClcbiAgICB0cnkge1xuICAgICAgcmV0dXJuIHRoaXMuY3JlYXRlRmFsbGJhY2tQcm92aWRlcigpXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgIHRoaXMubG9nZ2VyLmVycm9yKFxuICAgICAgICBgW1NjaGVkdWxlcl0gQ1JJVElDQUwgRkFJTFVSRTogU3lzdGVtIGZhbGxiYWNrIEFJIGZhaWxlZCB0byBpbml0aWFsaXplLmAsXG4gICAgICAgIGVycm9yIGluc3RhbmNlb2YgRXJyb3IgPyBlcnJvci5zdGFjayA6IHVuZGVmaW5lZFxuICAgICAgKVxuICAgICAgdGhyb3cgbmV3IEludGVybmFsU2VydmVyRXJyb3JFeGNlcHRpb24oXG4gICAgICAgICdBSSBwcm9jZXNzaW5nIGZhaWxlZDogTm8gQUkgaXMgYXZhaWxhYmxlIG9yIGNvbmZpZ3VyZWQgY29ycmVjdGx5LidcbiAgICAgIClcbiAgICB9XG4gIH1cblxuICBwcml2YXRlIGNyZWF0ZUZhbGxiYWNrUHJvdmlkZXIoKTogQWlQcm92aWRlciB7XG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IGFwaUtleSA9IHRoaXMuY29uZmlnU2VydmljZS5nZXRPclRocm93PHN0cmluZz4oJ0ZBTExCQUNLX0FQSV9LRVknKVxuICAgICAgY29uc3QgbW9kZWxJZCA9IHRoaXMuY29uZmlnU2VydmljZS5nZXQ8c3RyaW5nPignRkFMTEJBQ0tfTU9ERUxfSUQnLCAnZGVlcHNlZWstY2hhdCcpXG4gICAgICBjb25zdCBiYXNlVXJsRnJvbUVudiA9IHRoaXMuY29uZmlnU2VydmljZS5nZXQ8c3RyaW5nPignRkFMTEJBQ0tfQkFTRV9VUkwnKVxuXG4gICAgICAvLyBbIV0g5qC45b+D5pS56YCgIDI6IOaooeaLn+Wvueixoee7k+aehOe/u+ivkVxuICAgICAgLy8g5paw55qEIEFpQ29uZmlndXJhdGlvbiDnsbvlnovmsqHmnIkgYGFzc2lnbmVkUm9sZXNgIOWtl+auteOAglxuICAgICAgLy8g5oiR5Lus5Yib5bu65LiA5Liq5LiN5YyF5ZCr5Lu75L2V6KeS6Imy5L+h5oGv55qE44CB57qv57K555qE6YWN572u5a+56LGh44CCXG4gICAgICAvLyDms6jmhI/vvJrov5nkuKrmqKHmi5/lr7nosaHnvLrlsJEgJ3JvbGVzJyDlsZ7mgKfvvIzmiYDku6XmiJHku6zpnIDopoHlkYror4kgVHlwZVNjcmlwdFxuICAgICAgLy8g5a6D56ym5ZCIIEFpQ29uZmlndXJhdGlvbiDnmoTlvaLnirbvvIjpgJrov4fnsbvlnovmlq3oqIAgYXMgQWlDb25maWd1cmF0aW9u77yJ44CCXG4gICAgICBjb25zdCBmYWxsYmFja0NvbmZpZyA9IHtcbiAgICAgICAgaWQ6ICdzeXN0ZW0tZmFsbGJhY2snLFxuICAgICAgICBwcm92aWRlcjogJ0RlZXBTZWVrJyxcbiAgICAgICAgYXBpS2V5LFxuICAgICAgICBiYXNlVXJsOiBiYXNlVXJsRnJvbUVudiA/PyBudWxsLFxuICAgICAgICBtb2RlbElkLFxuICAgICAgICBvd25lcklkOiAnc3lzdGVtJyxcbiAgICAgICAgY3JlYXRlZEF0OiBuZXcgRGF0ZSgpLFxuICAgICAgICB1cGRhdGVkQXQ6IG5ldyBEYXRlKCksXG4gICAgICB9IGFzIEFpQ29uZmlndXJhdGlvbiAvLyDnsbvlnovmlq3oqIDvvIzooajnpLrmiJHku6znoa7kv6Hov5nkuKrlr7nosaHnmoTnu5PmnoTmmK/lhbzlrrnnmoRcblxuICAgICAgcmV0dXJuIHRoaXMuYWlQcm92aWRlckZhY3RvcnkuY3JlYXRlUHJvdmlkZXIoZmFsbGJhY2tDb25maWcpXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgIHRoaXMubG9nZ2VyLmVycm9yKFxuICAgICAgICAnU3lzdGVtIGZhbGxiYWNrIEFJIGNvbmZpZ3VyYXRpb24gaXMgbWlzc2luZyBvciBpbnZhbGlkLiBDaGVjayB5b3VyIC5lbnYgZmlsZSBmb3IgRkFMTEJBQ0tfLi4uIHZhcmlhYmxlcy4nLFxuICAgICAgICBlcnJvclxuICAgICAgKVxuICAgICAgdGhyb3cgbmV3IEVycm9yKCdTeXN0ZW0gZGVmYXVsdCBBSSBpcyBub3QgY29uZmlndXJlZC4nKVxuICAgIH1cbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

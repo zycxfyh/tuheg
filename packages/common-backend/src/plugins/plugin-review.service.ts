@@ -228,7 +228,7 @@ export class PluginReviewService {
   /**
    * 为评价投票（有帮助/没帮助）
    */
-  async voteReviewHelpful(reviewId: string, userId: string, helpful: boolean): Promise<void> {
+  async voteReviewHelpful(reviewId: string, _userId: string, helpful: boolean): Promise<void> {
     // 检查评价是否存在
     const review = await this.prisma.pluginReview.findUnique({
       where: { id: reviewId },

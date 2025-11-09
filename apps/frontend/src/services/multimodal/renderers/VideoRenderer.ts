@@ -99,7 +99,7 @@ export class VideoRenderer implements MultimodalRenderer {
     return playerContainer
   }
 
-  private createCustomControls(videoElement: HTMLVideoElement, video: VideoContent): HTMLElement {
+  private createCustomControls(videoElement: HTMLVideoElement, _video: VideoContent): HTMLElement {
     const controls = document.createElement('div')
     controls.className = 'video-controls'
     controls.style.cssText = `

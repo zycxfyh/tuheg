@@ -1,10 +1,10 @@
 // 文件路径: packages/common-backend/src/config/env-loader.ts
 // 核心理念: 支持环境变量扩展和多环境配置
 
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { config } from 'dotenv'
 import { expand } from 'dotenv-expand'
-import { existsSync } from 'fs'
-import { resolve } from 'path'
 
 /**
  * @interface EnvLoaderOptions
@@ -26,6 +26,7 @@ export interface EnvLoaderOptions {
  * @description 环境变量加载器
  * 支持环境变量扩展和多环境配置
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: 这个类包含了环境变量处理的静态方法，适合作为工具类
 export class EnvLoader {
   /**
    * @method load

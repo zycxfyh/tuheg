@@ -1,11 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   ForbiddenException,
   Get,
-  NotFoundException,
   Param,
   Post,
   Put,
@@ -355,7 +353,7 @@ export class PluginMarketplaceController {
    */
   @Get('statistics/trending')
   async getTrendingPlugins(@Query('limit') limit?: number) {
-    return this.statsService.getTrendingPlugins(limit ? parseInt(limit.toString()) : 10)
+    return this.statsService.getTrendingPlugins(limit ? parseInt(limit.toString(), 10) : 10)
   }
 
   /**
@@ -363,6 +361,6 @@ export class PluginMarketplaceController {
    */
   @Get('statistics/featured')
   async getFeaturedPlugins(@Query('limit') limit?: number) {
-    return this.statsService.getFeaturedPlugins(limit ? parseInt(limit.toString()) : 10)
+    return this.statsService.getFeaturedPlugins(limit ? parseInt(limit.toString(), 10) : 10)
   }
 }

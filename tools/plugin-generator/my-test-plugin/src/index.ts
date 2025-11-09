@@ -68,7 +68,7 @@ export class MyTestPluginPlugin implements Plugin {
 }
 
 // Export factory function for the plugin system
-export function createMyTestPluginPlugin(context: PluginContext): Plugin {
+export function createMyTestPluginPlugin(_context: PluginContext): Plugin {
   return new MyTestPluginPlugin()
 }
 

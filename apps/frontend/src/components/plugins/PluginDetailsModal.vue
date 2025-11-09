@@ -351,12 +351,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close', 'install'])
+const _emit = defineEmits(['close', 'install'])
 
 const activeTab = ref('overview')
-const installing = ref(false)
+const _installing = ref(false)
 
-const tabs = [
+const _tabs = [
   { key: 'overview', label: '概述', icon: 'icon-info-circle' },
   { key: 'versions', label: '版本', icon: 'icon-code-branch' },
   { key: 'reviews', label: '评价', icon: 'icon-comments' },
@@ -364,7 +364,7 @@ const tabs = [
 ]
 
 // 计算属性
-const pluginIconClass = computed(() => {
+const _pluginIconClass = computed(() => {
   const categoryIcons = {
     'ai-tools': 'icon-brain',
     utilities: 'icon-wrench',
@@ -387,16 +387,16 @@ watch(
 )
 
 // 方法
-function formatNumber(num) {
+function _formatNumber(num) {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M'
+    return `${(num / 1000000).toFixed(1)}M`
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K'
+    return `${(num / 1000).toFixed(1)}K`
   }
   return num.toString()
 }
 
-function formatDate(dateString) {
+function _formatDate(dateString) {
   const date = new Date(dateString)
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -405,7 +405,7 @@ function formatDate(dateString) {
   })
 }
 
-function getRatingPercentage(rating) {
+function _getRatingPercentage(rating) {
   const ratingDistribution =
     props.plugin.reviews?.reduce((acc, review) => {
       acc[review.rating] = (acc[review.rating] || 0) + 1
@@ -416,11 +416,11 @@ function getRatingPercentage(rating) {
   return total > 0 ? ((ratingDistribution[rating] || 0) / total) * 100 : 0
 }
 
-function getRatingCount(rating) {
+function _getRatingCount(rating) {
   return props.plugin.reviews?.filter((review) => review.rating === rating).length || 0
 }
 
-function getVersionAdoptionPercentage(downloads) {
+function _getVersionAdoptionPercentage(downloads) {
   const totalDownloads =
     props.plugin.versions?.reduce((sum, version) => sum + version.downloads, 0) || 1
   return totalDownloads > 0 ? (downloads / totalDownloads) * 100 : 0

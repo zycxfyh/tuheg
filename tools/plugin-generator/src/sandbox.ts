@@ -1,8 +1,8 @@
-import chalk from 'chalk'
-import * as fs from 'fs'
-import ora from 'ora'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import { PluginSandboxService } from '@tuheg/common-backend'
+import chalk from 'chalk'
+import ora from 'ora'
 
 export interface SandboxTestOptions {
   input?: string
@@ -41,13 +41,17 @@ export class PluginSandboxTool {
     console.log(chalk.gray(`📝 Input: ${options.input || 'default test input'}\n`))
 
     // 加载配置
-    let config = {}
+    let _config = {}
     if (options.config) {
       try {
-        config = JSON.parse(fs.readFileSync(options.config, 'utf-8'))
+        _config = JSON.parse(fs.readFileSync(options.config, 'utf-8'))
         console.log(chalk.gray(`⚙️  Config loaded from: ${options.config}\n`))
       } catch (error) {
-        console.warn(chalk.yellow(`⚠️  Failed to load config: ${error instanceof Error ? error.message : String(error)}`))
+        console.warn(
+          chalk.yellow(
+            `⚠️  Failed to load config: ${error instanceof Error ? error.message : String(error)}`
+          )
+        )
       }
     }
 
@@ -140,7 +144,9 @@ export class PluginSandboxTool {
                 error: error instanceof Error ? error.message : String(error),
                 executionTime: 0,
               })
-              results.errors.push(`${tool.name}: ${error instanceof Error ? error.message : String(error)}`)
+              results.errors.push(
+                `${tool.name}: ${error instanceof Error ? error.message : String(error)}`
+              )
             }
           }
         }
@@ -150,7 +156,9 @@ export class PluginSandboxTool {
       }
     } catch (error) {
       activationSpinner.fail('Activation test error')
-      results.errors.push(`Activation error: ${error instanceof Error ? error.message : String(error)}`)
+      results.errors.push(
+        `Activation error: ${error instanceof Error ? error.message : String(error)}`
+      )
     }
 
     // 输出测试摘要

@@ -1,60 +1,25 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
-  "files": {
-    "includes": [
-      "**/apps/**/*.ts",
-      "**/apps/**/*.js",
-      "**/apps/**/*.vue",
-      "**/packages/**/*.ts",
-      "**/packages/**/*.js",
-      "**/tools/**/*.ts",
-      "**/tools/**/*.js",
-      "**/*.ts",
-      "**/*.js",
-      "**/*.json",
-      "**/*.md",
-      "!**/node_modules",
-      "!**/dist",
-      "!**/build",
-      "!**/*.d.ts",
-      "!**/*.config.js",
-      "!**/*.config.ts",
-      "!**/vcptoolbox-core",
-      "!**/coverage",
-      "!**/.nx",
-      "!**/tmp",
-      "!**/logs"
-    ]
-  },
-  "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 100,
-    "lineEnding": "lf"
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
-      "complexity": {
-        "noExcessiveCognitiveComplexity": "warn"
-      },
       "correctness": {
-        "noUnusedVariables": "warn",
-        "noUnusedImports": "warn",
+        "noUnusedVariables": "error",
         "useExhaustiveDependencies": "warn"
       },
+      "complexity": {
+        "noBannedTypes": "off"
+      },
       "style": {
-        "noNonNullAssertion": "warn",
-        "useConst": "warn",
-        "useImportType": "warn"
+        "noNonNullAssertion": "off",
+        "useConst": "error",
+        "useImportType": "error"
       },
       "suspicious": {
-        "noExplicitAny": "warn",
-        "noDebugger": "warn",
-        "noDoubleEquals": "warn"
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "warn"
       },
       "performance": {
         "noDelete": "error"
@@ -64,32 +29,83 @@
       }
     }
   },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100,
+    "attributePosition": "auto"
+  },
+  "css": {
+    "parser": {
+      "cssModules": true,
+      "allowWrongLineComments": true
+    },
+    "linter": {
+      "enabled": false
+    }
+  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "jsxQuoteStyle": "single",
+      "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",
       "trailingCommas": "es5",
       "semicolons": "asNeeded",
-      "arrowParentheses": "always"
-    },
-    "globals": ["console", "process", "Buffer", "__dirname", "__filename"],
-    "parser": {
-      "unsafeParameterDecoratorsEnabled": true
-    }
-  },
-  "json": {
-    "formatter": {
-      "enabled": true
-    },
-    "parser": {
-      "allowComments": false,
-      "allowTrailingCommas": false
-    }
-  },
-  "css": {
-    "formatter": {
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
       "enabled": true
     }
-  }
+  },
+  "files": {
+    "includes": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.jsx",
+      "**/*.tsx",
+      "**/*.json",
+      "**/*.css",
+      "**/*.scss",
+      "**/*.html",
+      "**/*.vue",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/.nx",
+      "!**/coverage",
+      "!**/.turbo",
+      "!**/*.spec.ts",
+      "!**/*.test.ts",
+      "!**/*.spec.js",
+      "!**/*.test.js",
+      "!apps/**/*.controller.ts",
+      "!apps/**/*.service.ts",
+      "!apps/**/*.module.ts",
+      "!apps/**/*.gateway.ts",
+      "!packages/**/*.service.ts",
+      "!packages/**/*.controller.ts",
+      "!apps/frontend/playwright.config.js",
+      "!apps/**/*.vue",
+      "!apps/frontend/vite.config.bundle-analyzer.js",
+      "!apps/frontend/vite.config.bundle-analyzer.d.ts"
+    ]
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.spec.ts", "**/*.test.ts", "**/*.spec.js", "**/*.test.js"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ]
 }

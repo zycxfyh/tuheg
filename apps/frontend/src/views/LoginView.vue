@@ -67,7 +67,7 @@ function toggleMode() {
   error.value = null
 }
 
-async function handleSubmit() {
+async function _handleSubmit() {
   error.value = null
   isLoading.value = true
 
@@ -84,7 +84,7 @@ async function handleSubmit() {
   } catch (err) {
     // 捕获AuthStore或API服务抛出的错误
     // 确保 err 是一个对象并且有 message 属性
-    error.value = err && err.message ? err.message : '发生未知错误'
+    error.value = err?.message ? err.message : '发生未知错误'
   } finally {
     isLoading.value = false
   }

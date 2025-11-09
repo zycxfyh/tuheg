@@ -15,10 +15,10 @@
 
 import { PromptTemplate } from '@langchain/core/prompts'
 import { Injectable, Logger } from '@nestjs/common'
-import type { ConfigService } from '../config/configuration.service'
 // [注意] MemoryHierarchyService 由调用方（如 NarrativeService）使用，不在这里导入
 import type { User } from '@prisma/client'
 import { z } from 'zod'
+import type { ConfigService } from '../config/configuration.service'
 import { callAiWithGuard } from './ai-guard'
 import type { DynamicAiSchedulerService } from './dynamic-ai-scheduler.service'
 import type { VectorSearchService } from './vector-search.service'

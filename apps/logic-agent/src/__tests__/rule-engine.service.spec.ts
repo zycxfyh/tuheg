@@ -5,11 +5,11 @@ import { Test, type TestingModule } from '@nestjs/testing'
 import type { Character, Prisma, PrismaClient } from '@prisma/client'
 import { type DirectiveSet, PrismaService } from '@tuheg/common-backend'
 import { type DeepMockProxy, mockDeep } from 'jest-mock-extended'
-import { RuleEngineService } from './rule-engine.service'
+import { RuleEngineService } from '../rule-engine.service'
 
 describe('RuleEngineService', () => {
   let service: RuleEngineService
-  let prismaMock: DeepMockProxy<PrismaClient>
+  let prismaMock: DeepMockProxy<PrismaService>
 
   const MOCK_GAME_ID = 'test-game-id'
   const MOCK_CHARACTER: Character = {
@@ -25,7 +25,15 @@ describe('RuleEngineService', () => {
   }
 
   beforeEach(async () => {
-    prismaMock = mockDeep<PrismaClient>()
+    prismaMock = {
+      $transaction: jest.fn().mockImplementation(async (fn: any) => {
+        return await fn(prismaMock)
+      }),
+      character: {
+        findUniqueOrThrow: jest.fn(),
+        update: jest.fn(),
+      },
+    } as any
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [RuleEngineService, { provide: PrismaService, useValue: prismaMock }],
@@ -33,10 +41,8 @@ describe('RuleEngineService', () => {
 
     service = module.get<RuleEngineService>(RuleEngineService)
 
-    // [核心修复] 为 tx 参数提供明确的类型 PrismaClient
-    prismaMock.$transaction.mockImplementation(async (fn: any) => {
-      return await fn(prismaMock)
-    })
+    // Manually set prisma to ensure it's available
+    ;(service as any).prisma = prismaMock
   })
 
   afterEach(() => {

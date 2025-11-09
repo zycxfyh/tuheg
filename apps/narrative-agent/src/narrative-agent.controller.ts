@@ -75,7 +75,12 @@ export class NarrativeAgentController {
       throw new HttpException(
         {
           message: '叙事内容生成失败',
-          error: error instanceof Error ? error instanceof Error ? error.message : String(error) : '未知错误',
+          error:
+            error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : '未知错误',
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )
@@ -96,7 +101,12 @@ export class NarrativeAgentController {
       throw new HttpException(
         {
           message: '获取状态失败',
-          error: error instanceof Error ? error instanceof Error ? error.message : String(error) : '未知错误',
+          error:
+            error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : '未知错误',
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )

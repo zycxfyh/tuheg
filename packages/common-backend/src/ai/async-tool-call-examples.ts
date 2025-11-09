@@ -59,7 +59,7 @@ export class AsyncToolCallExamples {
       console.log(`✅ 任务 ${taskId} 已完成`)
       console.log(`工具: ${task.toolName}`)
       console.log(`状态: ${task.status}`)
-      console.log(`耗时: ${task.completedAt!.getTime() - task.createdAt.getTime()}ms`)
+      console.log(`耗时: ${task.completedAt?.getTime() - task.createdAt.getTime()}ms`)
       console.log('结果:', JSON.stringify(task.result, null, 2))
       console.log('')
 
@@ -82,7 +82,8 @@ export class AsyncToolCallExamples {
     let processedResponse = aiResponse
     const replacements: Array<{ placeholder: string; result: string }> = []
 
-    let match
+    let match: RegExpExecArray | null
+    // biome-ignore lint/suspicious/noAssignInExpressions: 这里需要在循环条件中进行正则匹配赋值
     while ((match = placeholderRegex.exec(aiResponse)) !== null) {
       const [fullMatch, toolName, taskId] = match
       console.log(`找到占位符: ${fullMatch}`)
@@ -376,7 +377,7 @@ export class AsyncToolCallExamples {
       }
 
       default:
-        return JSON.stringify(result).slice(0, 200) + '...'
+        return `${JSON.stringify(result).slice(0, 200)}...`
     }
   }
 }

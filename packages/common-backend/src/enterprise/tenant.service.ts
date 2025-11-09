@@ -828,7 +828,7 @@ export class TenantService {
   /**
    * 获取租户存储使用量
    */
-  private async getTenantStorageUsage(tenantId: string): Promise<number> {
+  private async getTenantStorageUsage(_tenantId: string): Promise<number> {
     // 这里应该计算实际存储使用量
     // 暂时返回模拟数据
     return 2.5 // GB
@@ -837,7 +837,7 @@ export class TenantService {
   /**
    * 获取租户API使用量
    */
-  private async getTenantApiUsage(tenantId: string): Promise<number> {
+  private async getTenantApiUsage(_tenantId: string): Promise<number> {
     // 这里应该计算当月API调用次数
     // 暂时返回模拟数据
     return 1250
@@ -846,7 +846,7 @@ export class TenantService {
   /**
    * 获取租户AI令牌使用量
    */
-  private async getTenantAiUsage(tenantId: string): Promise<number> {
+  private async getTenantAiUsage(_tenantId: string): Promise<number> {
     // 这里应该计算当月AI令牌使用量
     // 暂时返回模拟数据
     return 25000

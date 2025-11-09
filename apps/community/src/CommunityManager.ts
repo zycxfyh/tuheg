@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 // 社区用户类型
 export interface CommunityUser {
@@ -861,12 +861,12 @@ export class CommunityManager extends EventEmitter {
       }
 
       if (filters.tags && filters.tags.length > 0) {
-        posts = posts.filter((p) => filters.tags!.some((tag) => p.tags.includes(tag)))
+        posts = posts.filter((p) => filters.tags?.some((tag) => p.tags.includes(tag)))
       }
 
       if (filters.dateRange) {
         posts = posts.filter(
-          (p) => p.createdAt >= filters.dateRange!.start && p.createdAt <= filters.dateRange!.end
+          (p) => p.createdAt >= filters.dateRange?.start && p.createdAt <= filters.dateRange?.end
         )
       }
     }

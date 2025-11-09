@@ -318,7 +318,7 @@ export function findByLabelText(container: HTMLElement, text: string): HTMLEleme
   const labels = Array.from(container.querySelectorAll('label'))
   const label = labels.find((l) => l.textContent?.includes(text))
 
-  if (label && label.htmlFor) {
+  if (label?.htmlFor) {
     return container.querySelector(`#${label.htmlFor}`)
   }
 

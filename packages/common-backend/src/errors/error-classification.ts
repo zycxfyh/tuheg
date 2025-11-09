@@ -187,12 +187,12 @@ export function shouldRetryError(error: unknown): boolean {
 }
 
 /**
- * 获取错误的人类可读消息
+ * 获取分类后的错误的人类可读消息
  *
  * @param error - 错误对象
  * @returns 用户友好的错误消息
  */
-export function getErrorMessage(error: unknown): string {
+export function getClassifiedErrorMessage(error: unknown): string {
   const classification = classifyProcessingError(error)
   return classification.message
 }

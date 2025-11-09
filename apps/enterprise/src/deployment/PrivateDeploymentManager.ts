@@ -1,7 +1,7 @@
 // 私有部署管理器
 // 管理企业私有化部署的配置和运维
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 export interface DeploymentConfig {
   id: string
@@ -145,7 +145,7 @@ class PrivateDeploymentManager extends EventEmitter {
           severity: 'critical',
           type: 'configuration',
           title: '部署失败',
-          description: `部署 ${config.id} 失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`,
+          description: `部署 ${config.id} 失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
           timestamp: new Date(),
           resolved: false,
           impact: '部署无法启动',
@@ -180,7 +180,7 @@ class PrivateDeploymentManager extends EventEmitter {
     console.log(`Configuring Docker deployment for ${config.id}`)
 
     // 生成docker-compose.yml
-    const dockerCompose = this.generateDockerCompose(config)
+    const _dockerCompose = this.generateDockerCompose(config)
 
     // 创建必要的目录结构
     // 应用配置、数据卷、网络等
@@ -194,7 +194,7 @@ class PrivateDeploymentManager extends EventEmitter {
     console.log(`Configuring Kubernetes deployment for ${config.id}`)
 
     // 生成Kubernetes manifests
-    const manifests = this.generateK8sManifests(config)
+    const _manifests = this.generateK8sManifests(config)
 
     // 应用到集群
     // kubectl apply -f manifests/
@@ -286,7 +286,7 @@ class PrivateDeploymentManager extends EventEmitter {
   private startHealthMonitoring(): void {
     this.healthCheckInterval = setInterval(
       async () => {
-        for (const [deploymentId, status] of this.deploymentStatuses) {
+        for (const [deploymentId, _status] of this.deploymentStatuses) {
           try {
             await this.performHealthCheck(deploymentId)
           } catch (error) {
@@ -332,7 +332,7 @@ class PrivateDeploymentManager extends EventEmitter {
     }
   }
 
-  private async checkDeploymentHealth(deploymentId: string): Promise<any> {
+  private async checkDeploymentHealth(_deploymentId: string): Promise<any> {
     // 模拟健康检查
     // 实际实现中会调用部署的健康检查API
 
@@ -438,7 +438,7 @@ class PrivateDeploymentManager extends EventEmitter {
     this.emit('deploymentScaled', { deploymentId, newSize })
   }
 
-  private async performScaling(config: DeploymentConfig): Promise<void> {
+  private async performScaling(_config: DeploymentConfig): Promise<void> {
     // 根据新的实例大小调整资源
     // Kubernetes HPA、云服务商实例类型调整等
   }
@@ -468,7 +468,7 @@ class PrivateDeploymentManager extends EventEmitter {
     this.emit('deploymentTerminated', { deploymentId })
   }
 
-  private async performCleanup(config: DeploymentConfig): Promise<void> {
+  private async performCleanup(_config: DeploymentConfig): Promise<void> {
     // 清理云资源、删除数据、撤销网络配置等
   }
 
@@ -479,7 +479,7 @@ class PrivateDeploymentManager extends EventEmitter {
   }
 
   // 生成Docker配置
-  private generateDockerCompose(config: DeploymentConfig): string {
+  private generateDockerCompose(_config: DeploymentConfig): string {
     return `
 version: '3.8'
 services:
@@ -516,25 +516,25 @@ volumes:
   }
 
   // 生成Kubernetes配置
-  private generateK8sManifests(config: DeploymentConfig): any[] {
+  private generateK8sManifests(_config: DeploymentConfig): any[] {
     // 返回Kubernetes manifest数组
     return []
   }
 
   // 云服务商特定配置方法
-  private async configureAWS(config: DeploymentConfig): Promise<void> {
+  private async configureAWS(_config: DeploymentConfig): Promise<void> {
     // AWS EKS、RDS、S3等配置
   }
 
-  private async configureAzure(config: DeploymentConfig): Promise<void> {
+  private async configureAzure(_config: DeploymentConfig): Promise<void> {
     // Azure AKS、Cosmos DB、Blob Storage等配置
   }
 
-  private async configureGCP(config: DeploymentConfig): Promise<void> {
+  private async configureGCP(_config: DeploymentConfig): Promise<void> {
     // Google GKE、Cloud SQL、Cloud Storage等配置
   }
 
-  private async configureAlibaba(config: DeploymentConfig): Promise<void> {
+  private async configureAlibaba(_config: DeploymentConfig): Promise<void> {
     // 阿里云ACK、RDS、OSS等配置
   }
 

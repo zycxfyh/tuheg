@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 // 内容类型定义
 export interface ContentPiece {
@@ -183,7 +183,6 @@ export interface SEORecommendation {
 export class ContentMarketingManager extends EventEmitter {
   private content: Map<string, ContentPiece> = new Map()
   private campaigns: Map<string, MarketingCampaign> = new Map()
-  private contentCalendar: Map<string, ContentPiece[]> = new Map() // 按日期分组
   private seoRecommendations: Map<string, SEORecommendation[]> = new Map()
 
   constructor() {
@@ -318,7 +317,9 @@ export class ContentMarketingManager extends EventEmitter {
       },
     ]
 
-    sampleContent.forEach((content) => this.content.set(content.id, content))
+    sampleContent.forEach((content) => {
+      this.content.set(content.id, content)
+    })
 
     // 初始化营销活动
     this.initializeSampleCampaigns()
@@ -429,7 +430,9 @@ export class ContentMarketingManager extends EventEmitter {
       },
     ]
 
-    campaigns.forEach((campaign) => this.campaigns.set(campaign.id, campaign))
+    campaigns.forEach((campaign) => {
+      this.campaigns.set(campaign.id, campaign)
+    })
   }
 
   // 创建内容
@@ -612,7 +615,7 @@ export class ContentMarketingManager extends EventEmitter {
       if (filters.dateRange) {
         content = content.filter((c) => {
           const pubDate = c.publishedAt || c.createdAt
-          return pubDate >= filters.dateRange!.start && pubDate <= filters.dateRange!.end
+          return pubDate >= filters.dateRange?.start && pubDate <= filters.dateRange?.end
         })
       }
     }
@@ -652,7 +655,7 @@ export class ContentMarketingManager extends EventEmitter {
           if (!calendar.has(dateKey)) {
             calendar.set(dateKey, [])
           }
-          calendar.get(dateKey)!.push(content)
+          calendar.get(dateKey)?.push(content)
         }
       }
     })

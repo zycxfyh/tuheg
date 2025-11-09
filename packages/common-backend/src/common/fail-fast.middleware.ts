@@ -13,8 +13,8 @@ export class FailFastMiddleware implements NestMiddleware {
     const startTime = Date.now()
 
     // 捕获未处理的promise rejection
-    const originalPromiseReject = process.listeners('unhandledRejection')
-    const unhandledRejectionHandler = (reason: any, promise: Promise<any>) => {
+    const _originalPromiseReject = process.listeners('unhandledRejection')
+    const unhandledRejectionHandler = (reason: any, _promise: Promise<any>) => {
       this.logger.error(`❌ Unhandled Promise Rejection: ${reason}`, {
         url: req.url,
         method: req.method,
@@ -32,7 +32,7 @@ export class FailFastMiddleware implements NestMiddleware {
     process.on('unhandledRejection', unhandledRejectionHandler)
 
     // 捕获未处理的异常
-    const originalException = process.listeners('uncaughtException')
+    const _originalException = process.listeners('uncaughtException')
     const uncaughtExceptionHandler = (error: Error) => {
       this.logger.error(`❌ Uncaught Exception: ${error.message}`, {
         stack: error.stack,

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 // 插件类型定义
 export interface Plugin {
@@ -312,7 +312,9 @@ export class PluginMarketManager extends EventEmitter {
       },
     ]
 
-    samplePlugins.forEach((plugin) => this.plugins.set(plugin.id, plugin))
+    samplePlugins.forEach((plugin) => {
+      this.plugins.set(plugin.id, plugin)
+    })
   }
 
   // 获取所有插件
@@ -595,7 +597,7 @@ export class PluginMarketManager extends EventEmitter {
   // 退款处理
   async processRefund(purchaseId: string, reason: string): Promise<boolean> {
     // 查找购买记录
-    for (const [userId, purchases] of this.purchases.entries()) {
+    for (const [_userId, purchases] of this.purchases.entries()) {
       const purchase = purchases.find((p) => p.id === purchaseId)
       if (purchase) {
         purchase.status = 'refunded'

@@ -133,7 +133,7 @@ export interface MaintenanceManual {
 @Injectable()
 export class ManufacturingService {
   constructor(
-    private aiProviderService: AiProviderService,
+    _aiProviderService: AiProviderService,
     private modelRouterService: ModelRouterService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -587,7 +587,7 @@ Provide:
   /**
    * 生成内容
    */
-  private async generateContent(prompt: string, modelId: string): Promise<string> {
+  private async generateContent(prompt: string, _modelId: string): Promise<string> {
     // 这里应该调用实际的AI模型API
     // 暂时返回模拟内容
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -598,7 +598,7 @@ Provide:
   /**
    * 解析技术文档
    */
-  private parseTechnicalDocumentation(content: string, request: any): TechnicalDocumentation {
+  private parseTechnicalDocumentation(_content: string, request: any): TechnicalDocumentation {
     // 简化的解析逻辑
     return {
       productId: request.productId,
@@ -651,7 +651,7 @@ Provide:
   /**
    * 解析产品规格
    */
-  private parseProductSpecifications(content: string, request: any): any {
+  private parseProductSpecifications(_content: string, request: any): any {
     // 简化的解析逻辑
     return {
       specifications: request.technicalSpecs,
@@ -670,7 +670,7 @@ Provide:
   /**
    * 解析质量报告
    */
-  private parseQualityReport(content: string, request: any): QualityControlReport {
+  private parseQualityReport(_content: string, request: any): QualityControlReport {
     // 简化的解析逻辑
     return {
       batchId: request.batchId,
@@ -707,7 +707,7 @@ Provide:
   /**
    * 解析质量趋势
    */
-  private parseQualityTrends(content: string, request: any): any {
+  private parseQualityTrends(_content: string, _request: any): any {
     // 简化的解析逻辑
     return {
       trends: {},
@@ -746,7 +746,7 @@ Provide:
   /**
    * 解析维护手册
    */
-  private parseMaintenanceManual(content: string, request: any): MaintenanceManual {
+  private parseMaintenanceManual(_content: string, request: any): MaintenanceManual {
     // 简化的解析逻辑
     return {
       equipmentId: request.equipmentId,
@@ -823,7 +823,7 @@ Provide:
   /**
    * 解析预测性维护
    */
-  private parsePredictiveMaintenance(content: string, request: any): any {
+  private parsePredictiveMaintenance(_content: string, _request: any): any {
     // 简化的解析逻辑
     return {
       predictions: [
@@ -861,7 +861,7 @@ Provide:
   /**
    * 解析供应链优化
    */
-  private parseSupplyChainOptimization(content: string, request: any): any {
+  private parseSupplyChainOptimization(_content: string, _request: any): any {
     // 简化的解析逻辑
     return {
       optimization: {

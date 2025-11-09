@@ -1,4 +1,4 @@
-import { createHash } from 'crypto'
+import { createHash } from 'node:crypto'
 
 // 缓存条目
 export interface CacheEntry {
@@ -357,16 +357,7 @@ export class AICacheManager {
     if (content.length < 1000) return content
 
     this.stats.compressionSavings += content.length - content.substring(0, 1000).length
-    return content.substring(0, 1000) + '...[compressed]'
-  }
-
-  // 解压缩内容
-  private decompress(content: string): string {
-    if (content.endsWith('...[compressed]')) {
-      // 在实际实现中，这里应该从压缩数据恢复
-      return content
-    }
-    return content
+    return `${content.substring(0, 1000)}...[compressed]`
   }
 
   // 清除过期条目
@@ -420,7 +411,7 @@ export class AICacheManager {
     if (this.config.storageBackend === 'memory') return
 
     try {
-      const cacheData = {
+      const _cacheData = {
         entries: Array.from(this.cache.entries()),
         stats: this.stats,
         timestamp: Date.now(),
@@ -453,7 +444,7 @@ export class AICacheManager {
         // cacheData = JSON.parse(fs.readFileSync('ai-cache.json', 'utf8'))
       }
 
-      if (cacheData && cacheData.entries) {
+      if (cacheData?.entries) {
         this.cache = new Map(cacheData.entries)
         if (cacheData.stats) {
           this.stats = { ...this.stats, ...cacheData.stats }

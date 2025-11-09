@@ -164,12 +164,6 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import GeographyEditor from './editors/GeographyEditor.vue'
-import HistoryEditor from './editors/HistoryEditor.vue'
-import MagicTechEditor from './editors/MagicTechEditor.vue'
-import RulesEditor from './editors/RulesEditor.vue'
-import SocietyEditor from './editors/SocietyEditor.vue'
-import WorldBasicsEditor from './editors/WorldBasicsEditor.vue'
 
 // Props
 const props = defineProps({
@@ -183,9 +177,9 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'save', 'export'])
 
 // 响应式数据
-const activeTab = ref('basics')
+const _activeTab = ref('basics')
 const isSaving = ref(false)
-const generationProgress = ref(0)
+const _generationProgress = ref(0)
 
 const worldData = ref({
   id: null,
@@ -235,7 +229,7 @@ const worldData = ref({
 })
 
 // 选项卡配置
-const tabs = ref([
+const _tabs = ref([
   { id: 'basics', label: '基础设定', icon: '🏠' },
   { id: 'geography', label: '地理环境', icon: '🌍' },
   { id: 'society', label: '社会结构', icon: '👥' },
@@ -245,7 +239,7 @@ const tabs = ref([
 ])
 
 // AI Agent状态
-const agents = ref([
+const _agents = ref([
   {
     id: 'creation-agent',
     name: 'Creation Agent',
@@ -276,7 +270,7 @@ const agents = ref([
 ])
 
 // 计算属性
-const isWorldComplete = computed(() => {
+const _isWorldComplete = computed(() => {
   return (
     worldData.value.name &&
     worldData.value.basics.theme &&
@@ -285,7 +279,7 @@ const isWorldComplete = computed(() => {
 })
 
 // 方法
-const saveWorld = async () => {
+const _saveWorld = async () => {
   try {
     isSaving.value = true
 
@@ -295,7 +289,7 @@ const saveWorld = async () => {
     // 如果是新世界，设置创建时间
     if (!worldData.value.metadata.createdAt) {
       worldData.value.metadata.createdAt = new Date().toISOString()
-      worldData.value.id = 'world-' + Date.now()
+      worldData.value.id = `world-${Date.now()}`
     }
 
     emit('save', worldData.value)
@@ -312,11 +306,11 @@ const saveWorld = async () => {
   }
 }
 
-const exportWorld = () => {
+const _exportWorld = () => {
   emit('export', worldData.value)
 }
 
-const generateWorldSummary = () => {
+const _generateWorldSummary = () => {
   if (!worldData.value.name) return '请先设置世界名称和基础信息'
 
   const basics = worldData.value.basics
@@ -348,7 +342,7 @@ const generateWorldSummary = () => {
   return summary || '正在构建世界设定...'
 }
 
-const interactWithAgent = (agent) => {
+const _interactWithAgent = (agent) => {
   // TODO: 实现与Agent的交互
   console.log('Interacting with agent:', agent)
 }

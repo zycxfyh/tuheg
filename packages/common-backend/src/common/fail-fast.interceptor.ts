@@ -32,7 +32,7 @@ export class FailFastInterceptor implements NestInterceptor {
       timeout(30000), // 30秒超时
 
       // 记录成功响应
-      tap((response) => {
+      tap((_response) => {
         const duration = Date.now() - startTime
         this.logger.debug(`✅ API call completed: ${method} ${url}`, {
           duration: `${duration}ms`,

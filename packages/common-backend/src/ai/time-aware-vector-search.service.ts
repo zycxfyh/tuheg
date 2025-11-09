@@ -71,7 +71,7 @@ export class TimeAwareVectorSearchService {
   }
 
   constructor(
-    private readonly configService: ConfigService,
+    readonly _configService: ConfigService,
     private readonly prisma: PrismaService,
     private readonly vectorSearch: VectorSearchService
   ) {}
@@ -138,7 +138,7 @@ export class TimeAwareVectorSearchService {
     config: TimeAwareSearchConfig
   ): Promise<TimeAwareSearchResult[]> {
     const now = new Date()
-    const timeWindowMs = config.timeWindowHours * 60 * 60 * 1000
+    const _timeWindowMs = config.timeWindowHours * 60 * 60 * 1000
 
     return baseResults
       .map((result) => {
@@ -314,7 +314,8 @@ export class TimeAwareVectorSearchService {
     const recommendations: string[] = []
 
     // 生成优化建议
-    const recentCount = (buckets[0]?.count || 0) + (buckets[1]?.count || 0) + (buckets[2]?.count || 0)
+    const recentCount =
+      (buckets[0]?.count || 0) + (buckets[1]?.count || 0) + (buckets[2]?.count || 0)
     const oldCount = (buckets[3]?.count || 0) + (buckets[4]?.count || 0)
 
     if (recentCount > oldCount * 2) {

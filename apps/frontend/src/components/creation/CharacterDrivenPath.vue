@@ -47,11 +47,12 @@ import { useAssets } from '@/composables/useAssets'
 import { useAppStore } from '@/stores/app.store'
 
 const appStore = useAppStore()
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 const { handleCharacterCardUpload } = useAssets()
 
 const emit = defineEmits(['back', 'start-creation'])
 
-function onStartClick() {
+function _onStartClick() {
   if (appStore.uploadedCharacterCard) {
     // [注释] 此处的 start-creation 事件将由父组件 CreationHubView.vue 捕获
     emit('start-creation', appStore.uploadedCharacterCard)

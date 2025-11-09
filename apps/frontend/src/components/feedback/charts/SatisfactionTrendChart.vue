@@ -39,12 +39,12 @@ const props = defineProps<{
   data: Array<{ date: string; rating: number }>
 }>()
 
-const currentRating = computed(() => {
+const _currentRating = computed(() => {
   if (!props.data.length) return 0
   return props.data[props.data.length - 1].rating
 })
 
-const trend = computed(() => {
+const _trend = computed(() => {
   if (props.data.length < 2) return 0
   const recent = props.data.slice(-7) // 最近7天
   if (recent.length < 2) return 0
@@ -54,7 +54,7 @@ const trend = computed(() => {
   return last - first
 })
 
-const getLinePoints = () => {
+const _getLinePoints = () => {
   if (!props.data.length) return ''
 
   const points = props.data.map((item, index) => {

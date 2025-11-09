@@ -475,7 +475,7 @@ export class AgentCommunicationService {
       .slice(0, 3)
 
     return sortedHours.map(([hour, count]) => ({
-      hour: parseInt(hour),
+      hour: parseInt(hour, 10),
       messageCount: count,
     }))
   }

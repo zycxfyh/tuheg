@@ -2,6 +2,7 @@
 
 import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
 import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
+import { getErrorMessage } from '@tuheg/common-backend'
 import { z } from 'zod'
 import type { CreationService } from './creation.service'
 
@@ -33,44 +34,61 @@ export class CreationAgentController {
   @Post('create-world')
   async createWorld(@Body() dto: CreateWorldDto) {
     try {
-      // 验证输入
-      const validationResult = CreateWorldSchema.safeParse(dto)
-      if (!validationResult.success) {
-        throw new HttpException(
-          {
-            message: '输入验证失败',
-            errors: validationResult.error.format(),
-          },
-          HttpStatus.BAD_REQUEST
-        )
-      }
-
+      this.validateCreateWorldInput(dto)
       this.logger.log(`HTTP API: Creating world for user ${dto.userId}`)
 
-      // 执行世界创建
       const result = await this.creationService.createNewWorld(dto)
-
-      return {
-        success: true,
-        message: '世界创建任务已开始处理',
-        data: result,
-        timestamp: new Date().toISOString(),
-      }
+      return this.buildSuccessResponse(result)
     } catch (error) {
-      this.logger.error(`HTTP API: Failed to create world for user ${dto.userId}`, error)
+      this.handleCreateWorldError(error, dto.userId)
+    }
+  }
 
-      if (error instanceof HttpException) {
-        throw error
-      }
-
+  /**
+   * 验证创建世界的输入参数
+   */
+  private validateCreateWorldInput(dto: CreateWorldDto): void {
+    const validationResult = CreateWorldSchema.safeParse(dto)
+    if (!validationResult.success) {
       throw new HttpException(
         {
-          message: '世界创建失败',
-          error: error instanceof Error ? error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error) : '未知错误',
+          message: '输入验证失败',
+          errors: validationResult.error.format(),
         },
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.BAD_REQUEST
       )
     }
+  }
+
+  /**
+   * 构建成功响应
+   */
+  private buildSuccessResponse(result: unknown) {
+    return {
+      success: true,
+      message: '世界创建任务已开始处理',
+      data: result,
+      timestamp: new Date().toISOString(),
+    }
+  }
+
+  /**
+   * 处理创建世界时的错误
+   */
+  private handleCreateWorldError(error: unknown, userId: string): never {
+    this.logger.error(`HTTP API: Failed to create world for user ${userId}`, error)
+
+    if (error instanceof HttpException) {
+      throw error
+    }
+
+    throw new HttpException(
+      {
+        message: '世界创建失败',
+        error: getErrorMessage(error),
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR
+    )
   }
 
   // [新增] HTTP API: 获取创建状态
@@ -89,7 +107,7 @@ export class CreationAgentController {
       throw new HttpException(
         {
           message: '获取状态失败',
-          error: error instanceof Error ? error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error) : '未知错误',
+          error: getErrorMessage(error),
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )

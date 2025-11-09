@@ -77,7 +77,7 @@ export class ImageRenderer implements MultimodalRenderer {
 
   private applyImageStyles(
     container: HTMLElement,
-    image: ImageContent,
+    _image: ImageContent,
     options: RenderOptions
   ): void {
     const styles = {
@@ -183,11 +183,13 @@ export class ImageRenderer implements MultimodalRenderer {
     // 提示词（如果有）
     if (image.prompt) {
       const promptPreview =
-        image.prompt.length > 30 ? image.prompt.substring(0, 27) + '...' : image.prompt
+        image.prompt.length > 30 ? `${image.prompt.substring(0, 27)}...` : image.prompt
       metadataItems.push(this.createMetadataBadge(`"${promptPreview}"`, '#fff3e0', '#f57c00'))
     }
 
-    metadataItems.forEach((item) => metadata.appendChild(item))
+    metadataItems.forEach((item) => {
+      metadata.appendChild(item)
+    })
 
     return metadata
   }
@@ -294,7 +296,7 @@ export class ImageRenderer implements MultimodalRenderer {
     document.body.appendChild(modal)
   }
 
-  private applyImageAnimations(container: HTMLElement, image: ImageContent): void {
+  private applyImageAnimations(container: HTMLElement, _image: ImageContent): void {
     // 添加淡入动画
     container.style.opacity = '0'
     container.style.transform = 'translateY(20px)'

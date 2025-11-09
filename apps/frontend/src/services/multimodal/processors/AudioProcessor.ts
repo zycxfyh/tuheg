@@ -71,7 +71,7 @@ export class AudioProcessor implements MultimodalProcessor {
     return { audio: audioContent }
   }
 
-  private async processUrl(url: string, options: any): Promise<MultimodalContent> {
+  private async processUrl(url: string, _options: any): Promise<MultimodalContent> {
     if (!this.isValidAudioUrl(url)) {
       throw new Error('Invalid audio URL')
     }
@@ -141,13 +141,13 @@ export class AudioProcessor implements MultimodalProcessor {
     })
   }
 
-  private async transcribeAudio(file: File): Promise<string> {
+  private async transcribeAudio(_file: File): Promise<string> {
     // 简化的语音转文本实现
     // 在实际应用中，应该调用语音识别API
     return '这是一个语音转文本的示例结果。实际应用中会调用专业的语音识别服务。'
   }
 
-  private async analyzeAudio(file: File): Promise<{
+  private async analyzeAudio(_file: File): Promise<{
     sampleRate: number
     channels: number
     bitrate: number
@@ -165,7 +165,7 @@ export class AudioProcessor implements MultimodalProcessor {
     }
   }
 
-  private async generateMarkers(file: File): Promise<
+  private async generateMarkers(_file: File): Promise<
     Array<{
       time: number
       label: string

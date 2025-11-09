@@ -36,7 +36,7 @@ defineProps<{
   data: Array<{ date: string; count: number }>
 }>()
 
-const maxCount = Math.max(...(data?.map(d => d.count) || [0]))
+const _maxCount = Math.max(...(data?.map(d => d.count) || [0]))
 </script>
 
 <style scoped>

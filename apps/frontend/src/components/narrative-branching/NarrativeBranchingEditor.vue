@@ -316,7 +316,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 // Props
 const props = defineProps({
@@ -347,7 +347,7 @@ const canvasContainer = ref(null)
 const canvasSize = ref({ width: 2000, height: 1500 })
 
 // 计算属性
-const viewportRect = computed(() => {
+const _viewportRect = computed(() => {
   const container = canvasContainer.value
   if (!container) return { x: 0, y: 0, width: 0, height: 0 }
 
@@ -364,7 +364,7 @@ const viewportRect = computed(() => {
 })
 
 // 方法
-const addNode = () => {
+const _addNode = () => {
   const newNode = {
     id: `node-${Date.now()}`,
     title: '',
@@ -386,7 +386,7 @@ const addNode = () => {
   emit('update:modelValue', { nodes: storyNodes.value, connections: connections.value })
 }
 
-const selectNode = (nodeId) => {
+const _selectNode = (nodeId) => {
   selectedNode.value = nodeId
   selectedConnection.value = null
   const node = storyNodes.value.find((n) => n.id === nodeId)
@@ -395,16 +395,16 @@ const selectNode = (nodeId) => {
   }
 }
 
-const selectConnection = (connectionId) => {
+const _selectConnection = (connectionId) => {
   selectedConnection.value = connectionId
   selectedNode.value = null
 }
 
-const editNode = (node) => {
+const _editNode = (node) => {
   editingNode.value = { ...node }
 }
 
-const saveNode = () => {
+const _saveNode = () => {
   if (!editingNode.value) return
 
   const index = storyNodes.value.findIndex((n) => n.id === editingNode.value.id)
@@ -417,7 +417,7 @@ const saveNode = () => {
   }
 }
 
-const deleteNode = () => {
+const _deleteNode = () => {
   if (!selectedNode.value) return
 
   storyNodes.value = storyNodes.value.filter((n) => n.id !== selectedNode.value)
@@ -430,7 +430,7 @@ const deleteNode = () => {
   emit('update:modelValue', { nodes: storyNodes.value, connections: connections.value })
 }
 
-const addChoice = () => {
+const _addChoice = () => {
   if (!editingNode.value.choices) {
     editingNode.value.choices = []
   }
@@ -440,15 +440,15 @@ const addChoice = () => {
   })
 }
 
-const removeChoice = (index) => {
+const _removeChoice = (index) => {
   editingNode.value.choices.splice(index, 1)
 }
 
-const getAvailableTargetNodes = (currentNodeId) => {
+const _getAvailableTargetNodes = (currentNodeId) => {
   return storyNodes.value.filter((node) => node.id !== currentNodeId)
 }
 
-const getNodeColor = (node) => {
+const _getNodeColor = (node) => {
   switch (node.type) {
     case 'narrative':
       return '#667eea'
@@ -463,7 +463,7 @@ const getNodeColor = (node) => {
   }
 }
 
-const getNodeTypeColor = (type) => {
+const _getNodeTypeColor = (type) => {
   switch (type) {
     case 'narrative':
       return '#3182ce'
@@ -478,7 +478,7 @@ const getNodeTypeColor = (type) => {
   }
 }
 
-const getNodeTypeIcon = (type) => {
+const _getNodeTypeIcon = (type) => {
   switch (type) {
     case 'narrative':
       return '📖'
@@ -493,12 +493,12 @@ const getNodeTypeIcon = (type) => {
   }
 }
 
-const getConnectionColor = (connection) => {
+const _getConnectionColor = (_connection) => {
   // 根据连接类型或重要性返回不同颜色
   return '#cbd5e0'
 }
 
-const getConnectionPath = (connection) => {
+const _getConnectionPath = (connection) => {
   const fromNode = storyNodes.value.find((n) => n.id === connection.from)
   const toNode = storyNodes.value.find((n) => n.id === connection.to)
 
@@ -510,13 +510,13 @@ const getConnectionPath = (connection) => {
   const toY = toNode.position.y
 
   // 创建贝塞尔曲线
-  const midX = (fromX + toX) / 2
+  const _midX = (fromX + toX) / 2
   const controlPointOffset = Math.abs(toY - fromY) * 0.3
 
   return `M ${fromX} ${fromY} C ${fromX + controlPointOffset} ${fromY}, ${toX - controlPointOffset} ${toY}, ${toX} ${toY}`
 }
 
-const getConnectionLabelPosition = (connection) => {
+const _getConnectionLabelPosition = (connection) => {
   const fromNode = storyNodes.value.find((n) => n.id === connection.from)
   const toNode = storyNodes.value.find((n) => n.id === connection.to)
 
@@ -528,7 +528,7 @@ const getConnectionLabelPosition = (connection) => {
   }
 }
 
-const getViewBox = () => {
+const _getViewBox = () => {
   const zoom = zoomLevel.value
   const panX = panOffset.value.x
   const panY = panOffset.value.y
@@ -536,25 +536,25 @@ const getViewBox = () => {
   return `${panX} ${panY} ${canvasSize.value.width / zoom} ${canvasSize.value.height / zoom}`
 }
 
-const zoomIn = () => {
+const _zoomIn = () => {
   zoomLevel.value = Math.min(zoomLevel.value * 1.2, 3)
 }
 
-const zoomOut = () => {
+const _zoomOut = () => {
   zoomLevel.value = Math.max(zoomLevel.value / 1.2, 0.1)
 }
 
-const fitToScreen = () => {
+const _fitToScreen = () => {
   zoomLevel.value = 1
   panOffset.value = { x: 0, y: 0 }
 }
 
-const truncateText = (text, maxLength) => {
+const _truncateText = (text, maxLength) => {
   if (text.length <= maxLength) return text
-  return text.substr(0, maxLength) + '...'
+  return `${text.substr(0, maxLength)}...`
 }
 
-const autoGenerateBranches = () => {
+const _autoGenerateBranches = () => {
   // 模拟AI生成分支
   const choiceNodes = storyNodes.value.filter((node) => node.type === 'choice')
 
@@ -575,7 +575,7 @@ const autoGenerateBranches = () => {
   generateAISuggestions()
 }
 
-const exportStoryTree = () => {
+const _exportStoryTree = () => {
   const storyTree = {
     nodes: storyNodes.value,
     connections: connections.value,
@@ -648,7 +648,7 @@ const generateAISuggestions = () => {
   aiSuggestions.value = suggestions
 }
 
-const getImpactLabel = (impact) => {
+const _getImpactLabel = (impact) => {
   const labels = {
     low: '低影响',
     medium: '中影响',
@@ -657,12 +657,12 @@ const getImpactLabel = (impact) => {
   return labels[impact] || impact
 }
 
-const applySuggestion = (suggestion) => {
+const _applySuggestion = (suggestion) => {
   // TODO: 实现建议应用逻辑
   console.log('Applying suggestion:', suggestion)
 }
 
-const dismissSuggestion = (suggestionId) => {
+const _dismissSuggestion = (suggestionId) => {
   aiSuggestions.value = aiSuggestions.value.filter((s) => s.id !== suggestionId)
 }
 

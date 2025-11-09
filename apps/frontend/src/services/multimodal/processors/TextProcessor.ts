@@ -63,6 +63,7 @@ export class TextProcessor implements MultimodalProcessor {
         // 移除多余空白字符
         .replace(/\s+/g, ' ')
         // 移除控制字符
+        // biome-ignore lint/suspicious/noControlCharactersInRegex: 这是有意移除控制字符的正则表达式
         .replace(/[\x00-\x1F\x7F]/g, '')
         // 标准化引号
         .replace(/["""]/g, '"')
@@ -193,7 +194,7 @@ export class TextProcessor implements MultimodalProcessor {
       // 移除不适合语音合成的字符
       .replace(/[^\w\s\u4e00-\u9fff.,!?:;""''()-]/g, '')
       // 处理常见的缩写和数字
-      .replace(/\b\d+\b/g, (match) => this.numberToWords(parseInt(match)))
+      .replace(/\b\d+\b/g, (match) => this.numberToWords(parseInt(match, 10)))
       // 添加适当的停顿
       .replace(/([.!?。！？])/g, '$1 ')
 

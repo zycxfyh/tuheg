@@ -205,14 +205,14 @@ export class PluginError extends VCPToolBoxError {
 
 // Event Types
 export interface SDKEventMap {
-  ready: void
+  ready: undefined
   error: VCPToolBoxError
   authenticated: TokenResponse
   gameCreated: Game
   gameUpdated: Game
   actionSubmitted: ActionResponse
-  websocketConnected: void
-  websocketDisconnected: void
+  websocketConnected: undefined
+  websocketDisconnected: undefined
   websocketError: Error
   pluginLoaded: Plugin
   pluginUnloaded: string

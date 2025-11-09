@@ -101,7 +101,7 @@ export class TextRenderer implements MultimodalRenderer {
     }
   }
 
-  private formatText(text: string, content: MultimodalContent): string {
+  private formatText(text: string, _content: MultimodalContent): string {
     let formattedText = text
 
     // 处理换行

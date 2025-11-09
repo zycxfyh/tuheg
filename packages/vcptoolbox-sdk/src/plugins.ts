@@ -73,7 +73,7 @@ export class PluginManager {
       try {
         const pluginResponse = await this.getPlugin(pluginId)
         this.client.emit('pluginLoaded', pluginResponse.data)
-      } catch (error) {
+      } catch (_error) {
         // 忽略错误，插件可能还没有完全安装
       }
     }
@@ -112,7 +112,7 @@ export class PluginManager {
       try {
         const pluginResponse = await this.getPlugin(pluginId)
         this.client.emit('pluginLoaded', pluginResponse.data)
-      } catch (error) {
+      } catch (_error) {
         // 忽略错误
       }
     }

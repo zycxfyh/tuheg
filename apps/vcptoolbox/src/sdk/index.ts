@@ -56,20 +56,20 @@ export class VCPToolBoxSDK {
   }
 
   // 创建插件项目
-  async createPlugin(name: string, type: string, options: any = {}): Promise<void> {
+  async createPlugin(name: string, type: string, _options: any = {}): Promise<void> {
     // 插件创建逻辑
     console.log(`Creating ${type} plugin: ${name}`)
     // 这里会调用CLI命令
   }
 
   // 验证插件
-  async validatePlugin(pluginPath: string): Promise<{ valid: boolean; errors: string[] }> {
+  async validatePlugin(_pluginPath: string): Promise<{ valid: boolean; errors: string[] }> {
     // 插件验证逻辑
     return { valid: true, errors: [] }
   }
 
   // 发布插件
-  async publishPlugin(pluginPath: string, options: any = {}): Promise<void> {
+  async publishPlugin(pluginPath: string, _options: any = {}): Promise<void> {
     // 插件发布逻辑
     console.log(`Publishing plugin from: ${pluginPath}`)
   }

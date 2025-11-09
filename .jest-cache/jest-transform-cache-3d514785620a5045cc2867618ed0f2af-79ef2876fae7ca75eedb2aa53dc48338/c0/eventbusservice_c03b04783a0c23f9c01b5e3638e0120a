@@ -1,0 +1,88 @@
+d47b3df7bef298d4fe94bd4de4c336a2
+"use strict";
+// 文件路径: libs/common/src/event-bus/event-bus.service.ts
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EventBusService = void 0;
+const common_1 = require("@nestjs/common");
+const event_bus_module_1 = require("./event-bus.module");
+let EventBusService = (() => {
+    let _classDecorators = [(0, common_1.Injectable)()];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var EventBusService = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            EventBusService = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        client;
+        logger = new common_1.Logger(EventBusService.name);
+        // [核心] 注入我们刚刚在module里定义的“信号发射器”
+        constructor(client) {
+            this.client = client;
+        }
+        // [核心] 在模块初始化时，确保与 RabbitMQ 的连接已建立
+        async onModuleInit() {
+            try {
+                await this.client.connect();
+                this.logger.log('Successfully connected to the RabbitMQ event bus.');
+            }
+            catch (error) {
+                this.logger.error('Failed to connect to the RabbitMQ event bus.', error);
+            }
+        }
+        /**
+         * @method publish
+         * @description 向宇宙广播一个事件
+         * @param eventName - 事件的“暗号”，例如 'PLAYER_ACTION_SUBMITTED'
+         * @param data - 要广播的具体信息
+         */
+        publish(eventName, data) {
+            this.logger.log(`Publishing event "${eventName}" to the event bus.`);
+            // [核心] client.emit() 用于“发射后不管”的事件广播。
+            // 它会将事件名作为路由键，将数据作为消息体，发送到 RabbitMQ。
+            this.client.emit(eventName, data);
+        }
+    };
+    return EventBusService = _classThis;
+})();
+exports.EventBusService = EventBusService;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxldmVudC1idXNcXGV2ZW50LWJ1cy5zZXJ2aWNlLnRzIiwibWFwcGluZ3MiOiI7QUFBQSx1REFBdUQ7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFFdkQsMkNBQThFO0FBRTlFLHlEQUFvRDtJQUd2QyxlQUFlOzRCQUQzQixJQUFBLG1CQUFVLEdBQUU7Ozs7Ozs7O1lBQ2IsNktBNEJDOzs7WUE1QlksdURBQWU7O1FBSTRCO1FBSHJDLE1BQU0sR0FBRyxJQUFJLGVBQU0sQ0FBQyxlQUFlLENBQUMsSUFBSSxDQUFDLENBQUE7UUFFMUQsZ0NBQWdDO1FBQ2hDLFlBQXNELE1BQW1CO1lBQW5CLFdBQU0sR0FBTixNQUFNLENBQWE7UUFBRyxDQUFDO1FBRTdFLG1DQUFtQztRQUNuQyxLQUFLLENBQUMsWUFBWTtZQUNoQixJQUFJLENBQUM7Z0JBQ0gsTUFBTSxJQUFJLENBQUMsTUFBTSxDQUFDLE9BQU8sRUFBRSxDQUFBO2dCQUMzQixJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxtREFBbUQsQ0FBQyxDQUFBO1lBQ3RFLENBQUM7WUFBQyxPQUFPLEtBQUssRUFBRSxDQUFDO2dCQUNmLElBQUksQ0FBQyxNQUFNLENBQUMsS0FBSyxDQUFDLDhDQUE4QyxFQUFFLEtBQUssQ0FBQyxDQUFBO1lBQzFFLENBQUM7UUFDSCxDQUFDO1FBRUQ7Ozs7O1dBS0c7UUFDSCxPQUFPLENBQUMsU0FBaUIsRUFBRSxJQUFTO1lBQ2xDLElBQUksQ0FBQyxNQUFNLENBQUMsR0FBRyxDQUFDLHFCQUFxQixTQUFTLHFCQUFxQixDQUFDLENBQUE7WUFDcEUscUNBQXFDO1lBQ3JDLHFDQUFxQztZQUNyQyxJQUFJLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxTQUFTLEVBQUUsSUFBSSxDQUFDLENBQUE7UUFDbkMsQ0FBQzs7OztBQTNCVSwwQ0FBZSIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXDE2NjYzXFxEZXNrdG9wXFx0dWhlZ1xccGFja2FnZXNcXGNvbW1vbi1iYWNrZW5kXFxzcmNcXGV2ZW50LWJ1c1xcZXZlbnQtYnVzLnNlcnZpY2UudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBsaWJzL2NvbW1vbi9zcmMvZXZlbnQtYnVzL2V2ZW50LWJ1cy5zZXJ2aWNlLnRzXG5cbmltcG9ydCB7IEluamVjdCwgSW5qZWN0YWJsZSwgTG9nZ2VyLCB0eXBlIE9uTW9kdWxlSW5pdCB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHR5cGUgeyBDbGllbnRQcm94eSB9IGZyb20gJ0BuZXN0anMvbWljcm9zZXJ2aWNlcydcbmltcG9ydCB7IE5FWFVTX0VWRU5UX0JVUyB9IGZyb20gJy4vZXZlbnQtYnVzLm1vZHVsZSdcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIEV2ZW50QnVzU2VydmljZSBpbXBsZW1lbnRzIE9uTW9kdWxlSW5pdCB7XG4gIHByaXZhdGUgcmVhZG9ubHkgbG9nZ2VyID0gbmV3IExvZ2dlcihFdmVudEJ1c1NlcnZpY2UubmFtZSlcblxuICAvLyBb5qC45b+DXSDms6jlhaXmiJHku6zliJrliJrlnKhtb2R1bGXph4zlrprkuYnnmoTigJzkv6Hlj7flj5HlsITlmajigJ1cbiAgY29uc3RydWN0b3IoQEluamVjdChORVhVU19FVkVOVF9CVVMpIHByaXZhdGUgcmVhZG9ubHkgY2xpZW50OiBDbGllbnRQcm94eSkge31cblxuICAvLyBb5qC45b+DXSDlnKjmqKHlnZfliJ3lp4vljJbml7bvvIznoa7kv53kuI4gUmFiYml0TVEg55qE6L+e5o6l5bey5bu656uLXG4gIGFzeW5jIG9uTW9kdWxlSW5pdCgpIHtcbiAgICB0cnkge1xuICAgICAgYXdhaXQgdGhpcy5jbGllbnQuY29ubmVjdCgpXG4gICAgICB0aGlzLmxvZ2dlci5sb2coJ1N1Y2Nlc3NmdWxseSBjb25uZWN0ZWQgdG8gdGhlIFJhYmJpdE1RIGV2ZW50IGJ1cy4nKVxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICB0aGlzLmxvZ2dlci5lcnJvcignRmFpbGVkIHRvIGNvbm5lY3QgdG8gdGhlIFJhYmJpdE1RIGV2ZW50IGJ1cy4nLCBlcnJvcilcbiAgICB9XG4gIH1cblxuICAvKipcbiAgICogQG1ldGhvZCBwdWJsaXNoXG4gICAqIEBkZXNjcmlwdGlvbiDlkJHlroflrpnlub/mkq3kuIDkuKrkuovku7ZcbiAgICogQHBhcmFtIGV2ZW50TmFtZSAtIOS6i+S7tueahOKAnOaal+WPt+KAne+8jOS+i+WmgiAnUExBWUVSX0FDVElPTl9TVUJNSVRURUQnXG4gICAqIEBwYXJhbSBkYXRhIC0g6KaB5bm/5pKt55qE5YW35L2T5L+h5oGvXG4gICAqL1xuICBwdWJsaXNoKGV2ZW50TmFtZTogc3RyaW5nLCBkYXRhOiBhbnkpIHtcbiAgICB0aGlzLmxvZ2dlci5sb2coYFB1Ymxpc2hpbmcgZXZlbnQgXCIke2V2ZW50TmFtZX1cIiB0byB0aGUgZXZlbnQgYnVzLmApXG4gICAgLy8gW+aguOW/g10gY2xpZW50LmVtaXQoKSDnlKjkuo7igJzlj5HlsITlkI7kuI3nrqHigJ3nmoTkuovku7blub/mkq3jgIJcbiAgICAvLyDlroPkvJrlsIbkuovku7blkI3kvZzkuLrot6/nlLHplK7vvIzlsIbmlbDmja7kvZzkuLrmtojmga/kvZPvvIzlj5HpgIHliLAgUmFiYml0TVHjgIJcbiAgICB0aGlzLmNsaWVudC5lbWl0KGV2ZW50TmFtZSwgZGF0YSlcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

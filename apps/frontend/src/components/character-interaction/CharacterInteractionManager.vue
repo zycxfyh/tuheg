@@ -270,12 +270,12 @@ const relationshipTypes = ref([
 ])
 
 // 计算属性
-const availableCharacters = computed(() => {
+const _availableCharacters = computed(() => {
   return characters.value.filter((char) => char.id !== selectedCharacter.value)
 })
 
 // 方法
-const addCharacter = () => {
+const _addCharacter = () => {
   const newCharacter = {
     id: `char-${Date.now()}`,
     name: '',
@@ -290,7 +290,7 @@ const addCharacter = () => {
   emit('update:modelValue', characters.value)
 }
 
-const removeCharacter = (characterId) => {
+const _removeCharacter = (characterId) => {
   characters.value = characters.value.filter((char) => char.id !== characterId)
   relationships.value = relationships.value.filter(
     (rel) => rel.from !== characterId && rel.to !== characterId
@@ -301,24 +301,24 @@ const removeCharacter = (characterId) => {
   emit('update:modelValue', characters.value)
 }
 
-const selectCharacter = (characterId) => {
+const _selectCharacter = (characterId) => {
   selectedCharacter.value = characterId
 }
 
-const editCharacter = (character) => {
+const _editCharacter = (character) => {
   // TODO: 打开角色编辑模态框
   console.log('Edit character:', character)
 }
 
-const getSelectedCharacter = () => {
+const _getSelectedCharacter = () => {
   return characters.value.find((char) => char.id === selectedCharacter.value)
 }
 
-const getCharacterById = (id) => {
+const _getCharacterById = (id) => {
   return characters.value.find((char) => char.id === id)
 }
 
-const getCharacterPosition = (characterId) => {
+const _getCharacterPosition = (characterId) => {
   const character = characters.value.find((char) => char.id === characterId)
   return character?.position || { x: 0, y: 0 }
 }
@@ -327,7 +327,7 @@ const getCharacterRelationships = (characterId) => {
   return relationships.value.filter((rel) => rel.from === characterId || rel.to === characterId)
 }
 
-const getAvailableCharacters = () => {
+const _getAvailableCharacters = () => {
   return characters.value.filter((char) => {
     const existingRelationships = getCharacterRelationships(selectedCharacter.value)
     return (
@@ -337,7 +337,7 @@ const getAvailableCharacters = () => {
   })
 }
 
-const addRelationship = () => {
+const _addRelationship = () => {
   if (!selectedCharacter.value || !newRelationshipTarget.value) return
 
   const newRelationship = {
@@ -355,23 +355,23 @@ const addRelationship = () => {
   generateInteractionSuggestions()
 }
 
-const updateRelationship = (relationship) => {
+const _updateRelationship = (relationship) => {
   const index = relationships.value.findIndex((rel) => rel.id === relationship.id)
   if (index !== -1) {
     relationships.value[index] = relationship
   }
 }
 
-const removeRelationship = (relationshipId) => {
+const _removeRelationship = (relationshipId) => {
   relationships.value = relationships.value.filter((rel) => rel.id !== relationshipId)
 }
 
-const getRelationshipColor = (type) => {
+const _getRelationshipColor = (type) => {
   const typeObj = relationshipTypes.value.find((t) => t.value === type)
   return typeObj?.color || '#9e9e9e'
 }
 
-const getCharacterColor = (character) => {
+const _getCharacterColor = (character) => {
   // 根据角色类型返回不同颜色
   if (character.role?.includes('主角')) return '#667eea'
   if (character.role?.includes('反派')) return '#e53e3e'
@@ -379,7 +379,7 @@ const getCharacterColor = (character) => {
   return '#48bb78'
 }
 
-const generateInteractions = () => {
+const _generateInteractions = () => {
   if (characters.value.length < 2) return
 
   // 模拟AI生成角色交互
@@ -447,7 +447,7 @@ const generateInteractionSuggestions = () => {
   interactionSuggestions.value = suggestions
 }
 
-const applySuggestion = (suggestion) => {
+const _applySuggestion = (suggestion) => {
   // TODO: 实现建议应用逻辑
   console.log('Applying suggestion:', suggestion)
 }

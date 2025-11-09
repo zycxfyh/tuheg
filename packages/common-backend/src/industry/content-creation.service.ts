@@ -34,7 +34,7 @@ export interface ContentCreationResult {
 @Injectable()
 export class ContentCreationService {
   constructor(
-    private aiProviderService: AiProviderService,
+    _aiProviderService: AiProviderService,
     private modelRouterService: ModelRouterService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -420,7 +420,7 @@ Make it shareable and platform-optimized.`
   /**
    * 生成内容
    */
-  private async generateContent(prompt: string, modelId: string): Promise<string> {
+  private async generateContent(prompt: string, _modelId: string): Promise<string> {
     // 这里应该调用实际的AI模型API
     // 暂时返回模拟内容
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -462,7 +462,7 @@ Make it shareable and platform-optimized.`
       truncated = truncated.substring(0, lastSentenceEnd + 1)
     }
 
-    return truncated.trim() + '...'
+    return `${truncated.trim()}...`
   }
 
   /**

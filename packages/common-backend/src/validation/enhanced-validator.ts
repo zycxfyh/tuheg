@@ -40,6 +40,7 @@ export interface ValidationError {
  * @class EnhancedValidator
  * @description 增强的验证器，提供 Pydantic 风格的友好错误消息
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: 这个类包含了验证相关的静态方法，适合作为工具类
 export class EnhancedValidator {
   /**
    * @method validate

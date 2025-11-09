@@ -23,7 +23,7 @@ export class UpdatesGateway implements OnGatewayConnection, OnGatewayDisconnect,
   private readonly logger = new Logger(UpdatesGateway.name)
   private readonly clerkClient: ReturnType<typeof createClerkClient>
 
-  constructor(@Inject('ConfigService') private readonly configService: ConfigService) {
+  constructor(@Inject('ConfigService') private readonly _configService: ConfigService) {
     const secretKey = this.configService.get<string>('CLERK_SECRET_KEY')
     if (!secretKey) {
       this.logger.error('CLERK_SECRET_KEY is not configured for WebSocket authentication.')
@@ -39,7 +39,9 @@ export class UpdatesGateway implements OnGatewayConnection, OnGatewayDisconnect,
         await this.authenticateSocket(socket)
         next()
       } catch (error) {
-        this.logger.warn(`WebSocket authentication failed: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
+        this.logger.warn(
+          `WebSocket authentication failed: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
+        )
         next(error)
       }
     })
@@ -68,7 +70,9 @@ export class UpdatesGateway implements OnGatewayConnection, OnGatewayDisconnect,
       socket.data.userId = authResult.userId
       socket.data.auth = authResult
     } catch (error) {
-      throw new UnauthorizedException(`WebSocket authentication failed: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
+      throw new UnauthorizedException(
+        `WebSocket authentication failed: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
+      )
     }
   }
 

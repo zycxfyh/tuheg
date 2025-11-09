@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import type { EventEmitter2 } from '@nestjs/event-emitter'
-import { ModelMetrics, type ModelUsage, ProviderMetrics, type UsageStatus } from '@prisma/client'
+import type { ModelUsage, UsageStatus } from '@prisma/client'
 import type { PrismaService } from '../prisma/prisma.service'
 
 export interface UsageRecord {

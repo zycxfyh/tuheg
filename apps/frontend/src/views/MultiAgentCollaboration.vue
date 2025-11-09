@@ -366,7 +366,6 @@
 
 <script setup>
 import { nextTick, onMounted, onUnmounted, ref } from 'vue'
-import DemoCollaborationModal from '../components/collaboration/DemoCollaborationModal.vue'
 import { agentCollaborationApi } from '../services/agentCollaborationApi'
 
 // 响应式数据
@@ -377,11 +376,11 @@ const recentMessages = ref([])
 const systemHealth = ref({ status: 'healthy' })
 const agentStats = ref({})
 const systemMetrics = ref({})
-const viewMode = ref('network')
+const _viewMode = ref('network')
 const showDemoModal = ref(false)
 
 // 时间线事件
-const timelineEvents = ref([])
+const _timelineEvents = ref([])
 
 // 节点位置（用于网络视图）
 const nodePositions = ref(new Map())
@@ -475,20 +474,20 @@ function initializeNodePositions() {
   })
 }
 
-function getNodePosition(agentId) {
+function _getNodePosition(agentId) {
   const pos = nodePositions.value.get(agentId)
-  return pos ? { left: pos.x + 'px', top: pos.y + 'px' } : {}
+  return pos ? { left: `${pos.x}px`, top: `${pos.y}px` } : {}
 }
 
-function getNodeX(agentId) {
+function _getNodeX(agentId) {
   return nodePositions.value.get(agentId)?.x || 0
 }
 
-function getNodeY(agentId) {
+function _getNodeY(agentId) {
   return nodePositions.value.get(agentId)?.y || 0
 }
 
-function getAgentIcon(type) {
+function _getAgentIcon(type) {
   const icons = {
     GENERIC: 'icon-robot',
     CREATION: 'icon-palette',
@@ -500,7 +499,7 @@ function getAgentIcon(type) {
   return icons[type] || 'icon-robot'
 }
 
-function getAgentTypeName(type) {
+function _getAgentTypeName(type) {
   const names = {
     GENERIC: '通用',
     CREATION: '创作',
@@ -512,7 +511,7 @@ function getAgentTypeName(type) {
   return names[type] || '未知'
 }
 
-function getAgentStatusName(status) {
+function _getAgentStatusName(status) {
   const names = {
     OFFLINE: '离线',
     ONLINE: '在线',
@@ -522,7 +521,7 @@ function getAgentStatusName(status) {
   return names[status] || '未知'
 }
 
-function getTaskStatusName(status) {
+function _getTaskStatusName(status) {
   const names = {
     PENDING: '待处理',
     ASSIGNED: '已分配',
@@ -534,7 +533,7 @@ function getTaskStatusName(status) {
   return names[status] || '未知'
 }
 
-function getComplexityName(complexity) {
+function _getComplexityName(complexity) {
   const names = {
     LOW: '低',
     MEDIUM: '中',
@@ -544,7 +543,7 @@ function getComplexityName(complexity) {
   return names[complexity] || '未知'
 }
 
-function getCollaborationStatusName(status) {
+function _getCollaborationStatusName(status) {
   const names = {
     ACTIVE: '活跃',
     COMPLETED: '完成',
@@ -554,7 +553,7 @@ function getCollaborationStatusName(status) {
   return names[status] || '未知'
 }
 
-function getMessageIcon(type) {
+function _getMessageIcon(type) {
   const icons = {
     TEXT: 'icon-message',
     COMMAND: 'icon-terminal',
@@ -565,7 +564,7 @@ function getMessageIcon(type) {
   return icons[type] || 'icon-message'
 }
 
-function formatTime(timestamp) {
+function _formatTime(timestamp) {
   const date = new Date(timestamp)
   return date.toLocaleTimeString('zh-CN', {
     hour: '2-digit',
@@ -574,7 +573,7 @@ function formatTime(timestamp) {
   })
 }
 
-function getEventPosition(timestamp) {
+function _getEventPosition(timestamp) {
   const now = new Date()
   const eventTime = new Date(timestamp)
   const hoursAgo = (now - eventTime) / (1000 * 60 * 60)
@@ -583,11 +582,11 @@ function getEventPosition(timestamp) {
   return Math.max(0, Math.min(100, ((24 - hoursAgo) / 24) * 100))
 }
 
-function createDemoCollaboration() {
+function _createDemoCollaboration() {
   showDemoModal.value = true
 }
 
-async function startDemoCollaboration(config) {
+async function _startDemoCollaboration(config) {
   try {
     // 创建演示协作
     const collaboration = await agentCollaborationApi.createCollaboration({
@@ -627,7 +626,7 @@ async function startDemoCollaboration(config) {
   }
 }
 
-async function createRandomTask() {
+async function _createRandomTask() {
   try {
     const taskTypes = ['CREATION', 'ANALYSIS', 'REVIEW', 'OPTIMIZATION']
     const complexities = ['LOW', 'MEDIUM', 'HIGH']
@@ -652,12 +651,12 @@ async function createRandomTask() {
   }
 }
 
-function showAgentOptimization() {
+function _showAgentOptimization() {
   // 这里可以显示Agent优化面板
   alert('Agent优化功能即将上线！')
 }
 
-function clearMessages() {
+function _clearMessages() {
   recentMessages.value = []
 }
 

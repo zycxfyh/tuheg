@@ -11,15 +11,15 @@ const creationRingConfig = {
 
   // =============== 服务器配置 ===============
   server: {
-    port: parseInt(process.env.PORT) || 3001,
+    port: parseInt(process.env.PORT, 10) || 3001,
     host: process.env.HOST || 'localhost',
-    mode: process.env.CREATION_RING_MODE || 'development'
+    mode: process.env.CREATION_RING_MODE || 'development',
   },
 
   // =============== 管理员配置 ===============
   admin: {
     username: process.env.ADMIN_USERNAME || 'admin',
-    password: process.env.ADMIN_PASSWORD || 'creation-ring-2024'
+    password: process.env.ADMIN_PASSWORD || 'creation-ring-2024',
   },
 
   // =============== AI 服务配置 ===============
@@ -32,34 +32,40 @@ const creationRingConfig = {
     models: {
       storyGeneration: process.env.STORY_GENERATION_MODEL || 'gpt-4',
       characterCreation: process.env.CHARACTER_CREATION_MODEL || 'gpt-4',
-      worldBuilding: process.env.WORLD_BUILDING_MODEL || 'gpt-4'
+      worldBuilding: process.env.WORLD_BUILDING_MODEL || 'gpt-4',
     },
 
     limits: {
-      storyTokens: parseInt(process.env.MAX_STORY_TOKENS) || 4000,
-      characterTokens: parseInt(process.env.MAX_CHARACTER_TOKENS) || 2000,
-      worldTokens: parseInt(process.env.MAX_WORLD_TOKENS) || 3000
-    }
+      storyTokens: parseInt(process.env.MAX_STORY_TOKENS, 10) || 4000,
+      characterTokens: parseInt(process.env.MAX_CHARACTER_TOKENS, 10) || 2000,
+      worldTokens: parseInt(process.env.MAX_WORLD_TOKENS, 10) || 3000,
+    },
   },
 
   // =============== 创世星环特有配置 ===============
   creation: {
     narrative: {
       defaultStyle: process.env.DEFAULT_NARRATIVE_STYLE || '现代现实主义',
-      maxLength: parseInt(process.env.MAX_STORY_LENGTH) || 50000
+      maxLength: parseInt(process.env.MAX_STORY_LENGTH, 10) || 50000,
     },
 
     collaboration: {
       enabled: process.env.ENABLE_COLLABORATION === 'true',
       realtime: process.env.REALTIME_COLLABORATION === 'true',
-      maxUsers: parseInt(process.env.MAX_SESSION_USERS) || 10,
-      timeoutMinutes: parseInt(process.env.SESSION_TIMEOUT_MINUTES) || 480
+      maxUsers: parseInt(process.env.MAX_SESSION_USERS, 10) || 10,
+      timeoutMinutes: parseInt(process.env.SESSION_TIMEOUT_MINUTES, 10) || 480,
     },
 
     plugins: {
-      enabled: ['StoryGenerator', 'CharacterCreator', 'WorldBuilder', 'NarrativeLogic', 'CollaborationManager'],
-      path: './plugins'
-    }
+      enabled: [
+        'StoryGenerator',
+        'CharacterCreator',
+        'WorldBuilder',
+        'NarrativeLogic',
+        'CollaborationManager',
+      ],
+      path: './plugins',
+    },
   },
 
   // =============== 数据存储配置 ===============
@@ -70,15 +76,15 @@ const creationRingConfig = {
       worlds: process.env.WORLD_DATABASE_PATH || './data/worlds',
       sessions: './data/sessions',
       backups: './data/backups',
-      logs: './logs'
-    }
+      logs: './logs',
+    },
   },
 
   // =============== WebSocket 配置 ===============
   websocket: {
-    port: parseInt(process.env.WEBSOCKET_PORT) || 3002,
+    port: parseInt(process.env.WEBSOCKET_PORT, 10) || 3002,
     host: process.env.WEBSOCKET_HOST || 'localhost',
-    heartbeatInterval: parseInt(process.env.WEBSOCKET_HEARTBEAT_INTERVAL) || 30000
+    heartbeatInterval: parseInt(process.env.WEBSOCKET_HEARTBEAT_INTERVAL, 10) || 30000,
   },
 
   // =============== VCPToolBox 兼容配置 ===============
@@ -86,47 +92,47 @@ const creationRingConfig = {
     enabled: true,
     memory: {
       similarityThreshold: parseFloat(process.env.MEMORY_SIMILARITY_THRESHOLD) || 0.8,
-      maxConnections: parseInt(process.env.MEMORY_MAX_CONNECTIONS) || 1000
+      maxConnections: parseInt(process.env.MEMORY_MAX_CONNECTIONS, 10) || 1000,
     },
 
     workflow: {
-      maxConcurrent: parseInt(process.env.WORKFLOW_MAX_CONCURRENT) || 5,
-      defaultTimeout: parseInt(process.env.WORKFLOW_DEFAULT_TIMEOUT) || 300000
-    }
+      maxConcurrent: parseInt(process.env.WORKFLOW_MAX_CONCURRENT, 10) || 5,
+      defaultTimeout: parseInt(process.env.WORKFLOW_DEFAULT_TIMEOUT, 10) || 300000,
+    },
   },
 
   // =============== 安全配置 ===============
   security: {
     encryption: {
-      key: process.env.ENCRYPTION_KEY || 'default-encryption-key-change-in-production'
+      key: process.env.ENCRYPTION_KEY || 'default-encryption-key-change-in-production',
     },
 
     cors: {
       origin: process.env.NODE_ENV === 'production' ? false : '*',
-      credentials: true
-    }
+      credentials: true,
+    },
   },
 
   // =============== 监控配置 ===============
   monitoring: {
     logLevel: process.env.LOG_LEVEL || 'info',
-    enablePerformanceMonitoring: process.env.ENABLE_PERFORMANCE_MONITORING === 'true'
-  }
-};
+    enablePerformanceMonitoring: process.env.ENABLE_PERFORMANCE_MONITORING === 'true',
+  },
+}
 
 // 验证配置
 function validateConfig() {
-  const errors = [];
+  const errors = []
 
   if (!creationRingConfig.ai.apiKey) {
-    errors.push('AI API Key 未配置');
+    errors.push('AI API Key 未配置')
   }
 
   if (!creationRingConfig.ai.vcpKey) {
-    errors.push('VCP Key 未配置');
+    errors.push('VCP Key 未配置')
   }
 
-  return errors;
+  return errors
 }
 
 // 导出配置
@@ -134,6 +140,6 @@ module.exports = {
   config: creationRingConfig,
   validateConfig,
   get: (path) => {
-    return path.split('.').reduce((obj, key) => obj && obj[key], creationRingConfig);
-  }
-};
+    return path.split('.').reduce((obj, key) => obj?.[key], creationRingConfig)
+  },
+}

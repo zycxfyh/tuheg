@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 // AI服务类型定义
 export interface AIServiceConfig {
@@ -295,7 +295,7 @@ export class AIServiceManager extends EventEmitter {
 
   // 执行具体请求
   private async executeRequest(service: AIServiceConfig, request: AIRequest): Promise<AIResponse> {
-    const startTime = Date.now()
+    const _startTime = Date.now()
 
     // 这里实现具体的AI服务调用逻辑
     // 实际实现会根据不同provider调用相应的API
@@ -380,14 +380,14 @@ export class AIServiceManager extends EventEmitter {
   }
 
   // 检查缓存
-  private async checkCache(request: AIRequest): Promise<AIResponse | null> {
+  private async checkCache(_request: AIRequest): Promise<AIResponse | null> {
     // 实现缓存检查逻辑
     // 这里可以集成Redis或其他缓存系统
     return null
   }
 
   // 缓存响应
-  private async cacheResponse(request: AIRequest, response: AIResponse): Promise<void> {
+  private async cacheResponse(_request: AIRequest, _response: AIResponse): Promise<void> {
     // 实现缓存存储逻辑
   }
 
@@ -418,7 +418,7 @@ export class AIServiceManager extends EventEmitter {
   // 健康监控
   private startHealthMonitoring() {
     setInterval(async () => {
-      for (const [key, service] of this.services) {
+      for (const [_key, service] of this.services) {
         await this.checkServiceHealth(service)
       }
     }, 30000) // 每30秒检查一次
@@ -452,7 +452,7 @@ export class AIServiceManager extends EventEmitter {
       }
 
       this.healthStatus.set(key, health)
-    } catch (error) {
+    } catch (_error) {
       const health: ServiceHealth = {
         provider: service.provider,
         model: service.model,

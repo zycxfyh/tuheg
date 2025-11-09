@@ -1,7 +1,5 @@
 // 文件路径: apps/narrative-agent/src/narrative.service.ts (已优化 AI 调用链)
 
-import { StructuredOutputParser } from '@langchain/core/output_parsers'
-import { PromptTemplate } from '@langchain/core/prompts'
 import { Injectable, Logger } from '@nestjs/common'
 import type { User } from '@prisma/client'
 import {
@@ -119,7 +117,12 @@ export class NarrativeService {
     } catch (error: unknown) {
       let errorMessage = 'An unknown error occurred in narrative processing'
       if (error instanceof Error) {
-        errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+        errorMessage =
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error)
       }
       this.logger.error(
         `Failed to process narrative for game ${payload.gameId}: ${errorMessage}`,
@@ -155,7 +158,12 @@ export class NarrativeService {
   ): Promise<void> {
     let errorMessage = 'An unknown error occurred during narrative processing'
     if (error instanceof Error) {
-      errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+      errorMessage =
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
     }
 
     try {

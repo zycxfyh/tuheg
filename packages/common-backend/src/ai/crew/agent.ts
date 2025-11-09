@@ -179,7 +179,8 @@ export class Agent {
     const toolCalls: Array<{ toolName: string; input: unknown }> = []
     const toolCallRegex = /TOOL_CALL\(([^,]+),\s*([^)]+)\)/g
 
-    let match
+    let match: RegExpExecArray | null
+    // biome-ignore lint/suspicious/noAssignInExpressions: 这里需要在循环条件中进行正则匹配赋值
     while ((match = toolCallRegex.exec(output)) !== null) {
       const toolName = match[1]?.trim()
       const inputStr = match[2]?.trim()

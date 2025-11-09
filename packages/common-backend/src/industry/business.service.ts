@@ -82,7 +82,7 @@ export interface RecruitmentContent {
 @Injectable()
 export class BusinessService {
   constructor(
-    private aiProviderService: AiProviderService,
+    _aiProviderService: AiProviderService,
     private modelRouterService: ModelRouterService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -534,7 +534,7 @@ Provide:
   /**
    * 生成内容
    */
-  private async generateContent(prompt: string, modelId: string): Promise<string> {
+  private async generateContent(prompt: string, _modelId: string): Promise<string> {
     // 这里应该调用实际的AI模型API
     // 暂时返回模拟内容
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -545,7 +545,7 @@ Provide:
   /**
    * 解析商业报告
    */
-  private parseBusinessReport(content: string, request: any): BusinessIntelligenceReport {
+  private parseBusinessReport(_content: string, request: any): BusinessIntelligenceReport {
     // 简化的解析逻辑
     return {
       title: `${request.companyId} ${request.reportType} Business Report`,
@@ -585,7 +585,7 @@ Provide:
   /**
    * 解析销售预测
    */
-  private parseSalesForecast(content: string, request: any): any {
+  private parseSalesForecast(_content: string, _request: any): any {
     // 简化的解析逻辑
     return {
       forecast: [],
@@ -602,7 +602,7 @@ Provide:
   /**
    * 解析合同分析
    */
-  private parseContractAnalysis(content: string, request: any): ContractAnalysis {
+  private parseContractAnalysis(_content: string, request: any): ContractAnalysis {
     // 简化的解析逻辑
     return {
       contractId: `contract-${Date.now()}`,
@@ -639,7 +639,7 @@ Provide:
   /**
    * 解析合同条款
    */
-  private parseContractClauses(content: string, request: any): any {
+  private parseContractClauses(_content: string, _request: any): any {
     // 简化的解析逻辑
     return {
       standardClauses: [
@@ -665,7 +665,7 @@ Provide:
   /**
    * 解析招聘内容
    */
-  private parseRecruitmentContent(content: string, request: any): RecruitmentContent {
+  private parseRecruitmentContent(_content: string, request: any): RecruitmentContent {
     // 简化的解析逻辑
     return {
       jobTitle: request.jobTitle,
@@ -691,7 +691,7 @@ Provide:
   /**
    * 解析面试问题
    */
-  private parseInterviewQuestions(content: string, request: any): any {
+  private parseInterviewQuestions(_content: string, request: any): any {
     // 简化的解析逻辑
     return {
       behavioral: [
@@ -727,7 +727,7 @@ Provide:
   /**
    * 解析培训材料
    */
-  private parseTrainingMaterial(content: string, request: any): any {
+  private parseTrainingMaterial(_content: string, request: any): any {
     // 简化的解析逻辑
     return {
       title: `${request.topic} Training`,
@@ -759,7 +759,7 @@ Provide:
   /**
    * 解析客户服务响应
    */
-  private parseCustomerServiceResponse(content: string, request: any): any {
+  private parseCustomerServiceResponse(_content: string, _request: any): any {
     // 简化的解析逻辑
     return {
       response: {

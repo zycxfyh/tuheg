@@ -1,5 +1,5 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vitest/config'
-import { resolve } from 'path'
 
 export default defineConfig({
   test: {
@@ -27,7 +27,7 @@ export default defineConfig({
       dir: '.vitest-cache',
     },
     // 增量测试支持
-    changed: process.env.CI ? false : true,
+    changed: !process.env.CI,
     // 性能监控
     benchmark: {
       include: ['**/*.benchmark.test.js'],

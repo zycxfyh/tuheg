@@ -122,7 +122,7 @@ export class RateLimitService implements OnModuleDestroy {
 
     try {
       // 使用 Redis 的 Sorted Set 实现滑动窗口
-      const pipeline = this.redisClient!.pipeline()
+      const pipeline = this.redisClient?.pipeline()
 
       // 移除过期的时间戳
       pipeline.zremrangebyscore(redisKey, '-inf', String(windowStart))

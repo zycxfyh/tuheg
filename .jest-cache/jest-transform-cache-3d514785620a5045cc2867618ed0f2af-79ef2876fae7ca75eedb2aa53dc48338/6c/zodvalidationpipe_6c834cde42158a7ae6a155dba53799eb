@@ -1,0 +1,43 @@
+bd5aac9c7c28c551524b38caac73cdb2
+"use strict";
+// 文件路径: libs/common/src/pipes/zod-validation.pipe.ts
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ZodValidationPipe = void 0;
+const common_1 = require("@nestjs/common");
+const zod_1 = require("zod");
+let ZodValidationPipe = class ZodValidationPipe {
+    schema;
+    constructor(schema) {
+        this.schema = schema;
+    }
+    transform(value) {
+        try {
+            return this.schema.parse(value);
+        }
+        catch (error) {
+            if (error instanceof zod_1.ZodError) {
+                throw new common_1.BadRequestException({
+                    statusCode: 400,
+                    message: 'Validation failed',
+                    errors: error.flatten().fieldErrors,
+                });
+            }
+            throw new common_1.BadRequestException('Invalid request payload');
+        }
+    }
+};
+exports.ZodValidationPipe = ZodValidationPipe;
+exports.ZodValidationPipe = ZodValidationPipe = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [Object])
+], ZodValidationPipe);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxwaXBlc1xcem9kLXZhbGlkYXRpb24ucGlwZS50cyIsIm1hcHBpbmdzIjoiO0FBQUEscURBQXFEOzs7Ozs7Ozs7Ozs7QUFFckQsMkNBQW9GO0FBQ3BGLDZCQUE4QztBQUd2QyxJQUFNLGlCQUFpQixHQUF2QixNQUFNLGlCQUFpQjtJQUNSO0lBQXBCLFlBQW9CLE1BQWlCO1FBQWpCLFdBQU0sR0FBTixNQUFNLENBQVc7SUFBRyxDQUFDO0lBRXpDLFNBQVMsQ0FBQyxLQUFjO1FBQ3RCLElBQUksQ0FBQztZQUNILE9BQU8sSUFBSSxDQUFDLE1BQU0sQ0FBQyxLQUFLLENBQUMsS0FBSyxDQUFDLENBQUE7UUFDakMsQ0FBQztRQUFDLE9BQU8sS0FBSyxFQUFFLENBQUM7WUFDZixJQUFJLEtBQUssWUFBWSxjQUFRLEVBQUUsQ0FBQztnQkFDOUIsTUFBTSxJQUFJLDRCQUFtQixDQUFDO29CQUM1QixVQUFVLEVBQUUsR0FBRztvQkFDZixPQUFPLEVBQUUsbUJBQW1CO29CQUM1QixNQUFNLEVBQUUsS0FBSyxDQUFDLE9BQU8sRUFBRSxDQUFDLFdBQVc7aUJBQ3BDLENBQUMsQ0FBQTtZQUNKLENBQUM7WUFDRCxNQUFNLElBQUksNEJBQW1CLENBQUMseUJBQXlCLENBQUMsQ0FBQTtRQUMxRCxDQUFDO0lBQ0gsQ0FBQztDQUNGLENBQUE7QUFqQlksOENBQWlCOzRCQUFqQixpQkFBaUI7SUFEN0IsSUFBQSxtQkFBVSxHQUFFOztHQUNBLGlCQUFpQixDQWlCN0IiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxwaXBlc1xcem9kLXZhbGlkYXRpb24ucGlwZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyDmlofku7bot6/lvoQ6IGxpYnMvY29tbW9uL3NyYy9waXBlcy96b2QtdmFsaWRhdGlvbi5waXBlLnRzXG5cbmltcG9ydCB7IEJhZFJlcXVlc3RFeGNlcHRpb24sIEluamVjdGFibGUsIHR5cGUgUGlwZVRyYW5zZm9ybSB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHsgWm9kRXJyb3IsIHR5cGUgWm9kU2NoZW1hIH0gZnJvbSAnem9kJ1xuXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgWm9kVmFsaWRhdGlvblBpcGUgaW1wbGVtZW50cyBQaXBlVHJhbnNmb3JtIHtcbiAgY29uc3RydWN0b3IocHJpdmF0ZSBzY2hlbWE6IFpvZFNjaGVtYSkge31cblxuICB0cmFuc2Zvcm0odmFsdWU6IHVua25vd24pOiB1bmtub3duIHtcbiAgICB0cnkge1xuICAgICAgcmV0dXJuIHRoaXMuc2NoZW1hLnBhcnNlKHZhbHVlKVxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICBpZiAoZXJyb3IgaW5zdGFuY2VvZiBab2RFcnJvcikge1xuICAgICAgICB0aHJvdyBuZXcgQmFkUmVxdWVzdEV4Y2VwdGlvbih7XG4gICAgICAgICAgc3RhdHVzQ29kZTogNDAwLFxuICAgICAgICAgIG1lc3NhZ2U6ICdWYWxpZGF0aW9uIGZhaWxlZCcsXG4gICAgICAgICAgZXJyb3JzOiBlcnJvci5mbGF0dGVuKCkuZmllbGRFcnJvcnMsXG4gICAgICAgIH0pXG4gICAgICB9XG4gICAgICB0aHJvdyBuZXcgQmFkUmVxdWVzdEV4Y2VwdGlvbignSW52YWxpZCByZXF1ZXN0IHBheWxvYWQnKVxuICAgIH1cbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

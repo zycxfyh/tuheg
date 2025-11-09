@@ -82,7 +82,7 @@ export class VideoProcessor implements MultimodalProcessor {
     return { video: videoContent }
   }
 
-  private async processUrl(url: string, options: any): Promise<MultimodalContent> {
+  private async processUrl(url: string, _options: any): Promise<MultimodalContent> {
     if (!this.isValidVideoUrl(url)) {
       throw new Error('Invalid video URL')
     }
@@ -189,7 +189,7 @@ export class VideoProcessor implements MultimodalProcessor {
     })
   }
 
-  private async transcribeVideo(file: File): Promise<string> {
+  private async transcribeVideo(_file: File): Promise<string> {
     // 简化的视频转文本实现
     // 实际应用中需要先提取音频，然后进行语音识别
     return '这是一个视频转文本的示例结果。实际应用中会先提取音频轨道，然后调用语音识别服务。'
@@ -215,7 +215,7 @@ export class VideoProcessor implements MultimodalProcessor {
     return scenes
   }
 
-  private async extractAudio(file: File): Promise<string> {
+  private async extractAudio(_file: File): Promise<string> {
     // 简化的音频提取
     // 实际应用中需要使用专业的音视频处理库
     return `audio-${Date.now()}.mp3`

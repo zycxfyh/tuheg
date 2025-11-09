@@ -8,7 +8,6 @@ import {
   type PluginCategory,
   type PluginMarketplace,
   PluginStatus,
-  PluginVersion,
   type Prisma,
 } from '@prisma/client'
 import type {
@@ -281,7 +280,7 @@ export class PluginMarketplaceService {
    */
   async reviewPlugin(
     id: string,
-    reviewerId: string,
+    _reviewerId: string,
     data: ReviewPluginDto
   ): Promise<PluginMarketplace> {
     // 检查插件是否存在

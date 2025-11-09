@@ -9,7 +9,7 @@ import type { PrismaService } from '../../prisma/prisma.service'
  * 装饰器：为清理任务添加统一的日志记录
  */
 function withCleanupLogging(operationName: string) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value
     const logger = new Logger(target.constructor.name)
 

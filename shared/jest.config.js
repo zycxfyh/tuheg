@@ -40,9 +40,7 @@ module.exports = {
   },
 
   // 转换忽略模式
-  transformIgnorePatterns: [
-    '/node_modules/(?!(@tuheg|packages)/)',
-  ],
+  transformIgnorePatterns: ['/node_modules/(?!(@tuheg|packages)/)'],
 
   // 覆盖率配置
   collectCoverageFrom: [
@@ -144,4 +142,4 @@ module.exports = {
   // 缓存配置
   cache: true,
   cacheDirectory: '<rootDir>/.jest-cache',
-};
+}

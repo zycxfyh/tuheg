@@ -4,7 +4,6 @@ import {
   AuthenticationError,
   type LoginCredentials,
   type TokenResponse,
-  VCPToolBoxError,
 } from './types.js'
 
 /**
@@ -29,7 +28,7 @@ export class AuthManager {
       this.setTokens(tokenData)
 
       return tokenData
-    } catch (error) {
+    } catch (_error) {
       throw new AuthenticationError('Login failed')
     }
   }
@@ -64,7 +63,7 @@ export class AuthManager {
       this.setTokens(tokenData)
 
       return tokenData
-    } catch (error) {
+    } catch (_error) {
       this.clearTokens()
       throw new AuthenticationError('Token refresh failed')
     }
@@ -76,7 +75,7 @@ export class AuthManager {
   async logout(): Promise<void> {
     try {
       await this.client.post('/auth/logout')
-    } catch (error) {
+    } catch (_error) {
       // 忽略登出错误
     } finally {
       this.clearTokens()
@@ -193,7 +192,7 @@ export class AuthManager {
       const expiry = localStorage.getItem(this.tokenExpiryKey)
 
       if (token && expiry) {
-        const expiryTime = parseInt(expiry)
+        const expiryTime = parseInt(expiry, 10)
         if (Date.now() < expiryTime) {
           return token
         } else {
@@ -201,7 +200,7 @@ export class AuthManager {
           this.clearTokens()
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // 忽略存储错误
     }
 
@@ -216,7 +215,7 @@ export class AuthManager {
 
     try {
       return localStorage.getItem(this.refreshTokenStorageKey)
-    } catch (error) {
+    } catch (_error) {
       return null
     }
   }
@@ -235,7 +234,7 @@ export class AuthManager {
       if (expiryTime) {
         localStorage.setItem(this.tokenExpiryKey, expiryTime.toString())
       }
-    } catch (error) {
+    } catch (_error) {
       // 忽略存储错误
     }
   }
@@ -250,7 +249,7 @@ export class AuthManager {
       localStorage.removeItem(this.tokenStorageKey)
       localStorage.removeItem(this.refreshTokenStorageKey)
       localStorage.removeItem(this.tokenExpiryKey)
-    } catch (error) {
+    } catch (_error) {
       // 忽略存储错误
     }
 
@@ -267,10 +266,10 @@ export class AuthManager {
     try {
       const expiry = localStorage.getItem(this.tokenExpiryKey)
       if (expiry) {
-        const expiryTime = parseInt(expiry)
+        const expiryTime = parseInt(expiry, 10)
         return Date.now() + bufferSeconds * 1000 > expiryTime
       }
-    } catch (error) {
+    } catch (_error) {
       // 忽略存储错误
     }
 
@@ -285,7 +284,7 @@ export class AuthManager {
       try {
         await this.refreshToken()
         return true
-      } catch (error) {
+      } catch (_error) {
         return false
       }
     }

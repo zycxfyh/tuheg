@@ -8,7 +8,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import type { PluginSandboxService, SandboxOptions, SandboxResult } from '@tuheg/common-backend'
+import type {
+  PluginSandboxService,
+  SandboxOptions,
+  SandboxResult,
+} from '@tuheg/common-backend'
 
 interface TestActivationDto {
   options?: SandboxOptions
@@ -53,17 +57,17 @@ export class PluginSandboxController {
     try {
       // 将文件内容保存为临时文件
       const tempPath = `/tmp/plugin-sandbox-${Date.now()}-${file.originalname}`
-      await require('fs').promises.writeFile(tempPath, file.buffer)
+      await require('node:fs').promises.writeFile(tempPath, file.buffer)
 
       const result = await this.sandboxService.testPluginActivation(tempPath, body.options)
 
       // 清理临时文件
-      await require('fs').promises.unlink(tempPath)
+      await require('node:fs').promises.unlink(tempPath)
 
       return result
     } catch (error) {
-      this.logger.error(`Plugin activation test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
-      throw new BadRequestException(`Plugin test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
+      this.logger.error(`Plugin activation test failed: ${getErrorMessage(error)}`)
+      throw new BadRequestException(`Plugin test failed: ${getErrorMessage(error)}`)
     }
   }
 
@@ -90,7 +94,7 @@ export class PluginSandboxController {
     try {
       // 将文件内容保存为临时文件
       const tempPath = `/tmp/plugin-sandbox-${Date.now()}-${file.originalname}`
-      await require('fs').promises.writeFile(tempPath, file.buffer)
+      await require('node:fs').promises.writeFile(tempPath, file.buffer)
 
       const result = await this.sandboxService.testPluginTool(
         tempPath,
@@ -100,12 +104,12 @@ export class PluginSandboxController {
       )
 
       // 清理临时文件
-      await require('fs').promises.unlink(tempPath)
+      await require('node:fs').promises.unlink(tempPath)
 
       return result
     } catch (error) {
-      this.logger.error(`Plugin tool test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
-      throw new BadRequestException(`Plugin tool test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
+      this.logger.error(`Plugin tool test failed: ${getErrorMessage(error)}`)
+      throw new BadRequestException(`Plugin tool test failed: ${getErrorMessage(error)}`)
     }
   }
 

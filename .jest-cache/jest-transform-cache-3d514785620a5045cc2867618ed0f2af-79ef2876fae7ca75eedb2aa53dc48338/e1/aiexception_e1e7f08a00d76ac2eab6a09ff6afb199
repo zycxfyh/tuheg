@@ -1,0 +1,15 @@
+d153af831ed6897d620501d390822048
+"use strict";
+// 文件路径: packages/common-backend/src/exceptions/ai-exception.ts
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AiGenerationException = void 0;
+class AiGenerationException extends Error {
+    details;
+    constructor(message, details) {
+        super(message);
+        this.details = details;
+        this.name = 'AiGenerationException';
+    }
+}
+exports.AiGenerationException = AiGenerationException;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxleGNlcHRpb25zXFxhaS1leGNlcHRpb24udHMiLCJtYXBwaW5ncyI6IjtBQUFBLCtEQUErRDs7O0FBRS9ELE1BQWEscUJBQXNCLFNBQVEsS0FBSztJQUc1QjtJQUZsQixZQUNFLE9BQWUsRUFDQyxPQUFpQjtRQUVqQyxLQUFLLENBQUMsT0FBTyxDQUFDLENBQUE7UUFGRSxZQUFPLEdBQVAsT0FBTyxDQUFVO1FBR2pDLElBQUksQ0FBQyxJQUFJLEdBQUcsdUJBQXVCLENBQUE7SUFDckMsQ0FBQztDQUNGO0FBUkQsc0RBUUMiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxleGNlcHRpb25zXFxhaS1leGNlcHRpb24udHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBwYWNrYWdlcy9jb21tb24tYmFja2VuZC9zcmMvZXhjZXB0aW9ucy9haS1leGNlcHRpb24udHNcblxuZXhwb3J0IGNsYXNzIEFpR2VuZXJhdGlvbkV4Y2VwdGlvbiBleHRlbmRzIEVycm9yIHtcbiAgY29uc3RydWN0b3IoXG4gICAgbWVzc2FnZTogc3RyaW5nLFxuICAgIHB1YmxpYyByZWFkb25seSBkZXRhaWxzPzogdW5rbm93blxuICApIHtcbiAgICBzdXBlcihtZXNzYWdlKVxuICAgIHRoaXMubmFtZSA9ICdBaUdlbmVyYXRpb25FeGNlcHRpb24nXG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

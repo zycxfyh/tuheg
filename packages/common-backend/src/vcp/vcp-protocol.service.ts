@@ -4,7 +4,6 @@
 // ============================================================================
 
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import {
   type VCPEndpoint,
   type VCPFileOperation,
@@ -18,8 +17,6 @@ import {
 @Injectable()
 export class VCPProtocolService implements OnModuleInit {
   private readonly logger = new Logger(VCPProtocolService.name)
-
-  constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
     await this.initializeVCPProtocol()

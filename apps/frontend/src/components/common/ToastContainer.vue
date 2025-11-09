@@ -28,7 +28,7 @@ const toastStore = useToastStore()
  * 移除指定的Toast
  * @param {number} id - Toast ID
  */
-function removeToast(id) {
+function _removeToast(id) {
   toastStore.removeToast(id)
 }
 
@@ -37,13 +37,12 @@ function removeToast(id) {
  * @param {string} type - Toast类型
  * @returns {string} 图标字符
  */
-function getToastIcon(type) {
+function _getToastIcon(type) {
   switch (type) {
     case 'success':
       return '✓'
     case 'error':
       return '✕'
-    case 'info':
     default:
       return 'ℹ'
   }

@@ -196,7 +196,7 @@ const { show: showToast } = useToast()
 
 const isNew = computed(() => !!props.config.isNew)
 const editableConfig = ref(JSON.parse(JSON.stringify(props.config)))
-const isLoading = ref(false)
+const _isLoading = ref(false)
 const isTesting = ref(false)
 const fetchedModels = ref([])
 
@@ -213,7 +213,7 @@ const errors = ref({
 
 const connectionStatus = ref(null)
 
-const currentStep = computed(() => {
+const _currentStep = computed(() => {
   if (!editableConfig.value.provider) return 1
   if (!editableConfig.value.apiKey) return 2
   if (!editableConfig.value.modelId) return 3
@@ -242,14 +242,14 @@ const providers = {
     { id: 'CustomOpenAICompatible', name: '自定义兼容接口', baseUrl: '' },
   ],
 }
-const providerGroups = ref([
+const _providerGroups = ref([
   { label: '国内供应商', providers: providers.china },
   { label: '国际供应商', providers: providers.international },
   { label: '本地与其他', providers: providers.local },
 ])
 
 // --- Data for Role Assignment ---
-const availableRoles = ref([
+const _availableRoles = ref([
   {
     id: 'logic_parsing',
     name: '逻辑解析',
@@ -272,7 +272,7 @@ const availableRoles = ref([
   },
 ])
 
-const selectedRoles = computed({
+const _selectedRoles = computed({
   get: () =>
     editableConfig.value.assignedRoles ? editableConfig.value.assignedRoles.split(',') : [],
   set: (newValue) => {
@@ -281,13 +281,13 @@ const selectedRoles = computed({
 })
 
 // --- Computed Properties for UI ---
-const modelSelectPlaceholder = computed(() => {
+const _modelSelectPlaceholder = computed(() => {
   if (!editableConfig.value.provider) return '请先选择供应商'
   if (!editableConfig.value.apiKey) return '请填写API Key'
   return '请点击右侧按钮获取'
 })
 
-const testButtonText = computed(() => {
+const _testButtonText = computed(() => {
   if (isTesting.value) return '测试中...'
   if (fetchedModels.value.length > 0) return '重新获取'
   return '测试 & 获取模型'
@@ -333,7 +333,7 @@ function validateFields() {
   return isValid
 }
 
-function onProviderChange() {
+function _onProviderChange() {
   clearErrors()
   clearConnectionStatus()
 
@@ -445,7 +445,7 @@ async function handleTestConnection() {
   }
 }
 
-async function handleSave() {
+async function _handleSave() {
   // Prevent concurrent operations
   if (operationInProgress.value) {
     showToast('操作进行中，请稍后再试。', 'warning')
@@ -486,7 +486,7 @@ async function handleSave() {
   }
 }
 
-async function handleDelete() {
+async function _handleDelete() {
   // Prevent concurrent operations
   if (operationInProgress.value) {
     showToast('操作进行中，请稍后再试。', 'warning')
@@ -508,7 +508,7 @@ async function handleDelete() {
   }
 }
 
-function resetChanges() {
+function _resetChanges() {
   editableConfig.value = JSON.parse(JSON.stringify(props.config))
   // Also reset fetched models if not a new card
   if (!isNew.value) {
@@ -516,7 +516,7 @@ function resetChanges() {
   }
 }
 
-function handleCancelNew() {
+function _handleCancelNew() {
   // Prevent concurrent operations
   if (operationInProgress.value) {
     showToast('操作进行中，请稍后再试。', 'warning')

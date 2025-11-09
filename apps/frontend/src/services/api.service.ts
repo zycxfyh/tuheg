@@ -28,7 +28,6 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 
 class ApiService {
   private axiosInstance: AxiosInstance
-  private baseURL: string
 
   constructor(baseURL: string = '/api') {
     this.baseURL = baseURL

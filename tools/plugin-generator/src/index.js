@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const path = require('path')
+const path = require('node:path')
 const chalk = require('chalk').default
 const ora = require('ora').default
 const inquirer = require('inquirer')
@@ -14,7 +14,9 @@ async function createPlugin(name, options = {}) {
   if (!validation.validForNewPackages) {
     console.error(chalk.red('❌ Invalid plugin name:'), name)
     if (validation.errors) {
-      validation.errors.forEach((error) => console.error(chalk.red(`  - ${error}`)))
+      validation.errors.forEach((error) => {
+        console.error(chalk.red(`  - ${error}`))
+      })
     }
     process.exit(1)
   }

@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // 用户偏好类型
 export interface UserPreferences {

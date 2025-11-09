@@ -1,0 +1,55 @@
+config:
+  target: 'http://localhost:4000'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up phase"
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 30
+      name: "Ramp up load"
+    - duration: 60
+      arrivalRate: 30
+      name: "Sustained load"
+
+scenarios:
+  - name: "Health check"
+    weight: 10
+    requests:
+      - get:
+          url: "/health"
+
+  - name: "API endpoints load test"
+    weight: 90
+    requests:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "testpassword"
+          capture:
+            - json: "$.access_token"
+              as: "token"
+
+      - get:
+          url: "/api/profile"
+          headers:
+            authorization: "Bearer {{ token }}"
+
+      - post:
+          url: "/api/games"
+          headers:
+            authorization: "Bearer {{ token }}"
+          json:
+            name: "Load Test Game"
+            description: "Testing under load"
+
+  - name: "Frontend static assets"
+    weight: 20
+    requests:
+      - get:
+          url: "http://localhost:3000/"
+      - get:
+          url: "http://localhost:3000/assets/index.css"
+      - get:
+          url: "http://localhost:3000/assets/index.js"

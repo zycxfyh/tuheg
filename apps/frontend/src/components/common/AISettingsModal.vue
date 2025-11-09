@@ -73,9 +73,8 @@
 
 <script setup>
 import { useSettingsStore } from '@/stores/settings.store'
-import AiConfigCard from './AiConfigCard.vue'
 
-const settingsStore = useSettingsStore()
+const _settingsStore = useSettingsStore()
 </script>
 
 <style scoped>

@@ -122,7 +122,10 @@ export async function callAiWithGuard<T extends z.ZodType>(
       })
 
       // 竞态执行：AI调用 vs 超时
-      const response = await Promise.race([provider.generate({ prompt, temperature: 0.7 }), timeoutPromise])
+      const response = await Promise.race([
+        provider.generate({ prompt, temperature: 0.7 }),
+        timeoutPromise,
+      ])
 
       // 尝试解析响应字符串
       const dataToParse = JSON.parse(response)

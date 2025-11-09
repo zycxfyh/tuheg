@@ -222,7 +222,7 @@ export class AgentLearningService {
     const averageResponseTime =
       completedTasksWithTiming.length > 0
         ? completedTasksWithTiming.reduce((sum, task) => {
-            return sum + (task.completedAt!.getTime() - task.startedAt!.getTime())
+            return sum + (task.completedAt?.getTime() - task.startedAt?.getTime())
           }, 0) /
           completedTasksWithTiming.length /
           (1000 * 60) // 转换为分钟
@@ -596,7 +596,7 @@ export class AgentLearningService {
   private async executePatternActions(
     agentId: string,
     pattern: LearningPattern,
-    context: Record<string, any>
+    _context: Record<string, any>
   ): Promise<boolean> {
     try {
       // 这里应该实现具体的模式执行逻辑

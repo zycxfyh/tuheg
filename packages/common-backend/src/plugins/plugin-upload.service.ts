@@ -1,8 +1,7 @@
+import * as crypto from 'node:crypto'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import * as crypto from 'crypto'
-import * as fs from 'fs'
-import * as path from 'path'
-import { CreatePluginVersionDto } from '../dto/plugin-marketplace.dto'
 import type { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
@@ -310,7 +309,7 @@ export class PluginUploadService {
       // TODO: 从downloadUrl获取文件并计算校验和
       // 这里简化处理，实际需要根据URL下载文件
       return true
-    } catch (error) {
+    } catch (_error) {
       return false
     }
   }

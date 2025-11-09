@@ -185,7 +185,7 @@ export class MemoryHierarchyService {
    * @deprecated 使用 recallMemories 替代
    */
   async getActiveMemories(gameId: string, limit: number = 20): Promise<Memory[]> {
-    const result = await this.recallMemories(gameId, {
+    const _result = await this.recallMemories(gameId, {
       mode: MemoryRecallMode.FULL_TEXT,
       limit,
     })

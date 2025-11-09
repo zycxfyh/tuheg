@@ -419,7 +419,7 @@ export class AuditService {
 
     // 分组统计失败登录
     const loginAttempts = this.groupByIP(failedLogins)
-    for (const [ip, logs] of loginAttempts.entries()) {
+    for (const [_ip, logs] of loginAttempts.entries()) {
       if (logs.length > 5) {
         // 5次失败登录
         anomalies.push(...logs)

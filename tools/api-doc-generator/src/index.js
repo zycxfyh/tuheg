@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const path = require('path')
+const path = require('node:path')
 const { glob } = require('glob')
 const chalk = require('chalk').default
 const ora = require('ora').default
@@ -113,9 +113,10 @@ function parseEndpoints(content, basePath) {
 
   for (const [method, pattern] of Object.entries(methodPatterns)) {
     let match
+    // biome-ignore lint/suspicious/noAssignInExpressions: 这里需要在循环条件中进行正则匹配赋值
     while ((match = pattern.exec(content)) !== null) {
       const path = match[1]
-      const fullPath = basePath + (path.startsWith('/') ? path : '/' + path)
+      const fullPath = basePath + (path.startsWith('/') ? path : `/${path}`)
 
       // 提取方法名和描述
       const methodStart = match.index + match[0].length

@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 // 无障碍配置
 export interface AccessibilityConfig {
@@ -312,7 +312,7 @@ export class AccessibilityEngine {
 
   // 清理资源
   destroy() {
-    if (this.liveRegion && this.liveRegion.parentNode) {
+    if (this.liveRegion?.parentNode) {
       this.liveRegion.parentNode.removeChild(this.liveRegion)
     }
 

@@ -3,7 +3,7 @@
 // 实现独立多Agent封装、非线性超异步工作流、自主协商协作
 // ============================================================================
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { crossMemoryNetwork, type MemoryEntry, tarVariableManager } from './PluginFramework'
 
 export interface Agent {
@@ -275,6 +275,7 @@ class AgentCollaborationFramework extends EventEmitter {
     }))
 
     // 启动协商过程
+    // biome-ignore lint/correctness/noUnusedVariables: 预留用于将来任务协商逻辑
     for (const { task, requirements, suitableAgents } of taskRequirements) {
       if (suitableAgents.length === 1) {
         // 直接分配
@@ -622,7 +623,7 @@ class AgentCollaborationFramework extends EventEmitter {
     }
   }
 
-  private async callLogicAgent(agent: Agent, task: Task): Promise<any> {
+  private async callLogicAgent(_agent: Agent, _task: Task): Promise<any> {
     // 逻辑推理和验证
     return {
       type: 'logic',
@@ -632,7 +633,7 @@ class AgentCollaborationFramework extends EventEmitter {
     }
   }
 
-  private async callNarrativeAgent(agent: Agent, task: Task): Promise<any> {
+  private async callNarrativeAgent(_agent: Agent, _task: Task): Promise<any> {
     // 叙事构建
     return {
       type: 'narrative',
@@ -642,7 +643,7 @@ class AgentCollaborationFramework extends EventEmitter {
     }
   }
 
-  private async callCharacterAgent(agent: Agent, task: Task): Promise<any> {
+  private async callCharacterAgent(_agent: Agent, _task: Task): Promise<any> {
     // 角色塑造
     return {
       type: 'character',
@@ -652,7 +653,7 @@ class AgentCollaborationFramework extends EventEmitter {
     }
   }
 
-  private async callWorldAgent(agent: Agent, task: Task): Promise<any> {
+  private async callWorldAgent(_agent: Agent, _task: Task): Promise<any> {
     // 世界构建
     return {
       type: 'world',
@@ -662,7 +663,7 @@ class AgentCollaborationFramework extends EventEmitter {
     }
   }
 
-  private async callDialogueAgent(agent: Agent, task: Task): Promise<any> {
+  private async callDialogueAgent(_agent: Agent, _task: Task): Promise<any> {
     // 对话生成
     return {
       type: 'dialogue',
@@ -699,7 +700,7 @@ class AgentCollaborationFramework extends EventEmitter {
       },
     }
 
-    const memoryId = await crossMemoryNetwork.addMemory(memoryEntry)
+    const _memoryId = await crossMemoryNetwork.addMemory(memoryEntry)
 
     // 更新Agent记忆网络
     agent.memory.shortTerm.push(
@@ -723,7 +724,7 @@ class AgentCollaborationFramework extends EventEmitter {
     const conflict: ConflictRecord = {
       id: `conflict-${Date.now()}`,
       type: 'resource',
-      description: `Task ${task.title} failed: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`,
+      description: `Task ${task.title} failed: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
       participants: [agent.id],
       resolution: 'Task reassigned',
       resolvedBy: 'system',

@@ -205,10 +205,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { marketManager } from '../MarketManager'
-import PluginCard from './PluginCard.vue'
-import PluginDetailsModal from './PluginDetailsModal.vue'
 
 // 响应式数据
 const searchQuery = ref('')
@@ -234,7 +232,7 @@ const isLoadingMore = ref(false)
 const currentOffset = ref(0)
 
 // 计算属性
-const hasActiveFilters = computed(() => {
+const _hasActiveFilters = computed(() => {
   return !!(
     searchQuery.value ||
     selectedCategory.value ||
@@ -245,7 +243,7 @@ const hasActiveFilters = computed(() => {
   )
 })
 
-const activeFilter = computed(() => {
+const _activeFilter = computed(() => {
   if (showFeatured.value) return 'featured'
   if (showVerified.value) return 'verified'
   if (selectedPricing.value) return selectedPricing.value
@@ -253,7 +251,7 @@ const activeFilter = computed(() => {
   return ''
 })
 
-const quickFilters = computed(() => [
+const _quickFilters = computed(() => [
   { id: 'featured', label: '精选', icon: '✨' },
   { id: 'verified', label: '认证', icon: '✅' },
   { id: 'free', label: '免费', icon: '🆓' },
@@ -261,7 +259,7 @@ const quickFilters = computed(() => [
   { id: 'trending', label: '热门', icon: '🔥' },
 ])
 
-const pricingOptions = computed(() => [
+const _pricingOptions = computed(() => [
   { value: '', label: '全部' },
   { value: 'free', label: '免费' },
   { value: 'paid', label: '付费' },
@@ -270,7 +268,7 @@ const pricingOptions = computed(() => [
 
 // 防抖搜索
 let searchTimeout = null
-const debouncedSearch = () => {
+const _debouncedSearch = () => {
   if (searchTimeout) clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     performSearch()
@@ -301,7 +299,7 @@ const applyFilters = () => {
 }
 
 // 快速筛选
-const applyQuickFilter = (filter) => {
+const _applyQuickFilter = (filter) => {
   // 重置所有筛选
   selectedCategory.value = ''
   selectedPricing.value = ''
@@ -337,25 +335,25 @@ const applyQuickFilter = (filter) => {
 }
 
 // 选择分类
-const selectCategory = (categoryId) => {
+const _selectCategory = (categoryId) => {
   selectedCategory.value = selectedCategory.value === categoryId ? '' : categoryId
   applyFilters()
 }
 
 // 设置最低评分
-const setMinRating = (rating) => {
+const _setMinRating = (rating) => {
   minRating.value = minRating.value === rating ? 0 : rating
   applyFilters()
 }
 
 // 切换排序顺序
-const toggleSortOrder = () => {
+const _toggleSortOrder = () => {
   sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
   applyFilters()
 }
 
 // 清除筛选
-const clearFilters = () => {
+const _clearFilters = () => {
   searchQuery.value = ''
   selectedCategory.value = ''
   selectedPricing.value = ''
@@ -366,7 +364,7 @@ const clearFilters = () => {
 }
 
 // 加载更多
-const loadMore = async () => {
+const _loadMore = async () => {
   if (isLoadingMore.value) return
 
   isLoadingMore.value = true
@@ -392,19 +390,19 @@ const loadMore = async () => {
 }
 
 // 查看插件详情
-const viewPluginDetails = (plugin) => {
+const _viewPluginDetails = (plugin) => {
   selectedPlugin.value = plugin
   showDetailsModal.value = true
 }
 
 // 关闭详情模态框
-const closeDetailsModal = () => {
+const _closeDetailsModal = () => {
   showDetailsModal.value = false
   selectedPlugin.value = null
 }
 
 // 安装插件
-const installPlugin = async (plugin) => {
+const _installPlugin = async (plugin) => {
   try {
     // 记录下载
     marketManager.recordDownload(plugin.id)

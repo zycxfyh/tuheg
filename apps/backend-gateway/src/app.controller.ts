@@ -24,6 +24,6 @@ export class AppController {
    */
   @Get('/sentry-test-backend')
   sentryTestBackend() {
-    throw new Error('Sentry Backend Test - ' + new Date().toISOString())
+    throw new Error(`Sentry Backend Test - ${new Date().toISOString()}`)
   }
 }

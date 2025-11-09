@@ -31,7 +31,10 @@ export function useGameList() {
       return games
     },
     onError: (error) => {
-      showToast(`获取游戏列表失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`, 'error')
+      showToast(
+        `获取游戏列表失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
+        'error'
+      )
     },
   })
 }
@@ -54,7 +57,10 @@ export function useGame(gameId) {
     },
     enabled: !!gameId, // 只有当 gameId 存在时才执行查询
     onError: (error) => {
-      showToast(`加载游戏失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`, 'error')
+      showToast(
+        `加载游戏失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
+        'error'
+      )
     },
   })
 }
@@ -76,7 +82,10 @@ export function useSubmitAction() {
       // 如果需要，可以在这里 invalidate 相关查询
     },
     onError: (error) => {
-      showToast(`行动提交失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`, 'error')
+      showToast(
+        `行动提交失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
+        'error'
+      )
     },
   })
 }
@@ -99,7 +108,10 @@ export function useCreateGame() {
       showToast('游戏创建请求已提交，正在处理中...', 'success')
     },
     onError: (error) => {
-      showToast(`创建游戏失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`, 'error')
+      showToast(
+        `创建游戏失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
+        'error'
+      )
     },
   })
 }
@@ -122,7 +134,10 @@ export function useDeleteGame() {
       showToast('游戏已删除', 'success')
     },
     onError: (error) => {
-      showToast(`删除游戏失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`, 'error')
+      showToast(
+        `删除游戏失败: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`,
+        'error'
+      )
     },
   })
 }

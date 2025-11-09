@@ -105,7 +105,7 @@ export const useAssets = () => {
 
   // 导出世界地图
   const exportWorldMap = async (
-    mapData: any,
+    _mapData: any,
     options: AssetExportOptions = { format: 'png' }
   ): Promise<string> => {
     try {
@@ -177,7 +177,7 @@ export const useAssets = () => {
     ctx: CanvasRenderingContext2D,
     text: string,
     maxWidth: number,
-    lineHeight: number
+    _lineHeight: number
   ): string[] => {
     const words = text.split(' ')
     const lines: string[] = []

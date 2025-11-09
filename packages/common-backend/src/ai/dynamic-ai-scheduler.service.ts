@@ -78,9 +78,14 @@ export class DynamicAiSchedulerService {
 
   private createFallbackProvider(): AiProvider {
     try {
-      const apiKey = this.configService.getOrThrow<string>('FALLBACK_API_KEY')
+      // 优先使用专门的DeepSeek配置，如果没有则使用后备配置
+      const apiKey =
+        this.configService.get<string>('DEEPSEEK_API_KEY') ||
+        this.configService.getOrThrow<string>('FALLBACK_API_KEY')
       const modelId = this.configService.get<string>('FALLBACK_MODEL_ID', 'deepseek-chat')
-      const baseUrlFromEnv = this.configService.get<string>('FALLBACK_BASE_URL')
+      const baseUrlFromEnv =
+        this.configService.get<string>('DEEPSEEK_BASE_URL') ||
+        this.configService.get<string>('FALLBACK_BASE_URL')
 
       // [!] 核心改造 2: 模拟对象结构翻译
       // 新的 AiConfiguration 类型没有 `assignedRoles` 字段。

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 // 社交媒体平台类型
 export type SocialPlatform =
@@ -280,7 +280,9 @@ export class SocialMediaManager extends EventEmitter {
       },
     ]
 
-    accounts.forEach((account) => this.accounts.set(account.platform, account))
+    accounts.forEach((account) => {
+      this.accounts.set(account.platform, account)
+    })
   }
 
   // 初始化内容策略
@@ -464,7 +466,7 @@ export class SocialMediaManager extends EventEmitter {
 
     const maxLength = maxLengths[platform] || 1000
     if (adaptedContent.length > maxLength) {
-      adaptedContent = adaptedContent.substring(0, maxLength - 3) + '...'
+      adaptedContent = `${adaptedContent.substring(0, maxLength - 3)}...`
     }
 
     // 根据平台调整语气
@@ -576,7 +578,7 @@ export class SocialMediaManager extends EventEmitter {
       if (filters.dateRange) {
         posts = posts.filter((p) => {
           const postDate = p.publishedAt || p.scheduledAt || p.createdAt
-          return postDate >= filters.dateRange!.start && postDate <= filters.dateRange!.end
+          return postDate >= filters.dateRange?.start && postDate <= filters.dateRange?.end
         })
       }
     }
@@ -643,7 +645,7 @@ export class SocialMediaManager extends EventEmitter {
     })
 
     const scheduleData = Object.entries(postingSchedule).map(([hour, count]) => ({
-      hour: parseInt(hour),
+      hour: parseInt(hour, 10),
       count,
     }))
 
@@ -674,7 +676,7 @@ export class SocialMediaManager extends EventEmitter {
     engagementTips: string[]
   } {
     const strategy = this.strategies.get(platform)
-    const analytics = this.getPlatformAnalytics(platform)
+    const _analytics = this.getPlatformAnalytics(platform)
 
     const suggestions = {
       bestPostingTimes: strategy?.bestPostingTimes || [],

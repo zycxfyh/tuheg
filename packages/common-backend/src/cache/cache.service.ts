@@ -9,7 +9,11 @@ import type { Cache } from 'cache-manager'
  * 装饰器：为方法添加统一的错误日志记录
  */
 function withErrorLogging(operation: string, returnValue?: any) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
+    if (!descriptor || typeof descriptor.value !== 'function') {
+      return descriptor
+    }
+
     const originalMethod = descriptor.value
     const logger = new Logger(target.constructor.name)
 
@@ -21,6 +25,8 @@ function withErrorLogging(operation: string, returnValue?: any) {
         return returnValue
       }
     }
+
+    return descriptor
   }
 }
 
@@ -44,7 +50,7 @@ export interface CacheOptions {
 export class CacheService {
   private readonly logger = new Logger(CacheService.name)
 
-  constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
+  constructor(@Inject(CACHE_MANAGER) private readonly _cacheManager: Cache) {}
 
   /**
    * @method get

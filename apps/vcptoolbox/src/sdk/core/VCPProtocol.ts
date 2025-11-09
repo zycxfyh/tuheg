@@ -15,9 +15,9 @@ import type {
 } from '../types'
 
 export class VCPProtocol implements VCPProtocolAPI {
-  private memory: Map<string, VCPMemoryEntry[]> = new Map()
-  private asyncTasks: Map<string, VCPAsyncTask> = new Map()
-  private files: Map<string, VCPFile> = new Map()
+  private memoryStore: Map<string, VCPMemoryEntry[]> = new Map()
+  private asyncTasksStore: Map<string, VCPAsyncTask> = new Map()
+  private filesStore: Map<string, VCPFile> = new Map()
 
   // 工具调用 (VCP指令协议)
   async callTool(request: VCPToolRequest): Promise<VCPToolResponse> {
@@ -42,7 +42,12 @@ export class VCPProtocol implements VCPProtocolAPI {
       return {
         success: false,
         result: null,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        error:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
         executionTime: Date.now() - startTime,
         toolName: request.toolName,
       }
@@ -59,7 +64,7 @@ export class VCPProtocol implements VCPProtocolAPI {
   // 记忆系统访问
   memory = {
     read: async (agentId: string, query?: string): Promise<VCPMemoryEntry[]> => {
-      const agentMemory = this.memory.get(agentId) || []
+      const agentMemory = this.memoryStore.get(agentId) || []
 
       if (!query) {
         return agentMemory.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
@@ -74,7 +79,7 @@ export class VCPProtocol implements VCPProtocolAPI {
     },
 
     write: async (agentId: string, entry: VCPMemoryEntry): Promise<void> => {
-      const agentMemory = this.memory.get(agentId) || []
+      const agentMemory = this.memoryStore.get(agentId) || []
       const newEntry = {
         ...entry,
         id: entry.id || `memory-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -82,13 +87,13 @@ export class VCPProtocol implements VCPProtocolAPI {
       }
 
       agentMemory.push(newEntry)
-      this.memory.set(agentId, agentMemory)
+      this.memoryStore.set(agentId, agentMemory)
 
       console.log(`Memory written for agent ${agentId}:`, newEntry)
     },
 
     search: async (agentId: string, keywords: string[]): Promise<VCPMemoryEntry[]> => {
-      const agentMemory = this.memory.get(agentId) || []
+      const agentMemory = this.memoryStore.get(agentId) || []
 
       return agentMemory.filter((entry) =>
         keywords.some(
@@ -117,13 +122,13 @@ export class VCPProtocol implements VCPProtocolAPI {
         data: file,
       }
 
-      this.files.set(handle.id, vcpFile)
+      this.filesStore.set(handle.id, vcpFile)
 
       return handle
     },
 
     download: async (handle: string): Promise<VCPFile> => {
-      const file = this.files.get(handle)
+      const file = this.filesStore.get(handle)
       if (!file) {
         throw new Error(`File with handle ${handle} not found`)
       }
@@ -132,7 +137,7 @@ export class VCPProtocol implements VCPProtocolAPI {
     },
 
     get: async (handle: string): Promise<VCPFile> => {
-      const file = this.files.get(handle)
+      const file = this.filesStore.get(handle)
       if (!file) {
         throw new Error(`File with handle ${handle} not found`)
       }
@@ -141,7 +146,7 @@ export class VCPProtocol implements VCPProtocolAPI {
     },
 
     list: async (query?: VCPFileQuery): Promise<VCPFile[]> => {
-      let files = Array.from(this.files.values())
+      let files = Array.from(this.filesStore.values())
 
       if (query) {
         if (query.type) {
@@ -150,12 +155,12 @@ export class VCPProtocol implements VCPProtocolAPI {
 
         if (query.tags && query.tags.length > 0) {
           files = files.filter((f) =>
-            f.metadata?.tags?.some((tag: string) => query.tags!.includes(tag))
+            f.metadata?.tags?.some((tag: string) => query.tags?.includes(tag))
           )
         }
 
         if (query.dateRange) {
-          files = files.filter((f) => {
+          files = files.filter((_f) => {
             // 简化实现，实际应该比较文件创建时间
             return true
           })
@@ -189,7 +194,7 @@ export class VCPProtocol implements VCPProtocolAPI {
         updatedAt: task.updatedAt || new Date(),
       }
 
-      this.asyncTasks.set(taskId, newTask)
+      this.asyncTasksStore.set(taskId, newTask)
 
       // 模拟异步任务执行
       this.executeAsyncTask(taskId)
@@ -199,11 +204,11 @@ export class VCPProtocol implements VCPProtocolAPI {
     },
 
     get: async (taskId: string): Promise<VCPAsyncTask | null> => {
-      return this.asyncTasks.get(taskId) || null
+      return this.asyncTasksStore.get(taskId) || null
     },
 
     update: async (taskId: string, status: VCPAsyncTaskStatus): Promise<void> => {
-      const task = this.asyncTasks.get(taskId)
+      const task = this.asyncTasksStore.get(taskId)
       if (task) {
         task.status = status
         task.updatedAt = new Date()
@@ -212,7 +217,7 @@ export class VCPProtocol implements VCPProtocolAPI {
     },
 
     callback: async (taskId: string, result: any): Promise<void> => {
-      const task = this.asyncTasks.get(taskId)
+      const task = this.asyncTasksStore.get(taskId)
       if (task) {
         task.result = result
         task.status = 'completed'
@@ -223,14 +228,14 @@ export class VCPProtocol implements VCPProtocolAPI {
   }
 
   // 为插件创建VCP API实例
-  createAPI(plugin: VCPPlugin): VCPProtocolAPI {
+  createAPI(_plugin: VCPPlugin): VCPProtocolAPI {
     return {
       callTool: this.callTool.bind(this),
       replaceVariables: this.replaceVariables.bind(this),
-      memory: this.memory,
-      files: this.files,
+      memory: this.memoryStore,
+      files: this.filesStore,
       push: this.push.bind(this),
-      asyncTasks: this.asyncTasks,
+      asyncTasks: this.asyncTasksStore,
     }
   }
 
@@ -262,6 +267,7 @@ export class VCPProtocol implements VCPProtocolAPI {
           // 简单的数学表达式求值
           try {
             // 注意：实际实现中应该使用安全的数学库
+            // biome-ignore lint/security/noGlobalEval: 这里是受控的数学表达式求值，将来会替换为安全的数学库
             return eval(parameters.expression)
           } catch {
             return 'Invalid expression'
@@ -284,11 +290,11 @@ export class VCPProtocol implements VCPProtocolAPI {
 
   // 执行异步任务 (模拟实现)
   private async executeAsyncTask(taskId: string): Promise<void> {
-    const task = this.asyncTasks.get(taskId)
+    const task = this.asyncTasksStore.get(taskId)
     if (!task) return
 
     // 更新任务状态为运行中
-    await this.asyncTasks.update(taskId, 'running')
+    await this.asyncTasksStore.update(taskId, 'running')
 
     try {
       // 模拟异步任务执行时间
@@ -298,13 +304,18 @@ export class VCPProtocol implements VCPProtocolAPI {
       const result = await this.executeTool(task.toolName, task.parameters)
 
       // 回调结果
-      await this.asyncTasks.callback(taskId, result)
+      await this.asyncTasksStore.callback(taskId, result)
     } catch (error: any) {
       // 更新任务状态为失败
-      const task = this.asyncTasks.get(taskId)
+      const task = this.asyncTasksStore.get(taskId)
       if (task) {
         task.status = 'failed'
-        task.error = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+        task.error =
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error)
         task.updatedAt = new Date()
       }
     }

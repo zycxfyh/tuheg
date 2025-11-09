@@ -7,33 +7,24 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-      timezone: "Asia/Shanghai"
     open-pull-requests-limit: 10
     reviewers:
-      - "zycxfyh"
+      - "your-username"
     assignees:
-      - "zycxfyh"
+      - "your-username"
     commit-message:
       prefix: "deps"
-      prefix-development: "deps-dev"
       include: "scope"
     labels:
       - "dependencies"
       - "automated"
     ignore:
-      # 忽略主要版本更新，需手动处理
+      # Ignore major version updates for now
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-      # 忽略不稳定的AI库版本
-      - dependency-name: "openai"
-        versions: ["4.x"]
-      - dependency-name: "@anthropic-ai/sdk"
-        versions: ["0.5.x"]
-      # 忽略前端框架的主要版本
-      - dependency-name: "vue"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@nestjs/core"
-        update-types: ["version-update:semver-major"]
+      # Ignore specific packages that need manual review
+      - dependency-name: "@prisma/client"
+      - dependency-name: "@nestjs/*"
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -42,12 +33,11 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-      timezone: "Asia/Shanghai"
     open-pull-requests-limit: 5
     reviewers:
-      - "zycxfyh"
+      - "your-username"
     assignees:
-      - "zycxfyh"
+      - "your-username"
     commit-message:
       prefix: "ci"
       include: "scope"
@@ -55,47 +45,21 @@ updates:
       - "github-actions"
       - "automated"
 
-  # Enable version updates for Docker
+  # Docker dependencies
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-      timezone: "Asia/Shanghai"
     open-pull-requests-limit: 5
     reviewers:
-      - "zycxfyh"
+      - "your-username"
     assignees:
-      - "zycxfyh"
+      - "your-username"
     commit-message:
       prefix: "docker"
       include: "scope"
     labels:
       - "docker"
       - "automated"
-
-  # Security updates - 每日检查
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "06:00"
-      timezone: "Asia/Shanghai"
-    open-pull-requests-limit: 20
-    reviewers:
-      - "zycxfyh"
-    assignees:
-      - "zycxfyh"
-    commit-message:
-      prefix: "security"
-      include: "scope"
-    labels:
-      - "security"
-      - "dependencies"
-      - "automated"
-      - "high-priority"
-    ignore:
-      # 安全更新不忽略主要版本，但需谨慎处理
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]

@@ -78,26 +78,26 @@ import { useThemeStore } from '@/stores/theme.store'
 const themeStore = useThemeStore()
 
 // 计算属性
-const currentTheme = computed(() => themeStore.currentTheme)
-const themeMode = computed(() => themeStore.themeMode)
-const themeOptions = computed(() => themeStore.getThemeOptions())
-const themeModeOptions = computed(() => themeStore.getThemeModeOptions())
-const isDarkTheme = computed(() => themeStore.isDarkTheme())
+const _currentTheme = computed(() => themeStore.currentTheme)
+const _themeMode = computed(() => themeStore.themeMode)
+const _themeOptions = computed(() => themeStore.getThemeOptions())
+const _themeModeOptions = computed(() => themeStore.getThemeModeOptions())
+const _isDarkTheme = computed(() => themeStore.isDarkTheme())
 
 // 方法
-const setTheme = (theme) => {
+const _setTheme = (theme) => {
   themeStore.setTheme(theme)
 }
 
-const setThemeMode = (mode) => {
+const _setThemeMode = (mode) => {
   themeStore.setThemeMode(mode)
 }
 
-const toggleTheme = () => {
+const _toggleTheme = () => {
   themeStore.toggleTheme()
 }
 
-const getThemeIcon = (theme) => {
+const _getThemeIcon = (theme) => {
   return themeStore.getThemeIcon(theme)
 }
 

@@ -8,7 +8,7 @@ export interface DevOptions {
 }
 
 export class DevCommand {
-  async execute(options: DevOptions): Promise<void> {
+  async execute(_options: DevOptions): Promise<void> {
     console.log('🚀 启动VCPToolBox开发服务器...')
 
     // 实现开发服务器逻辑

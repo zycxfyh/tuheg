@@ -3,8 +3,8 @@
 // 🔒 Creation Ring - Critical Files Protection Script
 // This script ensures that critical project files are not accidentally deleted or modified
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const _path = require('node:path')
 
 const CRITICAL_FILES = [
   'repomix-output.xml',
@@ -35,7 +35,7 @@ if (missingFiles.length > 0) {
   console.error('')
   console.error('⚠️  These files are essential for the project. Please restore them immediately.')
   console.error('   If you accidentally deleted them, check git history:')
-  console.error('   git log --name-only --oneline | grep -E "(' + CRITICAL_FILES.join('|') + ')"')
+  console.error(`   git log --name-only --oneline | grep -E "(${CRITICAL_FILES.join('|')})"`)
   process.exit(1)
 }
 

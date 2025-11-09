@@ -46,7 +46,7 @@ export class VCPToolBox {
     this.plugins = new PluginManager(this.client)
 
     // 创建WebSocket管理器
-    const wsUrl = config.websocket?.url || config.baseURL.replace(/^http/, 'ws') + '/ws'
+    const wsUrl = config.websocket?.url || `${config.baseURL.replace(/^http/, 'ws')}/ws`
     this.ws = new WebSocketManager({
       url: wsUrl,
       auth: config.auth,

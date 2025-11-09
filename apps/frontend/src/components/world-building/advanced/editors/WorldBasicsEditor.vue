@@ -234,7 +234,7 @@ const basics = ref({
 const suggestions = ref([])
 
 // 配置选项
-const toneOptions = ref([
+const _toneOptions = ref([
   { value: 'dark', label: '黑暗', icon: '🌑' },
   { value: 'grimdark', label: '极端黑暗', icon: '💀' },
   { value: 'serious', label: '严肃', icon: '⚖️' },
@@ -246,7 +246,7 @@ const toneOptions = ref([
 ])
 
 // 方法
-const addCharacter = (type) => {
+const _addCharacter = (type) => {
   const newCharacter = {
     name: '',
     description: '',
@@ -261,7 +261,7 @@ const addCharacter = (type) => {
   }
 }
 
-const removeCharacter = (type, index) => {
+const _removeCharacter = (type, index) => {
   if (type === 'protagonists') {
     basics.value.protagonists.splice(index, 1)
   } else {
@@ -358,7 +358,7 @@ const getScaleImplications = () => {
   return '故事范围适中，便于展开多条情节线'
 }
 
-const applySuggestion = (suggestion) => {
+const _applySuggestion = (suggestion) => {
   // TODO: 实现建议应用逻辑
   console.log('Applying suggestion:', suggestion)
 }

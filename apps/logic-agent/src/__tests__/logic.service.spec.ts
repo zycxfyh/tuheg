@@ -12,8 +12,8 @@ import {
   PromptManagerService,
 } from '@tuheg/common-backend'
 import { type MockProxy, mock } from 'jest-mock-extended'
-import { LogicService } from './logic.service'
-import { RuleEngineService } from './rule-engine.service'
+import { LogicService } from '../logic.service'
+import { RuleEngineService } from '../rule-engine.service'
 
 // [核心] 模拟 @tuheg/common-backend 模块，特别是 callAiWithGuard 函数
 jest.mock('@tuheg/common-backend', () => ({

@@ -4,21 +4,16 @@
 // ============================================================================
 
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import {
   agentAutonomousCommunication,
-  CommunicationChannel,
   type CommunicationMessage,
   type ConflictResolution,
   type NegotiationSession,
-  TrustRelationship,
 } from '../../../vcptoolbox/src/modules/collaboration/AgentAutonomousCommunication'
 
 @Injectable()
 export class AgentCommunicationService implements OnModuleInit {
   private readonly logger = new Logger(AgentCommunicationService.name)
-
-  constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
     await this.initializeCommunicationSystem()
@@ -389,7 +384,7 @@ export class AgentCommunicationService implements OnModuleInit {
    * 报告角色冲突
    */
   async reportCharacterConflict(
-    storyId: string,
+    _storyId: string,
     reporterId: string,
     characterId: string,
     conflictType: 'personality' | 'development' | 'relationship',
@@ -430,7 +425,7 @@ export class AgentCommunicationService implements OnModuleInit {
    * 报告情节冲突
    */
   async reportPlotConflict(
-    storyId: string,
+    _storyId: string,
     reporterId: string,
     plotPoint: string,
     conflictType: 'logic' | 'pacing' | 'consistency',
@@ -496,7 +491,7 @@ export class AgentCommunicationService implements OnModuleInit {
           urgency: status === 'conflict' ? 0.8 : 0.5,
         }
       )
-    } catch (error) {
+    } catch (_error) {
       // 如果频道不存在，先创建频道
       await this.createCollaborationChannel(
         `Story ${storyId} Collaboration`,

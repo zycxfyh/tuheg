@@ -39,7 +39,7 @@ export class RedisIoAdapter extends IoAdapter {
   }
 }
 
-async function bootstrap() {
+async function _bootstrap() {
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
 
@@ -83,8 +83,7 @@ async function bootstrap() {
       noSniff: true, // 防止MIME类型嗅探
       xssFilter: true, // 启用XSS过滤
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-      })
-  }
+    })
   )
 
   // 配置 CORS
@@ -94,8 +93,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
-    })
-  }
+  })
 
   await app.listen(3000)
 }

@@ -138,14 +138,9 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import FeedbackTrendChart from './charts/FeedbackTrendChart.vue'
-import FeedbackTypeChart from './charts/FeedbackTypeChart.vue'
-import SatisfactionTrendChart from './charts/SatisfactionTrendChart.vue'
-import InsightCard from './InsightCard.vue'
-import MetricCard from './MetricCard.vue'
 
 // 状态
-const timeRange = ref('30d')
+const _timeRange = ref('30d')
 const isLoading = ref(false)
 const analyticsData = ref({
   totalFeedback: 0,
@@ -206,11 +201,11 @@ const loadAnalytics = async () => {
   }
 }
 
-const refreshData = () => {
+const _refreshData = () => {
   loadAnalytics()
 }
 
-const getTypeLabel = (type) => {
+const _getTypeLabel = (type) => {
   const labels = {
     experience: '体验反馈',
     bug: '问题报告',
@@ -219,7 +214,7 @@ const getTypeLabel = (type) => {
   return labels[type] || type
 }
 
-const getStatusLabel = (status) => {
+const _getStatusLabel = (status) => {
   const labels = {
     open: '待处理',
     in_progress: '处理中',
@@ -229,7 +224,7 @@ const getStatusLabel = (status) => {
   return labels[status] || status
 }
 
-const formatTime = (timestamp) => {
+const _formatTime = (timestamp) => {
   const date = new Date(timestamp)
   const now = new Date()
   const diff = now - date
@@ -243,17 +238,17 @@ const formatTime = (timestamp) => {
   return `${days}天前`
 }
 
-const truncateText = (text, maxLength) => {
+const _truncateText = (text, maxLength) => {
   if (text.length <= maxLength) return text
-  return text.substr(0, maxLength) + '...'
+  return `${text.substr(0, maxLength)}...`
 }
 
-const viewFeedback = (feedback) => {
+const _viewFeedback = (feedback) => {
   // TODO: 打开反馈详情模态框
   console.log('View feedback:', feedback)
 }
 
-const implementInsight = (insight) => {
+const _implementInsight = (insight) => {
   // TODO: 标记洞察为已实施
   console.log('Implement insight:', insight)
 }

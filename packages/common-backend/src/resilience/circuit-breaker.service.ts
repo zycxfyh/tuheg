@@ -189,17 +189,17 @@ export class CircuitBreakerService {
         if (Object.keys(data).length > 0) {
           const circuit = {
             state: (data.state as CircuitState) || CircuitState.CLOSED,
-            failures: parseInt(data.failures) || 0,
-            successes: parseInt(data.successes) || 0,
-            lastFailureTime: parseInt(data.lastFailureTime) || 0,
-            halfOpenRequests: parseInt(data.halfOpenRequests) || 0,
+            failures: parseInt(data.failures, 10) || 0,
+            successes: parseInt(data.successes, 10) || 0,
+            lastFailureTime: parseInt(data.lastFailureTime, 10) || 0,
+            halfOpenRequests: parseInt(data.halfOpenRequests, 10) || 0,
             metrics: {
-              totalRequests: parseInt(data.totalRequests) || 0,
-              successfulRequests: parseInt(data.successfulRequests) || 0,
-              failedRequests: parseInt(data.failedRequests) || 0,
+              totalRequests: parseInt(data.totalRequests, 10) || 0,
+              successfulRequests: parseInt(data.successfulRequests, 10) || 0,
+              failedRequests: parseInt(data.failedRequests, 10) || 0,
               failureRate: parseFloat(data.failureRate) || 0,
               state: (data.state as CircuitState) || CircuitState.CLOSED,
-              lastStateChange: parseInt(data.lastStateChange) || Date.now(),
+              lastStateChange: parseInt(data.lastStateChange, 10) || Date.now(),
             },
           }
           this.circuits.set(name, circuit)

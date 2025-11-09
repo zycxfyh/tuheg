@@ -23,7 +23,7 @@ export function generateTestTemplate(options: TestTemplateOptions): string {
   } = options
 
   const mockImports = dependencies
-    .map((dep) => `import { type MockProxy, mock } from 'jest-mock-extended'`)
+    .map((_dep) => `import { type MockProxy, mock } from 'jest-mock-extended'`)
     .join('\n')
 
   const mockDeclarations = dependencies

@@ -49,10 +49,15 @@ export class VcpPluginSystemExamples {
         registrationResults.push({
           pluginId: plugin.config.id,
           success: false,
-          error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+          error:
+            error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : String(error),
         })
         console.log(
-          `❌ 注册失败: ${plugin.config.name} - ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`
+          `❌ 注册失败: ${plugin.config.name} - ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
         )
       }
     }
@@ -136,7 +141,7 @@ export class VcpPluginSystemExamples {
       input: testContent,
     }
 
-    console.log('测试内容:', testContent.substring(0, 50) + '...')
+    console.log('测试内容:', `${testContent.substring(0, 50)}...`)
     console.log('')
 
     // 执行插件链（包含异步插件）
@@ -172,7 +177,11 @@ export class VcpPluginSystemExamples {
         } catch (error) {
           console.log(
             `❌ 等待任务 ${taskId} 时出错:`,
-            error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+            error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : String(error)
           )
         }
         console.log('')
@@ -263,7 +272,14 @@ export class VcpPluginSystemExamples {
         console.log(`   新版本: ${newConfig.version}`)
         console.log(`   更新时间: ${newConfig.updatedAt}`)
       } catch (error) {
-        console.log('❌ 配置更新失败:', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
+        console.log(
+          '❌ 配置更新失败:',
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error)
+        )
       }
     } else {
       console.log('系统中没有可动态配置的插件')
@@ -403,7 +419,14 @@ export class VcpPluginSystemExamples {
         await this.pluginSystem.unregister(testPlugin.config.id)
         console.log('✅ 插件注销成功')
       } catch (error) {
-        console.log('❌ 插件注销失败:', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
+        console.log(
+          '❌ 插件注销失败:',
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error)
+        )
       }
       console.log('')
     }
@@ -492,7 +515,7 @@ export class VcpPluginSystemExamples {
         })
         console.log(`  ⏱️ 耗时: ${executionTime}ms`)
         console.log(
-          `  📊 状态: ❌ 失败 - ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`
+          `  📊 状态: ❌ 失败 - ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}`
         )
       }
       console.log('')
@@ -617,7 +640,14 @@ export class VcpPluginSystemExamples {
       console.log(`系统状态: 所有插件正常运行`)
       console.log('')
     } catch (error) {
-      console.log('❌ 工作流执行失败:', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
+      console.log(
+        '❌ 工作流执行失败:',
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
+      )
       results.error = error
     }
 

@@ -4,13 +4,10 @@
 // ============================================================================
 
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import {
   asyncWorkflowEngine,
-  WorkflowConnection,
   type WorkflowExecutionOptions,
   type WorkflowInstance,
-  WorkflowNode,
   type WorkflowTemplate,
 } from '../../../vcptoolbox/src/modules/tools/AsyncWorkflowEngine'
 
@@ -18,8 +15,6 @@ import {
 export class AsyncWorkflowService implements OnModuleInit {
   private readonly logger = new Logger(AsyncWorkflowService.name)
   private predefinedTemplates: Map<string, WorkflowTemplate> = new Map()
-
-  constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
     await this.initializeWorkflowEngine()

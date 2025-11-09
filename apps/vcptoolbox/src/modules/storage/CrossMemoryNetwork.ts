@@ -115,7 +115,7 @@ export class CrossMemoryNetwork {
     if (!this.network.agentMemories.has(memory.agentId)) {
       this.network.agentMemories.set(memory.agentId, new Set())
     }
-    this.network.agentMemories.get(memory.agentId)!.add(memoryId)
+    this.network.agentMemories.get(memory.agentId)?.add(memoryId)
 
     // 建立自动连接
     await this.buildMemoryConnections(memoryId)
@@ -217,14 +217,14 @@ export class CrossMemoryNetwork {
     if (query.timeRange) {
       candidates = candidates.filter((mem) => {
         const createdAt = mem.metadata.createdAt
-        return createdAt >= query.timeRange!.start && createdAt <= query.timeRange!.end
+        return createdAt >= query.timeRange?.start && createdAt <= query.timeRange?.end
       })
     }
 
     // 重要性过滤
     if (query.importance) {
       candidates = candidates.filter(
-        (mem) => mem.importance >= query.importance!.min && mem.importance <= query.importance!.max
+        (mem) => mem.importance >= query.importance?.min && mem.importance <= query.importance?.max
       )
     }
 
@@ -258,7 +258,7 @@ export class CrossMemoryNetwork {
     // 标签过滤
     if (query.tags && query.tags.length > 0) {
       results = results.filter((result) =>
-        query.tags!.some((tag) => result.memory.tags.includes(tag))
+        query.tags?.some((tag) => result.memory.tags.includes(tag))
       )
     }
 
@@ -320,8 +320,8 @@ export class CrossMemoryNetwork {
       const recentMemories = Array.from(agentMemories)
         .map((id) => this.network.memories.get(id))
         .filter(Boolean)
-        .filter((mem) => mem!.id !== memoryId)
-        .sort((a, b) => b!.metadata.createdAt.getTime() - a!.metadata.createdAt.getTime())
+        .filter((mem) => mem?.id !== memoryId)
+        .sort((a, b) => b?.metadata.createdAt.getTime() - a?.metadata.createdAt.getTime())
         .slice(0, 3) as MemoryEntry[]
 
       for (const recent of recentMemories) {
@@ -348,7 +348,7 @@ export class CrossMemoryNetwork {
       if (!this.network.connections.has(connectedId)) {
         this.network.connections.set(connectedId, new Set())
       }
-      this.network.connections.get(connectedId)!.add(memoryId)
+      this.network.connections.get(connectedId)?.add(memoryId)
     }
 
     // 更新记忆的连接列表
@@ -637,7 +637,7 @@ export class CrossMemoryNetwork {
       if (!this.network.agentMemories.has(memory.agentId)) {
         this.network.agentMemories.set(memory.agentId, new Set())
       }
-      this.network.agentMemories.get(memory.agentId)!.add(memory.id)
+      this.network.agentMemories.get(memory.agentId)?.add(memory.id)
     }
 
     // 导入连接

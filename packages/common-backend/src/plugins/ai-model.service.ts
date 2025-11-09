@@ -370,8 +370,6 @@ export class AiModelService {
       case 'performance':
         // 性能越好评分越高
         return model.performance / 100
-
-      case 'balanced':
       default: {
         // 平衡性能和成本
         const performance = model.performance / 100

@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events'
-import { PluginContext, PluginRuntime, type VCPPlugin } from '../PluginFramework'
+import { EventEmitter } from 'node:events'
+import type { VCPPlugin } from '../PluginFramework'
 
 // VCPToolBox 开发工具包
 // 提供插件开发的调试、测试和辅助功能
@@ -208,7 +208,7 @@ export class DevTools extends EventEmitter {
     const index = session.breakpoints.findIndex((bp) => bp.id === breakpointId)
     if (index === -1) return false
 
-    const breakpoint = session.breakpoints[index]
+    const _breakpoint = session.breakpoints[index]
     session.breakpoints.splice(index, 1)
 
     // 从插件级别断点中移除
@@ -233,12 +233,8 @@ export class DevTools extends EventEmitter {
       if (breakpoint.file === file && breakpoint.line === line && breakpoint.enabled) {
         // 检查条件
         if (breakpoint.condition) {
-          try {
-            // 这里可以实现条件评估逻辑
-            // 暂时跳过条件检查
-          } catch {
-            continue
-          }
+          // 这里可以实现条件评估逻辑
+          // 暂时跳过条件检查，继续执行断点逻辑
         }
 
         breakpoint.hitCount++
@@ -435,7 +431,7 @@ export class DevTools extends EventEmitter {
 
   // 代码分析工具
   analyzePluginCode(
-    pluginId: string,
+    _pluginId: string,
     code: string
   ): {
     complexity: number
@@ -511,6 +507,7 @@ export interface CodeIssue {
 }
 
 // 插件开发辅助函数
+// biome-ignore lint/complexity/noStaticOnlyClass: 这个类包含了相关的静态方法，适合作为工具类
 export class DevHelpers {
   // 生成插件模板代码
   static generatePluginTemplate(type: string, name: string): string {
@@ -566,7 +563,7 @@ export class ${name}Plugin implements VCPPlugin {
 
   // 格式化错误信息
   static formatError(error: Error): string {
-    return `[${error.name}] ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}\n${error.stack || ''}`
+    return `[${error.name}] ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)}\n${error.stack || ''}`
   }
 
   // 生成插件文档

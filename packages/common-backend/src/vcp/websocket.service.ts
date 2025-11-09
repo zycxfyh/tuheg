@@ -154,7 +154,7 @@ export class WebSocketService implements OnModuleInit, OnModuleDestroy {
   /**
    * 处理Agent状态更新
    */
-  private async handleAgentStatusUpdate(recipientId: string, message: WSMessage): Promise<void> {
+  private async handleAgentStatusUpdate(_recipientId: string, message: WSMessage): Promise<void> {
     const { agentId, status, currentTask } = message.payload
 
     this.logger.debug(`Agent状态更新: ${agentId} -> ${status}`)
@@ -177,7 +177,7 @@ export class WebSocketService implements OnModuleInit, OnModuleDestroy {
   /**
    * 处理协作邀请
    */
-  private async handleCollaborationInvite(recipientId: string, message: WSMessage): Promise<void> {
+  private async handleCollaborationInvite(_recipientId: string, message: WSMessage): Promise<void> {
     const { storyId, inviterId, inviteeId, role } = message.payload
 
     this.logger.debug(`协作邀请: ${inviterId} 邀请 ${inviteeId} 加入故事 ${storyId}`)
@@ -239,9 +239,9 @@ export class WebSocketService implements OnModuleInit, OnModuleDestroy {
    * 广播到故事协作者
    */
   async broadcastToStoryCollaborators(
-    storyId: string,
+    _storyId: string,
     message: Partial<WSMessage>,
-    excludeClientIds: string[] = []
+    _excludeClientIds: string[] = []
   ): Promise<void> {
     // 这里应该从数据库获取故事的协作者列表
     // 暂时模拟广播到所有连接的客户端

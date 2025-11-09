@@ -1,7 +1,6 @@
 // 文件路径: apps/frontend/playwright.config.ts (已修正并转为TS)
 
 import { defineConfig, devices } from '@playwright/test'
-import path from 'path'
 
 // pnpm --filter <package_name> dev
 const PORT = process.env.PORT || 5173

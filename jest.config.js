@@ -32,17 +32,35 @@ export default {
     '^@apps/(.*)$': '<rootDir>/apps/$1',
     '^@packages/(.*)$': '<rootDir>/packages/$1',
     '^@tools/(.*)$': '<rootDir>/tools/$1',
-    '^@tuheg/common-backend$': '<rootDir>/packages/common-backend/dist/index.js',
+    '^@tuheg/common-backend$': '<rootDir>/packages/common-backend/src/index.ts',
+    '^@tuheg/common-backend/(.*)$': '<rootDir>/packages/common-backend/src/$1',
   },
 
   // TypeScript处理配置
+  transform: {
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          allowSyntheticDefaultImports: true,
+          esModuleInterop: true,
+          allowJs: true,
+          isolatedModules: true,
+          skipLibCheck: true,
+          emitDecoratorMetadata: true,
+          experimentalDecorators: true,
+        },
+      },
+    ],
+  },
 
   // 转换忽略模式
-  transformIgnorePatterns: [
-    '/node_modules/(?!(@tuheg|packages)/)',
-  ],
+  transformIgnorePatterns: ['/node_modules/(?!(@tuheg|packages)/)'],
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary', 'cobertura', 'clover'],
+  coverageDirectory: 'coverage',
 
   // 覆盖率配置
+
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     'apps/**/*.{ts,tsx}',
@@ -57,9 +75,8 @@ export default {
     '!**/*.spec.ts',
     '!**/*.test.ts',
     '!**/__tests__/**',
+    '!**/mocks/**',
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html', 'json-summary', 'cobertura'],
   coverageThreshold: {
     global: {
       branches: 80,
@@ -102,11 +119,6 @@ export default {
   // 设置文件
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 
-  // TypeScript配置
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
-
   // 报告器配置
   reporters: [
     'default',
@@ -136,4 +148,3 @@ export default {
   cache: true,
   cacheDirectory: '<rootDir>/.jest-cache',
 }
-

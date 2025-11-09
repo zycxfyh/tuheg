@@ -3,8 +3,10 @@
 // 借鉴思想: 非阻塞工具调用 + 上下文感知异步结果处理
 
 import { Injectable, Logger } from '@nestjs/common'
+
 // import type { EventEmitter2 } from '@nestjs/event-emitter'
 type EventEmitter2 = any // Temporary mock until @nestjs/event-emitter is properly built
+
 import { v4 as uuidv4 } from 'uuid'
 
 /**
@@ -115,7 +117,7 @@ export class AsyncToolCallService {
    */
   private async executeToolAsync(
     task: AsyncToolCallTask,
-    config: AsyncToolCallConfig
+    _config: AsyncToolCallConfig
   ): Promise<void> {
     const { id: taskId, toolName, input, timeoutMs } = task
 

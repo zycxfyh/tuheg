@@ -317,7 +317,12 @@ export class VCPProtocol {
         payload: {
           error: {
             code: 'request_failed',
-            message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+            message:
+              error instanceof Error
+                ? error instanceof Error
+                  ? error.message
+                  : String(error)
+                : String(error),
             details: error,
           },
         },
@@ -340,7 +345,7 @@ export class VCPProtocol {
    * 处理工具请求
    */
   private async handleToolRequest(
-    action: string,
+    _action: string,
     payload: VCPToolRequest
   ): Promise<VCPToolResponse> {
     const startTime = Date.now()
@@ -368,7 +373,12 @@ export class VCPProtocol {
         status: 'error',
         error: {
           code: 'tool_execution_failed',
-          message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+          message:
+            error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : String(error),
           details: error,
         },
         metadata: {
@@ -383,7 +393,7 @@ export class VCPProtocol {
   /**
    * 处理记忆请求
    */
-  private async handleMemoryRequest(action: string, payload: VCPMemoryOperation): Promise<any> {
+  private async handleMemoryRequest(_action: string, payload: VCPMemoryOperation): Promise<any> {
     // 这里应该调用记忆系统
     // 现在返回模拟响应
     switch (payload.operation) {
@@ -403,7 +413,7 @@ export class VCPProtocol {
   /**
    * 处理文件请求
    */
-  private async handleFileRequest(action: string, payload: VCPFileOperation): Promise<any> {
+  private async handleFileRequest(_action: string, payload: VCPFileOperation): Promise<any> {
     // 这里应该调用文件系统
     // 现在返回模拟响应
     switch (payload.operation) {
@@ -448,7 +458,15 @@ export class VCPProtocol {
       this.pendingRequests.delete(message.metadata.correlationId!)
 
       if (message.payload?.error) {
-        pending.reject(new Error(message.payload.error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)))
+        pending.reject(
+          new Error(
+            message.payload.error instanceof Error
+              ? error instanceof Error
+                ? error.message
+                : String(error)
+              : String(error)
+          )
+        )
       } else {
         pending.resolve(message.payload)
       }
@@ -492,7 +510,7 @@ export class VCPProtocol {
       this.subscriptions.set(eventType, new Set())
     }
 
-    this.subscriptions.get(eventType)!.add(callback)
+    this.subscriptions.get(eventType)?.add(callback)
 
     // 返回取消订阅函数
     return () => {

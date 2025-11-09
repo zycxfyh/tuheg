@@ -3,7 +3,7 @@
 // 实现分布式Agent网络的实时通信支持
 // ============================================================================
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import WebSocket from 'ws'
 
 export interface WSClient {
@@ -248,7 +248,16 @@ export class WebSocketCommunication extends EventEmitter {
         correlationId: message.id,
       })
     } catch (error: any) {
-      this.sendError(sender.id, message.id, 'request_failed', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
+      this.sendError(
+        sender.id,
+        message.id,
+        'request_failed',
+        error instanceof Error
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : String(error)
+      )
     }
   }
 
@@ -493,7 +502,7 @@ export class WebSocketCommunication extends EventEmitter {
     this.heartbeatCheckInterval = setInterval(() => {
       const now = Date.now()
 
-      for (const [clientId, client] of this.clients) {
+      for (const [_clientId, client] of this.clients) {
         const timeSinceActivity = now - client.metadata.lastActivity.getTime()
 
         // 5分钟没有活动，断开连接

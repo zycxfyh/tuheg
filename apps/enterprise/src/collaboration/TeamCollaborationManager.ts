@@ -1,7 +1,7 @@
 // 团队协作管理器
 // 实现企业级的团队协作功能，支持多用户实时协作创作
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { crossMemoryNetwork, type MemoryEntry } from '../../vcptoolbox/src/PluginFramework'
 
 export interface TeamMember {
@@ -238,7 +238,7 @@ class TeamCollaborationManager extends EventEmitter {
   }
 
   // 接受邀请加入团队
-  async acceptInvitation(invitationId: string, userId: string): Promise<TeamMember> {
+  async acceptInvitation(_invitationId: string, userId: string): Promise<TeamMember> {
     // 这里应该验证邀请的有效性
     // 暂时模拟接受邀请
 

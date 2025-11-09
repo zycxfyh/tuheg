@@ -2,8 +2,8 @@
 // 职责: VCPToolBox 多模态数据链服务
 // 借鉴思想: Base64直通车 + 全局文件API + 跨模态智能转译
 
+import { createHash } from 'node:crypto'
 import { Injectable, Logger } from '@nestjs/common'
-import { createHash } from 'crypto'
 
 /**
  * 多模态数据类型枚举
@@ -165,7 +165,7 @@ export class MultimodalService {
     this.base64Cache.set(hash, multimodalData)
 
     this.logger.debug(
-      `Processed Base64 data: ${mimeType}, size: ${multimodalData.metadata!.size} bytes`
+      `Processed Base64 data: ${mimeType}, size: ${multimodalData.metadata?.size} bytes`
     )
 
     return multimodalData
@@ -381,7 +381,7 @@ export class MultimodalService {
   }
 
   private handleFileRead(
-    nodeId: string,
+    _nodeId: string,
     path: string,
     nodeFiles: Map<string, MultimodalData>
   ): FileApiResponse {
@@ -403,11 +403,11 @@ export class MultimodalService {
   }
 
   private handleFileWrite(
-    nodeId: string,
+    _nodeId: string,
     path: string,
     data: MultimodalData,
     nodeFiles: Map<string, MultimodalData>,
-    options: any
+    _options: any
   ): FileApiResponse {
     nodeFiles.set(path, { ...data, timestamp: new Date() })
 
@@ -423,7 +423,7 @@ export class MultimodalService {
   }
 
   private handleFileList(
-    nodeId: string,
+    _nodeId: string,
     path: string,
     nodeFiles: Map<string, MultimodalData>
   ): FileApiResponse {
@@ -447,7 +447,7 @@ export class MultimodalService {
   }
 
   private handleFileDelete(
-    nodeId: string,
+    _nodeId: string,
     path: string,
     nodeFiles: Map<string, MultimodalData>
   ): FileApiResponse {
@@ -464,11 +464,11 @@ export class MultimodalService {
   }
 
   private handleFileCopy(
-    nodeId: string,
+    _nodeId: string,
     sourcePath: string,
     targetPath: string,
     nodeFiles: Map<string, MultimodalData>,
-    options: any
+    _options: any
   ): FileApiResponse {
     const sourceData = nodeFiles.get(sourcePath)
     if (!sourceData) {
@@ -485,11 +485,11 @@ export class MultimodalService {
   }
 
   private handleFileMove(
-    nodeId: string,
+    _nodeId: string,
     sourcePath: string,
     targetPath: string,
     nodeFiles: Map<string, MultimodalData>,
-    options: any
+    _options: any
   ): FileApiResponse {
     const sourceData = nodeFiles.get(sourcePath)
     if (!sourceData) {
@@ -561,7 +561,7 @@ export class MultimodalService {
   private async convertImageToTarget(
     sourceData: MultimodalData,
     targetType: MultimodalDataType,
-    options: any
+    _options: any
   ): Promise<MultimodalData> {
     if (targetType !== MultimodalDataType.TEXT) {
       throw new Error(`Image can only be converted to text, not ${targetType}`)
@@ -585,7 +585,7 @@ export class MultimodalService {
   private async convertVideoToTarget(
     sourceData: MultimodalData,
     targetType: MultimodalDataType,
-    options: any
+    _options: any
   ): Promise<MultimodalData> {
     // 模拟视频处理
     if (targetType === MultimodalDataType.TEXT) {

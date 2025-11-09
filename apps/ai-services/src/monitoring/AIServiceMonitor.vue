@@ -252,9 +252,6 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import LatencyTrendChart from './charts/LatencyTrendChart.vue'
-import RequestTypeChart from './charts/RequestTypeChart.vue'
-import ServiceUsageChart from './charts/ServiceUsageChart.vue'
 
 // Props
 const props = defineProps({
@@ -294,7 +291,7 @@ const costBreakdown = ref([])
 const maxCost = ref(0)
 
 // 计算属性
-const activeServices = computed(() => {
+const _activeServices = computed(() => {
   return serviceHealth.value.filter((service) => service.status === 'healthy')
 })
 
@@ -473,7 +470,7 @@ const checkAlerts = () => {
   alerts.value = newAlerts
 }
 
-const getStatusText = (status) => {
+const _getStatusText = (status) => {
   const statusMap = {
     healthy: '正常',
     degraded: '降级',
@@ -482,7 +479,7 @@ const getStatusText = (status) => {
   return statusMap[status] || status
 }
 
-const formatTime = (timestamp) => {
+const _formatTime = (timestamp) => {
   return new Date(timestamp).toLocaleTimeString('zh-CN', {
     hour12: false,
     hour: '2-digit',
@@ -491,7 +488,7 @@ const formatTime = (timestamp) => {
   })
 }
 
-const exportReport = () => {
+const _exportReport = () => {
   const reportData = {
     timestamp: new Date().toISOString(),
     timeRange: timeRange.value,
@@ -516,7 +513,7 @@ const exportReport = () => {
   URL.revokeObjectURL(url)
 }
 
-const dismissAlert = (alertId) => {
+const _dismissAlert = (alertId) => {
   alerts.value = alerts.value.filter((alert) => alert.id !== alertId)
 }
 

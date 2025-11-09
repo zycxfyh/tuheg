@@ -1,0 +1,53 @@
+b233870f97cc7088e627452d42c9386c
+"use strict";
+// 文件路径: packages/common-backend/src/cache/cache.module.ts
+// 核心理念: 统一使用Redis缓存，确保分布式一致性
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CacheModule = void 0;
+const cache_manager_1 = require("@nestjs/cache-manager");
+const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const cache_manager_redis_store_1 = require("cache-manager-redis-store");
+const cache_service_1 = require("./cache.service");
+/**
+ * @module CacheModule
+ * @description 缓存模块
+ * 统一使用Redis缓存，确保分布式一致性和高性能
+ */
+let CacheModule = class CacheModule {
+};
+exports.CacheModule = CacheModule;
+exports.CacheModule = CacheModule = __decorate([
+    (0, common_1.Module)({
+        imports: [
+            cache_manager_1.CacheModule.registerAsync({
+                inject: [config_1.ConfigService],
+                useFactory: async (configService) => {
+                    const redisUrl = configService.get('REDIS_URL');
+                    if (!redisUrl) {
+                        throw new Error('REDIS_URL is required for caching. Please configure Redis connection.');
+                    }
+                    const url = new URL(redisUrl);
+                    // 统一使用Redis存储，确保分布式一致性
+                    return {
+                        store: cache_manager_redis_store_1.redisStore,
+                        host: url.hostname,
+                        port: parseInt(url.port || '6379'),
+                        password: url.password || undefined,
+                        ttl: 3600, // 默认 1 小时
+                        max: 1000, // Redis可以处理更多缓存项
+                    };
+                },
+            }),
+        ],
+        providers: [cache_service_1.CacheService],
+        exports: [cache_service_1.CacheService, cache_manager_1.CacheModule],
+    })
+], CacheModule);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxjYWNoZVxcY2FjaGUubW9kdWxlLnRzIiwibWFwcGluZ3MiOiI7QUFBQSwwREFBMEQ7QUFDMUQsNkJBQTZCOzs7Ozs7Ozs7QUFFN0IseURBQXNFO0FBQ3RFLDJDQUF1QztBQUN2QywyQ0FBOEM7QUFDOUMseUVBQXNEO0FBQ3RELG1EQUE4QztBQUU5Qzs7OztHQUlHO0FBNkJJLElBQU0sV0FBVyxHQUFqQixNQUFNLFdBQVc7Q0FBRyxDQUFBO0FBQWQsa0NBQVc7c0JBQVgsV0FBVztJQTVCdkIsSUFBQSxlQUFNLEVBQUM7UUFDTixPQUFPLEVBQUU7WUFDUCwyQkFBZSxDQUFDLGFBQWEsQ0FBQztnQkFDNUIsTUFBTSxFQUFFLENBQUMsc0JBQWEsQ0FBQztnQkFDdkIsVUFBVSxFQUFFLEtBQUssRUFBRSxhQUE0QixFQUFFLEVBQUU7b0JBQ2pELE1BQU0sUUFBUSxHQUFHLGFBQWEsQ0FBQyxHQUFHLENBQVMsV0FBVyxDQUFDLENBQUE7b0JBRXZELElBQUksQ0FBQyxRQUFRLEVBQUUsQ0FBQzt3QkFDZCxNQUFNLElBQUksS0FBSyxDQUFDLHVFQUF1RSxDQUFDLENBQUE7b0JBQzFGLENBQUM7b0JBRUQsTUFBTSxHQUFHLEdBQUcsSUFBSSxHQUFHLENBQUMsUUFBUSxDQUFDLENBQUE7b0JBRTdCLHVCQUF1QjtvQkFDdkIsT0FBTzt3QkFDTCxLQUFLLEVBQUUsc0NBQVU7d0JBQ2pCLElBQUksRUFBRSxHQUFHLENBQUMsUUFBUTt3QkFDbEIsSUFBSSxFQUFFLFFBQVEsQ0FBQyxHQUFHLENBQUMsSUFBSSxJQUFJLE1BQU0sQ0FBQzt3QkFDbEMsUUFBUSxFQUFFLEdBQUcsQ0FBQyxRQUFRLElBQUksU0FBUzt3QkFDbkMsR0FBRyxFQUFFLElBQUksRUFBRSxVQUFVO3dCQUNyQixHQUFHLEVBQUUsSUFBSSxFQUFFLGlCQUFpQjtxQkFDdEIsQ0FBQTtnQkFDVixDQUFDO2FBQ0YsQ0FBQztTQUNIO1FBQ0QsU0FBUyxFQUFFLENBQUMsNEJBQVksQ0FBQztRQUN6QixPQUFPLEVBQUUsQ0FBQyw0QkFBWSxFQUFFLDJCQUFlLENBQUM7S0FDekMsQ0FBQztHQUNXLFdBQVcsQ0FBRyIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXDE2NjYzXFxEZXNrdG9wXFx0dWhlZ1xccGFja2FnZXNcXGNvbW1vbi1iYWNrZW5kXFxzcmNcXGNhY2hlXFxjYWNoZS5tb2R1bGUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBwYWNrYWdlcy9jb21tb24tYmFja2VuZC9zcmMvY2FjaGUvY2FjaGUubW9kdWxlLnRzXG4vLyDmoLjlv4PnkIblv7U6IOe7n+S4gOS9v+eUqFJlZGlz57yT5a2Y77yM56Gu5L+d5YiG5biD5byP5LiA6Ie05oCnXG5cbmltcG9ydCB7IENhY2hlTW9kdWxlIGFzIE5lc3RDYWNoZU1vZHVsZSB9IGZyb20gJ0BuZXN0anMvY2FjaGUtbWFuYWdlcidcbmltcG9ydCB7IE1vZHVsZSB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHsgQ29uZmlnU2VydmljZSB9IGZyb20gJ0BuZXN0anMvY29uZmlnJ1xuaW1wb3J0IHsgcmVkaXNTdG9yZSB9IGZyb20gJ2NhY2hlLW1hbmFnZXItcmVkaXMtc3RvcmUnXG5pbXBvcnQgeyBDYWNoZVNlcnZpY2UgfSBmcm9tICcuL2NhY2hlLnNlcnZpY2UnXG5cbi8qKlxuICogQG1vZHVsZSBDYWNoZU1vZHVsZVxuICogQGRlc2NyaXB0aW9uIOe8k+WtmOaooeWdl1xuICog57uf5LiA5L2/55SoUmVkaXPnvJPlrZjvvIznoa7kv53liIbluIPlvI/kuIDoh7TmgKflkozpq5jmgKfog71cbiAqL1xuQE1vZHVsZSh7XG4gIGltcG9ydHM6IFtcbiAgICBOZXN0Q2FjaGVNb2R1bGUucmVnaXN0ZXJBc3luYyh7XG4gICAgICBpbmplY3Q6IFtDb25maWdTZXJ2aWNlXSxcbiAgICAgIHVzZUZhY3Rvcnk6IGFzeW5jIChjb25maWdTZXJ2aWNlOiBDb25maWdTZXJ2aWNlKSA9PiB7XG4gICAgICAgIGNvbnN0IHJlZGlzVXJsID0gY29uZmlnU2VydmljZS5nZXQ8c3RyaW5nPignUkVESVNfVVJMJylcblxuICAgICAgICBpZiAoIXJlZGlzVXJsKSB7XG4gICAgICAgICAgdGhyb3cgbmV3IEVycm9yKCdSRURJU19VUkwgaXMgcmVxdWlyZWQgZm9yIGNhY2hpbmcuIFBsZWFzZSBjb25maWd1cmUgUmVkaXMgY29ubmVjdGlvbi4nKVxuICAgICAgICB9XG5cbiAgICAgICAgY29uc3QgdXJsID0gbmV3IFVSTChyZWRpc1VybClcblxuICAgICAgICAvLyDnu5/kuIDkvb/nlKhSZWRpc+WtmOWCqO+8jOehruS/neWIhuW4g+W8j+S4gOiHtOaAp1xuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgIHN0b3JlOiByZWRpc1N0b3JlLFxuICAgICAgICAgIGhvc3Q6IHVybC5ob3N0bmFtZSxcbiAgICAgICAgICBwb3J0OiBwYXJzZUludCh1cmwucG9ydCB8fCAnNjM3OScpLFxuICAgICAgICAgIHBhc3N3b3JkOiB1cmwucGFzc3dvcmQgfHwgdW5kZWZpbmVkLFxuICAgICAgICAgIHR0bDogMzYwMCwgLy8g6buY6K6kIDEg5bCP5pe2XG4gICAgICAgICAgbWF4OiAxMDAwLCAvLyBSZWRpc+WPr+S7peWkhOeQhuabtOWkmue8k+WtmOmhuVxuICAgICAgICB9IGFzIGFueVxuICAgICAgfSxcbiAgICB9KSxcbiAgXSxcbiAgcHJvdmlkZXJzOiBbQ2FjaGVTZXJ2aWNlXSxcbiAgZXhwb3J0czogW0NhY2hlU2VydmljZSwgTmVzdENhY2hlTW9kdWxlXSxcbn0pXG5leHBvcnQgY2xhc3MgQ2FjaGVNb2R1bGUge31cbiJdLCJ2ZXJzaW9uIjozfQ==

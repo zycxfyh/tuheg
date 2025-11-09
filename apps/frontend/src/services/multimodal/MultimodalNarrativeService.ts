@@ -373,7 +373,7 @@ export class MultimodalNarrativeService {
       const progress = response.data as UserProgress
       this.userProgress.set(key, progress)
       return progress
-    } catch (error) {
+    } catch (_error) {
       return null
     }
   }
@@ -467,9 +467,9 @@ export class MultimodalNarrativeService {
   }
 
   private setupInteractions(
-    narrativeId: string,
-    segment: NarrativeSegment,
-    container: HTMLElement
+    _narrativeId: string,
+    _segment: NarrativeSegment,
+    _container: HTMLElement
   ): void {
     // 设置交互事件监听器
     // 这里需要根据具体的交互类型实现

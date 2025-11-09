@@ -5,9 +5,9 @@
  * 提供高级测试执行和管理功能
  */
 
-const { execSync } = require('child_process')
-const fs = require('fs')
-const path = require('path')
+const { execSync } = require('node:child_process')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const colors = {
   reset: '\x1b[0m',
@@ -26,7 +26,7 @@ function log(color, message) {
 function runCommand(command, description) {
   try {
     log(colors.blue, `🚀 ${description}...`)
-    const result = execSync(command, {
+    const _result = execSync(command, {
       stdio: 'inherit',
       timeout: 300000, // 5分钟超时
     })
@@ -71,7 +71,7 @@ function checkCoverage() {
     })
 
     return allPassed
-  } catch (error) {
+  } catch (_error) {
     log(colors.red, '❌ 解析覆盖率报告失败')
     return false
   }
@@ -119,7 +119,12 @@ function main() {
   switch (command) {
     case 'unit':
       log(colors.cyan, '🧪 运行单元测试...')
-      if (runCommand('npx jest --testPathPattern="\\.spec\\.ts$" --testPathIgnorePatterns="packages/common-backend" --passWithNoTests', '单元测试（跳过common-backend）')) {
+      if (
+        runCommand(
+          'npx jest --testPathPattern="\\.spec\\.ts$" --testPathIgnorePatterns="packages/common-backend" --passWithNoTests',
+          '单元测试（跳过common-backend）'
+        )
+      ) {
         checkCoverage()
       }
       break

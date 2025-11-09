@@ -7,7 +7,7 @@ import { ref } from 'vue'
 const coreConceptInput = ref('')
 
 // 2. 用于控制当前显示哪个 Tab 的 ref
-const activeTab = ref('concept') // 'concept' or 'params'
+const _activeTab = ref('concept') // 'concept' or 'params'
 
 // 3. 用于绑定参数滑块值的 ref
 const worldParams = ref({
@@ -21,7 +21,7 @@ const emit = defineEmits(['back', 'start-creation'])
 
 // --- 事件处理函数 ---
 // 5. 点击“生成世界”按钮时触发
-function onStartClick() {
+function _onStartClick() {
   if (coreConceptInput.value.trim()) {
     // 将核心概念和世界参数一起打包，通过事件传递给父组件
     const creationData = {

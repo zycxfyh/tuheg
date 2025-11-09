@@ -6,7 +6,7 @@ import {
   delay,
   ErrorCategory,
   getRecommendedDelay,
-} from './retry-strategy'
+} from '../retry-strategy'
 
 describe('retry-strategy', () => {
   describe('classifyError', () => {

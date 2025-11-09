@@ -30,7 +30,7 @@ const props = defineProps({
 const { t } = useI18n()
 
 // Computed
-const loadingMessage = computed(() => {
+const _loadingMessage = computed(() => {
   if (props.message) return props.message
   return t('game.processingAction')
 })

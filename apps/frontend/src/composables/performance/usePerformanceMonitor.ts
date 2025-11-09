@@ -82,7 +82,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
         })
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] })
         observers.value.push(lcpObserver)
-      } catch (e) {
+      } catch (_e) {
         console.warn('LCP observation not supported')
       }
 
@@ -96,7 +96,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
         })
         fidObserver.observe({ entryTypes: ['first-input'] })
         observers.value.push(fidObserver)
-      } catch (e) {
+      } catch (_e) {
         console.warn('FID observation not supported')
       }
 
@@ -114,7 +114,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
         })
         clsObserver.observe({ entryTypes: ['layout-shift'] })
         observers.value.push(clsObserver)
-      } catch (e) {
+      } catch (_e) {
         console.warn('CLS observation not supported')
       }
     }
@@ -131,7 +131,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       })
       paintObserver.observe({ entryTypes: ['paint'] })
       observers.value.push(paintObserver)
-    } catch (e) {
+    } catch (_e) {
       console.warn('Paint timing observation not supported')
     }
 
@@ -150,7 +150,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
       })
       navObserver.observe({ entryTypes: ['navigation'] })
       observers.value.push(navObserver)
-    } catch (e) {
+    } catch (_e) {
       console.warn('Navigation timing observation not supported')
     }
 
@@ -180,7 +180,7 @@ export function usePerformanceMonitor(config: Partial<PerformanceConfig> = {}) {
         })
         resourceObserver.observe({ entryTypes: ['resource'] })
         observers.value.push(resourceObserver)
-      } catch (e) {
+      } catch (_e) {
         console.warn('Resource timing observation not supported')
       }
     }

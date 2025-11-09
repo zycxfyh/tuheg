@@ -340,7 +340,7 @@ export class ModelRouterService {
   /**
    * 评估性能条件
    */
-  private evaluatePerformanceCondition(operator: string, value: any, priority?: string): number {
+  private evaluatePerformanceCondition(_operator: string, value: any, priority?: string): number {
     if (!priority) return 50 // 中等匹配
 
     if (priority === 'performance' && value === 'high') return 100
@@ -353,7 +353,7 @@ export class ModelRouterService {
   /**
    * 评估成本条件
    */
-  private evaluateCostCondition(operator: string, value: any, priority?: string): number {
+  private evaluateCostCondition(_operator: string, value: any, priority?: string): number {
     if (!priority) return 50
 
     if (priority === 'cost' && value === 'low') return 100
@@ -389,9 +389,9 @@ export class ModelRouterService {
    * 评估可用性条件
    */
   private evaluateAvailabilityCondition(
-    operator: string,
+    _operator: string,
     value: any,
-    context?: Record<string, any>
+    _context?: Record<string, any>
   ): number {
     // 简化的可用性检查
     return value === 'high' ? 80 : 50
@@ -418,7 +418,7 @@ export class ModelRouterService {
    */
   private async selectRouterTarget(
     targets: RoutingTarget[],
-    request: RoutingRequest
+    _request: RoutingRequest
   ): Promise<AiModel | null> {
     if (targets.length === 0) return null
 
@@ -435,7 +435,7 @@ export class ModelRouterService {
         if (model && model.status === 'ACTIVE' && model.provider.status === 'ACTIVE') {
           return model
         }
-      } catch (error) {}
+      } catch (_error) {}
     }
 
     return null
@@ -505,7 +505,7 @@ export class ModelRouterService {
   /**
    * 获取路由器统计
    */
-  async getRouterStats(routerId: string, period: 'day' | 'week' | 'month' = 'week') {
+  async getRouterStats(routerId: string, _period: 'day' | 'week' | 'month' = 'week') {
     const router = await this.getRouter(routerId)
 
     // 这里可以实现路由器使用统计
@@ -563,7 +563,7 @@ export class ModelRouterService {
         } else if (!model.provider || model.provider.status !== 'ACTIVE') {
           issues.push(`Provider for model ${target.modelId} is not active`)
         }
-      } catch (error) {
+      } catch (_error) {
         issues.push(`Failed to check model ${target.modelId}`)
       }
     }
@@ -657,7 +657,7 @@ export class ModelRouterService {
           targets,
         })
       } catch (error) {
-        if (!error instanceof Error ? error.message : String(error).includes('already exists')) {
+        if ((!error) instanceof Error ? error.message : String(error).includes('already exists')) {
           console.error(`Failed to create router ${routerConfig.name}:`, error)
         }
       }
@@ -676,8 +676,6 @@ export class ModelRouterService {
 
       case 'performance-max':
         return Math.max(1, model.performance * 100) // 性能越高权重越高
-
-      case 'general-purpose':
       default: {
         // 平衡性能和成本
         const performance = model.performance

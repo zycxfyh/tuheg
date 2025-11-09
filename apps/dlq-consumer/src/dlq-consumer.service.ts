@@ -107,7 +107,7 @@ export class DlqConsumerService implements OnModuleInit, OnModuleDestroy {
   private parseMessageContent(msg: amqp.ConsumeMessage): any {
     try {
       return JSON.parse(msg.content.toString())
-    } catch (error) {
+    } catch (_error) {
       this.logger.warn('Failed to parse DLQ message content as JSON, treating as raw string')
       return { rawContent: msg.content.toString() }
     }

@@ -290,7 +290,7 @@ export class AiTaskQueueService {
   /**
    * 执行分析任务
    */
-  private async executeAnalysisTask(payload: any): Promise<any> {
+  private async executeAnalysisTask(_payload: any): Promise<any> {
     // 这里实现具体的AI分析逻辑
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
@@ -309,7 +309,7 @@ export class AiTaskQueueService {
   /**
    * 执行优化任务
    */
-  private async executeOptimizationTask(payload: any): Promise<any> {
+  private async executeOptimizationTask(_payload: any): Promise<any> {
     // 这里实现具体的AI优化逻辑
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
@@ -328,7 +328,7 @@ export class AiTaskQueueService {
   /**
    * 执行审查任务
    */
-  private async executeReviewTask(payload: any): Promise<any> {
+  private async executeReviewTask(_payload: any): Promise<any> {
     // 这里实现具体的AI审查逻辑
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -484,7 +484,7 @@ export class AiTaskQueueService {
     const avgProcessingTime =
       completedTasks.length > 0
         ? completedTasks.reduce((sum, task) => {
-            const processingTime = task.completedAt!.getTime() - task.startedAt!.getTime()
+            const processingTime = task.completedAt?.getTime() - task.startedAt?.getTime()
             return sum + processingTime
           }, 0) / completedTasks.length
         : 0

@@ -1,7 +1,8 @@
-import * as crypto from 'crypto'
-import { EventEmitter } from 'events'
-import * as fs from 'fs'
-import * as path from 'path'
+import * as crypto from 'node:crypto'
+import { EventEmitter } from 'node:events'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import { getErrorMessage } from '@tuheg/common-backend'
 import type { PluginMetadata, VCPPlugin } from '../PluginFramework'
 
 // VCPToolBox 发布系统
@@ -195,7 +196,7 @@ export class Publisher extends EventEmitter {
 
       this.emit('publishCompleted', { packageId: pluginPackage.id, result })
     } catch (error) {
-      result.errors.push(error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error))
+      result.errors.push(getErrorMessage(error))
       this.emit('publishFailed', { packageId: pluginPackage.id, error })
     }
 
@@ -250,7 +251,7 @@ export class Publisher extends EventEmitter {
   }
 
   // 收集插件文件
-  private async collectPluginFiles(sourcePath: string, plugin: VCPPlugin): Promise<PluginFile[]> {
+  private async collectPluginFiles(sourcePath: string, _plugin: VCPPlugin): Promise<PluginFile[]> {
     const files: PluginFile[] = []
     const excludePatterns = ['node_modules', '.git', 'dist', '*.log', '.DS_Store', 'coverage']
 
@@ -370,14 +371,14 @@ export class Publisher extends EventEmitter {
   // 发布到私有注册表
   private async publishToPrivateRegistry(
     pluginPackage: PluginPackage,
-    registryId?: string
+    _registryId?: string
   ): Promise<string> {
     // 实现私有注册表发布逻辑
     return `private-registry://plugins/${pluginPackage.id}/${pluginPackage.version}`
   }
 
   // 获取主入口文件
-  private getMainFile(plugin: VCPPlugin, sourcePath: string): string | null {
+  private getMainFile(_plugin: VCPPlugin, sourcePath: string): string | null {
     // 尝试常见的主入口文件名
     const possibleMains = [
       'dist/index.js',
@@ -421,7 +422,7 @@ export class Publisher extends EventEmitter {
   }
 
   // 创建版本标签
-  createVersionTag(pluginId: string, version: string, changelog: string[]): VersionInfo {
+  createVersionTag(_pluginId: string, version: string, changelog: string[]): VersionInfo {
     return {
       version,
       changelog,
@@ -472,7 +473,7 @@ export class Publisher extends EventEmitter {
   }
 
   // 获取插件下载统计
-  getDownloadStats(pluginId: string): { total: number; versions: Record<string, number> } {
+  getDownloadStats(_pluginId: string): { total: number; versions: Record<string, number> } {
     // 这里应该从实际的下载记录中获取数据
     // 简化实现
     return {

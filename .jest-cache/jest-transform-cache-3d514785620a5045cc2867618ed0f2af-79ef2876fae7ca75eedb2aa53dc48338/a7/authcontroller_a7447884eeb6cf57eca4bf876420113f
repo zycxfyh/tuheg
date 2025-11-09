@@ -1,0 +1,88 @@
+a6231a3471d73c92f92fb3e0e26ced05
+"use strict";
+// 文件路径: apps/backend-gateway/src/auth/auth.controller.ts
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const common_1 = require("@nestjs/common");
+const throttler_1 = require("@nestjs/throttler");
+// [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
+const common_backend_1 = require("@tuheg/common-backend");
+const login_dto_1 = require("./dto/login.dto");
+const register_dto_1 = require("./dto/register.dto");
+const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
+let AuthController = (() => {
+    let _classDecorators = [(0, common_1.Controller)('auth')];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    let _instanceExtraInitializers = [];
+    let _register_decorators;
+    let _login_decorators;
+    let _getProfile_decorators;
+    var AuthController = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            _register_decorators = [(0, common_1.Post)('register')];
+            _login_decorators = [(0, throttler_1.Throttle)({ default: { limit: 5, ttl: 300000 } }), (0, common_1.HttpCode)(common_1.HttpStatus.OK), (0, common_1.Post)('login')];
+            _getProfile_decorators = [(0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard), (0, common_1.Get)('profile')];
+            __esDecorate(this, null, _register_decorators, { kind: "method", name: "register", static: false, private: false, access: { has: obj => "register" in obj, get: obj => obj.register }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _login_decorators, { kind: "method", name: "login", static: false, private: false, access: { has: obj => "login" in obj, get: obj => obj.login }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _getProfile_decorators, { kind: "method", name: "getProfile", static: false, private: false, access: { has: obj => "getProfile" in obj, get: obj => obj.getProfile }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            AuthController = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        authService = __runInitializers(this, _instanceExtraInitializers);
+        constructor(authService) {
+            this.authService = authService;
+        }
+        async register(registerDto) {
+            return this.authService.register(registerDto);
+        }
+        async login(loginDto) {
+            return this.authService.login(loginDto);
+        }
+        getProfile(req) {
+            return req.user;
+        }
+    };
+    return AuthController = _classThis;
+})();
+exports.AuthController = AuthController;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxhdXRoLmNvbnRyb2xsZXIudHMiLCJtYXBwaW5ncyI6IjtBQUFBLHlEQUF5RDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUV6RCwyQ0FBa0c7QUFDbEcsaURBQTRDO0FBQzVDLHlEQUF5RDtBQUN6RCwwREFBeUQ7QUFJekQsK0NBQTZDO0FBRzdDLHFEQUFtRDtBQUNuRCw0REFBc0Q7SUFHekMsY0FBYzs0QkFEMUIsSUFBQSxtQkFBVSxFQUFDLE1BQU0sQ0FBQzs7Ozs7Ozs7Ozs7O29DQUloQixJQUFBLGFBQUksRUFBQyxVQUFVLENBQUM7aUNBS2hCLElBQUEsb0JBQVEsRUFBQyxFQUFFLE9BQU8sRUFBRSxFQUFFLEtBQUssRUFBRSxDQUFDLEVBQUUsR0FBRyxFQUFFLE1BQU0sRUFBRSxFQUFFLENBQUMsRUFDaEQsSUFBQSxpQkFBUSxFQUFDLG1CQUFVLENBQUMsRUFBRSxDQUFDLEVBQ3ZCLElBQUEsYUFBSSxFQUFDLE9BQU8sQ0FBQztzQ0FLYixJQUFBLGtCQUFTLEVBQUMsNkJBQVksQ0FBQyxFQUN2QixJQUFBLFlBQUcsRUFBQyxTQUFTLENBQUM7WUFaZiwyS0FBYSxRQUFRLDZEQUVwQjtZQUtELGtLQUFhLEtBQUssNkRBRWpCO1lBSUQsaUxBQU8sVUFBVSw2REFFaEI7WUFuQkgsNktBb0JDOzs7WUFwQlksdURBQWM7O1FBQ0ksV0FBVyxHQUQ3QixtREFBYztRQUN6QixZQUE2QixXQUF3QjtZQUF4QixnQkFBVyxHQUFYLFdBQVcsQ0FBYTtRQUFHLENBQUM7UUFHbEQsS0FBSyxDQUFDLFFBQVEsQ0FBOEMsV0FBd0I7WUFDekYsT0FBTyxJQUFJLENBQUMsV0FBVyxDQUFDLFFBQVEsQ0FBQyxXQUFXLENBQUMsQ0FBQTtRQUMvQyxDQUFDO1FBS00sS0FBSyxDQUFDLEtBQUssQ0FBMkMsUUFBa0I7WUFDN0UsT0FBTyxJQUFJLENBQUMsV0FBVyxDQUFDLEtBQUssQ0FBQyxRQUFRLENBQUMsQ0FBQTtRQUN6QyxDQUFDO1FBSU0sVUFBVSxDQUFRLEdBQVk7WUFDbkMsT0FBTyxHQUFHLENBQUMsSUFBSSxDQUFBO1FBQ2pCLENBQUM7Ozs7QUFuQlUsd0NBQWMiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxhdXRoLmNvbnRyb2xsZXIudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBhcHBzL2JhY2tlbmQtZ2F0ZXdheS9zcmMvYXV0aC9hdXRoLmNvbnRyb2xsZXIudHNcblxuaW1wb3J0IHsgQm9keSwgQ29udHJvbGxlciwgR2V0LCBIdHRwQ29kZSwgSHR0cFN0YXR1cywgUG9zdCwgUmVxLCBVc2VHdWFyZHMgfSBmcm9tICdAbmVzdGpzL2NvbW1vbidcbmltcG9ydCB7IFRocm90dGxlIH0gZnJvbSAnQG5lc3Rqcy90aHJvdHRsZXInXG4vLyBb5qC45b+D5L+u5q2jXSDku44gQHR1aGVnL2NvbW1vbi1iYWNrZW5kIOWvvOWFpeWFseS6q+eahCBab2RWYWxpZGF0aW9uUGlwZVxuaW1wb3J0IHsgWm9kVmFsaWRhdGlvblBpcGUgfSBmcm9tICdAdHVoZWcvY29tbW9uLWJhY2tlbmQnXG5pbXBvcnQgdHlwZSB7IFJlcXVlc3QgfSBmcm9tICdleHByZXNzJ1xuaW1wb3J0IHR5cGUgeyBBdXRoU2VydmljZSB9IGZyb20gJy4vYXV0aC5zZXJ2aWNlJ1xuaW1wb3J0IHR5cGUgeyBMb2dpbkR0byB9IGZyb20gJy4vZHRvL2xvZ2luLmR0bydcbmltcG9ydCB7IGxvZ2luU2NoZW1hIH0gZnJvbSAnLi9kdG8vbG9naW4uZHRvJ1xuLy8g5a+85YWlRFRP57G75Z6L5ZKMWm9kIHNjaGVtYVxuaW1wb3J0IHR5cGUgeyBSZWdpc3RlckR0byB9IGZyb20gJy4vZHRvL3JlZ2lzdGVyLmR0bydcbmltcG9ydCB7IHJlZ2lzdGVyU2NoZW1hIH0gZnJvbSAnLi9kdG8vcmVnaXN0ZXIuZHRvJ1xuaW1wb3J0IHsgSnd0QXV0aEd1YXJkIH0gZnJvbSAnLi9ndWFyZHMvand0LWF1dGguZ3VhcmQnXG5cbkBDb250cm9sbGVyKCdhdXRoJylcbmV4cG9ydCBjbGFzcyBBdXRoQ29udHJvbGxlciB7XG4gIGNvbnN0cnVjdG9yKHByaXZhdGUgcmVhZG9ubHkgYXV0aFNlcnZpY2U6IEF1dGhTZXJ2aWNlKSB7fVxuXG4gIEBQb3N0KCdyZWdpc3RlcicpXG4gIHB1YmxpYyBhc3luYyByZWdpc3RlcihAQm9keShuZXcgWm9kVmFsaWRhdGlvblBpcGUocmVnaXN0ZXJTY2hlbWEpKSByZWdpc3RlckR0bzogUmVnaXN0ZXJEdG8pIHtcbiAgICByZXR1cm4gdGhpcy5hdXRoU2VydmljZS5yZWdpc3RlcihyZWdpc3RlckR0bylcbiAgfVxuXG4gIEBUaHJvdHRsZSh7IGRlZmF1bHQ6IHsgbGltaXQ6IDUsIHR0bDogMzAwMDAwIH0gfSkgLy8gNeasoS815YiG6ZKfXG4gIEBIdHRwQ29kZShIdHRwU3RhdHVzLk9LKVxuICBAUG9zdCgnbG9naW4nKVxuICBwdWJsaWMgYXN5bmMgbG9naW4oQEJvZHkobmV3IFpvZFZhbGlkYXRpb25QaXBlKGxvZ2luU2NoZW1hKSkgbG9naW5EdG86IExvZ2luRHRvKSB7XG4gICAgcmV0dXJuIHRoaXMuYXV0aFNlcnZpY2UubG9naW4obG9naW5EdG8pXG4gIH1cblxuICBAVXNlR3VhcmRzKEp3dEF1dGhHdWFyZClcbiAgQEdldCgncHJvZmlsZScpXG4gIHB1YmxpYyBnZXRQcm9maWxlKEBSZXEoKSByZXE6IFJlcXVlc3QpIHtcbiAgICByZXR1cm4gcmVxLnVzZXJcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

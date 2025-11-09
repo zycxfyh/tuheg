@@ -1,10 +1,10 @@
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import chalk from 'chalk'
 import * as fs from 'fs-extra'
 import Handlebars from 'handlebars'
 import inquirer from 'inquirer'
 import ora from 'ora'
-import * as path from 'path'
-import { fileURLToPath } from 'url'
 import validatePackageName from 'validate-npm-package-name'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -23,7 +23,9 @@ export async function createPlugin(name: string, options: PluginOptions) {
   if (!validation.validForNewPackages) {
     console.error(chalk.red('❌ Invalid plugin name:'), name)
     if (validation.errors) {
-      validation.errors.forEach((error) => console.error(chalk.red(`  - ${error}`)))
+      validation.errors.forEach((error) => {
+        console.error(chalk.red(`  - ${error}`))
+      })
     }
     process.exit(1)
   }

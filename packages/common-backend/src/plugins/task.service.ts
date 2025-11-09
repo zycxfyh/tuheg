@@ -287,7 +287,7 @@ export class TaskService {
         updateData.completedAt = new Date()
 
         if (assignment.startedAt) {
-          const duration = (new Date().getTime() - assignment.startedAt.getTime()) / (1000 * 60)
+          const duration = (Date.now() - assignment.startedAt.getTime()) / (1000 * 60)
           await this.updateTask(taskId, { actualDuration: Math.round(duration) })
         }
       }
@@ -380,7 +380,10 @@ export class TaskService {
         await this.assignTask(assignment)
         successfulAssignments.push(assignment)
       } catch (error) {
-        console.error(`Failed to assign task ${assignment.taskId}:`, error instanceof Error ? error.message : String(error))
+        console.error(
+          `Failed to assign task ${assignment.taskId}:`,
+          error instanceof Error ? error.message : String(error)
+        )
       }
     }
 
@@ -480,8 +483,8 @@ export class TaskService {
     complexity: TaskComplexity
     estimatedDuration: number
   } {
-    const requirements = task.requirements || {}
-    const input = task.input || {}
+    const _requirements = task.requirements || {}
+    const _input = task.input || {}
 
     // 基于任务类型和内容分析所需能力
     const capabilities: string[] = []
@@ -579,7 +582,7 @@ export class TaskService {
   private async selectBestAgent(
     agents: Agent[],
     task: Task,
-    options: TaskSchedulingOptions
+    _options: TaskSchedulingOptions
   ): Promise<Agent> {
     if (agents.length === 0) {
       throw new Error('No agents available')

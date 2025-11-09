@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('node:fs')
 
 function deduplicateRepomixFile(inputPath, outputPath) {
   const content = fs.readFileSync(inputPath, 'utf8')

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 // 订阅计划类型
 export interface SubscriptionPlan {
@@ -329,7 +329,9 @@ export class SubscriptionManager extends EventEmitter {
       },
     ]
 
-    plans.forEach((plan) => this.plans.set(plan.id, plan))
+    plans.forEach((plan) => {
+      this.plans.set(plan.id, plan)
+    })
   }
 
   // 获取所有订阅计划

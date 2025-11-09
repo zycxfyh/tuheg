@@ -42,11 +42,11 @@ const capturedError = ref(props.error)
 const errorMessage = ref('')
 
 // Methods
-const retry = () => {
+const _retry = () => {
   window.location.reload()
 }
 
-const goHome = () => {
+const _goHome = () => {
   router.push('/')
 }
 

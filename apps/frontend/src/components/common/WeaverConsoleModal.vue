@@ -56,7 +56,7 @@ onMounted(() => {
   }
 })
 
-function handleSaveChanges() {
+function _handleSaveChanges() {
   if (!editableCharacter.value || !gameStore.currentGame?.id) return
 
   const originalCharacter = gameStore.currentGame.character

@@ -1,4 +1,4 @@
-import { CapacitorConfig } from '@capacitor/cli'
+import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.creationring.app',
@@ -10,11 +10,11 @@ const config: CapacitorConfig = {
     Camera: {
       allowEditing: true,
       saveToGallery: false,
-      quality: 85
+      quality: 85,
     },
     // 文件系统插件 - 用于文件读写
     Filesystem: {
-      directory: 'DATA'
+      directory: 'DATA',
     },
     // 媒体插件 - 用于音频/视频处理
     Media: {},
@@ -28,14 +28,14 @@ const config: CapacitorConfig = {
     Geolocation: {},
     // 推送通知插件
     PushNotifications: {
-      presentationOptions: ["badge", "sound", "alert"]
+      presentationOptions: ['badge', 'sound', 'alert'],
     },
     // 分享插件
     Share: {},
     // 状态栏插件
     StatusBar: {
       style: 'DARK',
-      overlaysWebView: false
+      overlaysWebView: false,
     },
     // 启动画面插件
     SplashScreen: {
@@ -43,15 +43,15 @@ const config: CapacitorConfig = {
       launchAutoHide: true,
       backgroundColor: '#1a1a2e',
       showSpinner: true,
-      spinnerColor: '#00d4ff'
-    }
+      spinnerColor: '#00d4ff',
+    },
   },
   ios: {
     scheme: '创世星环',
     contentInset: 'automatic',
     backgroundColor: '#1a1a2e',
     limitsNavigationsToAppBoundDomains: false,
-    handleApplicationNotifications: true
+    handleApplicationNotifications: true,
   },
   android: {
     scheme: '创世星环',
@@ -59,8 +59,8 @@ const config: CapacitorConfig = {
     allowMixedContent: true,
     captureInput: true,
     webContentsDebuggingEnabled: true,
-    webViewAssetsPath: 'public'
-  }
+    webViewAssetsPath: 'public',
+  },
 }
 
 export default config

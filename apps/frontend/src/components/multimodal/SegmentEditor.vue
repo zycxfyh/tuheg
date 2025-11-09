@@ -236,20 +236,20 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const activeTab = ref('content')
+const _activeTab = ref('content')
 const generationPrompt = ref('')
 const interactionType = ref('choice')
-const inputType = ref('text')
-const inputPlaceholder = ref('')
+const _inputType = ref('text')
+const _inputPlaceholder = ref('')
 const tagsInput = ref('')
 
-const tabs = [
+const _tabs = [
   { id: 'content', label: '内容' },
   { id: 'settings', label: '设置' },
   { id: 'interactions', label: '互动' },
 ]
 
-const textContent = computed({
+const _textContent = computed({
   get: () => (typeof props.segment.content === 'string' ? props.segment.content : ''),
   set: (value) => {
     props.segment.content = value
@@ -257,21 +257,21 @@ const textContent = computed({
   },
 })
 
-const imageContent = computed(() => {
+const _imageContent = computed(() => {
   if (typeof props.segment.content === 'object' && props.segment.content?.image) {
     return props.segment.content.image
   }
   return null
 })
 
-const audioContent = computed(() => {
+const _audioContent = computed(() => {
   if (typeof props.segment.content === 'object' && props.segment.content?.audio) {
     return props.segment.content.audio
   }
   return null
 })
 
-const videoContent = computed(() => {
+const _videoContent = computed(() => {
   if (typeof props.segment.content === 'object' && props.segment.content?.video) {
     return props.segment.content.video
   }
@@ -315,35 +315,35 @@ watch(
   { immediate: true }
 )
 
-const generateText = () => {
+const _generateText = () => {
   const prompt = generationPrompt.value || '生成一段引人入胜的叙事文本'
   emit('generate', 'text', prompt)
 }
 
-const generateImage = () => {
+const _generateImage = () => {
   const prompt = generationPrompt.value || '生成一张美丽的艺术图像'
   emit('generate', 'image', prompt)
 }
 
-const generateAudio = () => {
+const _generateAudio = () => {
   const prompt = generationPrompt.value || '生成一段舒缓的背景音乐'
   emit('generate', 'audio', prompt)
 }
 
-const generateVideo = () => {
+const _generateVideo = () => {
   const prompt = generationPrompt.value || '生成一段动态的视频片段'
   emit('generate', 'video', prompt)
 }
 
-const addChoice = () => {
+const _addChoice = () => {
   choices.value.push({ text: '' })
 }
 
-const removeChoice = (index: number) => {
+const _removeChoice = (index: number) => {
   choices.value.splice(index, 1)
 }
 
-const saveSegment = () => {
+const _saveSegment = () => {
   // 更新标签
   props.segment.metadata.tags = tagsInput.value
     .split(',')
@@ -369,7 +369,7 @@ const saveSegment = () => {
   emit('update', props.segment)
 }
 
-const previewSegment = () => {
+const _previewSegment = () => {
   // 这里可以实现片段预览功能
   console.log('预览片段:', props.segment)
 }

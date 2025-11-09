@@ -1,6 +1,6 @@
+import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 import type { EventEmitter2 } from '@nestjs/event-emitter'
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto'
 import type { PrismaService } from '../prisma/prisma.service'
 import type { AuditService } from './audit.service'
 

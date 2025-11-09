@@ -34,7 +34,7 @@ describe('Health (e2e)', () => {
         // 验证时间戳格式
         const timestamp = new Date(res.body.timestamp)
         expect(timestamp).toBeInstanceOf(Date)
-        expect(isNaN(timestamp.getTime())).toBe(false)
+        expect(Number.isNaN(timestamp.getTime())).toBe(false)
       })
   })
 

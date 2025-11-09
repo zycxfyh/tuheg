@@ -30,7 +30,7 @@
 
   /* 隐藏桌面端侧边栏 */
   .desktop-sidebar {
-    display: none !important;
+    display: none;
   }
 
   /* 移动端导航栏 */
@@ -209,10 +209,10 @@
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
   }
 }
 
@@ -237,26 +237,26 @@
 @media print {
   .app-container {
     padding: 0;
-    background: white !important;
-    color: black !important;
+    background: white;
+    color: black;
   }
 
   .desktop-sidebar,
   .mobile-navbar,
   .desktop-toolbar {
-    display: none !important;
+    display: none;
   }
 
   .btn,
   .modal,
   .notification {
-    display: none !important;
+    display: none;
   }
 
   .card {
     break-inside: avoid;
     margin-bottom: 20px;
-    border: 1px solid #ccc !important;
+    border: 1px solid #ccc;
   }
 }
 
@@ -343,11 +343,11 @@
 
 /* ===== WebP图片格式支持检测 ===== */
 .webp-supported .image-container {
-  background-image: url('image.webp');
+  background-image: url("image.webp");
 }
 
 .webp-not-supported .image-container {
-  background-image: url('image.jpg');
+  background-image: url("image.jpg");
 }
 
 /* ===== 容器查询支持 ===== */

@@ -327,13 +327,13 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close', 'install'])
+const _emit = defineEmits(['close', 'install'])
 
-const activeScreenshot = ref(0)
+const _activeScreenshot = ref(0)
 const showAllReviews = ref(false)
 
 // 计算属性
-const displayedReviews = computed(() => {
+const _displayedReviews = computed(() => {
   if (showAllReviews.value) {
     return props.plugin.reviews
   }
@@ -341,7 +341,7 @@ const displayedReviews = computed(() => {
 })
 
 // 方法
-const getCategoryIcon = (categoryId) => {
+const _getCategoryIcon = (categoryId) => {
   const icons = {
     'story-generation': '📖',
     'character-creation': '👤',
@@ -353,7 +353,7 @@ const getCategoryIcon = (categoryId) => {
   return icons[categoryId] || '🔧'
 }
 
-const formatDate = (date) => {
+const _formatDate = (date) => {
   return new Date(date).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'short',
@@ -361,16 +361,16 @@ const formatDate = (date) => {
   })
 }
 
-const formatNumber = (num) => {
+const _formatNumber = (num) => {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M'
+    return `${(num / 1000000).toFixed(1)}M`
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K'
+    return `${(num / 1000).toFixed(1)}K`
   }
   return num.toString()
 }
 
-const formatFileSize = (bytes) => {
+const _formatFileSize = (bytes) => {
   const units = ['B', 'KB', 'MB', 'GB']
   let size = bytes
   let unitIndex = 0
@@ -383,7 +383,7 @@ const formatFileSize = (bytes) => {
   return `${size.toFixed(1)} ${units[unitIndex]}`
 }
 
-const getPricingDisplay = (pricing) => {
+const _getPricingDisplay = (pricing) => {
   switch (pricing.model) {
     case 'free':
       return '免费'
@@ -398,7 +398,7 @@ const getPricingDisplay = (pricing) => {
   }
 }
 
-const getPricingPeriod = (pricing) => {
+const _getPricingPeriod = (pricing) => {
   switch (pricing.model) {
     case 'subscription':
       return '/月'
@@ -409,7 +409,7 @@ const getPricingPeriod = (pricing) => {
   }
 }
 
-const getInstallButtonText = (pricing) => {
+const _getInstallButtonText = (pricing) => {
   switch (pricing.model) {
     case 'free':
       return '免费安装'
@@ -424,11 +424,11 @@ const getInstallButtonText = (pricing) => {
   }
 }
 
-const openUrl = (url) => {
+const _openUrl = (url) => {
   window.open(url, '_blank')
 }
 
-const toggleHelpful = (review) => {
+const _toggleHelpful = (review) => {
   // 这里应该实现有帮助投票逻辑
   review.helpful++
 }

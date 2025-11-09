@@ -17,8 +17,8 @@ import {
   PromptManagerService,
 } from '@tuheg/common-backend'
 import { type MockProxy, mock } from 'jest-mock-extended'
-import { LogicService } from './logic.service'
-import { RuleEngineService } from './rule-engine.service'
+import { LogicService } from '../logic.service'
+import { RuleEngineService } from '../rule-engine.service'
 
 // 测试子类，用于访问protected方法
 class TestLogicService extends LogicService {

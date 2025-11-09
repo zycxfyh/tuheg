@@ -259,14 +259,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import InsightCard from '../components/InsightCard.vue'
-import MetricCard from '../components/MetricCard.vue'
-import PluginCategoryChart from './charts/PluginCategoryChart.vue'
-import PluginDownloadChart from './charts/PluginDownloadChart.vue'
-import RetentionTrendChart from './charts/RetentionTrendChart.vue'
-import SubscriptionLifecycleChart from './charts/SubscriptionLifecycleChart.vue'
-import SubscriptionPlanChart from './charts/SubscriptionPlanChart.vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 // Props
 const props = defineProps({
@@ -536,7 +529,7 @@ const generateBusinessInsights = () => {
   ]
 }
 
-const exportReport = () => {
+const _exportReport = () => {
   const reportData = {
     timestamp: new Date().toISOString(),
     timeRange: timeRange.value,
@@ -566,7 +559,7 @@ const exportReport = () => {
   URL.revokeObjectURL(url)
 }
 
-const implementInsight = (insight) => {
+const _implementInsight = (insight) => {
   // TODO: 实现洞察应用逻辑
   console.log('Implementing insight:', insight)
 }

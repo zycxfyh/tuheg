@@ -3,9 +3,8 @@
  * 配置测试环境的快速失败机制和最佳实践
  */
 
-import { jest } from '@jest/globals'
-
 // 设置更严格的超时
+// @ts-expect-error - Jest is available globally in test environment
 jest.setTimeout(30000)
 
 // 全局错误处理 - 任何未处理的错误都会导致测试失败
@@ -95,20 +94,14 @@ afterEach(() => {
 })
 
 afterAll(async () => {
-  // 等待所有异步操作完成
-  await new Promise((resolve) => setImmediate(resolve))
-
-  // 强制退出以防止Jest挂起
-  setTimeout(() => {
-    console.warn('Test suite did not exit cleanly, forcing exit')
-    process.exit(0)
-  }, 5000)
-})
+  // 清理测试资源
+  jest.clearAllMocks()
+}, 5000)
 
 // 自定义匹配器
 expect.extend({
   toBeValidDate(received: any) {
-    const pass = received instanceof Date && !isNaN(received.getTime())
+    const pass = received instanceof Date && !Number.isNaN(received.getTime())
     if (pass) {
       return {
         message: () => `expected ${received} not to be a valid date`,

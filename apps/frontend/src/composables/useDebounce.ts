@@ -1,4 +1,4 @@
-import { customRef, type Ref, ref, watch } from 'vue'
+import { customRef, type Ref } from 'vue'
 
 export interface DebounceOptions {
   delay?: number

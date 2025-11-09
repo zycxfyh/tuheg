@@ -1,0 +1,68 @@
+599ea284d7e83b3db3e7832e8beae3f8
+"use strict";
+// 文件路径: packages/common-backend/src/observability/sentry.module.ts
+// 核心理念: 模块化导出，方便使用
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SentryModule = void 0;
+const common_1 = require("@nestjs/common");
+/**
+ * @module SentryModule
+ * @description Sentry 错误追踪和性能监控模块
+ * 提供增强的 Sentry 配置和使用工具
+ */
+let SentryModule = (() => {
+    let _classDecorators = [(0, common_1.Module)({
+            providers: [],
+            exports: [],
+        })];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var SentryModule = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            SentryModule = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+    };
+    return SentryModule = _classThis;
+})();
+exports.SentryModule = SentryModule;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxvYnNlcnZhYmlsaXR5XFxzZW50cnkubW9kdWxlLnRzIiwibWFwcGluZ3MiOiI7QUFBQSxtRUFBbUU7QUFDbkUsbUJBQW1COzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBRW5CLDJDQUF1QztBQUV2Qzs7OztHQUlHO0lBS1UsWUFBWTs0QkFKeEIsSUFBQSxlQUFNLEVBQUM7WUFDTixTQUFTLEVBQUUsRUFBRTtZQUNiLE9BQU8sRUFBRSxFQUFFO1NBQ1osQ0FBQzs7Ozs7Ozs7WUFDRiw2S0FBNEI7OztZQUFmLHVEQUFZOzs7OztBQUFaLG9DQUFZIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcMTY2NjNcXERlc2t0b3BcXHR1aGVnXFxwYWNrYWdlc1xcY29tbW9uLWJhY2tlbmRcXHNyY1xcb2JzZXJ2YWJpbGl0eVxcc2VudHJ5Lm1vZHVsZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyDmlofku7bot6/lvoQ6IHBhY2thZ2VzL2NvbW1vbi1iYWNrZW5kL3NyYy9vYnNlcnZhYmlsaXR5L3NlbnRyeS5tb2R1bGUudHNcbi8vIOaguOW/g+eQhuW/tTog5qih5Z2X5YyW5a+85Ye677yM5pa55L6/5L2/55SoXG5cbmltcG9ydCB7IE1vZHVsZSB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuXG4vKipcbiAqIEBtb2R1bGUgU2VudHJ5TW9kdWxlXG4gKiBAZGVzY3JpcHRpb24gU2VudHJ5IOmUmeivr+i/vei4quWSjOaAp+iDveebkeaOp+aooeWdl1xuICog5o+Q5L6b5aKe5by655qEIFNlbnRyeSDphY3nva7lkozkvb/nlKjlt6XlhbdcbiAqL1xuQE1vZHVsZSh7XG4gIHByb3ZpZGVyczogW10sXG4gIGV4cG9ydHM6IFtdLFxufSlcbmV4cG9ydCBjbGFzcyBTZW50cnlNb2R1bGUge31cbiJdLCJ2ZXJzaW9uIjozfQ==

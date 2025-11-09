@@ -1,6 +1,6 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import { type PluginType, VCPPlugin } from '../PluginFramework'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import type { PluginType } from '../PluginFramework'
 
 // VCPToolBox 插件生成器
 // 专注于AI叙事创作的插件模板生成
@@ -301,7 +301,7 @@ export class PluginGenerator {
             type: 'input',
             message: '最大大陆数量',
             default: '5',
-            validate: (value) => parseInt(value) > 0 && parseInt(value) <= 10,
+            validate: (value) => parseInt(value, 10) > 0 && parseInt(value, 10) <= 10,
           },
         ],
         variables: {},
@@ -463,7 +463,7 @@ export class PluginGenerator {
   private async generateAdditionalFiles(
     targetPath: string,
     template: PluginTemplate,
-    config: Record<string, any>
+    _config: Record<string, any>
   ): Promise<void> {
     // 生成 .gitignore
     const gitignore = `node_modules/
@@ -930,7 +930,7 @@ export const defaultConfig: PluginConfig = {
 }`
   }
 
-  private getPackageTemplate(pluginName: string): string {
+  private getPackageTemplate(_pluginName: string): string {
     return `{
   "name": "{{pluginName | kebabCase}}",
   "version": "1.0.0",

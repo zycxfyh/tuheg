@@ -5,9 +5,9 @@
  * 支持Web、PWA、Capacitor移动端、Tauri桌面端的构建
  */
 
-const { execSync } = require('child_process')
-const fs = require('fs')
-const path = require('path')
+const { execSync } = require('node:child_process')
+const fs = require('node:fs')
+const path = require('node:path')
 
 // 构建配置
 const BUILD_CONFIGS = {
@@ -72,7 +72,7 @@ const logger = {
 function executeCommand(command, env = {}, cwd = null) {
   try {
     const envVars = { ...process.env, ...env }
-    const options = {
+    const execOptions = {
       stdio: options.verbose ? 'inherit' : 'pipe',
       env: envVars,
       cwd: cwd || process.cwd(),
@@ -81,7 +81,7 @@ function executeCommand(command, env = {}, cwd = null) {
     logger.verbose(`执行命令: ${command}`)
     logger.verbose(`环境变量: ${JSON.stringify(env, null, 2)}`)
 
-    execSync(command, options)
+    execSync(command, execOptions)
     return true
   } catch (error) {
     logger.error(`命令执行失败: ${command}`)
@@ -136,7 +136,7 @@ function checkDependencies(config) {
           return false
         }
       }
-    } catch (error) {
+    } catch (_error) {
       logger.error(`依赖检查失败: ${dep}`)
       return false
     }
@@ -146,7 +146,7 @@ function checkDependencies(config) {
 }
 
 // 构建单个目标
-async function buildTarget(targetName, config) {
+async function buildTarget(_targetName, config) {
   logger.info(`开始构建 ${config.name}...`)
 
   // 检查依赖
@@ -269,7 +269,7 @@ process.on('uncaughtException', (error) => {
   process.exit(1)
 })
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason, _promise) => {
   logger.error(`未处理的Promise拒绝: ${reason}`)
   process.exit(1)
 })

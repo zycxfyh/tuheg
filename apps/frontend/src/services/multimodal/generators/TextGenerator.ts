@@ -71,11 +71,11 @@ export class TextGenerator implements MultimodalGenerator {
     ]
   }
 
-  private async generateNarrative(prompt: string, options: GenerationOptions): Promise<string> {
+  private async generateNarrative(_prompt: string, options: GenerationOptions): Promise<string> {
     const { length, mood, complexity } = options
 
     // 构建生成提示词
-    const systemPrompt = `你是一个专业的故事叙述者。请根据用户提供的提示创作一个引人入胜的故事。
+    const _systemPrompt = `你是一个专业的故事叙述者。请根据用户提供的提示创作一个引人入胜的故事。
 
 要求：
 - 故事结构完整：包含开端、发展、高潮和结局
@@ -94,10 +94,10 @@ export class TextGenerator implements MultimodalGenerator {
 艾拉的旅程充满了惊喜和转折。她遇到了忠诚的动物伙伴，解开了古老的谜题，还学会了重要的生命教训。这个故事展现了勇气、友谊和自我发现的主题，让读者沉浸在一个充满魔力的世界中。`
   }
 
-  private async generateDialogue(prompt: string, options: GenerationOptions): Promise<string> {
+  private async generateDialogue(_prompt: string, options: GenerationOptions): Promise<string> {
     const { mood, complexity } = options
 
-    const systemPrompt = `你是一个对话创作专家。请根据用户提供的场景和人物，创作自然、生动的对话。
+    const _systemPrompt = `你是一个对话创作专家。请根据用户提供的场景和人物，创作自然、生动的对话。
 
 要求：
 - 对话符合人物性格和身份
@@ -120,10 +120,10 @@ export class TextGenerator implements MultimodalGenerator {
 艾拉：（深吸一口气，坚定地点点头）我明白了。我会尽力的。为了森林，为了所有人。`
   }
 
-  private async generateDescription(prompt: string, options: GenerationOptions): Promise<string> {
+  private async generateDescription(_prompt: string, options: GenerationOptions): Promise<string> {
     const { mood, complexity } = options
 
-    const systemPrompt = `你是一个描写专家。请根据用户提供的场景或对象，创作生动细腻的描述文字。
+    const _systemPrompt = `你是一个描写专家。请根据用户提供的场景或对象，创作生动细腻的描述文字。
 
 要求：
 - 使用丰富的感官描写（视觉、听觉、触觉、嗅觉、味觉）
@@ -142,10 +142,10 @@ export class TextGenerator implements MultimodalGenerator {
 这不仅仅是一件宝物，更像是连接过去与未来的桥梁，承载着无数故事和秘密。`
   }
 
-  private async generatePoetry(prompt: string, options: GenerationOptions): Promise<string> {
+  private async generatePoetry(_prompt: string, options: GenerationOptions): Promise<string> {
     const { mood } = options
 
-    const systemPrompt = `你是一个诗歌创作大师。请根据用户提供的主题，创作优美的诗歌。
+    const _systemPrompt = `你是一个诗歌创作大师。请根据用户提供的主题，创作优美的诗歌。
 
 要求：
 - 韵律和谐，意象鲜明
@@ -174,7 +174,7 @@ export class TextGenerator implements MultimodalGenerator {
 冒险的序曲已然奏响。`
   }
 
-  private async generateGeneral(prompt: string, options: GenerationOptions): Promise<string> {
+  private async generateGeneral(prompt: string, _options: GenerationOptions): Promise<string> {
     // 通用文本生成
     return `基于提示"${prompt}"生成的文本内容。这个功能可以根据不同的需求生成各种类型的文本。`
   }

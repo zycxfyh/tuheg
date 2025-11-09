@@ -110,7 +110,7 @@ class FeedbackApiService {
 
       // 截图文件
       if (feedback.screenshots) {
-        feedback.screenshots.forEach((file, index) => {
+        feedback.screenshots.forEach((file, _index) => {
           formData.append(`screenshots`, file)
         })
       }
@@ -127,10 +127,10 @@ class FeedbackApiService {
 
       // 返回模拟响应以供演示
       return {
-        id: 'feedback-' + Date.now(),
+        id: `feedback-${Date.now()}`,
         status: 'received',
         estimatedResponseTime: '24小时内',
-        trackingId: 'TRK-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        trackingId: `TRK-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
       }
     }
   }
@@ -161,7 +161,7 @@ class FeedbackApiService {
 
       // 返回模拟响应
       return {
-        id: 'interview-' + Date.now(),
+        id: `interview-${Date.now()}`,
         scheduledAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         interviewer: '产品团队',
         meetingLink: 'https://meet.google.com/abc-defg-hij',
@@ -253,7 +253,12 @@ class FeedbackApiService {
     this.trackEvent({
       eventType: 'error',
       eventData: {
-        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
+        message:
+          error instanceof Error
+            ? error instanceof Error
+              ? error.message
+              : String(error)
+            : String(error),
         stack: error.stack,
         ...context,
       },

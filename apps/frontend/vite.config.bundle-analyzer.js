@@ -1,5 +1,5 @@
 var __importDefault =
-  (this && this.__importDefault) || ((mod) => (mod && mod.__esModule ? mod : { default: mod }))
+  (this && this.__importDefault) || ((mod) => (mod?.__esModule ? mod : { default: mod }))
 Object.defineProperty(exports, '__esModule', { value: true })
 const vite_1 = require('vite')
 const plugin_vue_1 = __importDefault(require('@vitejs/plugin-vue'))

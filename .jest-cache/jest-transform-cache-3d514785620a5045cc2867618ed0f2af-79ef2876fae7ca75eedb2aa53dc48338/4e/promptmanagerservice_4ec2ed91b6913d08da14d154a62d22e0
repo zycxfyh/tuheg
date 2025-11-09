@@ -1,0 +1,104 @@
+a0ecf3f93fa40833d0c07e588f3300cf
+"use strict";
+// 文件路徑: libs/common/src/prompts/prompt-manager.service.ts
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var PromptManagerService_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PromptManagerService = void 0;
+const common_1 = require("@nestjs/common");
+const fs = __importStar(require("fs/promises"));
+const path = __importStar(require("path"));
+let PromptManagerService = PromptManagerService_1 = class PromptManagerService {
+    logger = new common_1.Logger(PromptManagerService_1.name);
+    promptCache = new Map();
+    // [核心] 定位到我們新建的 assets 文件夾
+    promptsDir = path.join(__dirname, 'assets');
+    /**
+     * NestJS生命週期鉤子，在模塊初始化時自動調用。
+     */
+    async onModuleInit() {
+        this.logger.log('Initializing PromptManagerService...');
+        await this.loadAllPrompts();
+    }
+    /**
+     * 從緩存中獲取一個已加載的prompt。
+     * @param filename - 例如 '01_logic_engine.md'
+     * @returns 文件的字符串內容
+     */
+    getPrompt(filename) {
+        const prompt = this.promptCache.get(filename);
+        if (!prompt) {
+            // 在生產環境中，如果啟動時未能加載prompt，這是一個致命錯誤
+            throw new Error(`Prompt "${filename}" not found in cache. Ensure it exists in the assets directory and was loaded at startup.`);
+        }
+        return prompt;
+    }
+    /**
+     * 讀取 assets 文件夾中的所有 .md 文件並將其緩存到內存中。
+     */
+    async loadAllPrompts() {
+        try {
+            const files = await fs.readdir(this.promptsDir);
+            const markdownFiles = files.filter((file) => file.endsWith('.md'));
+            if (markdownFiles.length === 0) {
+                this.logger.warn(`No prompt files (.md) found in ${this.promptsDir}`);
+                return;
+            }
+            for (const file of markdownFiles) {
+                const filePath = path.join(this.promptsDir, file);
+                const content = await fs.readFile(filePath, 'utf-8');
+                this.promptCache.set(file, content);
+                this.logger.log(`  [+] Loaded prompt: ${file}`);
+            }
+            this.logger.log(`Successfully loaded ${this.promptCache.size} prompt(s).`);
+        }
+        catch (error) {
+            this.logger.error(`Failed to load prompts from filesystem at ${this.promptsDir}.`, error);
+            // 這是一個致命的啟動錯誤，我們應該拋出它來停止應用
+            throw new Error('Could not initialize prompts. Halting application.');
+        }
+    }
+};
+exports.PromptManagerService = PromptManagerService;
+exports.PromptManagerService = PromptManagerService = PromptManagerService_1 = __decorate([
+    (0, common_1.Injectable)()
+], PromptManagerService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxwcm9tcHRzXFxwcm9tcHQtbWFuYWdlci5zZXJ2aWNlLnRzIiwibWFwcGluZ3MiOiI7QUFBQSwwREFBMEQ7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFFMUQsMkNBQXNFO0FBQ3RFLGdEQUFpQztBQUNqQywyQ0FBNEI7QUFHckIsSUFBTSxvQkFBb0IsNEJBQTFCLE1BQU0sb0JBQW9CO0lBQ2QsTUFBTSxHQUFHLElBQUksZUFBTSxDQUFDLHNCQUFvQixDQUFDLElBQUksQ0FBQyxDQUFBO0lBQzlDLFdBQVcsR0FBRyxJQUFJLEdBQUcsRUFBa0IsQ0FBQTtJQUN4RCwyQkFBMkI7SUFDVixVQUFVLEdBQUcsSUFBSSxDQUFDLElBQUksQ0FBQyxTQUFTLEVBQUUsUUFBUSxDQUFDLENBQUE7SUFFNUQ7O09BRUc7SUFDSCxLQUFLLENBQUMsWUFBWTtRQUNoQixJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxzQ0FBc0MsQ0FBQyxDQUFBO1FBQ3ZELE1BQU0sSUFBSSxDQUFDLGNBQWMsRUFBRSxDQUFBO0lBQzdCLENBQUM7SUFFRDs7OztPQUlHO0lBQ0ksU0FBUyxDQUFDLFFBQWdCO1FBQy9CLE1BQU0sTUFBTSxHQUFHLElBQUksQ0FBQyxXQUFXLENBQUMsR0FBRyxDQUFDLFFBQVEsQ0FBQyxDQUFBO1FBQzdDLElBQUksQ0FBQyxNQUFNLEVBQUUsQ0FBQztZQUNaLGtDQUFrQztZQUNsQyxNQUFNLElBQUksS0FBSyxDQUNiLFdBQVcsUUFBUSwyRkFBMkYsQ0FDL0csQ0FBQTtRQUNILENBQUM7UUFDRCxPQUFPLE1BQU0sQ0FBQTtJQUNmLENBQUM7SUFFRDs7T0FFRztJQUNLLEtBQUssQ0FBQyxjQUFjO1FBQzFCLElBQUksQ0FBQztZQUNILE1BQU0sS0FBSyxHQUFHLE1BQU0sRUFBRSxDQUFDLE9BQU8sQ0FBQyxJQUFJLENBQUMsVUFBVSxDQUFDLENBQUE7WUFDL0MsTUFBTSxhQUFhLEdBQUcsS0FBSyxDQUFDLE1BQU0sQ0FBQyxDQUFDLElBQUksRUFBRSxFQUFFLENBQUMsSUFBSSxDQUFDLFFBQVEsQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFBO1lBRWxFLElBQUksYUFBYSxDQUFDLE1BQU0sS0FBSyxDQUFDLEVBQUUsQ0FBQztnQkFDL0IsSUFBSSxDQUFDLE1BQU0sQ0FBQyxJQUFJLENBQUMsa0NBQWtDLElBQUksQ0FBQyxVQUFVLEVBQUUsQ0FBQyxDQUFBO2dCQUNyRSxPQUFNO1lBQ1IsQ0FBQztZQUVELEtBQUssTUFBTSxJQUFJLElBQUksYUFBYSxFQUFFLENBQUM7Z0JBQ2pDLE1BQU0sUUFBUSxHQUFHLElBQUksQ0FBQyxJQUFJLENBQUMsSUFBSSxDQUFDLFVBQVUsRUFBRSxJQUFJLENBQUMsQ0FBQTtnQkFDakQsTUFBTSxPQUFPLEdBQUcsTUFBTSxFQUFFLENBQUMsUUFBUSxDQUFDLFFBQVEsRUFBRSxPQUFPLENBQUMsQ0FBQTtnQkFDcEQsSUFBSSxDQUFDLFdBQVcsQ0FBQyxHQUFHLENBQUMsSUFBSSxFQUFFLE9BQU8sQ0FBQyxDQUFBO2dCQUNuQyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyx3QkFBd0IsSUFBSSxFQUFFLENBQUMsQ0FBQTtZQUNqRCxDQUFDO1lBRUQsSUFBSSxDQUFDLE1BQU0sQ0FBQyxHQUFHLENBQUMsdUJBQXVCLElBQUksQ0FBQyxXQUFXLENBQUMsSUFBSSxhQUFhLENBQUMsQ0FBQTtRQUM1RSxDQUFDO1FBQUMsT0FBTyxLQUFLLEVBQUUsQ0FBQztZQUNmLElBQUksQ0FBQyxNQUFNLENBQUMsS0FBSyxDQUFDLDZDQUE2QyxJQUFJLENBQUMsVUFBVSxHQUFHLEVBQUUsS0FBSyxDQUFDLENBQUE7WUFDekYsMkJBQTJCO1lBQzNCLE1BQU0sSUFBSSxLQUFLLENBQUMsb0RBQW9ELENBQUMsQ0FBQTtRQUN2RSxDQUFDO0lBQ0gsQ0FBQztDQUNGLENBQUE7QUF6RFksb0RBQW9COytCQUFwQixvQkFBb0I7SUFEaEMsSUFBQSxtQkFBVSxHQUFFO0dBQ0Esb0JBQW9CLENBeURoQyIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcVXNlcnNcXDE2NjYzXFxEZXNrdG9wXFx0dWhlZ1xccGFja2FnZXNcXGNvbW1vbi1iYWNrZW5kXFxzcmNcXHByb21wdHNcXHByb21wdC1tYW5hZ2VyLnNlcnZpY2UudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6ROiBsaWJzL2NvbW1vbi9zcmMvcHJvbXB0cy9wcm9tcHQtbWFuYWdlci5zZXJ2aWNlLnRzXG5cbmltcG9ydCB7IEluamVjdGFibGUsIExvZ2dlciwgdHlwZSBPbk1vZHVsZUluaXQgfSBmcm9tICdAbmVzdGpzL2NvbW1vbidcbmltcG9ydCAqIGFzIGZzIGZyb20gJ2ZzL3Byb21pc2VzJ1xuaW1wb3J0ICogYXMgcGF0aCBmcm9tICdwYXRoJ1xuXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgUHJvbXB0TWFuYWdlclNlcnZpY2UgaW1wbGVtZW50cyBPbk1vZHVsZUluaXQge1xuICBwcml2YXRlIHJlYWRvbmx5IGxvZ2dlciA9IG5ldyBMb2dnZXIoUHJvbXB0TWFuYWdlclNlcnZpY2UubmFtZSlcbiAgcHJpdmF0ZSByZWFkb25seSBwcm9tcHRDYWNoZSA9IG5ldyBNYXA8c3RyaW5nLCBzdHJpbmc+KClcbiAgLy8gW+aguOW/g10g5a6a5L2N5Yiw5oiR5YCR5paw5bu655qEIGFzc2V0cyDmlofku7blpL5cbiAgcHJpdmF0ZSByZWFkb25seSBwcm9tcHRzRGlyID0gcGF0aC5qb2luKF9fZGlybmFtZSwgJ2Fzc2V0cycpXG5cbiAgLyoqXG4gICAqIE5lc3RKU+eUn+WRvemAseacn+mJpOWtkO+8jOWcqOaooeWhiuWIneWni+WMluaZguiHquWLleiqv+eUqOOAglxuICAgKi9cbiAgYXN5bmMgb25Nb2R1bGVJbml0KCkge1xuICAgIHRoaXMubG9nZ2VyLmxvZygnSW5pdGlhbGl6aW5nIFByb21wdE1hbmFnZXJTZXJ2aWNlLi4uJylcbiAgICBhd2FpdCB0aGlzLmxvYWRBbGxQcm9tcHRzKClcbiAgfVxuXG4gIC8qKlxuICAgKiDlvp7nt6nlrZjkuK3njbLlj5bkuIDlgIvlt7LliqDovInnmoRwcm9tcHTjgIJcbiAgICogQHBhcmFtIGZpbGVuYW1lIC0g5L6L5aaCICcwMV9sb2dpY19lbmdpbmUubWQnXG4gICAqIEByZXR1cm5zIOaWh+S7tueahOWtl+espuS4suWFp+WuuVxuICAgKi9cbiAgcHVibGljIGdldFByb21wdChmaWxlbmFtZTogc3RyaW5nKTogc3RyaW5nIHtcbiAgICBjb25zdCBwcm9tcHQgPSB0aGlzLnByb21wdENhY2hlLmdldChmaWxlbmFtZSlcbiAgICBpZiAoIXByb21wdCkge1xuICAgICAgLy8g5Zyo55Sf55Si55Kw5aKD5Lit77yM5aaC5p6c5ZWf5YuV5pmC5pyq6IO95Yqg6LyJcHJvbXB077yM6YCZ5piv5LiA5YCL6Ie05ZG96Yyv6KqkXG4gICAgICB0aHJvdyBuZXcgRXJyb3IoXG4gICAgICAgIGBQcm9tcHQgXCIke2ZpbGVuYW1lfVwiIG5vdCBmb3VuZCBpbiBjYWNoZS4gRW5zdXJlIGl0IGV4aXN0cyBpbiB0aGUgYXNzZXRzIGRpcmVjdG9yeSBhbmQgd2FzIGxvYWRlZCBhdCBzdGFydHVwLmBcbiAgICAgIClcbiAgICB9XG4gICAgcmV0dXJuIHByb21wdFxuICB9XG5cbiAgLyoqXG4gICAqIOiugOWPliBhc3NldHMg5paH5Lu25aS+5Lit55qE5omA5pyJIC5tZCDmlofku7bkuKblsIflhbbnt6nlrZjliLDlhaflrZjkuK3jgIJcbiAgICovXG4gIHByaXZhdGUgYXN5bmMgbG9hZEFsbFByb21wdHMoKSB7XG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IGZpbGVzID0gYXdhaXQgZnMucmVhZGRpcih0aGlzLnByb21wdHNEaXIpXG4gICAgICBjb25zdCBtYXJrZG93bkZpbGVzID0gZmlsZXMuZmlsdGVyKChmaWxlKSA9PiBmaWxlLmVuZHNXaXRoKCcubWQnKSlcblxuICAgICAgaWYgKG1hcmtkb3duRmlsZXMubGVuZ3RoID09PSAwKSB7XG4gICAgICAgIHRoaXMubG9nZ2VyLndhcm4oYE5vIHByb21wdCBmaWxlcyAoLm1kKSBmb3VuZCBpbiAke3RoaXMucHJvbXB0c0Rpcn1gKVxuICAgICAgICByZXR1cm5cbiAgICAgIH1cblxuICAgICAgZm9yIChjb25zdCBmaWxlIG9mIG1hcmtkb3duRmlsZXMpIHtcbiAgICAgICAgY29uc3QgZmlsZVBhdGggPSBwYXRoLmpvaW4odGhpcy5wcm9tcHRzRGlyLCBmaWxlKVxuICAgICAgICBjb25zdCBjb250ZW50ID0gYXdhaXQgZnMucmVhZEZpbGUoZmlsZVBhdGgsICd1dGYtOCcpXG4gICAgICAgIHRoaXMucHJvbXB0Q2FjaGUuc2V0KGZpbGUsIGNvbnRlbnQpXG4gICAgICAgIHRoaXMubG9nZ2VyLmxvZyhgICBbK10gTG9hZGVkIHByb21wdDogJHtmaWxlfWApXG4gICAgICB9XG5cbiAgICAgIHRoaXMubG9nZ2VyLmxvZyhgU3VjY2Vzc2Z1bGx5IGxvYWRlZCAke3RoaXMucHJvbXB0Q2FjaGUuc2l6ZX0gcHJvbXB0KHMpLmApXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgIHRoaXMubG9nZ2VyLmVycm9yKGBGYWlsZWQgdG8gbG9hZCBwcm9tcHRzIGZyb20gZmlsZXN5c3RlbSBhdCAke3RoaXMucHJvbXB0c0Rpcn0uYCwgZXJyb3IpXG4gICAgICAvLyDpgJnmmK/kuIDlgIvoh7Tlkb3nmoTllZ/li5XpjK/oqqTvvIzmiJHlgJHmh4noqbLmi4vlh7rlroPkvoblgZzmraLmh4nnlKhcbiAgICAgIHRocm93IG5ldyBFcnJvcignQ291bGQgbm90IGluaXRpYWxpemUgcHJvbXB0cy4gSGFsdGluZyBhcHBsaWNhdGlvbi4nKVxuICAgIH1cbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

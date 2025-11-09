@@ -1,4 +1,4 @@
-import { cleanAndParseJson, JsonSanitizationError } from './json-cleaner'
+import { cleanAndParseJson, JsonSanitizationError } from './json-cleaner.ts'
 
 describe('cleanAndParseJson', () => {
   it('should remove markdown code fences', async () => {

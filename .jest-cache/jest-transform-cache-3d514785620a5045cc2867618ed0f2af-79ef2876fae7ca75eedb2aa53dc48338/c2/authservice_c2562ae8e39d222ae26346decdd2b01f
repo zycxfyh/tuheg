@@ -1,0 +1,138 @@
+f5fd268694bb2e0bef60970175935e11
+"use strict";
+// 文件路径: apps/backend-gateway/src/auth/auth.service.ts
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthService = void 0;
+const common_1 = require("@nestjs/common");
+const bcryptjs = __importStar(require("bcryptjs"));
+let AuthService = (() => {
+    let _classDecorators = [(0, common_1.Injectable)()];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var AuthService = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            AuthService = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        prisma;
+        jwtService;
+        constructor(prisma, jwtService) {
+            this.prisma = prisma;
+            this.jwtService = jwtService;
+        }
+        async register(registerDto) {
+            const { email, password } = registerDto;
+            const existingUser = await this.prisma.user.findUnique({
+                where: { email },
+            });
+            if (existingUser) {
+                throw new common_1.ConflictException('Email already registered.');
+            }
+            const hashedPassword = await bcryptjs.hash(password, 10);
+            const user = await this.prisma.user.create({
+                data: {
+                    email,
+                    password: hashedPassword,
+                },
+            });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password: _, ...result } = user;
+            return result;
+        }
+        async validateUser(email, pass) {
+            const user = await this.prisma.user.findUnique({ where: { email } });
+            // [还原] 使用 bcrypt.compare
+            if (user && (await bcryptjs.compare(pass, user.password))) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { password: _, ...result } = user;
+                return result;
+            }
+            return null;
+        }
+        async login(loginDto) {
+            const user = await this.validateUser(loginDto.email, loginDto.password);
+            if (!user) {
+                throw new common_1.UnauthorizedException('Invalid credentials.');
+            }
+            const payload = { email: user.email, sub: user.id };
+            return {
+                access_token: this.jwtService.sign(payload),
+            };
+        }
+    };
+    return AuthService = _classThis;
+})();
+exports.AuthService = AuthService;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxhdXRoLnNlcnZpY2UudHMiLCJtYXBwaW5ncyI6IjtBQUFBLHNEQUFzRDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUV0RCwyQ0FBcUY7QUFLckYsbURBQW9DO0lBTXZCLFdBQVc7NEJBRHZCLElBQUEsbUJBQVUsR0FBRTs7Ozs7Ozs7WUFDYiw2S0FzREM7OztZQXREWSx1REFBVzs7UUFFSCxNQUFNO1FBQ04sVUFBVTtRQUY3QixZQUNtQixNQUFxQixFQUNyQixVQUFzQjtZQUR0QixXQUFNLEdBQU4sTUFBTSxDQUFlO1lBQ3JCLGVBQVUsR0FBVixVQUFVLENBQVk7UUFDdEMsQ0FBQztRQUVHLEtBQUssQ0FBQyxRQUFRLENBQUMsV0FBd0I7WUFDNUMsTUFBTSxFQUFFLEtBQUssRUFBRSxRQUFRLEVBQUUsR0FBRyxXQUFXLENBQUE7WUFFdkMsTUFBTSxZQUFZLEdBQUcsTUFBTSxJQUFJLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxVQUFVLENBQUM7Z0JBQ3JELEtBQUssRUFBRSxFQUFFLEtBQUssRUFBRTthQUNqQixDQUFDLENBQUE7WUFDRixJQUFJLFlBQVksRUFBRSxDQUFDO2dCQUNqQixNQUFNLElBQUksMEJBQWlCLENBQUMsMkJBQTJCLENBQUMsQ0FBQTtZQUMxRCxDQUFDO1lBRUQsTUFBTSxjQUFjLEdBQUcsTUFBTSxRQUFRLENBQUMsSUFBSSxDQUFDLFFBQVEsRUFBRSxFQUFFLENBQUMsQ0FBQTtZQUV4RCxNQUFNLElBQUksR0FBRyxNQUFNLElBQUksQ0FBQyxNQUFNLENBQUMsSUFBSSxDQUFDLE1BQU0sQ0FBQztnQkFDekMsSUFBSSxFQUFFO29CQUNKLEtBQUs7b0JBQ0wsUUFBUSxFQUFFLGNBQWM7aUJBQ3pCO2FBQ0YsQ0FBQyxDQUFBO1lBRUYsNkRBQTZEO1lBQzdELE1BQU0sRUFBRSxRQUFRLEVBQUUsQ0FBQyxFQUFFLEdBQUcsTUFBTSxFQUFFLEdBQUcsSUFBSSxDQUFBO1lBQ3ZDLE9BQU8sTUFBTSxDQUFBO1FBQ2YsQ0FBQztRQUVNLEtBQUssQ0FBQyxZQUFZLENBQUMsS0FBYSxFQUFFLElBQVk7WUFDbkQsTUFBTSxJQUFJLEdBQUcsTUFBTSxJQUFJLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxVQUFVLENBQUMsRUFBRSxLQUFLLEVBQUUsRUFBRSxLQUFLLEVBQUUsRUFBRSxDQUFDLENBQUE7WUFFcEUseUJBQXlCO1lBQ3pCLElBQUksSUFBSSxJQUFJLENBQUMsTUFBTSxRQUFRLENBQUMsT0FBTyxDQUFDLElBQUksRUFBRSxJQUFJLENBQUMsUUFBUSxDQUFDLENBQUMsRUFBRSxDQUFDO2dCQUMxRCw2REFBNkQ7Z0JBQzdELE1BQU0sRUFBRSxRQUFRLEVBQUUsQ0FBQyxFQUFFLEdBQUcsTUFBTSxFQUFFLEdBQUcsSUFBSSxDQUFBO2dCQUN2QyxPQUFPLE1BQU0sQ0FBQTtZQUNmLENBQUM7WUFDRCxPQUFPLElBQUksQ0FBQTtRQUNiLENBQUM7UUFDTSxLQUFLLENBQUMsS0FBSyxDQUFDLFFBQWtCO1lBQ25DLE1BQU0sSUFBSSxHQUFHLE1BQU0sSUFBSSxDQUFDLFlBQVksQ0FBQyxRQUFRLENBQUMsS0FBSyxFQUFFLFFBQVEsQ0FBQyxRQUFRLENBQUMsQ0FBQTtZQUV2RSxJQUFJLENBQUMsSUFBSSxFQUFFLENBQUM7Z0JBQ1YsTUFBTSxJQUFJLDhCQUFxQixDQUFDLHNCQUFzQixDQUFDLENBQUE7WUFDekQsQ0FBQztZQUVELE1BQU0sT0FBTyxHQUFHLEVBQUUsS0FBSyxFQUFFLElBQUksQ0FBQyxLQUFLLEVBQUUsR0FBRyxFQUFFLElBQUksQ0FBQyxFQUFFLEVBQUUsQ0FBQTtZQUVuRCxPQUFPO2dCQUNMLFlBQVksRUFBRSxJQUFJLENBQUMsVUFBVSxDQUFDLElBQUksQ0FBQyxPQUFPLENBQUM7YUFDNUMsQ0FBQTtRQUNILENBQUM7Ozs7QUFyRFUsa0NBQVciLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxhdXRoLnNlcnZpY2UudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8g5paH5Lu26Lev5b6EOiBhcHBzL2JhY2tlbmQtZ2F0ZXdheS9zcmMvYXV0aC9hdXRoLnNlcnZpY2UudHNcblxuaW1wb3J0IHsgQ29uZmxpY3RFeGNlcHRpb24sIEluamVjdGFibGUsIFVuYXV0aG9yaXplZEV4Y2VwdGlvbiB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHR5cGUgeyBKd3RTZXJ2aWNlIH0gZnJvbSAnQG5lc3Rqcy9qd3QnXG5pbXBvcnQgdHlwZSB7IFVzZXIgfSBmcm9tICdAcHJpc21hL2NsaWVudCdcbi8vIFvmoLjlv4Pkv67mraNdIOaUvuW8g+aXp+eahCAnQC8nIOWIq+WQje+8jOS7jiBAdHVoZWcvY29tbW9uLWJhY2tlbmQg5a+85YWl5YWx5Lqr55qEIFByaXNtYVNlcnZpY2VcbmltcG9ydCB0eXBlIHsgUHJpc21hU2VydmljZSB9IGZyb20gJ0B0dWhlZy9jb21tb24tYmFja2VuZCdcbmltcG9ydCAqIGFzIGJjcnlwdGpzIGZyb20gJ2JjcnlwdGpzJ1xuaW1wb3J0IHR5cGUgeyBMb2dpbkR0byB9IGZyb20gJy4vZHRvL2xvZ2luLmR0bydcbi8vIFvms6jph4pdIOWvvOWFpURUT+exu+Wei++8jOehruS/neaVsOaNrue7k+aehOS4gOiHtFxuaW1wb3J0IHR5cGUgeyBSZWdpc3RlckR0byB9IGZyb20gJy4vZHRvL3JlZ2lzdGVyLmR0bydcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIEF1dGhTZXJ2aWNlIHtcbiAgY29uc3RydWN0b3IoXG4gICAgcHJpdmF0ZSByZWFkb25seSBwcmlzbWE6IFByaXNtYVNlcnZpY2UsXG4gICAgcHJpdmF0ZSByZWFkb25seSBqd3RTZXJ2aWNlOiBKd3RTZXJ2aWNlXG4gICkge31cblxuICBwdWJsaWMgYXN5bmMgcmVnaXN0ZXIocmVnaXN0ZXJEdG86IFJlZ2lzdGVyRHRvKTogUHJvbWlzZTxPbWl0PFVzZXIsICdwYXNzd29yZCc+PiB7XG4gICAgY29uc3QgeyBlbWFpbCwgcGFzc3dvcmQgfSA9IHJlZ2lzdGVyRHRvXG5cbiAgICBjb25zdCBleGlzdGluZ1VzZXIgPSBhd2FpdCB0aGlzLnByaXNtYS51c2VyLmZpbmRVbmlxdWUoe1xuICAgICAgd2hlcmU6IHsgZW1haWwgfSxcbiAgICB9KVxuICAgIGlmIChleGlzdGluZ1VzZXIpIHtcbiAgICAgIHRocm93IG5ldyBDb25mbGljdEV4Y2VwdGlvbignRW1haWwgYWxyZWFkeSByZWdpc3RlcmVkLicpXG4gICAgfVxuXG4gICAgY29uc3QgaGFzaGVkUGFzc3dvcmQgPSBhd2FpdCBiY3J5cHRqcy5oYXNoKHBhc3N3b3JkLCAxMClcblxuICAgIGNvbnN0IHVzZXIgPSBhd2FpdCB0aGlzLnByaXNtYS51c2VyLmNyZWF0ZSh7XG4gICAgICBkYXRhOiB7XG4gICAgICAgIGVtYWlsLFxuICAgICAgICBwYXNzd29yZDogaGFzaGVkUGFzc3dvcmQsXG4gICAgICB9LFxuICAgIH0pXG5cbiAgICAvLyBlc2xpbnQtZGlzYWJsZS1uZXh0LWxpbmUgQHR5cGVzY3JpcHQtZXNsaW50L25vLXVudXNlZC12YXJzXG4gICAgY29uc3QgeyBwYXNzd29yZDogXywgLi4ucmVzdWx0IH0gPSB1c2VyXG4gICAgcmV0dXJuIHJlc3VsdFxuICB9XG5cbiAgcHVibGljIGFzeW5jIHZhbGlkYXRlVXNlcihlbWFpbDogc3RyaW5nLCBwYXNzOiBzdHJpbmcpOiBQcm9taXNlPE9taXQ8VXNlciwgJ3Bhc3N3b3JkJz4gfCBudWxsPiB7XG4gICAgY29uc3QgdXNlciA9IGF3YWl0IHRoaXMucHJpc21hLnVzZXIuZmluZFVuaXF1ZSh7IHdoZXJlOiB7IGVtYWlsIH0gfSlcblxuICAgIC8vIFvov5jljp9dIOS9v+eUqCBiY3J5cHQuY29tcGFyZVxuICAgIGlmICh1c2VyICYmIChhd2FpdCBiY3J5cHRqcy5jb21wYXJlKHBhc3MsIHVzZXIucGFzc3dvcmQpKSkge1xuICAgICAgLy8gZXNsaW50LWRpc2FibGUtbmV4dC1saW5lIEB0eXBlc2NyaXB0LWVzbGludC9uby11bnVzZWQtdmFyc1xuICAgICAgY29uc3QgeyBwYXNzd29yZDogXywgLi4ucmVzdWx0IH0gPSB1c2VyXG4gICAgICByZXR1cm4gcmVzdWx0XG4gICAgfVxuICAgIHJldHVybiBudWxsXG4gIH1cbiAgcHVibGljIGFzeW5jIGxvZ2luKGxvZ2luRHRvOiBMb2dpbkR0byk6IFByb21pc2U8eyBhY2Nlc3NfdG9rZW46IHN0cmluZyB9PiB7XG4gICAgY29uc3QgdXNlciA9IGF3YWl0IHRoaXMudmFsaWRhdGVVc2VyKGxvZ2luRHRvLmVtYWlsLCBsb2dpbkR0by5wYXNzd29yZClcblxuICAgIGlmICghdXNlcikge1xuICAgICAgdGhyb3cgbmV3IFVuYXV0aG9yaXplZEV4Y2VwdGlvbignSW52YWxpZCBjcmVkZW50aWFscy4nKVxuICAgIH1cblxuICAgIGNvbnN0IHBheWxvYWQgPSB7IGVtYWlsOiB1c2VyLmVtYWlsLCBzdWI6IHVzZXIuaWQgfVxuXG4gICAgcmV0dXJuIHtcbiAgICAgIGFjY2Vzc190b2tlbjogdGhpcy5qd3RTZXJ2aWNlLnNpZ24ocGF5bG9hZCksXG4gICAgfVxuICB9XG59XG4iXSwidmVyc2lvbiI6M30=

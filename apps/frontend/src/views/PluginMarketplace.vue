@@ -237,8 +237,6 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import PluginCard from '../components/plugins/PluginCard.vue'
-import PluginDetailsModal from '../components/plugins/PluginDetailsModal.vue'
 import { useDebounce } from '../composables/useDebounce'
 import { pluginMarketplaceApi } from '../services/pluginMarketplaceApi'
 
@@ -253,7 +251,7 @@ const currentPage = ref(1)
 const pageSize = ref(20)
 const sortBy = ref('downloads')
 const sortOrder = ref('desc')
-const viewMode = ref('grid') // 'grid' | 'list'
+const _viewMode = ref('grid') // 'grid' | 'list'
 
 // 搜索结果
 const searchResults = ref({
@@ -272,7 +270,7 @@ const filters = ref({
 // 分类和标签数据
 const categories = ref([])
 const popularTags = ref([])
-const ratingOptions = [
+const _ratingOptions = [
   { value: 4, label: '4星' },
   { value: 3, label: '3星' },
   { value: 2, label: '2星' },
@@ -280,7 +278,7 @@ const ratingOptions = [
 ]
 
 // 防抖搜索
-const debouncedSearch = useDebounce(async () => {
+const _debouncedSearch = useDebounce(async () => {
   if (searchQuery.value.length >= 2) {
     await loadSearchSuggestions()
     showSuggestions.value = true
@@ -291,7 +289,7 @@ const debouncedSearch = useDebounce(async () => {
 }, 300)
 
 // 计算属性
-const visiblePages = computed(() => {
+const _visiblePages = computed(() => {
   const totalPages = Math.ceil(searchResults.value.total / pageSize.value)
   const current = currentPage.value
   const pages = []
@@ -370,13 +368,13 @@ async function performSearch() {
   }
 }
 
-function selectSuggestion(suggestion) {
+function _selectSuggestion(suggestion) {
   searchQuery.value = suggestion.displayName
   showSuggestions.value = false
   performSearch()
 }
 
-function clearFilters() {
+function _clearFilters() {
   filters.value = {
     category: [],
     tags: [],
@@ -387,22 +385,22 @@ function clearFilters() {
   performSearch()
 }
 
-function applyFilters() {
+function _applyFilters() {
   currentPage.value = 1
   performSearch()
 }
 
-function applySort() {
+function _applySort() {
   currentPage.value = 1
   performSearch()
 }
 
-function goToPage(page) {
+function _goToPage(page) {
   currentPage.value = page
   performSearch()
 }
 
-async function handleInstall(plugin) {
+async function _handleInstall(plugin) {
   try {
     await pluginMarketplaceApi.installPlugin(plugin.id)
     // 显示成功消息
@@ -413,12 +411,12 @@ async function handleInstall(plugin) {
   }
 }
 
-function handleViewDetails(plugin) {
+function _handleViewDetails(plugin) {
   selectedPlugin.value = plugin
   showDetailsModal.value = true
 }
 
-function closeDetailsModal() {
+function _closeDetailsModal() {
   showDetailsModal.value = null
   showDetailsModal.value = false
 }

@@ -44,7 +44,7 @@ program
       await generateHtmlDocs(openApiSpec, options.output)
 
       // Clean up temp file
-      const fs = require('fs')
+      const fs = require('node:fs')
       if (fs.existsSync('temp-openapi.json')) {
         fs.unlinkSync('temp-openapi.json')
       }

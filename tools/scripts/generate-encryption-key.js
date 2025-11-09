@@ -7,7 +7,7 @@
 //
 // 输出: base64 编码的 32 字节密钥（可以直接用作 ENCRYPTION_KEY 环境变量）
 
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 
 // 生成 32 字节随机密钥
 const key = crypto.randomBytes(32)

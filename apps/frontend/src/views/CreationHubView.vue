@@ -29,7 +29,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import NarrativeDrivenPath from '@/components/creation/NarrativeDrivenPath.vue'
 import { useToast } from '@/composables/useToast'
 import { apiService } from '@/services/api.service' // [核心] 直接使用apiService
 // import { useUIStore } from '@/stores/ui.store'; // 暂时未使用
@@ -44,7 +43,7 @@ const { show: showToast } = useToast()
 /**
  * [核心重构] handleStartCreation 不再等待，而是派发任务
  */
-async function handleStartCreation(creationData) {
+async function _handleStartCreation(creationData) {
   // [注释] 我们不再需要全局的 isProcessing 遮罩，因为创世现在是后台任务
   // uiStore.isProcessing = true;
 
@@ -80,7 +79,7 @@ async function handleStartCreation(creationData) {
   // [注释] finally 块不再需要了
 }
 
-function resetToPathSelection() {
+function _resetToPathSelection() {
   activePath.value = null
 }
 </script>

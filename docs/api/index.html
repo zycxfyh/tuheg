@@ -89,8 +89,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js"></script>
     <script>
-      window.onload = function () {
-        const ui = SwaggerUIBundle({
+      window.onload = () => {
+        const _ui = SwaggerUIBundle({
           spec: {
             openapi: '3.0.0',
             info: {
@@ -812,13 +812,11 @@
           plugins: [SwaggerUIBundle.plugins.DownloadUrl],
           layout: 'StandaloneLayout',
           tryItOutEnabled: true,
-          requestInterceptor: function (request) {
+          requestInterceptor: (request) => {
             // Add any custom headers here
             return request
           },
-          responseInterceptor: function (response) {
-            return response
-          },
+          responseInterceptor: (response) => response,
         })
       }
     </script>

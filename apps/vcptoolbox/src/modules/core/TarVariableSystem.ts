@@ -167,7 +167,7 @@ export class TarVariableManager {
       this.watchers.set(name, new Set())
     }
 
-    this.watchers.get(name)!.add(callback)
+    this.watchers.get(name)?.add(callback)
 
     // 返回取消观察的函数
     return () => {
@@ -218,7 +218,7 @@ export class TarVariableManager {
     // 异步更新
     setImmediate(async () => {
       try {
-        const newValue = await variable.updater!(
+        const newValue = await variable.updater?.(
           context || { environment: {}, timestamp: new Date() }
         )
         this.setVariableValue(name, newValue, context)
@@ -235,7 +235,7 @@ export class TarVariableManager {
    */
   private updateDependencyGraph(name: string, dependencies: string[]): void {
     // 清除旧依赖
-    for (const [dep, dependents] of this.dependencyGraph) {
+    for (const [_dep, dependents] of this.dependencyGraph) {
       dependents.delete(name)
     }
 
@@ -244,7 +244,7 @@ export class TarVariableManager {
       if (!this.dependencyGraph.has(dep)) {
         this.dependencyGraph.set(dep, new Set())
       }
-      this.dependencyGraph.get(dep)!.add(name)
+      this.dependencyGraph.get(dep)?.add(name)
     }
   }
 
@@ -426,7 +426,7 @@ export class TarVariableManager {
    * 导入变量配置
    */
   importVariables(variables: Record<string, Omit<TarVariable, 'updater'>>): void {
-    for (const [name, variableData] of Object.entries(variables)) {
+    for (const [_name, variableData] of Object.entries(variables)) {
       this.registerVariable(variableData)
     }
   }

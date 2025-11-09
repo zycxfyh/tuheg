@@ -41,7 +41,8 @@ import { useAssets } from '@/composables/useAssets'
 import { useGameStore } from '@/stores/game.store'
 import { useUIStore } from '@/stores/ui.store'
 
-const uiStore = useUIStore()
-const gameStore = useGameStore()
+const _uiStore = useUIStore()
+const _gameStore = useGameStore()
+// biome-ignore lint/correctness/noUnusedVariables: used in template
 const { exportCharacterCard } = useAssets()
 </script>

@@ -81,7 +81,7 @@ export interface ClinicalDecisionSupport {
 @Injectable()
 export class HealthcareService {
   constructor(
-    private aiProviderService: AiProviderService,
+    _aiProviderService: AiProviderService,
     private modelRouterService: ModelRouterService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -439,8 +439,8 @@ Format as a structured list.`
    * 分析患者趋势
    */
   async analyzePatientTrends(
-    patientId: string,
-    timeRange: { start: Date; end: Date }
+    _patientId: string,
+    _timeRange: { start: Date; end: Date }
   ): Promise<{
     vitalSignsTrend: any
     symptomPatterns: any
@@ -540,7 +540,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 生成内容
    */
-  private async generateContent(prompt: string, modelId: string): Promise<string> {
+  private async generateContent(prompt: string, _modelId: string): Promise<string> {
     // 这里应该调用实际的AI模型API
     // 暂时返回模拟内容
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -551,7 +551,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 提取文档元数据
    */
-  private extractDocumentMetadata(content: string): any {
+  private extractDocumentMetadata(_content: string): any {
     // 简化的元数据提取逻辑
     return {
       chiefComplaint: 'Patient presented with...',
@@ -563,7 +563,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 解析医疗总结
    */
-  private parseMedicalSummary(content: string): any {
+  private parseMedicalSummary(_content: string): any {
     // 简化的解析逻辑
     return {
       summary: 'Medical document summary',
@@ -576,7 +576,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 解析患者教育内容
    */
-  private parsePatientEducationContent(content: string): any {
+  private parsePatientEducationContent(_content: string): any {
     // 简化的解析逻辑
     return {
       overview: 'Condition overview',
@@ -591,7 +591,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 解析临床推荐
    */
-  private parseClinicalRecommendations(content: string): any {
+  private parseClinicalRecommendations(_content: string): any {
     // 简化的解析逻辑
     return {
       differentialDiagnosis: [
@@ -627,7 +627,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 解析药物相互作用
    */
-  private parseDrugInteractions(content: string): any[] {
+  private parseDrugInteractions(_content: string): any[] {
     // 简化的解析逻辑
     return [
       {
@@ -642,7 +642,7 @@ Structure the report with appropriate sections for the recipient type.`
   /**
    * 解析医疗报告
    */
-  private parseMedicalReport(content: string): any {
+  private parseMedicalReport(_content: string): any {
     // 简化的解析逻辑
     return {
       title: 'Medical Report',

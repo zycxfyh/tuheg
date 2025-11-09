@@ -49,7 +49,7 @@ export function isValidIdCard(idCard: string): boolean {
 
   let sum = 0
   for (let i = 0; i < 17; i++) {
-    sum += parseInt(idCard[i]) * weights[i]
+    sum += parseInt(idCard[i], 10) * weights[i]
   }
 
   const mod = sum % 11
@@ -181,7 +181,7 @@ export function isValidFileType(filename: string, allowedTypes: string[]): boole
  * @param format 日期格式
  * @returns 是否有效
  */
-export function isValidDate(date: string, format: string = 'YYYY-MM-DD'): boolean {
+export function isValidDate(date: string, _format: string = 'YYYY-MM-DD'): boolean {
   // 简化的日期验证
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/
   if (!dateRegex.test(date)) return false

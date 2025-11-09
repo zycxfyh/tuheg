@@ -1,7 +1,7 @@
 // Service Worker for PWA support
 // 提供离线访问、缓存管理和推送通知支持
 
-const CACHE_NAME = 'creation-ring-v1.0.0'
+const _CACHE_NAME = 'creation-ring-v1.0.0'
 const STATIC_CACHE = 'creation-ring-static-v1.0.0'
 const DYNAMIC_CACHE = 'creation-ring-dynamic-v1.0.0'
 
@@ -17,7 +17,7 @@ const STATIC_ASSETS = [
 ]
 
 // 运行时缓存的API路径
-const API_CACHE_PATTERNS = [
+const _API_CACHE_PATTERNS = [
   /\/api\/narratives\/\d+$/, // 单个叙事
   /\/api\/users\/profile$/, // 用户资料
   /\/api\/plugins$/, // 插件列表
@@ -57,6 +57,7 @@ self.addEventListener('activate', (event) => {
               console.log('Deleting old cache:', cacheName)
               return caches.delete(cacheName)
             }
+            return Promise.resolve(false) // 不需要删除的缓存，返回false
           })
         )
       })
@@ -281,6 +282,7 @@ async function cleanupOldCaches() {
         console.log('Deleting old cache:', cacheName)
         return caches.delete(cacheName)
       }
+      return Promise.resolve(false) // 不需要删除的缓存，返回false
     })
   )
 }

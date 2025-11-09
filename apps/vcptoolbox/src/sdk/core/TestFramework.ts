@@ -31,8 +31,6 @@ export interface PerformanceMetrics {
 }
 
 export class TestFramework {
-  private results: TestResult[] = []
-
   // 运行插件测试
   async runTests(plugin: VCPPlugin, options: any = {}): Promise<any> {
     const { unit = true, integration = false, performance = false, coverage = false } = options
@@ -97,7 +95,7 @@ export class TestFramework {
       },
       {
         name: 'Plugin Deactivation',
-        test: async (context) => {
+        test: async (_context) => {
           if (plugin.deactivate) {
             await plugin.deactivate()
           }
@@ -184,7 +182,7 @@ export class TestFramework {
   }
 
   // 运行覆盖率分析
-  private async runCoverageAnalysis(plugin: VCPPlugin): Promise<any> {
+  private async runCoverageAnalysis(_plugin: VCPPlugin): Promise<any> {
     // 简化实现，实际应该集成代码覆盖率工具
     return {
       statements: 85,
@@ -202,7 +200,7 @@ export class TestFramework {
         tests: [
           {
             name: 'Plugin Initialization',
-            test: async (context) => {
+            test: async (_context) => {
               if (!plugin.id || !plugin.name || !plugin.version) {
                 throw new Error('Plugin basic properties not set')
               }
@@ -256,7 +254,7 @@ export class TestFramework {
   }
 
   // 运行单个测试用例
-  private async runTestCase(testCase: TestCase, plugin: VCPPlugin): Promise<TestResult> {
+  private async runTestCase(testCase: TestCase, _plugin: VCPPlugin): Promise<TestResult> {
     const startTime = Date.now()
     const context = this.createMockContext()
 
@@ -320,7 +318,7 @@ export class TestFramework {
         },
       },
       config: {
-        get: (key, defaultValue) => defaultValue,
+        get: (_key, defaultValue) => defaultValue,
         set: () => {},
         update: () => {},
         reset: () => {},
@@ -334,7 +332,7 @@ export class TestFramework {
         once: () => {},
       },
       storage: {
-        get: (key, defaultValue) => defaultValue,
+        get: (_key, defaultValue) => defaultValue,
         set: () => {},
         delete: () => {},
         clear: () => {},
@@ -365,7 +363,7 @@ export class TestFramework {
           executionTime: 100,
           toolName: 'mock-tool',
         }),
-        replaceVariables: (text, variables) => text,
+        replaceVariables: (text, _variables) => text,
         memory: {
           read: async () => [],
           write: async () => {},

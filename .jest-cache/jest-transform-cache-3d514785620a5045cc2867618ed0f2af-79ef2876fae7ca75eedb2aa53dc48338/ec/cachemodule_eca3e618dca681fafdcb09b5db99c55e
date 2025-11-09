@@ -1,0 +1,93 @@
+994770b355e64978b5c24528f0aad339
+"use strict";
+// 文件路径: packages/common-backend/src/cache/cache.module.ts
+// 核心理念: 统一使用Redis缓存，确保分布式一致性
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CacheModule = void 0;
+const cache_manager_1 = require("@nestjs/cache-manager");
+const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const cache_manager_redis_store_1 = require("cache-manager-redis-store");
+const cache_service_1 = require("./cache.service");
+/**
+ * @module CacheModule
+ * @description 缓存模块
+ * 统一使用Redis缓存，确保分布式一致性和高性能
+ */
+let CacheModule = (() => {
+    let _classDecorators = [(0, common_1.Module)({
+            imports: [
+                cache_manager_1.CacheModule.registerAsync({
+                    inject: [config_1.ConfigService],
+                    useFactory: async (configService) => {
+                        const redisUrl = configService.get('REDIS_URL');
+                        if (!redisUrl) {
+                            throw new Error('REDIS_URL is required for caching. Please configure Redis connection.');
+                        }
+                        const url = new URL(redisUrl);
+                        // 统一使用Redis存储，确保分布式一致性
+                        return {
+                            store: cache_manager_redis_store_1.redisStore,
+                            host: url.hostname,
+                            port: parseInt(url.port || '6379'),
+                            password: url.password || undefined,
+                            ttl: 3600, // 默认 1 小时
+                            max: 1000, // Redis可以处理更多缓存项
+                        };
+                    },
+                }),
+            ],
+            providers: [cache_service_1.CacheService],
+            exports: [cache_service_1.CacheService, cache_manager_1.CacheModule],
+        })];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    var CacheModule = class {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            CacheModule = _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+    };
+    return CacheModule = _classThis;
+})();
+exports.CacheModule = CacheModule;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxjYWNoZVxcY2FjaGUubW9kdWxlLnRzIiwibWFwcGluZ3MiOiI7QUFBQSwwREFBMEQ7QUFDMUQsNkJBQTZCOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBRTdCLHlEQUFzRTtBQUN0RSwyQ0FBdUM7QUFDdkMsMkNBQThDO0FBQzlDLHlFQUFzRDtBQUN0RCxtREFBOEM7QUFFOUM7Ozs7R0FJRztJQTZCVSxXQUFXOzRCQTVCdkIsSUFBQSxlQUFNLEVBQUM7WUFDTixPQUFPLEVBQUU7Z0JBQ1AsMkJBQWUsQ0FBQyxhQUFhLENBQUM7b0JBQzVCLE1BQU0sRUFBRSxDQUFDLHNCQUFhLENBQUM7b0JBQ3ZCLFVBQVUsRUFBRSxLQUFLLEVBQUUsYUFBNEIsRUFBRSxFQUFFO3dCQUNqRCxNQUFNLFFBQVEsR0FBRyxhQUFhLENBQUMsR0FBRyxDQUFTLFdBQVcsQ0FBQyxDQUFBO3dCQUV2RCxJQUFJLENBQUMsUUFBUSxFQUFFLENBQUM7NEJBQ2QsTUFBTSxJQUFJLEtBQUssQ0FBQyx1RUFBdUUsQ0FBQyxDQUFBO3dCQUMxRixDQUFDO3dCQUVELE1BQU0sR0FBRyxHQUFHLElBQUksR0FBRyxDQUFDLFFBQVEsQ0FBQyxDQUFBO3dCQUU3Qix1QkFBdUI7d0JBQ3ZCLE9BQU87NEJBQ0wsS0FBSyxFQUFFLHNDQUFVOzRCQUNqQixJQUFJLEVBQUUsR0FBRyxDQUFDLFFBQVE7NEJBQ2xCLElBQUksRUFBRSxRQUFRLENBQUMsR0FBRyxDQUFDLElBQUksSUFBSSxNQUFNLENBQUM7NEJBQ2xDLFFBQVEsRUFBRSxHQUFHLENBQUMsUUFBUSxJQUFJLFNBQVM7NEJBQ25DLEdBQUcsRUFBRSxJQUFJLEVBQUUsVUFBVTs0QkFDckIsR0FBRyxFQUFFLElBQUksRUFBRSxpQkFBaUI7eUJBQ3RCLENBQUE7b0JBQ1YsQ0FBQztpQkFDRixDQUFDO2FBQ0g7WUFDRCxTQUFTLEVBQUUsQ0FBQyw0QkFBWSxDQUFDO1lBQ3pCLE9BQU8sRUFBRSxDQUFDLDRCQUFZLEVBQUUsMkJBQWUsQ0FBQztTQUN6QyxDQUFDOzs7Ozs7OztZQUNGLDZLQUEyQjs7O1lBQWQsdURBQVc7Ozs7O0FBQVgsa0NBQVciLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxjYWNoZVxcY2FjaGUubW9kdWxlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogcGFja2FnZXMvY29tbW9uLWJhY2tlbmQvc3JjL2NhY2hlL2NhY2hlLm1vZHVsZS50c1xuLy8g5qC45b+D55CG5b+1OiDnu5/kuIDkvb/nlKhSZWRpc+e8k+WtmO+8jOehruS/neWIhuW4g+W8j+S4gOiHtOaAp1xuXG5pbXBvcnQgeyBDYWNoZU1vZHVsZSBhcyBOZXN0Q2FjaGVNb2R1bGUgfSBmcm9tICdAbmVzdGpzL2NhY2hlLW1hbmFnZXInXG5pbXBvcnQgeyBNb2R1bGUgfSBmcm9tICdAbmVzdGpzL2NvbW1vbidcbmltcG9ydCB7IENvbmZpZ1NlcnZpY2UgfSBmcm9tICdAbmVzdGpzL2NvbmZpZydcbmltcG9ydCB7IHJlZGlzU3RvcmUgfSBmcm9tICdjYWNoZS1tYW5hZ2VyLXJlZGlzLXN0b3JlJ1xuaW1wb3J0IHsgQ2FjaGVTZXJ2aWNlIH0gZnJvbSAnLi9jYWNoZS5zZXJ2aWNlJ1xuXG4vKipcbiAqIEBtb2R1bGUgQ2FjaGVNb2R1bGVcbiAqIEBkZXNjcmlwdGlvbiDnvJPlrZjmqKHlnZdcbiAqIOe7n+S4gOS9v+eUqFJlZGlz57yT5a2Y77yM56Gu5L+d5YiG5biD5byP5LiA6Ie05oCn5ZKM6auY5oCn6IO9XG4gKi9cbkBNb2R1bGUoe1xuICBpbXBvcnRzOiBbXG4gICAgTmVzdENhY2hlTW9kdWxlLnJlZ2lzdGVyQXN5bmMoe1xuICAgICAgaW5qZWN0OiBbQ29uZmlnU2VydmljZV0sXG4gICAgICB1c2VGYWN0b3J5OiBhc3luYyAoY29uZmlnU2VydmljZTogQ29uZmlnU2VydmljZSkgPT4ge1xuICAgICAgICBjb25zdCByZWRpc1VybCA9IGNvbmZpZ1NlcnZpY2UuZ2V0PHN0cmluZz4oJ1JFRElTX1VSTCcpXG5cbiAgICAgICAgaWYgKCFyZWRpc1VybCkge1xuICAgICAgICAgIHRocm93IG5ldyBFcnJvcignUkVESVNfVVJMIGlzIHJlcXVpcmVkIGZvciBjYWNoaW5nLiBQbGVhc2UgY29uZmlndXJlIFJlZGlzIGNvbm5lY3Rpb24uJylcbiAgICAgICAgfVxuXG4gICAgICAgIGNvbnN0IHVybCA9IG5ldyBVUkwocmVkaXNVcmwpXG5cbiAgICAgICAgLy8g57uf5LiA5L2/55SoUmVkaXPlrZjlgqjvvIznoa7kv53liIbluIPlvI/kuIDoh7TmgKdcbiAgICAgICAgcmV0dXJuIHtcbiAgICAgICAgICBzdG9yZTogcmVkaXNTdG9yZSxcbiAgICAgICAgICBob3N0OiB1cmwuaG9zdG5hbWUsXG4gICAgICAgICAgcG9ydDogcGFyc2VJbnQodXJsLnBvcnQgfHwgJzYzNzknKSxcbiAgICAgICAgICBwYXNzd29yZDogdXJsLnBhc3N3b3JkIHx8IHVuZGVmaW5lZCxcbiAgICAgICAgICB0dGw6IDM2MDAsIC8vIOm7mOiupCAxIOWwj+aXtlxuICAgICAgICAgIG1heDogMTAwMCwgLy8gUmVkaXPlj6/ku6XlpITnkIbmm7TlpJrnvJPlrZjpoblcbiAgICAgICAgfSBhcyBhbnlcbiAgICAgIH0sXG4gICAgfSksXG4gIF0sXG4gIHByb3ZpZGVyczogW0NhY2hlU2VydmljZV0sXG4gIGV4cG9ydHM6IFtDYWNoZVNlcnZpY2UsIE5lc3RDYWNoZU1vZHVsZV0sXG59KVxuZXhwb3J0IGNsYXNzIENhY2hlTW9kdWxlIHt9XG4iXSwidmVyc2lvbiI6M30=

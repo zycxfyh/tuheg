@@ -109,9 +109,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
+const _props = defineProps({
   plugin: {
     type: Object,
     required: true,
@@ -122,10 +120,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['view-details', 'install'])
+const _emit = defineEmits(['view-details', 'install'])
 
 // 获取分类图标
-const getCategoryIcon = (categoryId) => {
+const _getCategoryIcon = (categoryId) => {
   const icons = {
     'story-generation': '📖',
     'character-creation': '👤',
@@ -140,7 +138,7 @@ const getCategoryIcon = (categoryId) => {
 }
 
 // 获取分类名称
-const getCategoryName = (categoryId) => {
+const _getCategoryName = (categoryId) => {
   const names = {
     'story-generation': '故事生成',
     'character-creation': '角色创建',
@@ -155,7 +153,7 @@ const getCategoryName = (categoryId) => {
 }
 
 // 获取定价文本
-const getPricingText = (pricing) => {
+const _getPricingText = (pricing) => {
   switch (pricing.model) {
     case 'free':
       return '免费'
@@ -171,7 +169,7 @@ const getPricingText = (pricing) => {
 }
 
 // 获取安装按钮文本
-const getInstallText = (pricing) => {
+const _getInstallText = (pricing) => {
   switch (pricing.model) {
     case 'free':
     case 'freemium':
@@ -186,17 +184,17 @@ const getInstallText = (pricing) => {
 }
 
 // 格式化数字
-const formatNumber = (num) => {
+const _formatNumber = (num) => {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M'
+    return `${(num / 1000000).toFixed(1)}M`
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K'
+    return `${(num / 1000).toFixed(1)}K`
   }
   return num.toString()
 }
 
 // 格式化日期
-const formatDate = (date) => {
+const _formatDate = (date) => {
   const now = new Date()
   const diffTime = Math.abs(now.getTime() - date.getTime())
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))

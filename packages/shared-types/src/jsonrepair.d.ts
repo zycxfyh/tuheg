@@ -10,9 +10,4 @@ declare module 'jsonrepair' {
    * @throws Error if the JSON cannot be repaired
    */
   export function jsonrepair(jsonString: string): string
-
-  /**
-   * Default export for the jsonrepair function
-   */
-  export default function jsonrepair(jsonString: string): string
 }

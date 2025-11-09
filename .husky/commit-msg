@@ -1,8 +1,4 @@
-#!/bin/sh
-# 文件路径: .husky/commit-msg
-# 核心理念: 在提交前验证提交信息格式
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-. "$(dirname "$0")/_/husky.sh"
-
-npx --no -- commitlint --edit ${1}
-
+npx --no-install commitlint --edit $1

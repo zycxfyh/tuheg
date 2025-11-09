@@ -1,13 +1,10 @@
 <!-- 文件路径: src/components/creation/NarrativeDrivenPath.vue -->
 <script setup>
-// 1. 导入我们刚刚创建的新组件
-import CreationForm from './CreationForm.vue'
-
 // 2. 定义可以向上传递的事件
 const emit = defineEmits(['back', 'start-creation'])
 
 // 3. 定义一个处理函数，它会简单地将从 CreationForm 组件收到的事件再次向上抛出
-function handleStartCreation(creationData) {
+function _handleStartCreation(creationData) {
   emit('start-creation', creationData)
 }
 </script>

@@ -1,0 +1,67 @@
+e714b7df8c352618bd3c03907c8d7dd7
+"use strict";
+// 文件路径: packages/common-backend/src/utils/error-utils.ts
+// 描述: 错误处理工具函数，提供统一的错误消息提取逻辑
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getErrorMessage = getErrorMessage;
+exports.getErrorStack = getErrorStack;
+exports.isErrorOfType = isErrorOfType;
+/**
+ * 从未知类型的错误对象中提取错误消息
+ *
+ * @param error - 未知类型的错误对象
+ * @param defaultMessage - 默认错误消息（当无法提取消息时使用）
+ * @returns 错误消息字符串
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   throw new Error('Something went wrong')
+ * } catch (error) {
+ *   const message = getErrorMessage(error, 'Unknown error')
+ *   console.log(message) // 'Something went wrong'
+ * }
+ * ```
+ */
+function getErrorMessage(error, defaultMessage = 'An unknown error occurred') {
+    // 如果是 Error 实例，直接返回 message
+    if (error instanceof Error) {
+        return error.message;
+    }
+    // 如果是字符串，直接返回
+    if (typeof error === 'string') {
+        return error;
+    }
+    // 如果是对象且有 message 属性
+    if (error && typeof error === 'object' && 'message' in error) {
+        const message = error.message;
+        if (typeof message === 'string') {
+            return message;
+        }
+    }
+    // 其他情况返回默认消息
+    return defaultMessage;
+}
+/**
+ * 从未知类型的错误对象中提取堆栈跟踪
+ *
+ * @param error - 未知类型的错误对象
+ * @returns 堆栈跟踪字符串或 undefined
+ */
+function getErrorStack(error) {
+    if (error instanceof Error) {
+        return error.stack;
+    }
+    return undefined;
+}
+/**
+ * 检查错误是否为特定类型
+ *
+ * @param error - 未知类型的错误对象
+ * @param errorClass - 错误类的构造函数
+ * @returns 是否为指定类型的错误
+ */
+function isErrorOfType(error, errorClass) {
+    return error instanceof errorClass;
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFx1dGlsc1xcZXJyb3ItdXRpbHMudHMiLCJtYXBwaW5ncyI6IjtBQUFBLHlEQUF5RDtBQUN6RCw2QkFBNkI7O0FBbUI3QiwwQ0F3QkM7QUFRRCxzQ0FLQztBQVNELHNDQUtDO0FBcEVEOzs7Ozs7Ozs7Ozs7Ozs7O0dBZ0JHO0FBQ0gsU0FBZ0IsZUFBZSxDQUM3QixLQUFjLEVBQ2QsY0FBYyxHQUFHLDJCQUEyQjtJQUU1Qyw0QkFBNEI7SUFDNUIsSUFBSSxLQUFLLFlBQVksS0FBSyxFQUFFLENBQUM7UUFDM0IsT0FBTyxLQUFLLENBQUMsT0FBTyxDQUFBO0lBQ3RCLENBQUM7SUFFRCxjQUFjO0lBQ2QsSUFBSSxPQUFPLEtBQUssS0FBSyxRQUFRLEVBQUUsQ0FBQztRQUM5QixPQUFPLEtBQUssQ0FBQTtJQUNkLENBQUM7SUFFRCxxQkFBcUI7SUFDckIsSUFBSSxLQUFLLElBQUksT0FBTyxLQUFLLEtBQUssUUFBUSxJQUFJLFNBQVMsSUFBSSxLQUFLLEVBQUUsQ0FBQztRQUM3RCxNQUFNLE9BQU8sR0FBSSxLQUE4QixDQUFDLE9BQU8sQ0FBQTtRQUN2RCxJQUFJLE9BQU8sT0FBTyxLQUFLLFFBQVEsRUFBRSxDQUFDO1lBQ2hDLE9BQU8sT0FBTyxDQUFBO1FBQ2hCLENBQUM7SUFDSCxDQUFDO0lBRUQsYUFBYTtJQUNiLE9BQU8sY0FBYyxDQUFBO0FBQ3ZCLENBQUM7QUFFRDs7Ozs7R0FLRztBQUNILFNBQWdCLGFBQWEsQ0FBQyxLQUFjO0lBQzFDLElBQUksS0FBSyxZQUFZLEtBQUssRUFBRSxDQUFDO1FBQzNCLE9BQU8sS0FBSyxDQUFDLEtBQUssQ0FBQTtJQUNwQixDQUFDO0lBQ0QsT0FBTyxTQUFTLENBQUE7QUFDbEIsQ0FBQztBQUVEOzs7Ozs7R0FNRztBQUNILFNBQWdCLGFBQWEsQ0FDM0IsS0FBYyxFQUNkLFVBQXFDO0lBRXJDLE9BQU8sS0FBSyxZQUFZLFVBQVUsQ0FBQTtBQUNwQyxDQUFDIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcMTY2NjNcXERlc2t0b3BcXHR1aGVnXFxwYWNrYWdlc1xcY29tbW9uLWJhY2tlbmRcXHNyY1xcdXRpbHNcXGVycm9yLXV0aWxzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogcGFja2FnZXMvY29tbW9uLWJhY2tlbmQvc3JjL3V0aWxzL2Vycm9yLXV0aWxzLnRzXHJcbi8vIOaPj+i/sDog6ZSZ6K+v5aSE55CG5bel5YW35Ye95pWw77yM5o+Q5L6b57uf5LiA55qE6ZSZ6K+v5raI5oGv5o+Q5Y+W6YC76L6RXHJcblxyXG4vKipcclxuICog5LuO5pyq55+l57G75Z6L55qE6ZSZ6K+v5a+56LGh5Lit5o+Q5Y+W6ZSZ6K+v5raI5oGvXHJcbiAqIFxyXG4gKiBAcGFyYW0gZXJyb3IgLSDmnKrnn6XnsbvlnovnmoTplJnor6/lr7nosaFcclxuICogQHBhcmFtIGRlZmF1bHRNZXNzYWdlIC0g6buY6K6k6ZSZ6K+v5raI5oGv77yI5b2T5peg5rOV5o+Q5Y+W5raI5oGv5pe25L2/55So77yJXHJcbiAqIEByZXR1cm5zIOmUmeivr+a2iOaBr+Wtl+espuS4slxyXG4gKiBcclxuICogQGV4YW1wbGVcclxuICogYGBgdHlwZXNjcmlwdFxyXG4gKiB0cnkge1xyXG4gKiAgIHRocm93IG5ldyBFcnJvcignU29tZXRoaW5nIHdlbnQgd3JvbmcnKVxyXG4gKiB9IGNhdGNoIChlcnJvcikge1xyXG4gKiAgIGNvbnN0IG1lc3NhZ2UgPSBnZXRFcnJvck1lc3NhZ2UoZXJyb3IsICdVbmtub3duIGVycm9yJylcclxuICogICBjb25zb2xlLmxvZyhtZXNzYWdlKSAvLyAnU29tZXRoaW5nIHdlbnQgd3JvbmcnXHJcbiAqIH1cclxuICogYGBgXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gZ2V0RXJyb3JNZXNzYWdlKFxyXG4gIGVycm9yOiB1bmtub3duLFxyXG4gIGRlZmF1bHRNZXNzYWdlID0gJ0FuIHVua25vd24gZXJyb3Igb2NjdXJyZWQnXHJcbik6IHN0cmluZyB7XHJcbiAgLy8g5aaC5p6c5pivIEVycm9yIOWunuS+i++8jOebtOaOpei/lOWbniBtZXNzYWdlXHJcbiAgaWYgKGVycm9yIGluc3RhbmNlb2YgRXJyb3IpIHtcclxuICAgIHJldHVybiBlcnJvci5tZXNzYWdlXHJcbiAgfVxyXG4gIFxyXG4gIC8vIOWmguaenOaYr+Wtl+espuS4su+8jOebtOaOpei/lOWbnlxyXG4gIGlmICh0eXBlb2YgZXJyb3IgPT09ICdzdHJpbmcnKSB7XHJcbiAgICByZXR1cm4gZXJyb3JcclxuICB9XHJcbiAgXHJcbiAgLy8g5aaC5p6c5piv5a+56LGh5LiU5pyJIG1lc3NhZ2Ug5bGe5oCnXHJcbiAgaWYgKGVycm9yICYmIHR5cGVvZiBlcnJvciA9PT0gJ29iamVjdCcgJiYgJ21lc3NhZ2UnIGluIGVycm9yKSB7XHJcbiAgICBjb25zdCBtZXNzYWdlID0gKGVycm9yIGFzIHsgbWVzc2FnZTogdW5rbm93biB9KS5tZXNzYWdlXHJcbiAgICBpZiAodHlwZW9mIG1lc3NhZ2UgPT09ICdzdHJpbmcnKSB7XHJcbiAgICAgIHJldHVybiBtZXNzYWdlXHJcbiAgICB9XHJcbiAgfVxyXG4gIFxyXG4gIC8vIOWFtuS7luaDheWGtei/lOWbnum7mOiupOa2iOaBr1xyXG4gIHJldHVybiBkZWZhdWx0TWVzc2FnZVxyXG59XHJcblxyXG4vKipcclxuICog5LuO5pyq55+l57G75Z6L55qE6ZSZ6K+v5a+56LGh5Lit5o+Q5Y+W5aCG5qCI6Lef6LiqXHJcbiAqIFxyXG4gKiBAcGFyYW0gZXJyb3IgLSDmnKrnn6XnsbvlnovnmoTplJnor6/lr7nosaFcclxuICogQHJldHVybnMg5aCG5qCI6Lef6Liq5a2X56ym5Liy5oiWIHVuZGVmaW5lZFxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIGdldEVycm9yU3RhY2soZXJyb3I6IHVua25vd24pOiBzdHJpbmcgfCB1bmRlZmluZWQge1xyXG4gIGlmIChlcnJvciBpbnN0YW5jZW9mIEVycm9yKSB7XHJcbiAgICByZXR1cm4gZXJyb3Iuc3RhY2tcclxuICB9XHJcbiAgcmV0dXJuIHVuZGVmaW5lZFxyXG59XHJcblxyXG4vKipcclxuICog5qOA5p+l6ZSZ6K+v5piv5ZCm5Li654m55a6a57G75Z6LXHJcbiAqIFxyXG4gKiBAcGFyYW0gZXJyb3IgLSDmnKrnn6XnsbvlnovnmoTplJnor6/lr7nosaFcclxuICogQHBhcmFtIGVycm9yQ2xhc3MgLSDplJnor6/nsbvnmoTmnoTpgKDlh73mlbBcclxuICogQHJldHVybnMg5piv5ZCm5Li65oyH5a6a57G75Z6L55qE6ZSZ6K+vXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gaXNFcnJvck9mVHlwZTxUIGV4dGVuZHMgRXJyb3I+KFxyXG4gIGVycm9yOiB1bmtub3duLFxyXG4gIGVycm9yQ2xhc3M6IG5ldyAoLi4uYXJnczogYW55W10pID0+IFRcclxuKTogZXJyb3IgaXMgVCB7XHJcbiAgcmV0dXJuIGVycm9yIGluc3RhbmNlb2YgZXJyb3JDbGFzc1xyXG59XHJcblxyXG4iXSwidmVyc2lvbiI6M30=

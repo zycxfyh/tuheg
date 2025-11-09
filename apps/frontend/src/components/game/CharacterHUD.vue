@@ -56,15 +56,15 @@ import { useUIStore } from '@/stores/ui.store'
 
 const gameStore = useGameStore()
 // [核心修正] 获取正确的 store 实例
-const uiStore = useUIStore()
+const _uiStore = useUIStore()
 
-const hpPercentage = computed(() => {
+const _hpPercentage = computed(() => {
   const char = gameStore.currentGame?.character
   if (!char || !char.maxHp) return '0%'
   return `${(char.hp / char.maxHp) * 100}%`
 })
 
-const mpPercentage = computed(() => {
+const _mpPercentage = computed(() => {
   const char = gameStore.currentGame?.character
   if (!char || !char.maxMp) return '0%'
   return `${(char.mp / char.maxMp) * 100}%`
