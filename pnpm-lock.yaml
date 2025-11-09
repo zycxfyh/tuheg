@@ -828,6 +828,9 @@ importers:
 
   tools/plugin-generator:
     dependencies:
+      '@tuheg/common-backend':
+        specifier: workspace:*
+        version: link:../../packages/common-backend
       chalk:
         specifier: ^5.3.0
         version: 5.6.2

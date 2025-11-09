@@ -475,7 +475,7 @@ export class AiProviderService {
     } catch (error) {
       return {
         status: 'unhealthy',
-        message: `Health check failed: ${error.message}`,
+        message: `Health check failed: ${error instanceof Error ? error.message : String(error)}`,
         latency: 0,
         uptime: 0,
       }
@@ -628,7 +628,7 @@ export class AiProviderService {
         await this.registerProvider(providerConfig)
       } catch (error) {
         // 忽略已存在的提供商
-        if (!error.message.includes('already exists')) {
+        if (!error instanceof Error ? error.message : String(error).includes('already exists')) {
           console.error(`Failed to register provider ${providerConfig.name}:`, error)
         }
       }

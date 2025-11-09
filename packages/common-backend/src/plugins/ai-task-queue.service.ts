@@ -226,14 +226,14 @@ export class AiTaskQueueService {
         where: { id: taskId },
         data: {
           status: 'FAILED',
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
           completedAt: new Date(),
         },
       })
 
       this.eventEmitter.emit('ai.queue.taskFailed', {
         taskId,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       })
 
       // 检查是否需要重试

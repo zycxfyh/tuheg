@@ -53,7 +53,6 @@ export class PluginSandboxService {
       // 在沙盒中执行插件代码
       const script = new vm.Script(pluginCode, {
         filename: path.basename(pluginPath),
-        timeout: options.timeout || 5000,
       })
 
       const pluginModule = { exports: {} }
@@ -61,10 +60,10 @@ export class PluginSandboxService {
       context.exports = pluginModule.exports
       context.require = this.createSafeRequire(options.allowedModules || [])
 
-      script.runInContext(context)
+      script.runInContext(context, { timeout: options.timeout || 5000 })
 
       // 获取插件类
-      const PluginClass = pluginModule.exports.default || pluginModule.exports
+      const PluginClass = (pluginModule.exports as any).default || pluginModule.exports
       if (!PluginClass) {
         throw new Error('Plugin must export a default class or function')
       }
@@ -107,11 +106,11 @@ export class PluginSandboxService {
       }
     } catch (error) {
       const executionTime = Date.now() - startTime
-      this.logger.error(`Plugin activation test failed: ${error.message}`)
+      this.logger.error(`Plugin activation test failed: ${error instanceof Error ? error.message : String(error)}`)
 
       return {
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         executionTime,
       }
     }
@@ -140,7 +139,6 @@ export class PluginSandboxService {
 
       const script = new vm.Script(pluginCode, {
         filename: path.basename(pluginPath),
-        timeout: options.timeout || 10000,
       })
 
       const pluginModule = { exports: {} }
@@ -148,10 +146,10 @@ export class PluginSandboxService {
       context.exports = pluginModule.exports
       context.require = this.createSafeRequire(options.allowedModules || [])
 
-      script.runInContext(context)
+      script.runInContext(context, { timeout: options.timeout || 10000 })
 
       // 创建插件实例
-      const PluginClass = pluginModule.exports.default || pluginModule.exports
+      const PluginClass = (pluginModule.exports as any).default || pluginModule.exports
       const mockContext: PluginContext = {
         pluginId: sandboxId,
         config: {},
@@ -189,11 +187,11 @@ export class PluginSandboxService {
       }
     } catch (error) {
       const executionTime = Date.now() - startTime
-      this.logger.error(`Plugin tool test failed: ${error.message}`)
+      this.logger.error(`Plugin tool test failed: ${error instanceof Error ? error.message : String(error)}`)
 
       return {
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         executionTime,
       }
     }
@@ -256,7 +254,7 @@ export class PluginSandboxService {
       try {
         return require(moduleId)
       } catch (error) {
-        throw new Error(`Failed to load module '${moduleId}': ${error.message}`)
+        throw new Error(`Failed to load module '${moduleId}': ${error instanceof Error ? error.message : String(error)}`)
       }
     }
   }

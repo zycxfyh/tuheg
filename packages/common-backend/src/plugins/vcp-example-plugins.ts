@@ -77,7 +77,7 @@ export class ContentFilterStaticPlugin implements VcpStaticPlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -139,7 +139,7 @@ export class SentimentAnalyzerPreprocessorPlugin implements VcpMessagePreprocess
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -220,7 +220,7 @@ export class KeywordExtractorSyncPlugin implements VcpSynchronousPlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -379,7 +379,7 @@ export class DeepContentAnalyzerAsyncPlugin implements VcpAsynchronousPlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -512,7 +512,7 @@ export class CleanupServicePlugin implements VcpServicePlugin {
     } catch (error) {
       return {
         healthy: false,
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -613,7 +613,7 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -700,7 +700,7 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
     } catch (error) {
       return {
         healthy: false,
-        message: error instanceof Error ? error.message : String(error),
+        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -800,7 +800,7 @@ export class SmartCacheHybridServicePlugin implements VcpHybridServicePlugin {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }

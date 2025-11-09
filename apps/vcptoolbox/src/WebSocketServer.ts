@@ -263,7 +263,7 @@ export class WebSocketServer extends EventEmitter {
       })
     } catch (error: any) {
       console.error(`Request handling failed:`, error)
-      this.sendError(connectionId, message.id, 'request_processing_error', error.message)
+      this.sendError(connectionId, message.id, 'request_processing_error', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
     }
   }
 

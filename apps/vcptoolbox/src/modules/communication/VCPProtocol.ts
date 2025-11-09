@@ -317,7 +317,7 @@ export class VCPProtocol {
         payload: {
           error: {
             code: 'request_failed',
-            message: error.message,
+            message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
             details: error,
           },
         },
@@ -368,7 +368,7 @@ export class VCPProtocol {
         status: 'error',
         error: {
           code: 'tool_execution_failed',
-          message: error.message,
+          message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
           details: error,
         },
         metadata: {
@@ -448,7 +448,7 @@ export class VCPProtocol {
       this.pendingRequests.delete(message.metadata.correlationId!)
 
       if (message.payload?.error) {
-        pending.reject(new Error(message.payload.error.message))
+        pending.reject(new Error(message.payload.error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)))
       } else {
         pending.resolve(message.payload)
       }

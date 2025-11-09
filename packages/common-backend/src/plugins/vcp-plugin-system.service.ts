@@ -404,7 +404,7 @@ export class VcpPluginSystemService implements VcpPluginRegistry {
       return {
         success: false,
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -514,7 +514,7 @@ export class VcpPluginSystemService implements VcpPluginRegistry {
       return {
         success: false,
         executionTime: Date.now() - task.startTime,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
       }
     }
   }
@@ -610,7 +610,7 @@ export class VcpPluginSystemService implements VcpPluginRegistry {
           return {
             pluginId: plugin.config.id,
             healthy: false,
-            message: error instanceof Error ? error.message : String(error),
+            message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
           }
         }
       })

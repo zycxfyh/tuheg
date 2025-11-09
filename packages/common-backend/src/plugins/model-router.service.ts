@@ -657,7 +657,7 @@ export class ModelRouterService {
           targets,
         })
       } catch (error) {
-        if (!error.message.includes('already exists')) {
+        if (!error instanceof Error ? error.message : String(error).includes('already exists')) {
           console.error(`Failed to create router ${routerConfig.name}:`, error)
         }
       }

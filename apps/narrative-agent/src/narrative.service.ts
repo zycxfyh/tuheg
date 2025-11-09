@@ -119,7 +119,7 @@ export class NarrativeService {
     } catch (error: unknown) {
       let errorMessage = 'An unknown error occurred in narrative processing'
       if (error instanceof Error) {
-        errorMessage = error.message
+        errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
       }
       this.logger.error(
         `Failed to process narrative for game ${payload.gameId}: ${errorMessage}`,
@@ -155,7 +155,7 @@ export class NarrativeService {
   ): Promise<void> {
     let errorMessage = 'An unknown error occurred during narrative processing'
     if (error instanceof Error) {
-      errorMessage = error.message
+      errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
     }
 
     try {
@@ -192,26 +192,16 @@ export class NarrativeService {
     user: User
   ): Promise<ProgressionResponse> {
     const provider = await this.scheduler.getProviderForRole(user, 'narrative_synthesis')
-    const parser = StructuredOutputParser.fromZodSchema(progressionResponseSchema)
     // [!] 核心改造：我们现在使用一个更全面的 Prompt，期望它能一步到位产出高质量内容。
     // 在旧代码中，这里使用的是 '00_persona_and_framework.md'，现在改为 '02_narrative_engine.md'
     const systemPrompt = this.promptManager.getPrompt('02_narrative_engine.md')
 
-    const prompt = new PromptTemplate({
-      template: `{system_prompt}\n# 渲染任务\n你的任务是根据世界状态和玩家行动，生成一段叙事和后续选项。\n{format_instructions}\n---\n当前世界状态:\n\`\`\`json\n{currentState}\n\`\`\`\n---\n玩家行动:\n\`\`\`json\n{playerAction}\n\`\`\``,
-      inputVariables: ['currentState', 'playerAction', 'system_prompt'],
-      partialVariables: { format_instructions: parser.getFormatInstructions() },
-    })
-
-    const chain = prompt.pipe(provider.model).pipe(parser)
+    // 构造完整的提示文本
+    const prompt = `${systemPrompt}\n# 渲染任务\n你的任务是根据世界状态和玩家行动，生成一段叙事和后续选项。\n请返回JSON格式的响应，包含narration和options字段。\n---\n当前世界状态:\n\`\`\`json\n${JSON.stringify(currentState)}\n\`\`\`\n---\n玩家行动:\n\`\`\`json\n${JSON.stringify(playerAction)}\n\`\`\``
 
     return callAiWithGuard(
-      chain,
-      {
-        currentState: JSON.stringify(currentState),
-        playerAction: JSON.stringify(playerAction),
-        system_prompt: systemPrompt,
-      },
+      provider,
+      prompt,
       progressionResponseSchema,
       40000 // 40秒超时，叙事生成任务适中复杂度
     )

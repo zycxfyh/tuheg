@@ -39,7 +39,7 @@ export class UpdatesGateway implements OnGatewayConnection, OnGatewayDisconnect,
         await this.authenticateSocket(socket)
         next()
       } catch (error) {
-        this.logger.warn(`WebSocket authentication failed: ${error.message}`)
+        this.logger.warn(`WebSocket authentication failed: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
         next(error)
       }
     })
@@ -68,7 +68,7 @@ export class UpdatesGateway implements OnGatewayConnection, OnGatewayDisconnect,
       socket.data.userId = authResult.userId
       socket.data.auth = authResult
     } catch (error) {
-      throw new UnauthorizedException(`WebSocket authentication failed: ${error.message}`)
+      throw new UnauthorizedException(`WebSocket authentication failed: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
     }
   }
 

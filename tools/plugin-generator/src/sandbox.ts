@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import * as fs from 'fs'
 import ora from 'ora'
 import * as path from 'path'
-import { PluginSandboxService } from '../../../packages/common-backend/src/plugins/plugin-sandbox.service'
+import { PluginSandboxService } from '@tuheg/common-backend'
 
 export interface SandboxTestOptions {
   input?: string
@@ -47,7 +47,7 @@ export class PluginSandboxTool {
         config = JSON.parse(fs.readFileSync(options.config, 'utf-8'))
         console.log(chalk.gray(`⚙️  Config loaded from: ${options.config}\n`))
       } catch (error) {
-        console.warn(chalk.yellow(`⚠️  Failed to load config: ${error.message}`))
+        console.warn(chalk.yellow(`⚠️  Failed to load config: ${error instanceof Error ? error.message : String(error)}`))
       }
     }
 
@@ -137,10 +137,10 @@ export class PluginSandboxTool {
                 id: tool.id,
                 name: tool.name,
                 success: false,
-                error: error.message,
+                error: error instanceof Error ? error.message : String(error),
                 executionTime: 0,
               })
-              results.errors.push(`${tool.name}: ${error.message}`)
+              results.errors.push(`${tool.name}: ${error instanceof Error ? error.message : String(error)}`)
             }
           }
         }
@@ -150,7 +150,7 @@ export class PluginSandboxTool {
       }
     } catch (error) {
       activationSpinner.fail('Activation test error')
-      results.errors.push(`Activation error: ${error.message}`)
+      results.errors.push(`Activation error: ${error instanceof Error ? error.message : String(error)}`)
     }
 
     // 输出测试摘要

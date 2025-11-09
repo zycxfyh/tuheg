@@ -1,7 +1,5 @@
 // 文件路径: packages/common-backend/src/ai/ai-guard.ts
 
-// [核心修正] 从 runnables 导入通用的 Runnable 类型
-import type { Runnable } from '@langchain/core/runnables'
 import { Injectable } from '@nestjs/common'
 import type { z } from 'zod'
 import { PromptInjectionDetectedException } from '../errors/prompt-injection-detected.exception'
@@ -98,17 +96,17 @@ export class PromptInjectionGuard {
 const MAX_RETRIES = 2
 
 /**
- * [核心护栏] 使用Zod Schema安全地调用LangChain链，并提供自动重试和超时机制。
- * @param chain 要调用的LangChain实例
- * @param params 传递给chain.invoke的参数
+ * [核心护栏] 使用Zod Schema安全地调用AI提供商，并提供自动重试和超时机制。
+ * @param provider AI提供商实例
+ * @param prompt 要发送给AI的提示文本
  * @param schema 用于验证输出的Zod Schema
  * @param timeoutMs 超时时间（毫秒），默认为30000ms (30秒)
  * @returns 一个Promise，成功时解析为符合Schema的类型安全数据
  * @throws {AiGenerationException} 如果AI在多次重试后仍无法生成有效数据或超时
  */
 export async function callAiWithGuard<T extends z.ZodType>(
-  chain: Runnable, // <-- [核心修正] 使用 Runnable 类型
-  params: object,
+  provider: { generate: (options: { prompt: string; temperature?: number }) => Promise<string> }, // 简化的接口
+  prompt: string,
   schema: T,
   timeoutMs: number = 30000 // 默认30秒超时
 ): Promise<z.infer<T>> {
@@ -124,10 +122,10 @@ export async function callAiWithGuard<T extends z.ZodType>(
       })
 
       // 竞态执行：AI调用 vs 超时
-      const response = await Promise.race([chain.invoke(params), timeoutPromise])
+      const response = await Promise.race([provider.generate({ prompt, temperature: 0.7 }), timeoutPromise])
 
-      // 尝试解析，无论响应是对象还是字符串
-      const dataToParse = typeof response === 'string' ? JSON.parse(response) : response
+      // 尝试解析响应字符串
+      const dataToParse = JSON.parse(response)
 
       const parseResult = await schema.safeParseAsync(dataToParse)
 

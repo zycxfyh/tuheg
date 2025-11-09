@@ -253,7 +253,7 @@ class FeedbackApiService {
     this.trackEvent({
       eventType: 'error',
       eventData: {
-        message: error.message,
+        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
         stack: error.stack,
         ...context,
       },

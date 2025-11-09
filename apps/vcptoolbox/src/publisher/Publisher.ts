@@ -195,7 +195,7 @@ export class Publisher extends EventEmitter {
 
       this.emit('publishCompleted', { packageId: pluginPackage.id, result })
     } catch (error) {
-      result.errors.push(error instanceof Error ? error.message : String(error))
+      result.errors.push(error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error))
       this.emit('publishFailed', { packageId: pluginPackage.id, error })
     }
 

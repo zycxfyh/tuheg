@@ -145,7 +145,7 @@ class PrivateDeploymentManager extends EventEmitter {
           severity: 'critical',
           type: 'configuration',
           title: '部署失败',
-          description: `部署 ${config.id} 失败: ${error.message}`,
+          description: `部署 ${config.id} 失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`,
           timestamp: new Date(),
           resolved: false,
           impact: '部署无法启动',

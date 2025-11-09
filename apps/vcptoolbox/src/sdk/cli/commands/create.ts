@@ -36,7 +36,7 @@ export class CreateCommand {
       console.log(`📖 运行 'cd ${name} && npm install' 安装依赖`)
       console.log(`🚀 运行 'npm run dev' 启动开发服务器`)
     } catch (error: any) {
-      console.error(`❌ 创建插件失败: ${error.message}`)
+      console.error(`❌ 创建插件失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
       process.exit(1)
     }
   }

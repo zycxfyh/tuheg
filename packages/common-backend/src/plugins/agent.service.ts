@@ -382,7 +382,7 @@ export class AgentService {
     } catch (error) {
       return {
         status: 'unhealthy',
-        message: `Health check failed: ${error.message}`,
+        message: `Health check failed: ${error instanceof Error ? error.message : String(error)}`,
         metrics: null,
       }
     }

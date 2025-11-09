@@ -50,7 +50,7 @@ export class LogicAgentController {
         correlationId: crypto.randomUUID(),
         gameId: dto.gameId,
         userId: dto.userId,
-        playerAction: dto.action || { type: 'unknown', payload: {} },
+        playerAction: dto.action as any || { type: 'command' as const, payload: 'unknown action' },
         gameStateSnapshot: {}, // HTTP API调用时需要从数据库获取
       }
 
@@ -74,7 +74,7 @@ export class LogicAgentController {
       throw new HttpException(
         {
           message: '游戏行动处理失败',
-          error: error.message || '未知错误',
+          error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) || '未知错误',
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )
@@ -95,7 +95,7 @@ export class LogicAgentController {
       throw new HttpException(
         {
           message: '获取状态失败',
-          error: error.message || '未知错误',
+          error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) || '未知错误',
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )

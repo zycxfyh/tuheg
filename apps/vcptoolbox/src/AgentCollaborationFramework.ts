@@ -723,7 +723,7 @@ class AgentCollaborationFramework extends EventEmitter {
     const conflict: ConflictRecord = {
       id: `conflict-${Date.now()}`,
       type: 'resource',
-      description: `Task ${task.title} failed: ${error.message}`,
+      description: `Task ${task.title} failed: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`,
       participants: [agent.id],
       resolution: 'Task reassigned',
       resolvedBy: 'system',

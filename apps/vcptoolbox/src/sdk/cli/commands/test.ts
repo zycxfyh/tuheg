@@ -46,7 +46,7 @@ export class TestCommand {
         console.log('✅ 所有测试通过')
       }
     } catch (error: any) {
-      console.error(`❌ 测试失败: ${error.message}`)
+      console.error(`❌ 测试失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
       process.exit(1)
     }
   }

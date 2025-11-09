@@ -43,12 +43,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
 
-  Sentry.init({
-    dsn: configService.get<string>('SENTRY_DSN'),
-    tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
-    environment: process.env.NODE_ENV || 'development',
-  })
+  const sentryDsn = configService.get<string>('SENTRY_DSN')
+  if (sentryDsn) {
+    Sentry.init({
+      dsn: sentryDsn,
+      tracesSampleRate: 1.0,
+      profilesSampleRate: 1.0,
+      environment: process.env.NODE_ENV || 'development',
+    })
+  }
 
   // [!] 核心改造：设置并连接 Redis 适配器
   const redisIoAdapter = new RedisIoAdapter(app, configService)
@@ -80,7 +83,8 @@ async function bootstrap() {
       noSniff: true, // 防止MIME类型嗅探
       xssFilter: true, // 启用XSS过滤
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    })
+      })
+  }
   )
 
   // 配置 CORS
@@ -90,7 +94,8 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
-  })
+    })
+  }
 
   await app.listen(3000)
 }

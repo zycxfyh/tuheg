@@ -234,7 +234,7 @@ export class CameraService {
           }, 5000) // 5秒后询问是否停止
         })
         .catch((error) => {
-          reject(new Error(`Failed to access camera: ${error.message}`))
+          reject(new Error(`Failed to access camera: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`))
         })
     })
   }

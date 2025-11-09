@@ -380,7 +380,7 @@ export class AsyncWorkflowEngine extends EventEmitter {
 
       this.emit('nodeCompleted', { instanceId: instance.id, nodeId, result })
     } catch (error: any) {
-      node.error = error.message
+      node.error = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
       node.endTime = new Date()
 
       // 处理重试逻辑

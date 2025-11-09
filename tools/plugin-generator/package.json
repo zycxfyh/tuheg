@@ -24,6 +24,7 @@
   "author": "创世星环团队",
   "license": "MIT",
   "dependencies": {
+    "@tuheg/common-backend": "workspace:*",
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
     "fs-extra": "^11.2.0",

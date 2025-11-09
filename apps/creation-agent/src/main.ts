@@ -12,13 +12,16 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
 
   // [Sentry] 初始化 Sentry
-  Sentry.init({
-    dsn: configService.get<string>('SENTRY_DSN'),
-    tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
-    // [Sentry] 为此Agent设置一个独特的环境标签
-    environment: `agent-creation-${process.env.NODE_ENV || 'development'}`,
-  })
+  const sentryDsn = configService.get<string>('SENTRY_DSN')
+  if (sentryDsn) {
+    Sentry.init({
+      dsn: sentryDsn,
+      tracesSampleRate: 1.0,
+      profilesSampleRate: 1.0,
+      // [Sentry] 为此Agent设置一个独特的环境标签
+      environment: `agent-creation-${process.env.NODE_ENV || 'development'}`,
+    })
+  }
 
   const rmqUrl = configService.get<string>(
     'RABBITMQ_URL', // [修正] 确保环境变量名称与您的.env文件一致，通常是RABBITMQ_URL
@@ -61,7 +64,8 @@ async function bootstrap() {
         ])
       },
     },
-  })
+    })
+  }
 
   // [新增] 配置HTTP服务器
   const httpPort = configService.get<number>('CREATION_AGENT_HTTP_PORT', 8080)
@@ -82,7 +86,8 @@ async function bootstrap() {
     // 确保在启动失败时进程退出
     await Sentry.close(2000).then(() => {
       process.exit(1)
-    })
+      })
+  }
   }
 }
 
@@ -92,5 +97,6 @@ bootstrap().catch((err) => {
   console.error('Unhandled error during bootstrap of Creation Agent:', err)
   Sentry.close(2000).then(() => {
     process.exit(1)
-  })
+    })
+  }
 })

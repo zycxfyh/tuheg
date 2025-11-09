@@ -42,7 +42,7 @@ export class VCPProtocol implements VCPProtocolAPI {
       return {
         success: false,
         result: null,
-        error: error.message,
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
         executionTime: Date.now() - startTime,
         toolName: request.toolName,
       }
@@ -304,7 +304,7 @@ export class VCPProtocol implements VCPProtocolAPI {
       const task = this.asyncTasks.get(taskId)
       if (task) {
         task.status = 'failed'
-        task.error = error.message
+        task.error = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
         task.updatedAt = new Date()
       }
     }

@@ -67,7 +67,7 @@ export class ClerkAuthGuard implements CanActivate {
 
       return true
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error) : 'Unknown error'
       this.logger.warn(`Clerk JWT verification failed: ${errorMessage}`)
       throw new UnauthorizedException('Invalid or expired token.')
     }

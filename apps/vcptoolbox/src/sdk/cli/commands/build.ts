@@ -39,7 +39,7 @@ export class BuildCommand {
 
       console.log(`✅ 构建完成！输出目录: ${outDir}`)
     } catch (error: any) {
-      console.error(`❌ 构建失败: ${error.message}`)
+      console.error(`❌ 构建失败: ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}`)
       process.exit(1)
     }
   }

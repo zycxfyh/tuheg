@@ -62,8 +62,8 @@ export class PluginSandboxController {
 
       return result
     } catch (error) {
-      this.logger.error(`Plugin activation test failed: ${error.message}`)
-      throw new BadRequestException(`Plugin test failed: ${error.message}`)
+      this.logger.error(`Plugin activation test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
+      throw new BadRequestException(`Plugin test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
     }
   }
 
@@ -104,8 +104,8 @@ export class PluginSandboxController {
 
       return result
     } catch (error) {
-      this.logger.error(`Plugin tool test failed: ${error.message}`)
-      throw new BadRequestException(`Plugin tool test failed: ${error.message}`)
+      this.logger.error(`Plugin tool test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
+      throw new BadRequestException(`Plugin tool test failed: ${error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)}`)
     }
   }
 

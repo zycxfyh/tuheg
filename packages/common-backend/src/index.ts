@@ -9,6 +9,8 @@ export * from './prisma/prisma.module'
 export * from './prisma/prisma.service'
 
 // AI exports (excluding problematic LangChain dependencies)
+export * from './ai/ai-guard'
+export { PromptInjectionGuard } from './ai/ai-guard'
 export * from './ai/ai-provider.factory'
 export * from './ai/dynamic-ai-scheduler.service'
 export * from './ai/json-cleaner'
@@ -74,3 +76,6 @@ export * from './errors/error-classification'
 export * from './errors/prompt-injection-detected.exception'
 export * from './errors/message-handler-helper'
 export * from './errors/websocket-error-helper'
+
+// Plugin exports
+export * from './plugins/plugin-sandbox.service'

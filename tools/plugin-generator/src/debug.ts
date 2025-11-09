@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import * as fs from 'fs'
 import ora from 'ora'
 import * as path from 'path'
-import { PluginSandboxService } from '../../../packages/common-backend/src/plugins/plugin-sandbox.service'
+import { PluginSandboxService } from '@tuheg/common-backend'
 
 export interface DebugOptions {
   port?: number
@@ -95,7 +95,7 @@ export class PluginDebugTool {
                 toolSpinner.fail(`${tool.name}: ${toolResult.error}`)
               }
             } catch (error) {
-              toolSpinner.fail(`${tool.name}: ${error.message}`)
+              toolSpinner.fail(`${tool.name}: ${error instanceof Error ? error.message : String(error)}`)
             }
           }
         }
@@ -105,7 +105,7 @@ export class PluginDebugTool {
       }
     } catch (error) {
       spinner.fail('Test execution failed')
-      console.log(chalk.red(`❌ Error: ${error.message}`))
+      console.log(chalk.red(`❌ Error: ${error instanceof Error ? error.message : String(error)}`))
     }
   }
 
@@ -127,11 +127,14 @@ export class PluginDebugTool {
       const spinner = ora(`Testing: ${scenario.name}`).start()
 
       try {
-        const result = await this.sandboxService.testPluginActivation(pluginPath, {
+        const options: any = {
           timeout: scenario.timeout,
-          memoryLimit: scenario.memoryLimit,
           allowedModules: ['path', 'url', 'util'],
-        })
+        }
+        if (scenario.memoryLimit) {
+          options.memoryLimit = scenario.memoryLimit
+        }
+        const result = await this.sandboxService.testPluginActivation(pluginPath, options)
 
         if (result.success) {
           spinner.succeed(`${scenario.name}: PASS (${result.executionTime}ms)`)
@@ -139,7 +142,7 @@ export class PluginDebugTool {
           spinner.warn(`${scenario.name}: ${result.error}`)
         }
       } catch (error) {
-        spinner.fail(`${scenario.name}: ${error.message}`)
+        spinner.fail(`${scenario.name}: ${error instanceof Error ? error.message : String(error)}`)
       }
     }
   }
@@ -197,7 +200,7 @@ export class PluginDebugTool {
         throw new Error(result.error)
       }
     } catch (error) {
-      throw new Error(`Failed to get plugin info: ${error.message}`)
+      throw new Error(`Failed to get plugin info: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 }

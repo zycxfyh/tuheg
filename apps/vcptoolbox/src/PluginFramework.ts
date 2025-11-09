@@ -1097,7 +1097,7 @@ export class PluginManager extends EventEmitter {
       this.emit('pluginActivated', { plugin, context })
     } catch (error) {
       runtime.status = 'error'
-      runtime.error = error instanceof Error ? error.message : String(error)
+      runtime.error = error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)
       this.emit('pluginError', { plugin, error })
       throw error
     }
@@ -1125,7 +1125,7 @@ export class PluginManager extends EventEmitter {
       this.emit('pluginDeactivated', plugin)
     } catch (error) {
       runtime.status = 'error'
-      runtime.error = error instanceof Error ? error.message : String(error)
+      runtime.error = error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error)
       this.emit('pluginError', { plugin, error })
     }
   }

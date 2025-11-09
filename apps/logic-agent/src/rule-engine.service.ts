@@ -53,7 +53,7 @@ export class RuleEngineService {
         throw error
       }
 
-      const errorMessage = error instanceof Error ? error.message : 'Unknown database error'
+      const errorMessage = error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : 'Unknown database error'
       this.logger.error(
         `Transaction failed during rule execution for game ${gameId}`,
         error instanceof Error ? error.stack : error

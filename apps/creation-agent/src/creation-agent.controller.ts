@@ -66,7 +66,7 @@ export class CreationAgentController {
       throw new HttpException(
         {
           message: '世界创建失败',
-          error: error.message || '未知错误',
+          error: error instanceof Error ? error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error) : '未知错误',
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )
@@ -89,7 +89,7 @@ export class CreationAgentController {
       throw new HttpException(
         {
           message: '获取状态失败',
-          error: error.message || '未知错误',
+          error: error instanceof Error ? error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : String(error) : '未知错误',
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       )

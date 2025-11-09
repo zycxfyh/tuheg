@@ -244,13 +244,13 @@ export class SettingsService {
     } catch (err) {
       const error = this.parseConnectionError(err)
       this.logger.warn(`testAndFetchModels failed for provider ${provider}`, {
-        error: error.message,
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
         statusCode: error.statusCode,
         details: error.details,
       })
 
       throw new BadRequestException({
-        message: error.message,
+        message: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error),
         details: error.details,
         statusCode: error.statusCode,
         provider,

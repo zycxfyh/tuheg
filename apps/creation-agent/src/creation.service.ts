@@ -104,7 +104,7 @@ export class CreationService {
       await this.executeSagaCompensation(sagaContext, userId)
 
       const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred during world creation'
+        error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : 'An unknown error occurred during world creation'
       this.logger.error(
         `Game creation saga ${sagaId} failed for user ${userId}: ${errorMessage}`,
         error instanceof Error ? error.stack : undefined,
@@ -139,7 +139,7 @@ export class CreationService {
   public async notifyCreationFailure(userId: string, error: unknown): Promise<void> {
     let errorMessage = 'An unknown error occurred during world creation'
     if (error instanceof Error) {
-      errorMessage = error.message
+      errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
     }
 
     try {
@@ -263,31 +263,22 @@ export class CreationService {
 
   private async generateInitialWorld(concept: string, user: User): Promise<ArchitectResponse> {
     const provider = await this.scheduler.getProviderForRole(user, 'narrative_synthesis')
-    const parser = StructuredOutputParser.fromZodSchema(architectResponseSchema)
     const systemPrompt = this.promptManager.getPrompt('00_persona_and_framework.md')
 
-    const prompt = new PromptTemplate({
-      template: `{system_prompt}\n# 创世任务指令\n根据以下用户概念，为一次新的游戏人生生成初始设定。\n{format_instructions}\n---\n用户概念: "{concept}"`,
-      inputVariables: ['concept', 'system_prompt'],
-      partialVariables: { format_instructions: parser.getFormatInstructions() },
-    })
-
-    const chain = prompt.pipe(provider.model).pipe(parser)
+    // 构造完整的提示文本
+    const prompt = `${systemPrompt}\n# 创世任务指令\n根据以下用户概念，为一次新的游戏人生生成初始设定。\n请返回JSON格式的响应，包含worldName、worldDescription、characterName、characterDescription、initialScene字段。\n---\n用户概念: "${concept}"`
 
     try {
       const response = await callAiWithGuard(
-        chain,
-        {
-          concept,
-          system_prompt: systemPrompt,
-        },
+        provider,
+        prompt,
         architectResponseSchema,
         60000 // 60秒超时，创建世界任务较复杂
       )
       return response
     } catch (error: unknown) {
       // <-- [核心修正] 明确 error 类型为 unknown
-      const errorMessage = error instanceof Error ? error.message : 'Unknown AI error'
+      const errorMessage = error instanceof Error ? error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) : 'Unknown AI error'
       this.logger.error(
         `AI generation failed inside generateInitialWorld: ${errorMessage}`,
         error instanceof Error ? error.stack : undefined

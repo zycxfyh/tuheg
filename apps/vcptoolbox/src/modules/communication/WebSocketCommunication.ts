@@ -248,7 +248,7 @@ export class WebSocketCommunication extends EventEmitter {
         correlationId: message.id,
       })
     } catch (error: any) {
-      this.sendError(sender.id, message.id, 'request_failed', error.message)
+      this.sendError(sender.id, message.id, 'request_failed', error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error))
     }
   }
 

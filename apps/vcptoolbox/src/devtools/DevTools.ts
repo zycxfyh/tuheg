@@ -566,7 +566,7 @@ export class ${name}Plugin implements VCPPlugin {
 
   // 格式化错误信息
   static formatError(error: Error): string {
-    return `[${error.name}] ${error.message}\n${error.stack || ''}`
+    return `[${error.name}] ${error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)}\n${error.stack || ''}`
   }
 
   // 生成插件文档

@@ -380,7 +380,7 @@ export class TaskService {
         await this.assignTask(assignment)
         successfulAssignments.push(assignment)
       } catch (error) {
-        console.error(`Failed to assign task ${assignment.taskId}:`, error.message)
+        console.error(`Failed to assign task ${assignment.taskId}:`, error instanceof Error ? error.message : String(error))
       }
     }
 
