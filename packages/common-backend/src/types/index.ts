@@ -6,7 +6,7 @@
 // 2. 方便其他模块导入类型
 // 3. 避免循环依赖
 
-// AI 相关类型
+// AI 相关类型（简化版本）
 export * from './ai-providers.types'
 // 事件消息类型
 export * from './event.types'

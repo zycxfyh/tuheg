@@ -1,6 +1,6 @@
 // 文件路径: libs/common/src/types/ai-providers.d.ts
 
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
+// 简化的AI提供商类型定义，避免LangChain依赖
 
 /**
  * @name AiRole
@@ -36,9 +36,10 @@ export interface AiGenerationOptions {
 
 /**
  * @interface AiProvider
- * @description [核心契约] 强制每个AI Provider都必须暴露一个
- * 与LangChain的.pipe()方法兼容的 BaseChatModel 实例。
+ * @description [核心契约] 简化的AI提供商接口，避免LangChain依赖。
  */
 export interface AiProvider {
-  model: BaseChatModel
+  readonly name: string
+  readonly provider: string
+  generate(options: AiGenerationOptions): Promise<string>
 }

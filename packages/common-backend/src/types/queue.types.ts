@@ -1,8 +1,7 @@
 // 文件路径: libs/common/src/types/queue.d.ts
 
 import type { Character, Game, WorldBookEntry } from '@prisma/client'
-// [核心修正] 从 @tuheg/common-backend 的总出口导入共享的 SubmitActionDto 类型
-import type { SubmitActionDto } from '@tuheg/common-backend'
+import type { SubmitActionDto } from '../dto/submit-action.dto'
 
 /**
  * @name GameActionJobData
