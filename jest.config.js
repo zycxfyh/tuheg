@@ -3,7 +3,7 @@ export default {
   // 基础配置
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/apps', '<rootDir>/packages', '<rootDir>/tools'],
+  roots: ['<rootDir>'],
 
   // 测试文件匹配模式
   testMatch: [
@@ -24,20 +24,18 @@ export default {
     '\\.d\\.ts$',
   ],
 
-  // 转换配置
-  transform: {
-    '^.+\\.ts$': 'ts-jest',
-    '^.+\\.tsx$': 'ts-jest',
-  },
-
   // 模块映射
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  moduleDirectories: ['node_modules', 'src', 'apps', 'packages', 'tools'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@apps/(.*)$': '<rootDir>/apps/$1',
     '^@packages/(.*)$': '<rootDir>/packages/$1',
     '^@tools/(.*)$': '<rootDir>/tools/$1',
+    '^@tuheg/common-backend$': '<rootDir>/packages/common-backend/dist/index.js',
   },
+
+  // TypeScript处理配置
 
   // 转换忽略模式
   transformIgnorePatterns: [
@@ -105,18 +103,8 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 
   // TypeScript配置
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        strict: true,
-        noImplicitAny: true,
-        strictNullChecks: true,
-        strictFunctionTypes: true,
-        noImplicitReturns: true,
-        noFallthroughCasesInSwitch: true,
-        noUncheckedIndexedAccess: true,
-      },
-    },
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
   },
 
   // 报告器配置
