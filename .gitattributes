@@ -1,8 +1,7 @@
 # Git Attributes for Creation Ring Project
 
-# Repomix output - Large XML file for AI analysis
+# Repomix output - Large XML file for AI analysis (excluded from git)
 repomix-output.xml linguist-generated=true
-repomix-output.xml filter=lfs
 
 # Documentation files
 *.md text eol=lf
