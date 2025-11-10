@@ -1,11 +1,11 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 
 /**
  * Saga元数据键
  */
-export const SAGA_METADATA = Symbol('SAGA');
-export const SAGA_STATE_METADATA = Symbol('SAGA_STATE');
-export const SAGA_TRANSITIONS_METADATA = Symbol('SAGA_TRANSITIONS');
+export const SAGA_METADATA = Symbol('SAGA')
+export const SAGA_STATE_METADATA = Symbol('SAGA_STATE')
+export const SAGA_TRANSITIONS_METADATA = Symbol('SAGA_TRANSITIONS')
 
 /**
  * Saga装饰器
@@ -13,8 +13,8 @@ export const SAGA_TRANSITIONS_METADATA = Symbol('SAGA_TRANSITIONS');
  */
 export function Saga(): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(SAGA_METADATA, true, target);
-  };
+    Reflect.defineMetadata(SAGA_METADATA, true, target)
+  }
 }
 
 /**
@@ -23,8 +23,8 @@ export function Saga(): ClassDecorator {
  */
 export function SagaState(state: string): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(SAGA_STATE_METADATA, state, target);
-  };
+    Reflect.defineMetadata(SAGA_STATE_METADATA, state, target)
+  }
 }
 
 /**
@@ -33,8 +33,8 @@ export function SagaState(state: string): ClassDecorator {
  */
 export function SagaTransitions(transitions: Record<string, string[]>): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(SAGA_TRANSITIONS_METADATA, transitions, target);
-  };
+    Reflect.defineMetadata(SAGA_TRANSITIONS_METADATA, transitions, target)
+  }
 }
 
 /**
@@ -43,12 +43,12 @@ export function SagaTransitions(transitions: Record<string, string[]>): ClassDec
  */
 export function SagaStep(eventType: string): MethodDecorator {
   return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const steps = Reflect.getMetadata(SAGA_TRANSITIONS_METADATA, target.constructor) || {};
-    steps[eventType] = steps[eventType] || [];
-    steps[eventType].push(propertyKey.toString());
+    const steps = Reflect.getMetadata(SAGA_TRANSITIONS_METADATA, target.constructor) || {}
+    steps[eventType] = steps[eventType] || []
+    steps[eventType].push(propertyKey.toString())
 
-    Reflect.defineMetadata(SAGA_TRANSITIONS_METADATA, steps, target.constructor);
-  };
+    Reflect.defineMetadata(SAGA_TRANSITIONS_METADATA, steps, target.constructor)
+  }
 }
 
 /**
@@ -57,33 +57,33 @@ export function SagaStep(eventType: string): MethodDecorator {
  */
 export function SagaCompensation(forStep: string): MethodDecorator {
   return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const compensations = Reflect.getMetadata('SAGA_COMPENSATIONS', target.constructor) || {};
-    compensations[forStep] = propertyKey.toString();
+    const compensations = Reflect.getMetadata('SAGA_COMPENSATIONS', target.constructor) || {}
+    compensations[forStep] = propertyKey.toString()
 
-    Reflect.defineMetadata('SAGA_COMPENSATIONS', compensations, target.constructor);
-  };
+    Reflect.defineMetadata('SAGA_COMPENSATIONS', compensations, target.constructor)
+  }
 }
 
 /**
  * 获取Saga元数据
  */
 export function getSagaMetadata(target: any): {
-  isSaga: boolean;
-  state?: string;
-  transitions?: Record<string, string[]>;
-  compensations?: Record<string, string>;
+  isSaga: boolean
+  state?: string
+  transitions?: Record<string, string[]>
+  compensations?: Record<string, string>
 } {
-  const isSaga = Reflect.getMetadata(SAGA_METADATA, target) === true;
-  const state = Reflect.getMetadata(SAGA_STATE_METADATA, target);
-  const transitions = Reflect.getMetadata(SAGA_TRANSITIONS_METADATA, target);
-  const compensations = Reflect.getMetadata('SAGA_COMPENSATIONS', target);
+  const isSaga = Reflect.getMetadata(SAGA_METADATA, target) === true
+  const state = Reflect.getMetadata(SAGA_STATE_METADATA, target)
+  const transitions = Reflect.getMetadata(SAGA_TRANSITIONS_METADATA, target)
+  const compensations = Reflect.getMetadata('SAGA_COMPENSATIONS', target)
 
   return {
     isSaga,
     state,
     transitions,
-    compensations
-  };
+    compensations,
+  }
 }
 
 /**
@@ -91,19 +91,19 @@ export function getSagaMetadata(target: any): {
  */
 export interface ISagaExecutor {
   /** 执行Saga */
-  execute(sagaId: string, event: any): Promise<void>;
+  execute(sagaId: string, event: any): Promise<void>
 
   /** 补偿Saga */
-  compensate(sagaId: string, event: any): Promise<void>;
+  compensate(sagaId: string, event: any): Promise<void>
 
   /** 获取Saga状态 */
-  getSagaState(sagaId: string): Promise<string>;
+  getSagaState(sagaId: string): Promise<string>
 
   /** 完成Saga */
-  completeSaga(sagaId: string): Promise<void>;
+  completeSaga(sagaId: string): Promise<void>
 
   /** 失败Saga */
-  failSaga(sagaId: string, error: Error): Promise<void>;
+  failSaga(sagaId: string, error: Error): Promise<void>
 }
 
 /**
@@ -111,16 +111,16 @@ export interface ISagaExecutor {
  */
 export interface ISagaStore {
   /** 保存Saga状态 */
-  saveSagaState(sagaId: string, state: string, data: any): Promise<void>;
+  saveSagaState(sagaId: string, state: string, data: any): Promise<void>
 
   /** 获取Saga状态 */
-  getSagaState(sagaId: string): Promise<{ state: string; data: any } | null>;
+  getSagaState(sagaId: string): Promise<{ state: string; data: any } | null>
 
   /** 删除Saga状态 */
-  deleteSagaState(sagaId: string): Promise<void>;
+  deleteSagaState(sagaId: string): Promise<void>
 
   /** 获取所有活动Saga */
-  getActiveSagas(): Promise<Array<{ sagaId: string; state: string; data: any }>>;
+  getActiveSagas(): Promise<Array<{ sagaId: string; state: string; data: any }>>
 }
 
 /**
@@ -130,9 +130,9 @@ export class SagaManager implements ISagaExecutor {
   constructor(private sagaStore: ISagaStore) {}
 
   async execute(sagaId: string, event: any): Promise<void> {
-    const sagaState = await this.sagaStore.getSagaState(sagaId);
+    const sagaState = await this.sagaStore.getSagaState(sagaId)
     if (!sagaState) {
-      throw new Error(`Saga ${sagaId} not found`);
+      throw new Error(`Saga ${sagaId} not found`)
     }
 
     // 这里应该实现Saga状态机逻辑
@@ -141,39 +141,39 @@ export class SagaManager implements ISagaExecutor {
     await this.sagaStore.saveSagaState(sagaId, sagaState.state, {
       ...sagaState.data,
       lastEvent: event,
-      lastUpdated: new Date()
-    });
+      lastUpdated: new Date(),
+    })
   }
 
   async compensate(sagaId: string, event: any): Promise<void> {
-    const sagaState = await this.sagaStore.getSagaState(sagaId);
+    const sagaState = await this.sagaStore.getSagaState(sagaId)
     if (!sagaState) {
-      throw new Error(`Saga ${sagaId} not found`);
+      throw new Error(`Saga ${sagaId} not found`)
     }
 
     // 执行补偿逻辑
     await this.sagaStore.saveSagaState(sagaId, 'compensating', {
       ...sagaState.data,
       compensationEvent: event,
-      lastUpdated: new Date()
-    });
+      lastUpdated: new Date(),
+    })
   }
 
   async getSagaState(sagaId: string): Promise<string> {
-    const sagaState = await this.sagaStore.getSagaState(sagaId);
-    return sagaState?.state || 'unknown';
+    const sagaState = await this.sagaStore.getSagaState(sagaId)
+    return sagaState?.state || 'unknown'
   }
 
   async completeSaga(sagaId: string): Promise<void> {
     await this.sagaStore.saveSagaState(sagaId, 'completed', {
-      completedAt: new Date()
-    });
+      completedAt: new Date(),
+    })
   }
 
   async failSaga(sagaId: string, error: Error): Promise<void> {
     await this.sagaStore.saveSagaState(sagaId, 'failed', {
       failedAt: new Date(),
-      error: error.message
-    });
+      error: error.message,
+    })
   }
 }

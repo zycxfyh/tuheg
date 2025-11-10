@@ -1,20 +1,20 @@
-import { IEvent } from './event.interface';
+import type { IEvent } from './event.interface'
 
 /**
  * 事件发布器接口
  */
 export interface IEventPublisher {
   /** 发布单个事件 */
-  publish(event: IEvent): Promise<void>;
+  publish(event: IEvent): Promise<void>
 
   /** 发布多个事件 */
-  publishMany(events: IEvent[]): Promise<void>;
+  publishMany(events: IEvent[]): Promise<void>
 
   /** 异步发布事件 */
-  publishAsync(event: IEvent): void;
+  publishAsync(event: IEvent): void
 
   /** 批量异步发布事件 */
-  publishManyAsync(events: IEvent[]): void;
+  publishManyAsync(events: IEvent[]): void
 }
 
 /**
@@ -22,10 +22,10 @@ export interface IEventPublisher {
  */
 export interface IAggregateEventPublisher {
   /** 发布聚合事件 */
-  publishAggregateEvents(aggregateId: string, events: IEvent[]): Promise<void>;
+  publishAggregateEvents(aggregateId: string, events: IEvent[]): Promise<void>
 
   /** 合并发布事件 */
-  mergePublish(events: IEvent[]): Promise<void>;
+  mergePublish(events: IEvent[]): Promise<void>
 }
 
 /**
@@ -33,10 +33,10 @@ export interface IAggregateEventPublisher {
  */
 export interface IDelayedEventPublisher {
   /** 延迟发布事件 */
-  publishDelayed(event: IEvent, delay: number): Promise<void>;
+  publishDelayed(event: IEvent, delay: number): Promise<void>
 
   /** 取消延迟发布 */
-  cancelDelayed(eventId: string): Promise<void>;
+  cancelDelayed(eventId: string): Promise<void>
 }
 
 /**
@@ -44,10 +44,10 @@ export interface IDelayedEventPublisher {
  */
 export interface IConditionalEventPublisher {
   /** 条件发布事件 */
-  publishIf(condition: () => boolean | Promise<boolean>, event: IEvent): Promise<void>;
+  publishIf(condition: () => boolean | Promise<boolean>, event: IEvent): Promise<void>
 
   /** 条件发布多个事件 */
-  publishManyIf(condition: () => boolean | Promise<boolean>, events: IEvent[]): Promise<void>;
+  publishManyIf(condition: () => boolean | Promise<boolean>, events: IEvent[]): Promise<void>
 }
 
 /**
@@ -55,16 +55,16 @@ export interface IConditionalEventPublisher {
  */
 export interface ITransactionalEventPublisher {
   /** 开始事务 */
-  beginTransaction(): Promise<void>;
+  beginTransaction(): Promise<void>
 
   /** 发布事件到事务 */
-  publishInTransaction(event: IEvent): Promise<void>;
+  publishInTransaction(event: IEvent): Promise<void>
 
   /** 提交事务 */
-  commitTransaction(): Promise<void>;
+  commitTransaction(): Promise<void>
 
   /** 回滚事务 */
-  rollbackTransaction(): Promise<void>;
+  rollbackTransaction(): Promise<void>
 }
 
 /**
@@ -72,13 +72,13 @@ export interface ITransactionalEventPublisher {
  */
 export interface IEventPublishingStrategy {
   /** 发布策略名称 */
-  name: string;
+  name: string
 
   /** 执行发布策略 */
-  publish(event: IEvent, publisher: IEventPublisher): Promise<void>;
+  publish(event: IEvent, publisher: IEventPublisher): Promise<void>
 
   /** 是否支持事件类型 */
-  supports(event: IEvent): boolean;
+  supports(event: IEvent): boolean
 }
 
 /**
@@ -86,13 +86,13 @@ export interface IEventPublishingStrategy {
  */
 export interface IEventPublishingMiddleware {
   /** 执行发布中间件 */
-  execute(event: IEvent, next: () => Promise<void>): Promise<void>;
+  execute(event: IEvent, next: () => Promise<void>): Promise<void>
 
   /** 中间件名称 */
-  name?: string;
+  name?: string
 
   /** 中间件优先级 */
-  priority?: number;
+  priority?: number
 }
 
 /**
@@ -100,14 +100,14 @@ export interface IEventPublishingMiddleware {
  */
 export interface IEventPublishingPipeline {
   /** 执行发布管道 */
-  execute(event: IEvent): Promise<void>;
+  execute(event: IEvent): Promise<void>
 
   /** 添加中间件 */
-  use(middleware: IEventPublishingMiddleware): void;
+  use(middleware: IEventPublishingMiddleware): void
 
   /** 移除中间件 */
-  remove(middleware: IEventPublishingMiddleware): void;
+  remove(middleware: IEventPublishingMiddleware): void
 
   /** 设置发布策略 */
-  setStrategy(strategy: IEventPublishingStrategy): void;
+  setStrategy(strategy: IEventPublishingStrategy): void
 }

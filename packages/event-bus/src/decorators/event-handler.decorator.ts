@@ -1,12 +1,12 @@
-import 'reflect-metadata';
-import { IEventHandler } from '../interfaces';
+import 'reflect-metadata'
+import type { IEventHandler } from '../interfaces'
 
 /**
  * 事件处理器元数据键
  */
-export const EVENT_HANDLER_METADATA = Symbol('EVENT_HANDLER');
-export const EVENT_HANDLER_TYPE_METADATA = Symbol('EVENT_HANDLER_TYPE');
-export const EVENT_HANDLER_PRIORITY_METADATA = Symbol('EVENT_HANDLER_PRIORITY');
+export const EVENT_HANDLER_METADATA = Symbol('EVENT_HANDLER')
+export const EVENT_HANDLER_TYPE_METADATA = Symbol('EVENT_HANDLER_TYPE')
+export const EVENT_HANDLER_PRIORITY_METADATA = Symbol('EVENT_HANDLER_PRIORITY')
 
 /**
  * 事件处理器装饰器
@@ -14,8 +14,8 @@ export const EVENT_HANDLER_PRIORITY_METADATA = Symbol('EVENT_HANDLER_PRIORITY');
  */
 export function EventHandler(): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target)
+  }
 }
 
 /**
@@ -24,8 +24,8 @@ export function EventHandler(): ClassDecorator {
  */
 export function HandlesEvent(eventType: string): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, eventType, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, eventType, target)
+  }
 }
 
 /**
@@ -34,8 +34,8 @@ export function HandlesEvent(eventType: string): ClassDecorator {
  */
 export function HandlerPriority(priority: number): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_PRIORITY_METADATA, priority, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_PRIORITY_METADATA, priority, target)
+  }
 }
 
 /**
@@ -43,9 +43,9 @@ export function HandlerPriority(priority: number): ClassDecorator {
  */
 export function CommandHandler(commandType: string): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target);
-    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `Command:${commandType}`, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target)
+    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `Command:${commandType}`, target)
+  }
 }
 
 /**
@@ -53,9 +53,9 @@ export function CommandHandler(commandType: string): ClassDecorator {
  */
 export function QueryHandler(queryType: string): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target);
-    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `Query:${queryType}`, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target)
+    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `Query:${queryType}`, target)
+  }
 }
 
 /**
@@ -63,9 +63,9 @@ export function QueryHandler(queryType: string): ClassDecorator {
  */
 export function DomainEventHandler(eventType: string): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target);
-    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `DomainEvent:${eventType}`, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target)
+    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `DomainEvent:${eventType}`, target)
+  }
 }
 
 /**
@@ -73,28 +73,28 @@ export function DomainEventHandler(eventType: string): ClassDecorator {
  */
 export function IntegrationEventHandler(eventType: string): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target);
-    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `IntegrationEvent:${eventType}`, target);
-  };
+    Reflect.defineMetadata(EVENT_HANDLER_METADATA, true, target)
+    Reflect.defineMetadata(EVENT_HANDLER_TYPE_METADATA, `IntegrationEvent:${eventType}`, target)
+  }
 }
 
 /**
  * 获取处理器元数据
  */
 export function getEventHandlerMetadata(target: any): {
-  isEventHandler: boolean;
-  eventType?: string;
-  priority?: number;
+  isEventHandler: boolean
+  eventType?: string
+  priority?: number
 } {
-  const isEventHandler = Reflect.getMetadata(EVENT_HANDLER_METADATA, target) === true;
-  const eventType = Reflect.getMetadata(EVENT_HANDLER_TYPE_METADATA, target);
-  const priority = Reflect.getMetadata(EVENT_HANDLER_PRIORITY_METADATA, target);
+  const isEventHandler = Reflect.getMetadata(EVENT_HANDLER_METADATA, target) === true
+  const eventType = Reflect.getMetadata(EVENT_HANDLER_TYPE_METADATA, target)
+  const priority = Reflect.getMetadata(EVENT_HANDLER_PRIORITY_METADATA, target)
 
   return {
     isEventHandler,
     eventType,
-    priority
-  };
+    priority,
+  }
 }
 
 /**
@@ -102,31 +102,31 @@ export function getEventHandlerMetadata(target: any): {
  * 扫描模块中的所有事件处理器
  */
 export function discoverEventHandlers(module: any): Array<{
-  handler: new (...args: any[]) => IEventHandler;
-  eventType: string;
-  priority: number;
+  handler: new (...args: any[]) => IEventHandler
+  eventType: string
+  priority: number
 }> {
   const handlers: Array<{
-    handler: new (...args: any[]) => IEventHandler;
-    eventType: string;
-    priority: number;
-  }> = [];
+    handler: new (...args: any[]) => IEventHandler
+    eventType: string
+    priority: number
+  }> = []
 
   // 获取模块中所有的提供者
-  const providers = Reflect.getMetadata('providers', module) || [];
+  const providers = Reflect.getMetadata('providers', module) || []
 
   for (const provider of providers) {
-    const metadata = getEventHandlerMetadata(provider);
+    const metadata = getEventHandlerMetadata(provider)
 
     if (metadata.isEventHandler && metadata.eventType) {
       handlers.push({
         handler: provider,
         eventType: metadata.eventType,
-        priority: metadata.priority || 0
-      });
+        priority: metadata.priority || 0,
+      })
     }
   }
 
   // 按优先级排序
-  return handlers.sort((a, b) => b.priority - a.priority);
+  return handlers.sort((a, b) => b.priority - a.priority)
 }

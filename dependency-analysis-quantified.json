@@ -37,34 +37,14 @@
     },
     "dependencies": {
       "internal": {
-        "@tuheg/abstractions": [
-          "@tuheg/shared-types"
-        ],
-        "@tuheg/ai-domain": [
-          "@tuheg/infrastructure",
-          "@tuheg/shared-types"
-        ],
-        "@tuheg/ai-providers": [
-          "@tuheg/abstractions",
-          "@tuheg/shared-types"
-        ],
-        "@tuheg/config-management": [
-          "@tuheg/abstractions"
-        ],
-        "@tuheg/database": [
-          "@tuheg/abstractions"
-        ],
-        "@tuheg/enterprise-domain": [
-          "@tuheg/infrastructure",
-          "@tuheg/shared-types"
-        ],
-        "@tuheg/event-bus": [
-          "@tuheg/abstractions"
-        ],
-        "@tuheg/narrative-domain": [
-          "@tuheg/infrastructure",
-          "@tuheg/shared-types"
-        ],
+        "@tuheg/abstractions": ["@tuheg/shared-types"],
+        "@tuheg/ai-domain": ["@tuheg/infrastructure", "@tuheg/shared-types"],
+        "@tuheg/ai-providers": ["@tuheg/abstractions", "@tuheg/shared-types"],
+        "@tuheg/config-management": ["@tuheg/abstractions"],
+        "@tuheg/database": ["@tuheg/abstractions"],
+        "@tuheg/enterprise-domain": ["@tuheg/infrastructure", "@tuheg/shared-types"],
+        "@tuheg/event-bus": ["@tuheg/abstractions"],
+        "@tuheg/narrative-domain": ["@tuheg/infrastructure", "@tuheg/shared-types"],
         "@tuheg/backend-gateway": [
           "@tuheg/abstractions",
           "@tuheg/config-management",
@@ -78,16 +58,9 @@
           "@tuheg/database",
           "@tuheg/ai-providers"
         ],
-        "@tuheg/dlq-consumer": [
-          "@tuheg/common-backend"
-        ],
-        "@tuheg/logic-agent": [
-          "@tuheg/infrastructure",
-          "@tuheg/ai-domain"
-        ],
-        "@tuheg/narrative-agent": [
-          "@tuheg/common-backend"
-        ]
+        "@tuheg/dlq-consumer": ["@tuheg/common-backend"],
+        "@tuheg/logic-agent": ["@tuheg/infrastructure", "@tuheg/ai-domain"],
+        "@tuheg/narrative-agent": ["@tuheg/common-backend"]
       },
       "externalCount": 17,
       "totalInternalDeps": 25

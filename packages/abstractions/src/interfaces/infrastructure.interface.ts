@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs'
-import { BaseEvent } from '@tuheg/shared-types'
+import type { BaseEvent } from '@tuheg/shared-types'
+import type { Observable } from 'rxjs'
 
 // ============================================================================
 // 缓存服务接口 (Cache Service Interfaces)
@@ -159,10 +159,7 @@ export interface IEventBus {
    * @param eventType 事件类型
    * @param options 订阅选项
    */
-  subscribeStream<T = unknown>(
-    eventType: string,
-    options?: EventSubscriptionOptions
-  ): Observable<T>
+  subscribeStream<T = unknown>(eventType: string, options?: EventSubscriptionOptions): Observable<T>
 
   /**
    * 取消订阅
@@ -447,7 +444,11 @@ export interface IVectorSearchService {
   /** 添加向量 */
   addVector(id: string, vector: number[], metadata?: Record<string, unknown>): Promise<void>
   /** 搜索相似向量 */
-  searchSimilar(queryVector: number[], limit?: number, filter?: Record<string, unknown>): Promise<VectorSearchResult[]>
+  searchSimilar(
+    queryVector: number[],
+    limit?: number,
+    filter?: Record<string, unknown>
+  ): Promise<VectorSearchResult[]>
   /** 删除向量 */
   deleteVector(id: string): Promise<void>
   /** 更新向量 */
@@ -503,11 +504,14 @@ export interface IFileStorageService {
  */
 export interface HealthCheckResult {
   status: 'healthy' | 'unhealthy' | 'degraded'
-  checks: Record<string, {
-    status: 'healthy' | 'unhealthy'
-    message?: string
-    responseTime?: number
-  }>
+  checks: Record<
+    string,
+    {
+      status: 'healthy' | 'unhealthy'
+      message?: string
+      responseTime?: number
+    }
+  >
 }
 
 /**
@@ -533,7 +537,11 @@ export interface IMonitoringService {
   /** 记录错误 */
   recordError(error: Error, context?: Record<string, unknown>): void
   /** 记录日志 */
-  log(level: 'debug' | 'info' | 'warn' | 'error', message: string, context?: Record<string, unknown>): void
+  log(
+    level: 'debug' | 'info' | 'warn' | 'error',
+    message: string,
+    context?: Record<string, unknown>
+  ): void
 }
 
 /**

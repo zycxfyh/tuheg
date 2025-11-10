@@ -27,7 +27,7 @@ export enum Status {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
   PENDING = 'pending',
-  DELETED = 'deleted'
+  DELETED = 'deleted',
 }
 
 // ============================================================================
@@ -89,7 +89,7 @@ export enum UserRole {
   ADMIN = 'admin',
   USER = 'user',
   PREMIUM = 'premium',
-  ENTERPRISE = 'enterprise'
+  ENTERPRISE = 'enterprise',
 }
 
 /**
@@ -153,7 +153,7 @@ export enum GameType {
   NARRATIVE_DRIVEN = 'narrative_driven',
   INTERACTIVE_STORY = 'interactive_story',
   ROLE_PLAYING = 'role_playing',
-  ADVENTURE = 'adventure'
+  ADVENTURE = 'adventure',
 }
 
 /**
@@ -165,7 +165,7 @@ export enum GameStatus {
   IN_PROGRESS = 'in_progress',
   PAUSED = 'paused',
   COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 /**
@@ -205,7 +205,7 @@ export enum PlayerStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
   DISCONNECTED = 'disconnected',
-  BANNED = 'banned'
+  BANNED = 'banned',
 }
 
 /**
@@ -256,7 +256,7 @@ export enum AiProvider {
   ANTHROPIC = 'anthropic',
   GOOGLE = 'google',
   DEEPSEEK = 'deepseek',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 /**
@@ -295,7 +295,7 @@ export enum NarrativeStyle {
   SCI_FI = 'sci_fi',
   MODERN = 'modern',
   HISTORICAL = 'historical',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 /**
@@ -305,7 +305,7 @@ export enum NarrativeComplexity {
   SIMPLE = 'simple',
   MODERATE = 'moderate',
   COMPLEX = 'complex',
-  ADVANCED = 'advanced'
+  ADVANCED = 'advanced',
 }
 
 // ============================================================================

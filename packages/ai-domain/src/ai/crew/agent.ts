@@ -86,7 +86,7 @@ export class Agent {
 
       // 调用 AI Provider
       const response = await this.config.provider.generate({
-        messages: [{ role: 'system', content: systemPrompt }]
+        messages: [{ role: 'system', content: systemPrompt }],
       })
 
       // 提取响应内容

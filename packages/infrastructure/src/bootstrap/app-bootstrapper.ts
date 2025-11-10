@@ -2,12 +2,12 @@
 // 通用NestJS应用启动器 - 消除重复的main.ts代码
 
 import { ConfigService } from '@nestjs/config'
+import type { NestApplication } from '@nestjs/core'
 import { NestFactory } from '@nestjs/core'
 import { type MicroserviceOptions, Transport } from '@nestjs/microservices'
 import * as Sentry from '@sentry/node'
 import type { Channel } from 'amqplib'
 import helmet from 'helmet'
-import type { NestApplication } from '@nestjs/core'
 
 import {
   ApplicationType,
@@ -15,7 +15,7 @@ import {
   type BootstrapResult,
   type HttpServerConfig,
   type MicroserviceConfig,
-  type MonitoringConfig
+  type MonitoringConfig,
 } from './bootstrap.types'
 
 /**
@@ -32,7 +32,7 @@ export class AppBootstrapper {
   private static readonly logger = {
     log: (message: string) => console.log(`🚀 ${message}`),
     error: (message: string, error?: any) => console.error(`❌ ${message}`, error),
-    warn: (message: string) => console.warn(`⚠️ ${message}`)
+    warn: (message: string) => console.warn(`⚠️ ${message}`),
   }
 
   /**
@@ -42,7 +42,7 @@ export class AppBootstrapper {
     const result: BootstrapResult = { app: null as any }
 
     try {
-      this.logger.log(`启动 ${config.type} 应用...`)
+      AppBootstrapper.logger.log(`启动 ${config.type} 应用...`)
 
       // 创建应用实例
       const app = await NestFactory.create(config.module)
@@ -50,16 +50,25 @@ export class AppBootstrapper {
       result.app = app
 
       // 初始化监控
-      await this.initializeMonitoring(config.monitoring, configService)
+      await AppBootstrapper.initializeMonitoring(config.monitoring, configService)
 
       // 配置微服务（如果启用）
       if (config.microservice?.enabled) {
-        result.microserviceStarted = await this.setupMicroservice(app, config.microservice, configService)
+        result.microserviceStarted = await AppBootstrapper.setupMicroservice(
+          app,
+          config.microservice,
+          configService
+        )
       }
 
       // 配置HTTP服务器（如果启用）
       if (config.httpServer?.enabled) {
-        result.httpUrl = await this.setupHttpServer(app, config.httpServer, configService, config.type)
+        result.httpUrl = await AppBootstrapper.setupHttpServer(
+          app,
+          config.httpServer,
+          configService,
+          config.type
+        )
       }
 
       // 执行自定义初始化
@@ -68,13 +77,12 @@ export class AppBootstrapper {
       }
 
       // 启动应用
-      await this.startApplication(app, config, result)
+      await AppBootstrapper.startApplication(app, config, result)
 
-      this.logger.log(`${config.type} 应用启动成功`)
+      AppBootstrapper.logger.log(`${config.type} 应用启动成功`)
       return result
-
     } catch (error) {
-      await this.handleBootstrapError(error, config, result.app)
+      await AppBootstrapper.handleBootstrapError(error, config, result.app)
       throw error
     }
   }
@@ -86,7 +94,8 @@ export class AppBootstrapper {
     monitoring: MonitoringConfig = {},
     configService: ConfigService
   ): Promise<void> {
-    if (monitoring.sentry !== false) { // 默认启用
+    if (monitoring.sentry !== false) {
+      // 默认启用
       const sentryDsn = configService.get<string>('SENTRY_DSN')
       if (sentryDsn) {
         Sentry.init({
@@ -95,12 +104,14 @@ export class AppBootstrapper {
           profilesSampleRate: 1.0,
           environment: monitoring.environment || process.env.NODE_ENV || 'development',
           // 为不同应用类型设置独特的环境标签
-          ...(monitoring.serviceName && { tags: {
-            service: monitoring.serviceName,
-            type: monitoring.environment || 'unknown'
-          } })
+          ...(monitoring.serviceName && {
+            tags: {
+              service: monitoring.serviceName,
+              type: monitoring.environment || 'unknown',
+            },
+          }),
         })
-        this.logger.log('Sentry监控已初始化')
+        AppBootstrapper.logger.log('Sentry监控已初始化')
       }
     }
   }
@@ -126,13 +137,15 @@ export class AppBootstrapper {
           deadLetterExchange: microservice.deadLetterExchange || 'dlx',
           deadLetterRoutingKey: microservice.retryQueue || 'retry_queue',
         },
-        setup: microservice.options?.options?.setup || this.createDefaultChannelSetup(microservice),
+        setup:
+          microservice.options?.options?.setup ||
+          AppBootstrapper.createDefaultChannelSetup(microservice),
       } as any,
     }
 
     app.connectMicroservice(microserviceOptions)
 
-    this.logger.log('微服务配置完成')
+    AppBootstrapper.logger.log('微服务配置完成')
     return true
   }
 
@@ -181,18 +194,22 @@ export class AppBootstrapper {
     }
 
     // 配置安全中间件
-    if (httpServer.security?.helmet !== false) { // 默认启用
-      app.use(this.createHelmetConfig())
+    if (httpServer.security?.helmet !== false) {
+      // 默认启用
+      app.use(AppBootstrapper.createHelmetConfig())
     }
 
     // 配置CORS
     const corsConfig = httpServer.cors || {}
-    const corsOrigin = corsConfig.origin ||
-      configService.get<string>('CORS_ORIGIN') ||
-      'http://localhost:5173'
+    const corsOrigin =
+      corsConfig.origin || configService.get<string>('CORS_ORIGIN') || 'http://localhost:5173'
 
     app.enableCors({
-      origin: Array.isArray(corsConfig.origin) ? corsConfig.origin : (typeof corsOrigin === 'string' ? corsOrigin.split(',') : corsOrigin),
+      origin: Array.isArray(corsConfig.origin)
+        ? corsConfig.origin
+        : typeof corsOrigin === 'string'
+          ? corsOrigin.split(',')
+          : corsOrigin,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: corsConfig.credentials ?? true,
       allowedHeaders: corsConfig.allowedHeaders || ['Content-Type', 'Authorization'],
@@ -204,7 +221,7 @@ export class AppBootstrapper {
     const port = httpServer.port
     const url = `http://localhost:${port}${httpServer.prefix ? httpServer.prefix : ''}`
 
-    this.logger.log(`HTTP服务器配置完成: ${url}`)
+    AppBootstrapper.logger.log(`HTTP服务器配置完成: ${url}`)
     return url
   }
 
@@ -249,18 +266,17 @@ export class AppBootstrapper {
       // 启动微服务
       if (config.microservice?.enabled) {
         await app.startAllMicroservices()
-        this.logger.log('📡 微服务已启动')
+        AppBootstrapper.logger.log('📡 微服务已启动')
       }
 
       // 启动HTTP服务器
       if (config.httpServer?.enabled) {
         const port = config.httpServer.port
         await app.listen(port)
-        this.logger.log(`🌐 HTTP服务器已启动: ${result.httpUrl}`)
+        AppBootstrapper.logger.log(`🌐 HTTP服务器已启动: ${result.httpUrl}`)
       }
-
     } catch (error) {
-      this.logger.error('应用启动失败:', error)
+      AppBootstrapper.logger.error('应用启动失败:', error)
       throw error
     }
   }
@@ -268,8 +284,12 @@ export class AppBootstrapper {
   /**
    * 处理引导错误
    */
-  private static async handleBootstrapError(error: any, config: BootstrapConfig, app?: any): Promise<void> {
-    this.logger.error(`${config.type} 应用启动失败:`, error)
+  private static async handleBootstrapError(
+    error: any,
+    config: BootstrapConfig,
+    app?: any
+  ): Promise<void> {
+    AppBootstrapper.logger.error(`${config.type} 应用启动失败:`, error)
 
     // 尝试上报到Sentry
     Sentry.captureException(error)
@@ -279,7 +299,7 @@ export class AppBootstrapper {
       try {
         await app.close()
       } catch (closeError) {
-        this.logger.error('应用清理失败:', closeError)
+        AppBootstrapper.logger.error('应用清理失败:', closeError)
       }
     }
 
@@ -287,7 +307,7 @@ export class AppBootstrapper {
     try {
       await Sentry.close(2000)
     } catch (sentryError) {
-      this.logger.error('Sentry关闭失败:', sentryError)
+      AppBootstrapper.logger.error('Sentry关闭失败:', sentryError)
     }
   }
 
@@ -302,12 +322,12 @@ export class AppBootstrapper {
         enabled: true,
         port: 3000,
         prefix: 'api/v1',
-        security: { helmet: true }
+        security: { helmet: true },
       },
       monitoring: {
         sentry: true,
-        serviceName: 'backend-gateway'
-      }
+        serviceName: 'backend-gateway',
+      },
     }
   }
 
@@ -319,22 +339,22 @@ export class AppBootstrapper {
         enabled: true,
         options: {
           transport: Transport.RMQ,
-          options: { queue: 'creation_queue' }
+          options: { queue: 'creation_queue' },
         },
         retryExchange: 'creation_retry_exchange',
         retryQueue: 'creation_retry_queue',
         deadLetterExchange: 'dlx',
-        deadLetterQueue: 'creation_queue_dead'
+        deadLetterQueue: 'creation_queue_dead',
       },
       httpServer: {
         enabled: true,
         port: 8080,
-        prefix: 'api/v1/creation'
+        prefix: 'api/v1/creation',
       },
       monitoring: {
         sentry: true,
-        serviceName: 'creation-agent'
-      }
+        serviceName: 'creation-agent',
+      },
     }
   }
 
@@ -346,22 +366,22 @@ export class AppBootstrapper {
         enabled: true,
         options: {
           transport: Transport.RMQ,
-          options: { queue: 'logic_queue' }
+          options: { queue: 'logic_queue' },
         },
         retryExchange: 'logic_retry_exchange',
         retryQueue: 'logic_retry_queue',
         deadLetterExchange: 'dlx',
-        deadLetterQueue: 'logic_queue_dead'
+        deadLetterQueue: 'logic_queue_dead',
       },
       httpServer: {
         enabled: true,
         port: 8081,
-        prefix: 'api/v1/logic'
+        prefix: 'api/v1/logic',
       },
       monitoring: {
         sentry: true,
-        serviceName: 'logic-agent'
-      }
+        serviceName: 'logic-agent',
+      },
     }
   }
 
@@ -373,22 +393,22 @@ export class AppBootstrapper {
         enabled: true,
         options: {
           transport: Transport.RMQ,
-          options: { queue: 'narrative_queue' }
+          options: { queue: 'narrative_queue' },
         } as any,
         retryExchange: 'narrative_retry_exchange',
         retryQueue: 'narrative_retry_queue',
         deadLetterExchange: 'dlx',
-        deadLetterQueue: 'narrative_queue_dead'
+        deadLetterQueue: 'narrative_queue_dead',
       },
       httpServer: {
         enabled: true,
         port: 8082,
-        prefix: 'api/v1/narrative'
+        prefix: 'api/v1/narrative',
       },
       monitoring: {
         sentry: true,
-        serviceName: 'narrative-agent'
-      }
+        serviceName: 'narrative-agent',
+      },
     }
   }
 }

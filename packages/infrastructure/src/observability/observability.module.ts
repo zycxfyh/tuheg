@@ -11,9 +11,7 @@ import { SentryModule } from './sentry.module'
  * 整合Sentry错误追踪、性能监控、分布式追踪等功能
  */
 @Module({
-  imports: [
-    SentryModule,
-  ],
+  imports: [SentryModule],
   providers: [PerformanceMonitorService],
   exports: [SentryModule, PerformanceMonitorService],
 })

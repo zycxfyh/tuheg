@@ -1,6 +1,7 @@
 // Event Bus package exports
-export * from './event-bus.service';
-export * from './event-bus.module';
-export * from './interfaces';
-export * from './decorators';
-export * from './handlers';
+
+export * from './decorators'
+export * from './event-bus.module'
+export * from './event-bus.service'
+export * from './handlers'
+export * from './interfaces'

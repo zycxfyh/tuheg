@@ -1,8 +1,8 @@
 // 文件路径: packages/common-backend/src/ai/ai-guard.ts
 
 import { Injectable } from '@nestjs/common'
-import type { z } from 'zod'
 import { AiGenerationException, PromptInjectionDetectedException } from '@tuheg/infrastructure'
+import type { z } from 'zod'
 
 /**
  * 提示注入检查结果类型

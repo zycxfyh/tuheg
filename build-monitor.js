@@ -19,7 +19,7 @@ class BuildMonitor {
       details: '',
       currentPackage: '',
       completedPackages: [],
-      failedPackages: []
+      failedPackages: [],
     }
     this.packages = [
       'shared-types',
@@ -38,7 +38,7 @@ class BuildMonitor {
       'creation-agent',
       'logic-agent',
       'narrative-agent',
-      'frontend'
+      'frontend',
     ]
     this.packageProgress = {}
   }
@@ -53,11 +53,18 @@ class BuildMonitor {
 
     const percent = Math.round(this.progress.current)
     const elapsed = Date.now() - this.startTime
-    const eta = this.progress.current > 0 ? Math.round((elapsed / this.progress.current) * (this.progress.total - this.progress.current)) : 0
+    const eta =
+      this.progress.current > 0
+        ? Math.round(
+            (elapsed / this.progress.current) * (this.progress.total - this.progress.current)
+          )
+        : 0
 
     // 清除当前行并重写
     process.stdout.write('\r\x1b[K')
-    process.stdout.write(`[${'█'.repeat(Math.floor(percent/2))}${'░'.repeat(50-Math.floor(percent/2))}] ${percent}% | ${stage} | ${details} | 耗时: ${Math.round(elapsed/1000)}s | 预计剩余: ${Math.round(eta/1000)}s`)
+    process.stdout.write(
+      `[${'█'.repeat(Math.floor(percent / 2))}${'░'.repeat(50 - Math.floor(percent / 2))}] ${percent}% | ${stage} | ${details} | 耗时: ${Math.round(elapsed / 1000)}s | 预计剩余: ${Math.round(eta / 1000)}s`
+    )
   }
 
   /**
@@ -65,7 +72,11 @@ class BuildMonitor {
    */
   completeProgress() {
     this.progress.current = 100
-    this.updateProgress(0, '完成', `成功: ${this.progress.completedPackages.length}, 失败: ${this.progress.failedPackages.length}`)
+    this.updateProgress(
+      0,
+      '完成',
+      `成功: ${this.progress.completedPackages.length}, 失败: ${this.progress.failedPackages.length}`
+    )
     console.log('\n')
   }
 
@@ -105,7 +116,7 @@ class BuildMonitor {
       const child = spawn('npx', ['nx', 'build', packageName], {
         cwd: process.cwd(),
         stdio: ['pipe', 'pipe', 'pipe'],
-        shell: true
+        shell: true,
       })
 
       child.stdout.on('data', (data) => {
@@ -124,17 +135,25 @@ class BuildMonitor {
           this.packageProgress[packageName] = {
             status: 'success',
             duration,
-            size: this.getPackageSize(packageName)
+            size: this.getPackageSize(packageName),
           }
-          this.updateProgress(100 / this.packages.length, `完成 ${packageName}`, `✓ ${Math.round(duration/1000)}s`)
+          this.updateProgress(
+            100 / this.packages.length,
+            `完成 ${packageName}`,
+            `✓ ${Math.round(duration / 1000)}s`
+          )
         } else {
           this.progress.failedPackages.push(packageName)
           this.packageProgress[packageName] = {
             status: 'failed',
             duration,
-            code
+            code,
           }
-          this.updateProgress(100 / this.packages.length, `失败 ${packageName}`, `✗ ${Math.round(duration/1000)}s`)
+          this.updateProgress(
+            100 / this.packages.length,
+            `失败 ${packageName}`,
+            `✗ ${Math.round(duration / 1000)}s`
+          )
         }
 
         resolve({ packageName, code, duration })
@@ -146,7 +165,7 @@ class BuildMonitor {
         this.packageProgress[packageName] = {
           status: 'error',
           duration: Date.now() - startTime,
-          error: error.message
+          error: error.message,
         }
         resolve({ packageName, code: -1, duration: Date.now() - startTime })
       })
@@ -158,7 +177,7 @@ class BuildMonitor {
         this.progress.failedPackages.push(packageName)
         this.packageProgress[packageName] = {
           status: 'timeout',
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         }
         resolve({ packageName, code: -2, duration: Date.now() - startTime })
       }, 300000)
@@ -209,10 +228,12 @@ class BuildMonitor {
         totalPackages: this.packages.length,
         successful: this.progress.completedPackages.length,
         failed: this.progress.failedPackages.length,
-        successRate: Math.round((this.progress.completedPackages.length / this.packages.length) * 100)
+        successRate: Math.round(
+          (this.progress.completedPackages.length / this.packages.length) * 100
+        ),
       },
       packages: this.packageProgress,
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     }
 
     await fs.writeFile(
@@ -233,11 +254,13 @@ class BuildMonitor {
       recs.push(`🔧 修复失败的包: ${this.progress.failedPackages.join(', ')}`)
     }
 
-    const avgDuration = Object.values(this.packageProgress)
-      .filter(p => p.status === 'success')
-      .reduce((sum, p) => sum + p.duration, 0) / this.progress.completedPackages.length
+    const avgDuration =
+      Object.values(this.packageProgress)
+        .filter((p) => p.status === 'success')
+        .reduce((sum, p) => sum + p.duration, 0) / this.progress.completedPackages.length
 
-    if (avgDuration > 30000) { // 30秒
+    if (avgDuration > 30000) {
+      // 30秒
       recs.push('⚡ 考虑优化构建性能 (平均构建时间过长)')
     }
 
@@ -262,14 +285,15 @@ class BuildMonitor {
     console.log(`📊  成功率: ${report.summary.successRate}%`)
 
     if (report.summary.successful > 0) {
-      const avgDuration = Object.values(report.packages)
-        .filter(p => p.status === 'success')
-        .reduce((sum, p) => sum + p.duration, 0) / report.summary.successful
+      const avgDuration =
+        Object.values(report.packages)
+          .filter((p) => p.status === 'success')
+          .reduce((sum, p) => sum + p.duration, 0) / report.summary.successful
 
       console.log(`⏱️   平均构建时间: ${Math.round(avgDuration / 1000)}秒`)
 
       const totalSize = Object.values(report.packages)
-        .filter(p => p.status === 'success')
+        .filter((p) => p.status === 'success')
         .reduce((sum, p) => sum + (p.size || 0), 0)
 
       console.log(`💾  输出大小: ${Math.round(totalSize / 1024)}KB`)
@@ -277,12 +301,12 @@ class BuildMonitor {
 
     if (report.recommendations.length > 0) {
       console.log('\n💡 建议:')
-      report.recommendations.forEach(rec => console.log(`  • ${rec}`))
+      report.recommendations.forEach((rec) => console.log(`  • ${rec}`))
     }
 
     if (report.summary.failed > 0) {
       console.log('\n❌ 失败的包:')
-      report.summary.failedPackages.forEach(pkg => console.log(`  • ${pkg}`))
+      report.summary.failedPackages.forEach((pkg) => console.log(`  • ${pkg}`))
     }
 
     console.log(`\n📄 详细报告: build-report.json`)
@@ -322,7 +346,7 @@ class BuildMonitor {
       'creation-agent',
       'logic-agent',
       'narrative-agent',
-      'frontend'
+      'frontend',
     ]
 
     const results = []

@@ -95,12 +95,16 @@ afterEach(() => {
 
   // 检测慢测试 (>10秒)
   if (testDuration > 10000) {
-    console.warn(`🐌 Slow test detected: ${expect.getState().currentTestName} took ${testDuration}ms`)
+    console.warn(
+      `🐌 Slow test detected: ${expect.getState().currentTestName} took ${testDuration}ms`
+    )
   }
 
   // 检测潜在的无限循环 (>30秒)
   if (testDuration > 30000) {
-    console.error(`🚨 Potential infinite loop detected: ${expect.getState().currentTestName} took ${testDuration}ms`)
+    console.error(
+      `🚨 Potential infinite loop detected: ${expect.getState().currentTestName} took ${testDuration}ms`
+    )
     throw new Error(`Test timeout: ${expect.getState().currentTestName} exceeded 30 seconds`)
   }
 
@@ -110,7 +114,9 @@ afterEach(() => {
   // 检查是否有未处理的异步操作
   try {
     if (jest.getTimerCount() > 0) {
-      console.warn(`⚠️ Warning: ${jest.getTimerCount()} timers still active after test: ${expect.getState().currentTestName}`)
+      console.warn(
+        `⚠️ Warning: ${jest.getTimerCount()} timers still active after test: ${expect.getState().currentTestName}`
+      )
     }
   } catch (error) {
     // fake timers可能未启用，忽略错误

@@ -1,15 +1,15 @@
-import { Observable } from 'rxjs'
 import {
+  type Character,
   Game,
-  Player,
-  Character,
-  GameType,
-  GameStatus,
   GameConfiguration,
+  type GameStatus,
+  type GameType,
+  type NarrativeComplexity,
   NarrativeConfiguration,
-  NarrativeComplexity,
-  NarrativeStyle
+  type NarrativeStyle,
+  Player,
 } from '@tuheg/shared-types'
+import type { Observable } from 'rxjs'
 
 // ============================================================================
 // 游戏领域接口 (Game Domain Interfaces)
@@ -148,7 +148,10 @@ export interface IGameLogicService {
   /** 处理玩家行动 */
   processPlayerAction(action: PlayerAction): Promise<LogicProcessingResult>
   /** 验证行动 */
-  validateAction(action: PlayerAction, gameState: GameState): Promise<{ isValid: boolean; reason?: string }>
+  validateAction(
+    action: PlayerAction,
+    gameState: GameState
+  ): Promise<{ isValid: boolean; reason?: string }>
   /** 获取游戏状态 */
   getGameState(gameId: string): Promise<GameState>
   /** 更新游戏状态 */
@@ -162,7 +165,9 @@ export interface IGameNarrativeService {
   /** 生成叙事 */
   generateNarrative(request: NarrativeGenerationRequest): Promise<NarrativeGenerationResponse>
   /** 流式生成叙事 */
-  generateNarrativeStream(request: NarrativeGenerationRequest): Observable<NarrativeGenerationResponse>
+  generateNarrativeStream(
+    request: NarrativeGenerationRequest
+  ): Observable<NarrativeGenerationResponse>
   /** 继续叙事 */
   continueNarrative(narrativeId: string, continuation: string): Promise<NarrativeGenerationResponse>
 }

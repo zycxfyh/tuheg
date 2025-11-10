@@ -1,4 +1,5 @@
 // Database package exports
-export * from './database.service';
-export * from './database.module';
-export * from './repositories';
+
+export * from './database.module'
+export * from './database.service'
+export * from './repositories'

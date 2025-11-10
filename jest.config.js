@@ -122,7 +122,7 @@ export default {
   testEnvironmentOptions: {
     // 增强的测试环境配置
     url: 'http://localhost:3000',
-    userAgent: 'Jest-Test-Agent/1.0'
+    userAgent: 'Jest-Test-Agent/1.0',
   },
 
   // 重试机制 - 应对flaky测试
@@ -131,19 +131,27 @@ export default {
   // 报告增强
   reporters: [
     'default',
-    ['jest-junit', {
-      outputDirectory: 'test-results',
-      outputName: 'junit.xml',
-      classNameTemplate: '{classname}',
-      titleTemplate: '{title}',
-      ancestorSeparator: ' › ',
-      usePathForSuiteName: true,
-      suiteNameTemplate: '{filepath}',
-      addFileAttribute: 'true'
-    }],
-    process.env.CI ? ['github-actions', {
-      silent: false
-    }] : null
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'test-results',
+        outputName: 'junit.xml',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+        ancestorSeparator: ' › ',
+        usePathForSuiteName: true,
+        suiteNameTemplate: '{filepath}',
+        addFileAttribute: 'true',
+      },
+    ],
+    process.env.CI
+      ? [
+          'github-actions',
+          {
+            silent: false,
+          },
+        ]
+      : null,
   ].filter(Boolean),
 
   // 定时器配置

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client'
 
 /**
  * 基础Repository类
@@ -12,8 +12,8 @@ export abstract class BaseRepository {
    */
   protected async executeTransaction<T>(fn: (tx: PrismaClient) => Promise<T>): Promise<T> {
     return await this.prisma.$transaction(async (tx) => {
-      return await fn(tx as PrismaClient);
-    });
+      return await fn(tx as PrismaClient)
+    })
   }
 
   /**
@@ -22,7 +22,7 @@ export abstract class BaseRepository {
   protected getSoftDeleteFilter() {
     return {
       deletedAt: null,
-    };
+    }
   }
 
   /**
@@ -32,16 +32,16 @@ export abstract class BaseRepository {
     return {
       skip: (page - 1) * limit,
       take: limit,
-    };
+    }
   }
 
   /**
    * 排序选项
    */
   protected getOrderByOptions(sortBy?: string, sortOrder: 'asc' | 'desc' = 'desc') {
-    if (!sortBy) return undefined;
+    if (!sortBy) return undefined
     return {
       [sortBy]: sortOrder,
-    };
+    }
   }
 }

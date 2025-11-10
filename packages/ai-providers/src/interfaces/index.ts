@@ -1,2 +1,2 @@
 // Provider interfaces
-export * from './provider.interface';
+export * from './provider.interface'

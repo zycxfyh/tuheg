@@ -5,9 +5,7 @@ import { AppBootstrapper } from '@tuheg/infrastructure'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
-  const result = await AppBootstrapper.bootstrap(
-    AppBootstrapper.createGatewayConfig(AppModule)
-  )
+  const result = await AppBootstrapper.bootstrap(AppBootstrapper.createGatewayConfig(AppModule))
 
   console.log('🚀 Backend Gateway is running:')
   console.log(`   🌐 HTTP API: ${result.httpUrl}`)

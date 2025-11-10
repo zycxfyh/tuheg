@@ -1,2 +1,2 @@
 // AI Providers
-export * from './openai.provider';
+export * from './openai.provider'

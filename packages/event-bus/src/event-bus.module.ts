@@ -1,6 +1,6 @@
-import { Module, DynamicModule } from '@nestjs/common';
-import { EventBusService } from './event-bus.service';
-import { EventBusConfig } from './interfaces';
+import { type DynamicModule, Module } from '@nestjs/common'
+import { EventBusService } from './event-bus.service'
+import type { EventBusConfig } from './interfaces'
 
 /**
  * 事件总线模块
@@ -31,16 +31,16 @@ export class EventBusModule {
               if (typeof handler.handle === 'function') {
                 // 这里需要根据处理器类型注册到对应的事件类型
                 // 这是一个简化的实现
-                eventBus.registerHandler('default', handler);
+                eventBus.registerHandler('default', handler)
               }
             }
-            return eventBus;
+            return eventBus
           },
           inject: [EventBusService, 'EVENT_HANDLERS'],
         },
       ],
       exports: [EventBusService],
-    };
+    }
   }
 
   /**
@@ -57,16 +57,16 @@ export class EventBusModule {
         EventBusService,
       ],
       exports: [EventBusService],
-    };
+    }
   }
 
   /**
    * 使用异步配置
    */
   static forRootAsync(options: {
-    useFactory: (...args: any[]) => Promise<EventBusConfig> | EventBusConfig;
-    inject?: any[];
-    imports?: any[];
+    useFactory: (...args: any[]) => Promise<EventBusConfig> | EventBusConfig
+    inject?: any[]
+    imports?: any[]
   }): DynamicModule {
     return {
       module: EventBusModule,
@@ -80,6 +80,6 @@ export class EventBusModule {
         EventBusService,
       ],
       exports: [EventBusService],
-    };
+    }
   }
 }

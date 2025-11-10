@@ -1,0 +1,32 @@
+{
+  "name": "abstractions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/abstractions/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/abstractions",
+        "main": "packages/abstractions/src/index.ts",
+        "tsConfig": "packages/abstractions/tsconfig.lib.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{workspaceRoot}/reports/eslint/packages/abstractions"],
+      "options": {
+        "lintFilePatterns": ["packages/abstractions/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/abstractions"],
+      "options": {
+        "jestConfig": "packages/abstractions/jest.config.js"
+      }
+    }
+  },
+  "tags": ["type:abstraction", "scope:shared"]
+}

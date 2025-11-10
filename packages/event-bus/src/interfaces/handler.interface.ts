@@ -1,14 +1,14 @@
-import { IEventHandler, IEvent } from './event.interface';
+import type { IEvent, IEventHandler } from './event.interface'
 
 /**
  * 命令处理器接口
  */
 export interface ICommandHandler<TCommand = any, TResult = any> extends IEventHandler {
   /** 执行命令 */
-  execute(command: TCommand): Promise<TResult>;
+  execute(command: TCommand): Promise<TResult>
 
   /** 命令类型 */
-  commandType: string;
+  commandType: string
 }
 
 /**
@@ -16,10 +16,10 @@ export interface ICommandHandler<TCommand = any, TResult = any> extends IEventHa
  */
 export interface IQueryHandler<TQuery = any, TResult = any> extends IEventHandler {
   /** 执行查询 */
-  query(query: TQuery): Promise<TResult>;
+  query(query: TQuery): Promise<TResult>
 
   /** 查询类型 */
-  queryType: string;
+  queryType: string
 }
 
 /**
@@ -27,27 +27,28 @@ export interface IQueryHandler<TQuery = any, TResult = any> extends IEventHandle
  */
 export interface IDomainEventHandler<TEvent extends IEvent = IEvent> extends IEventHandler<TEvent> {
   /** 处理领域事件 */
-  handle(event: TEvent): Promise<void>;
+  handle(event: TEvent): Promise<void>
 
   /** 事件类型 */
-  eventType: string;
+  eventType: string
 
   /** 处理器优先级 */
-  priority?: number;
+  priority?: number
 }
 
 /**
  * 集成事件处理器接口
  */
-export interface IIntegrationEventHandler<TEvent extends IEvent = IEvent> extends IEventHandler<TEvent> {
+export interface IIntegrationEventHandler<TEvent extends IEvent = IEvent>
+  extends IEventHandler<TEvent> {
   /** 处理集成事件 */
-  handle(event: TEvent): Promise<void>;
+  handle(event: TEvent): Promise<void>
 
   /** 事件类型 */
-  eventType: string;
+  eventType: string
 
   /** 来源服务 */
-  sourceService?: string;
+  sourceService?: string
 }
 
 /**
@@ -55,16 +56,16 @@ export interface IIntegrationEventHandler<TEvent extends IEvent = IEvent> extend
  */
 export interface ISagaHandler<TEvent extends IEvent = IEvent> extends IEventHandler<TEvent> {
   /** 处理Saga事件 */
-  handle(event: TEvent): Promise<void>;
+  handle(event: TEvent): Promise<void>
 
   /** Saga ID */
-  sagaId: string;
+  sagaId: string
 
   /** 当前状态 */
-  currentState: string;
+  currentState: string
 
   /** 关联ID */
-  correlationId: string;
+  correlationId: string
 }
 
 /**
@@ -72,19 +73,19 @@ export interface ISagaHandler<TEvent extends IEvent = IEvent> extends IEventHand
  */
 export interface IEventHandlerRegistry {
   /** 注册处理器 */
-  register<T>(eventType: string, handler: IEventHandler<T>): void;
+  register<T>(eventType: string, handler: IEventHandler<T>): void
 
   /** 注销处理器 */
-  unregister<T>(eventType: string, handler: IEventHandler<T>): void;
+  unregister<T>(eventType: string, handler: IEventHandler<T>): void
 
   /** 获取处理器 */
-  getHandlers<T>(eventType: string): IEventHandler<T>[];
+  getHandlers<T>(eventType: string): IEventHandler<T>[]
 
   /** 获取所有处理器 */
-  getAllHandlers(): Map<string, IEventHandler<any>[]>;
+  getAllHandlers(): Map<string, IEventHandler<any>[]>
 
   /** 清除所有处理器 */
-  clear(): void;
+  clear(): void
 }
 
 /**
@@ -92,25 +93,25 @@ export interface IEventHandlerRegistry {
  */
 export interface IHandlerExecutionContext {
   /** 事件 */
-  event: IEvent;
+  event: IEvent
 
   /** 处理器 */
-  handler: IEventHandler;
+  handler: IEventHandler
 
   /** 开始时间 */
-  startTime: Date;
+  startTime: Date
 
   /** 结束时间 */
-  endTime?: Date;
+  endTime?: Date
 
   /** 执行结果 */
-  result?: any;
+  result?: any
 
   /** 错误 */
-  error?: Error;
+  error?: Error
 
   /** 元数据 */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, any>
 }
 
 /**
@@ -118,13 +119,13 @@ export interface IHandlerExecutionContext {
  */
 export interface IHandlerExecutionPipeline {
   /** 执行处理器管道 */
-  execute(context: IHandlerExecutionContext): Promise<void>;
+  execute(context: IHandlerExecutionContext): Promise<void>
 
   /** 添加中间件 */
-  use(middleware: IHandlerExecutionMiddleware): void;
+  use(middleware: IHandlerExecutionMiddleware): void
 
   /** 移除中间件 */
-  remove(middleware: IHandlerExecutionMiddleware): void;
+  remove(middleware: IHandlerExecutionMiddleware): void
 }
 
 /**
@@ -132,11 +133,11 @@ export interface IHandlerExecutionPipeline {
  */
 export interface IHandlerExecutionMiddleware {
   /** 执行中间件 */
-  execute(context: IHandlerExecutionContext, next: () => Promise<void>): Promise<void>;
+  execute(context: IHandlerExecutionContext, next: () => Promise<void>): Promise<void>
 
   /** 中间件名称 */
-  name?: string;
+  name?: string
 
   /** 中间件优先级 */
-  priority?: number;
+  priority?: number
 }

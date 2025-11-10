@@ -20,7 +20,7 @@ class QuantifiedDependencyAnalyzer {
       current: 0,
       total: 100,
       stage: '初始化',
-      details: ''
+      details: '',
     }
     this.cache = new Map()
     this.results = {}
@@ -36,9 +36,16 @@ class QuantifiedDependencyAnalyzer {
 
     const percent = Math.min(100, Math.round((this.progress.current / this.progress.total) * 100))
     const elapsed = Date.now() - this.startTime
-    const eta = this.progress.current > 0 ? Math.round((elapsed / this.progress.current) * (this.progress.total - this.progress.current)) : 0
+    const eta =
+      this.progress.current > 0
+        ? Math.round(
+            (elapsed / this.progress.current) * (this.progress.total - this.progress.current)
+          )
+        : 0
 
-    process.stdout.write(`\r[${'█'.repeat(Math.floor(percent/2))}${'░'.repeat(50-Math.floor(percent/2))}] ${percent}% | ${stage} | ${details} | 耗时: ${Math.round(elapsed/1000)}s | 预计剩余: ${Math.round(eta/1000)}s`)
+    process.stdout.write(
+      `\r[${'█'.repeat(Math.floor(percent / 2))}${'░'.repeat(50 - Math.floor(percent / 2))}] ${percent}% | ${stage} | ${details} | 耗时: ${Math.round(elapsed / 1000)}s | 预计剩余: ${Math.round(eta / 1000)}s`
+    )
   }
 
   /**
@@ -59,7 +66,7 @@ class QuantifiedDependencyAnalyzer {
       const child = spawn(command, {
         shell: true,
         cwd: this.projectRoot,
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       })
 
       let stdout = ''
@@ -134,7 +141,6 @@ class QuantifiedDependencyAnalyzer {
 
       this.results.structure = { packages, apps, total: packages.length + apps.length }
       console.log(`  📦 发现 ${packages.length} 个包，${apps.length} 个应用`)
-
     } catch (error) {
       console.error(`  ❌ 项目结构分析失败:`, error.message)
       this.results.structure = { error: error.message }
@@ -150,12 +156,12 @@ class QuantifiedDependencyAnalyzer {
     const dependencies = {
       internal: new Map(),
       external: new Map(),
-      devDependencies: new Map()
+      devDependencies: new Map(),
     }
 
     const allModules = [
-      ...(this.results.structure?.packages || []).map(p => `packages/${p}`),
-      ...(this.results.structure?.apps || []).map(a => `apps/${a}`)
+      ...(this.results.structure?.packages || []).map((p) => `packages/${p}`),
+      ...(this.results.structure?.apps || []).map((a) => `apps/${a}`),
     ]
 
     for (const module of allModules) {
@@ -167,7 +173,7 @@ class QuantifiedDependencyAnalyzer {
         // 分析依赖
         const allDeps = {
           ...packageJson.dependencies,
-          ...packageJson.devDependencies
+          ...packageJson.devDependencies,
         }
 
         for (const [dep, version] of Object.entries(allDeps)) {
@@ -193,7 +199,7 @@ class QuantifiedDependencyAnalyzer {
     this.results.dependencies = {
       internal: Object.fromEntries(dependencies.internal),
       externalCount: dependencies.external.size,
-      totalInternalDeps: Array.from(dependencies.internal.values()).flat().length
+      totalInternalDeps: Array.from(dependencies.internal.values()).flat().length,
     }
 
     console.log(`  🔗 发现 ${this.results.dependencies.totalInternalDeps} 个内部依赖关系`)
@@ -210,11 +216,11 @@ class QuantifiedDependencyAnalyzer {
 
     const layerMap = {
       'shared-types': 'foundation',
-      'abstractions': 'foundation',
-      'infrastructure': 'infrastructure',
+      abstractions: 'foundation',
+      infrastructure: 'infrastructure',
       'config-management': 'infrastructure',
       'ai-providers': 'infrastructure',
-      'database': 'precompiled',
+      database: 'precompiled',
       'event-bus': 'precompiled',
       'ai-domain': 'domain',
       'narrative-domain': 'domain',
@@ -224,7 +230,7 @@ class QuantifiedDependencyAnalyzer {
       'creation-agent': 'application',
       'logic-agent': 'application',
       'narrative-agent': 'application',
-      'frontend': 'application'
+      frontend: 'application',
     }
 
     for (const [from, deps] of Object.entries(this.results.dependencies.internal)) {
@@ -249,7 +255,7 @@ class QuantifiedDependencyAnalyzer {
             fromLayer,
             toLayer,
             severity: fromIndex < toIndex - 1 ? 'high' : 'medium',
-            message: `${fromLayer} 层依赖 ${toLayer} 层`
+            message: `${fromLayer} 层依赖 ${toLayer} 层`,
           })
         }
       }
@@ -259,10 +265,12 @@ class QuantifiedDependencyAnalyzer {
       violations,
       compliance: violations.length === 0,
       violationCount: violations.length,
-      highSeverityCount: violations.filter(v => v.severity === 'high').length
+      highSeverityCount: violations.filter((v) => v.severity === 'high').length,
     }
 
-    console.log(`  🏗️  发现 ${violations.length} 个架构违规 (${this.results.architecture.highSeverityCount} 个高严重性)`)
+    console.log(
+      `  🏗️  发现 ${violations.length} 个架构违规 (${this.results.architecture.highSeverityCount} 个高严重性)`
+    )
   }
 
   /**
@@ -279,7 +287,10 @@ class QuantifiedDependencyAnalyzer {
     // 构建依赖图
     for (const [from, deps] of Object.entries(this.results.dependencies.internal)) {
       const fromPackage = from.replace('@tuheg/', '')
-      graph.set(fromPackage, deps.map(d => d.replace('@tuheg/', '')))
+      graph.set(
+        fromPackage,
+        deps.map((d) => d.replace('@tuheg/', ''))
+      )
     }
 
     // DFS 检测循环
@@ -313,7 +324,7 @@ class QuantifiedDependencyAnalyzer {
     this.results.cycles = {
       found: cycles.length > 0,
       count: cycles.length,
-      cycles: cycles.slice(0, 5) // 只保留前5个循环
+      cycles: cycles.slice(0, 5), // 只保留前5个循环
     }
 
     console.log(`  🔄  ${cycles.length > 0 ? '发现' : '未发现'}循环依赖`)
@@ -329,7 +340,7 @@ class QuantifiedDependencyAnalyzer {
       totalImports: 0,
       internalImports: 0,
       externalImports: 0,
-      filesAnalyzed: 0
+      filesAnalyzed: 0,
     }
 
     async function scanDirectory(dir, results) {
@@ -340,7 +351,12 @@ class QuantifiedDependencyAnalyzer {
           const itemPath = path.join(dir, item)
           const stat = await fs.stat(itemPath)
 
-          if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules' && item !== 'dist') {
+          if (
+            stat.isDirectory() &&
+            !item.startsWith('.') &&
+            item !== 'node_modules' &&
+            item !== 'dist'
+          ) {
             await scanDirectory(itemPath, results)
           } else if (item.endsWith('.ts') || item.endsWith('.js') || item.endsWith('.vue')) {
             results.filesAnalyzed++
@@ -374,7 +390,9 @@ class QuantifiedDependencyAnalyzer {
     await scanDirectory(path.join(this.projectRoot, 'apps'), codeDeps)
 
     this.results.codeDeps = codeDeps
-    console.log(`  📄  分析了 ${codeDeps.filesAnalyzed} 个文件，发现 ${codeDeps.totalImports} 个导入语句`)
+    console.log(
+      `  📄  分析了 ${codeDeps.filesAnalyzed} 个文件，发现 ${codeDeps.totalImports} 个导入语句`
+    )
   }
 
   /**
@@ -387,16 +405,18 @@ class QuantifiedDependencyAnalyzer {
       timestamp: new Date().toISOString(),
       duration: Date.now() - this.startTime,
       summary: {
-        totalModules: (this.results.structure?.packages?.length || 0) + (this.results.structure?.apps?.length || 0),
+        totalModules:
+          (this.results.structure?.packages?.length || 0) +
+          (this.results.structure?.apps?.length || 0),
         totalInternalDeps: this.results.dependencies?.totalInternalDeps || 0,
         architectureViolations: this.results.architecture?.violationCount || 0,
         circularDependencies: this.results.cycles?.count || 0,
         filesAnalyzed: this.results.codeDeps?.filesAnalyzed || 0,
-        totalImports: this.results.codeDeps?.totalImports || 0
+        totalImports: this.results.codeDeps?.totalImports || 0,
       },
       results: this.results,
       recommendations: this.generateRecommendations(),
-      health: this.calculateHealthScore()
+      health: this.calculateHealthScore(),
     }
 
     await fs.writeFile(
@@ -444,7 +464,10 @@ class QuantifiedDependencyAnalyzer {
     score -= (this.results.cycles?.count || 0) * 20
 
     // 依赖不一致扣分
-    if (this.results.codeDeps?.internalImports > (this.results.dependencies?.totalInternalDeps || 0) * 1.5) {
+    if (
+      this.results.codeDeps?.internalImports >
+      (this.results.dependencies?.totalInternalDeps || 0) * 1.5
+    ) {
       score -= 15
     }
 
@@ -469,7 +492,7 @@ class QuantifiedDependencyAnalyzer {
 
     if (r.recommendations.length > 0) {
       console.log('\n💡 建议:')
-      r.recommendations.forEach(rec => console.log(`  • ${rec}`))
+      r.recommendations.forEach((rec) => console.log(`  • ${rec}`))
     }
 
     console.log(`\n📄 详细报告: dependency-analysis-quantified.json`)
@@ -492,7 +515,6 @@ class QuantifiedDependencyAnalyzer {
 
       this.completeProgress()
       this.printFinalReport()
-
     } catch (error) {
       console.error('\n❌ 分析过程中发生错误:', error.message)
       process.exit(1)

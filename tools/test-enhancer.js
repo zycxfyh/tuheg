@@ -60,7 +60,7 @@ class Semaphore {
     return {
       current: this.currentCount,
       max: this.maxConcurrent,
-      waiting: this.waitQueue.length
+      waiting: this.waitQueue.length,
     }
   }
 }
@@ -73,7 +73,7 @@ class TestEnhancer {
       slowTests: [],
       memoryUsage: [],
       timeouts: [],
-      retries: []
+      retries: [],
     }
     this.activeProcesses = new Map() // 跟踪活跃进程 ID -> 进程信息
     this.processCleanupQueue = [] // 进程清理队列
@@ -96,11 +96,11 @@ class TestEnhancer {
       projectTimeouts: {
         frontend: 120000, // 前端测试给更多时间
         'common-backend': 30000,
-        default: 60000
+        default: 60000,
       },
       // 进程清理配置
       cleanupInterval: 5000,
-      maxProcessAge: 300000 // 5分钟
+      maxProcessAge: 300000, // 5分钟
     }
   }
 
@@ -126,7 +126,7 @@ class TestEnhancer {
     // 清理资源
     if (this.activeProcesses.size === 0 && this.processCleanupQueue.length > 0) {
       console.log(`🧽 执行资源清理: ${this.processCleanupQueue.length} 项`)
-      this.processCleanupQueue.forEach(cleanup => cleanup())
+      this.processCleanupQueue.forEach((cleanup) => cleanup())
       this.processCleanupQueue.length = 0
     }
   }
@@ -197,15 +197,16 @@ class TestEnhancer {
     const failureReason = testResult.failureReason
 
     // 网络相关失败 - 高概率重试成功
-    if (failureReason.includes('ECONNREFUSED') ||
-        failureReason.includes('timeout') ||
-        failureReason.includes('ENOTFOUND')) {
+    if (
+      failureReason.includes('ECONNREFUSED') ||
+      failureReason.includes('timeout') ||
+      failureReason.includes('ENOTFOUND')
+    ) {
       return true
     }
 
     // 资源竞争失败 - 中等概率重试
-    if (failureReason.includes('EPIPE') ||
-        failureReason.includes('resource busy')) {
+    if (failureReason.includes('EPIPE') || failureReason.includes('resource busy')) {
       return attemptNumber < 2
     }
 
@@ -230,7 +231,7 @@ class TestEnhancer {
       rss: memUsage.rss,
       heapUsed: memUsage.heapUsed,
       heapTotal: memUsage.heapTotal,
-      external: memUsage.external
+      external: memUsage.external,
     })
 
     // 内存泄漏检测
@@ -248,26 +249,26 @@ class TestEnhancer {
         name: '基础工具测试',
         pattern: ['**/common-backend/**'],
         priority: 'high',
-        timeoutMultiplier: 1
+        timeoutMultiplier: 1,
       },
       {
         name: '核心服务测试',
         pattern: ['**/backend-gateway/**', '**/creation-agent/**'],
         priority: 'high',
-        timeoutMultiplier: 1.5
+        timeoutMultiplier: 1.5,
       },
       {
         name: '业务逻辑测试',
         pattern: ['**/logic-agent/**', '**/narrative-agent/**'],
         priority: 'medium',
-        timeoutMultiplier: 2
+        timeoutMultiplier: 2,
       },
       {
         name: '前端集成测试',
         pattern: ['**/frontend/**'],
         priority: 'low',
-        timeoutMultiplier: 3
-      }
+        timeoutMultiplier: 3,
+      },
     ]
 
     for (const layer of layers) {
@@ -307,7 +308,7 @@ class TestEnhancer {
           pattern,
           startTime: Date.now(),
           timeout,
-          layer: layer.name
+          layer: layer.name,
         })
 
         // 智能重试循环
@@ -332,18 +333,17 @@ class TestEnhancer {
               pattern,
               attempt: attemptNumber,
               error: result.error,
-              duration
+              duration,
             })
 
             attemptNumber++
 
             // 重试间隔 - 指数退避
             if (attemptNumber <= maxRetries) {
-              const delay = Math.min(1000 * Math.pow(2, attemptNumber - 1), 10000)
+              const delay = Math.min(1000 * 2 ** (attemptNumber - 1), 10000)
               console.log(`⏳ 等待 ${delay}ms 后重试...`)
-              await new Promise(resolve => setTimeout(resolve, delay))
+              await new Promise((resolve) => setTimeout(resolve, delay))
             }
-
           } catch (timeoutError) {
             // 超时错误，记录并重试
             console.log(`⏰ 超时重试 ${pattern} (尝试 ${attemptNumber}/${maxRetries})`)
@@ -352,7 +352,7 @@ class TestEnhancer {
               pattern,
               attempt: attemptNumber,
               timeout,
-              layer: layer.name
+              layer: layer.name,
             })
 
             attemptNumber++
@@ -364,7 +364,7 @@ class TestEnhancer {
                 error: timeoutError.message,
                 category: 'timeout',
                 duration: Date.now() - startTime,
-                attempts: attemptNumber - 1
+                attempts: attemptNumber - 1,
               }
               break
             }
@@ -378,7 +378,7 @@ class TestEnhancer {
           duration: result.duration || 0,
           startTime: Date.now() - (result.duration || 0),
           endTime: Date.now(),
-          attempts: result.attempts || 1
+          attempts: result.attempts || 1,
         }
 
         this.testResults.push(testResult)
@@ -390,7 +390,7 @@ class TestEnhancer {
             pattern,
             duration: testResult.duration,
             layer: layer.name,
-            attempts: testResult.attempts
+            attempts: testResult.attempts,
           })
         }
 
@@ -411,15 +411,16 @@ class TestEnhancer {
           result: { success: false, error: error.message },
           duration: Date.now() - Date.now(),
           error: true,
-          attempts: 1
+          attempts: 1,
         }
 
         this.testResults.push(errorResult)
         results.push(errorResult)
 
         // 清理失败的进程记录
-        const failedProcesses = Array.from(this.activeProcesses.entries())
-          .filter(([_, info]) => info.pattern === pattern)
+        const failedProcesses = Array.from(this.activeProcesses.entries()).filter(
+          ([_, info]) => info.pattern === pattern
+        )
 
         failedProcesses.forEach(([pid]) => {
           this.activeProcesses.delete(pid)
@@ -455,7 +456,7 @@ class TestEnhancer {
     const diagnostics = {
       category: 'unknown',
       suggestions: [],
-      rootCause: 'unknown'
+      rootCause: 'unknown',
     }
 
     const errorMessage = error.message || ''
@@ -467,18 +468,21 @@ class TestEnhancer {
       diagnostics.suggestions = [
         '检查nx.json中是否定义了该项目',
         '验证项目名称格式是否正确',
-        '运行 `nx show projects` 查看可用项目'
+        '运行 `nx show projects` 查看可用项目',
       ]
     }
 
     // Jest配置问题
-    else if (errorMessage.includes('Cannot find module') || errorMessage.includes('module resolution')) {
+    else if (
+      errorMessage.includes('Cannot find module') ||
+      errorMessage.includes('module resolution')
+    ) {
       diagnostics.category = 'jest_config_issue'
       diagnostics.rootCause = 'Jest模块解析配置错误'
       diagnostics.suggestions = [
         '检查jest.config.js中的moduleNameMapper配置',
         '验证tsconfig.json中的路径映射',
-        '检查package.json中的依赖是否正确安装'
+        '检查package.json中的依赖是否正确安装',
       ]
     }
 
@@ -489,7 +493,7 @@ class TestEnhancer {
       diagnostics.suggestions = [
         '运行 `npx tsc --noEmit` 检查类型错误',
         '检查tsconfig.json配置',
-        '验证导入路径是否正确'
+        '验证导入路径是否正确',
       ]
     }
 
@@ -497,11 +501,7 @@ class TestEnhancer {
     else if (errorMessage.includes('EACCES') || errorMessage.includes('permission denied')) {
       diagnostics.category = 'permission_error'
       diagnostics.rootCause = '文件权限或环境问题'
-      diagnostics.suggestions = [
-        '检查文件权限',
-        '验证Node.js版本兼容性',
-        '检查系统资源限制'
-      ]
+      diagnostics.suggestions = ['检查文件权限', '验证Node.js版本兼容性', '检查系统资源限制']
     }
 
     // 通用失败
@@ -511,12 +511,12 @@ class TestEnhancer {
       diagnostics.suggestions = [
         '查看完整的错误日志',
         '尝试单独运行该项目的测试',
-        '检查项目依赖是否完整'
+        '检查项目依赖是否完整',
       ]
     }
 
     console.log(`🔍 错误诊断 [${diagnostics.category}]: ${diagnostics.rootCause}`)
-    diagnostics.suggestions.forEach(suggestion => {
+    diagnostics.suggestions.forEach((suggestion) => {
       console.log(`  💡 ${suggestion}`)
     })
 
@@ -570,10 +570,10 @@ class TestEnhancer {
             JEST_TIMEOUT: timeout.toString(),
             // 添加测试环境变量
             NODE_ENV: 'test',
-            CI: process.env.CI || 'false'
+            CI: process.env.CI || 'false',
           },
           maxBuffer: 20 * 1024 * 1024, // 增加到20MB buffer
-          killSignal: 'SIGTERM' // 使用更温和的终止信号
+          killSignal: 'SIGTERM', // 使用更温和的终止信号
         })
 
         // 成功完成
@@ -583,53 +583,54 @@ class TestEnhancer {
 
         console.log(`✅ 测试完成: ${pattern}`)
         resolve({ success: true, code: 0, output: result.toString() })
+      } catch (error) {
+        clearTimeout(timeoutId)
+        clearTimeout(safetyTimeoutId)
+        timeoutId = null
 
-             } catch (error) {
-               clearTimeout(timeoutId)
-               clearTimeout(safetyTimeoutId)
-               timeoutId = null
+        // 智能错误诊断
+        const diagnostics = this.diagnoseTestFailure(pattern, error)
 
-               // 智能错误诊断
-               const diagnostics = this.diagnoseTestFailure(pattern, error)
+        // 智能错误分类和重试策略
+        let errorCategory = diagnostics.category
+        let shouldRetry = false
 
-               // 智能错误分类和重试策略
-               let errorCategory = diagnostics.category
-               let shouldRetry = false
+        // 基于诊断结果决定重试策略
+        if (diagnostics.category === 'nx_project_not_found') {
+          shouldRetry = false // 项目不存在无需重试
+        } else if (diagnostics.category === 'jest_config_issue') {
+          shouldRetry = false // 配置问题无需重试
+        } else if (diagnostics.category === 'typescript_error') {
+          shouldRetry = false // 类型错误无需重试
+        } else if (diagnostics.category === 'permission_error') {
+          shouldRetry = true // 权限问题可能重试
+        } else if (error.signal === 'SIGTERM') {
+          errorCategory = 'timeout'
+          shouldRetry = true
+        } else if (error.code === 'ENOENT') {
+          errorCategory = 'command_not_found'
+          shouldRetry = false
+        } else if (error.status === 1) {
+          errorCategory = 'test_failure'
+          shouldRetry = false
+        }
 
-               // 基于诊断结果决定重试策略
-               if (diagnostics.category === 'nx_project_not_found') {
-                 shouldRetry = false // 项目不存在无需重试
-               } else if (diagnostics.category === 'jest_config_issue') {
-                 shouldRetry = false // 配置问题无需重试
-               } else if (diagnostics.category === 'typescript_error') {
-                 shouldRetry = false // 类型错误无需重试
-               } else if (diagnostics.category === 'permission_error') {
-                 shouldRetry = true // 权限问题可能重试
-               } else if (error.signal === 'SIGTERM') {
-                 errorCategory = 'timeout'
-                 shouldRetry = true
-               } else if (error.code === 'ENOENT') {
-                 errorCategory = 'command_not_found'
-                 shouldRetry = false
-               } else if (error.status === 1) {
-                 errorCategory = 'test_failure'
-                 shouldRetry = false
-               }
+        const errorInfo = {
+          success: false,
+          code: error.status || 1,
+          error: error.message,
+          category: errorCategory,
+          shouldRetry,
+          pattern,
+          diagnostics, // 包含诊断信息
+        }
 
-               const errorInfo = {
-                 success: false,
-                 code: error.status || 1,
-                 error: error.message,
-                 category: errorCategory,
-                 shouldRetry,
-                 pattern,
-                 diagnostics // 包含诊断信息
-               }
+        console.log(
+          `❌ 测试失败 [${errorCategory}]: ${pattern} - ${error.message.substring(0, 100)}...`
+        )
 
-               console.log(`❌ 测试失败 [${errorCategory}]: ${pattern} - ${error.message.substring(0, 100)}...`)
-
-               // 对于可重试的错误，返回错误信息但不reject
-               resolve(errorInfo)
+        // 对于可重试的错误，返回错误信息但不reject
+        resolve(errorInfo)
       }
     })
   }
@@ -638,15 +639,15 @@ class TestEnhancer {
    * 获取层级统计信息
    */
   getLayerStats(layerName, results) {
-    const layerResults = results.filter(r => r.layer === layerName)
-    const successful = layerResults.filter(r => r.result?.success).length
+    const layerResults = results.filter((r) => r.layer === layerName)
+    const successful = layerResults.filter((r) => r.result?.success).length
     const total = layerResults.length
 
     return {
       successful,
       total,
       failed: total - successful,
-      successRate: total > 0 ? (successful / total * 100).toFixed(1) : '0'
+      successRate: total > 0 ? ((successful / total) * 100).toFixed(1) : '0',
     }
   }
 
@@ -659,9 +660,17 @@ class TestEnhancer {
       // 1. 直接匹配Nx项目名
       () => {
         const nxProjects = [
-          'backend-gateway', 'creation-agent', 'logic-agent', 'narrative-agent',
-          'frontend', 'vcptoolbox', 'vcptoolbox-core', 'vcptoolbox-sdk',
-          'plugin-generator', 'api-doc-generator', 'common-backend'
+          'backend-gateway',
+          'creation-agent',
+          'logic-agent',
+          'narrative-agent',
+          'frontend',
+          'vcptoolbox',
+          'vcptoolbox-core',
+          'vcptoolbox-sdk',
+          'plugin-generator',
+          'api-doc-generator',
+          'common-backend',
         ]
 
         for (const project of nxProjects) {
@@ -685,7 +694,7 @@ class TestEnhancer {
         if (pattern.includes('/vcptoolbox-core/')) return 'vcptoolbox-core'
         if (pattern.includes('/vcptoolbox-sdk/')) return 'vcptoolbox-sdk'
         return null
-      }
+      },
     ]
 
     for (const strategy of strategies) {
@@ -709,12 +718,12 @@ class TestEnhancer {
       summary: {
         totalDuration: duration,
         totalTests: this.testResults.length,
-        successfulTests: this.testResults.filter(r => r.result?.success).length,
-        failedTests: this.testResults.filter(r => !r.result?.success).length
+        successfulTests: this.testResults.filter((r) => r.result?.success).length,
+        failedTests: this.testResults.filter((r) => !r.result?.success).length,
       },
       performance: this.performanceMetrics,
       recommendations: this.generateRecommendations(),
-      layerResults: this.testResults
+      layerResults: this.testResults,
     }
 
     // 保存详细报告
@@ -739,7 +748,7 @@ class TestEnhancer {
       recommendations.push({
         type: 'performance',
         priority: 'high',
-        message: `发现${this.performanceMetrics.slowTests.length}个慢测试，建议优化或拆分`
+        message: `发现${this.performanceMetrics.slowTests.length}个慢测试，建议优化或拆分`,
       })
     }
 
@@ -747,15 +756,15 @@ class TestEnhancer {
       recommendations.push({
         type: 'timeout',
         priority: 'high',
-        message: '存在超时测试，建议增加超时时间或优化测试逻辑'
+        message: '存在超时测试，建议增加超时时间或优化测试逻辑',
       })
     }
 
-    if (this.performanceMetrics.memoryUsage.some(m => m.heapUsed > this.config.memoryThreshold)) {
+    if (this.performanceMetrics.memoryUsage.some((m) => m.heapUsed > this.config.memoryThreshold)) {
       recommendations.push({
         type: 'memory',
         priority: 'medium',
-        message: '检测到高内存使用，建议检查内存泄漏'
+        message: '检测到高内存使用，建议检查内存泄漏',
       })
     }
 
@@ -784,7 +793,6 @@ class TestEnhancer {
       // 基于结果决定退出码
       const hasFailures = report.summary.failedTests > 0
       process.exit(hasFailures ? 1 : 0)
-
     } catch (error) {
       console.error('💥 测试执行器异常:', error)
 

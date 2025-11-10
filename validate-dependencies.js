@@ -23,7 +23,7 @@ const ARCHITECTURE_LAYERS = {
   domain: ['ai-domain', 'narrative-domain', 'enterprise-domain', 'game-core'],
 
   // 应用层 - 可以依赖所有层
-  application: ['backend-gateway', 'creation-agent', 'logic-agent', 'narrative-agent', 'frontend']
+  application: ['backend-gateway', 'creation-agent', 'logic-agent', 'narrative-agent', 'frontend'],
 }
 
 // 包名映射
@@ -38,7 +38,7 @@ const PACKAGE_NAME_MAP = {
   '@tuheg/ai-domain': 'ai-domain',
   '@tuheg/narrative-domain': 'narrative-domain',
   '@tuheg/enterprise-domain': 'enterprise-domain',
-  '@tuheg/game-core': 'game-core'
+  '@tuheg/game-core': 'game-core',
 }
 
 // 获取包的层级
@@ -97,7 +97,7 @@ function validatePackageDependencies(packagePath) {
         to: depPackageName,
         fromLayer,
         toLayer,
-        message: `${fromLayer} 层的包不能依赖 ${toLayer} 层的包`
+        message: `${fromLayer} 层的包不能依赖 ${toLayer} 层的包`,
       })
     }
   }
@@ -115,8 +115,9 @@ function validateAllDependencies() {
 
   // 验证 packages
   if (fs.existsSync(packagesDir)) {
-    const packageDirs = fs.readdirSync(packagesDir)
-      .filter(dir => fs.statSync(path.join(packagesDir, dir)).isDirectory())
+    const packageDirs = fs
+      .readdirSync(packagesDir)
+      .filter((dir) => fs.statSync(path.join(packagesDir, dir)).isDirectory())
 
     for (const packageDir of packageDirs) {
       const packagePath = path.join(packagesDir, packageDir)
@@ -127,8 +128,9 @@ function validateAllDependencies() {
 
   // 验证 apps
   if (fs.existsSync(appsDir)) {
-    const appDirs = fs.readdirSync(appsDir)
-      .filter(dir => fs.statSync(path.join(appsDir, dir)).isDirectory())
+    const appDirs = fs
+      .readdirSync(appsDir)
+      .filter((dir) => fs.statSync(path.join(appsDir, dir)).isDirectory())
 
     for (const appDir of appDirs) {
       const appPath = path.join(appsDir, appDir)
@@ -143,8 +145,10 @@ function validateAllDependencies() {
     return true
   } else {
     console.log('❌ 发现依赖关系违规:')
-    allErrors.forEach(error => {
-      console.log(`  - ${error.from} (${error.fromLayer}) -> ${error.to} (${error.toLayer}): ${error.message}`)
+    allErrors.forEach((error) => {
+      console.log(
+        `  - ${error.from} (${error.fromLayer}) -> ${error.to} (${error.toLayer}): ${error.message}`
+      )
     })
     return false
   }

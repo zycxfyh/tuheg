@@ -17,7 +17,7 @@ export enum ApplicationType {
   /** 叙述代理 */
   NARRATIVE_AGENT = 'narrative_agent',
   /** 工具服务 */
-  TOOL_SERVICE = 'tool_service'
+  TOOL_SERVICE = 'tool_service',
 }
 
 /**

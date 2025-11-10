@@ -7,9 +7,7 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "references": [
-    { "path": "../shared-types" }
-  ],
+  "references": [{ "path": "../shared-types" }],
   "include": ["src/**/*"],
   "exclude": ["**/*.test.ts", "**/*.spec.ts", "dist"]
 }

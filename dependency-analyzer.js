@@ -25,7 +25,7 @@ class DependencyAnalyzer {
       const result = execSync('npx nx graph --file=dependency-graph.json', {
         cwd: this.projectRoot,
         encoding: 'utf8',
-        stdio: 'pipe'
+        stdio: 'pipe',
       })
 
       if (fs.existsSync('dependency-graph.json')) {
@@ -55,7 +55,7 @@ class DependencyAnalyzer {
       const result = execSync('npx @microsoft/rush list --json', {
         cwd: this.projectRoot,
         encoding: 'utf8',
-        stdio: 'pipe'
+        stdio: 'pipe',
       })
 
       return JSON.parse(result)
@@ -77,7 +77,7 @@ class DependencyAnalyzer {
       const result = execSync('madge --json --extensions ts,js src/', {
         cwd: this.projectRoot,
         encoding: 'utf8',
-        stdio: 'pipe'
+        stdio: 'pipe',
       })
 
       return JSON.parse(result)
@@ -99,7 +99,7 @@ class DependencyAnalyzer {
       const result = execSync('depcruise --output-type json --do-not-follow "^node_modules"', {
         cwd: this.projectRoot,
         encoding: 'utf8',
-        stdio: 'pipe'
+        stdio: 'pipe',
       })
 
       return JSON.parse(result)
@@ -128,7 +128,7 @@ class DependencyAnalyzer {
             to: dep,
             fromLayer: projectLayer,
             toLayer: depLayer,
-            severity: 'high'
+            severity: 'high',
           })
         }
       }
@@ -146,7 +146,13 @@ class DependencyAnalyzer {
       infrastructure: ['infrastructure', 'config-management', 'ai-providers'],
       precompiled: ['database', 'event-bus'],
       domain: ['ai-domain', 'narrative-domain', 'enterprise-domain', 'game-core'],
-      application: ['backend-gateway', 'creation-agent', 'logic-agent', 'narrative-agent', 'frontend']
+      application: [
+        'backend-gateway',
+        'creation-agent',
+        'logic-agent',
+        'narrative-agent',
+        'frontend',
+      ],
     }
 
     for (const [layer, packages] of Object.entries(layers)) {
@@ -174,84 +180,81 @@ class DependencyAnalyzer {
    */
   createRushConfig() {
     const rushConfig = {
-      "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
-      "rushVersion": "5.100.0",
-      "pnpmVersion": "8.0.0",
-      "nodeSupportedVersionRange": ">=16.13.0 <19.0.0",
-      "suppressNodeLtsWarning": false,
-      "ensureConsistentVersions": true,
-      "projects": [
+      $schema: 'https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json',
+      rushVersion: '5.100.0',
+      pnpmVersion: '8.0.0',
+      nodeSupportedVersionRange: '>=16.13.0 <19.0.0',
+      suppressNodeLtsWarning: false,
+      ensureConsistentVersions: true,
+      projects: [
         {
-          "packageName": "@tuheg/shared-types",
-          "projectFolder": "packages/shared-types"
+          packageName: '@tuheg/shared-types',
+          projectFolder: 'packages/shared-types',
         },
         {
-          "packageName": "@tuheg/abstractions",
-          "projectFolder": "packages/abstractions"
+          packageName: '@tuheg/abstractions',
+          projectFolder: 'packages/abstractions',
         },
         {
-          "packageName": "@tuheg/infrastructure",
-          "projectFolder": "packages/infrastructure"
+          packageName: '@tuheg/infrastructure',
+          projectFolder: 'packages/infrastructure',
         },
         {
-          "packageName": "@tuheg/config-management",
-          "projectFolder": "packages/config-management"
+          packageName: '@tuheg/config-management',
+          projectFolder: 'packages/config-management',
         },
         {
-          "packageName": "@tuheg/ai-providers",
-          "projectFolder": "packages/ai-providers"
+          packageName: '@tuheg/ai-providers',
+          projectFolder: 'packages/ai-providers',
         },
         {
-          "packageName": "@tuheg/database",
-          "projectFolder": "packages/database"
+          packageName: '@tuheg/database',
+          projectFolder: 'packages/database',
         },
         {
-          "packageName": "@tuheg/event-bus",
-          "projectFolder": "packages/event-bus"
+          packageName: '@tuheg/event-bus',
+          projectFolder: 'packages/event-bus',
         },
         {
-          "packageName": "@tuheg/ai-domain",
-          "projectFolder": "packages/ai-domain"
+          packageName: '@tuheg/ai-domain',
+          projectFolder: 'packages/ai-domain',
         },
         {
-          "packageName": "@tuheg/narrative-domain",
-          "projectFolder": "packages/narrative-domain"
+          packageName: '@tuheg/narrative-domain',
+          projectFolder: 'packages/narrative-domain',
         },
         {
-          "packageName": "@tuheg/enterprise-domain",
-          "projectFolder": "packages/enterprise-domain"
+          packageName: '@tuheg/enterprise-domain',
+          projectFolder: 'packages/enterprise-domain',
         },
         {
-          "packageName": "@tuheg/game-core",
-          "projectFolder": "packages/game-core"
+          packageName: '@tuheg/game-core',
+          projectFolder: 'packages/game-core',
         },
         {
-          "packageName": "@tuheg/backend-gateway",
-          "projectFolder": "apps/backend-gateway"
+          packageName: '@tuheg/backend-gateway',
+          projectFolder: 'apps/backend-gateway',
         },
         {
-          "packageName": "@tuheg/creation-agent",
-          "projectFolder": "apps/creation-agent"
+          packageName: '@tuheg/creation-agent',
+          projectFolder: 'apps/creation-agent',
         },
         {
-          "packageName": "@tuheg/logic-agent",
-          "projectFolder": "apps/logic-agent"
+          packageName: '@tuheg/logic-agent',
+          projectFolder: 'apps/logic-agent',
         },
         {
-          "packageName": "@tuheg/narrative-agent",
-          "projectFolder": "apps/narrative-agent"
+          packageName: '@tuheg/narrative-agent',
+          projectFolder: 'apps/narrative-agent',
         },
         {
-          "packageName": "@tuheg/frontend",
-          "projectFolder": "apps/frontend"
-        }
-      ]
+          packageName: '@tuheg/frontend',
+          projectFolder: 'apps/frontend',
+        },
+      ],
     }
 
-    fs.writeFileSync(
-      path.join(this.projectRoot, 'rush.json'),
-      JSON.stringify(rushConfig, null, 2)
-    )
+    fs.writeFileSync(path.join(this.projectRoot, 'rush.json'), JSON.stringify(rushConfig, null, 2))
   }
 
   /**
@@ -263,13 +266,13 @@ class DependencyAnalyzer {
       tools: Object.keys(results),
       summary: {},
       issues: [],
-      recommendations: []
+      recommendations: [],
     }
 
     // 汇总结果
     for (const [tool, result] of Object.entries(results)) {
       if (result && result.issues) {
-        report.issues.push(...result.issues.map(issue => ({ ...issue, tool })))
+        report.issues.push(...result.issues.map((issue) => ({ ...issue, tool })))
       }
     }
 
@@ -279,15 +282,15 @@ class DependencyAnalyzer {
         '🔧 使用 Nx migrations 修复依赖关系',
         '📦 考虑将循环依赖的模块合并',
         '🏗️ 实施依赖倒置原则',
-        '📋 创建模块边界守护者'
+        '📋 创建模块边界守护者',
       ]
     }
 
     report.summary = {
       totalIssues: report.issues.length,
-      highSeverity: report.issues.filter(i => i.severity === 'high').length,
-      mediumSeverity: report.issues.filter(i => i.severity === 'medium').length,
-      lowSeverity: report.issues.filter(i => i.severity === 'low').length
+      highSeverity: report.issues.filter((i) => i.severity === 'high').length,
+      mediumSeverity: report.issues.filter((i) => i.severity === 'medium').length,
+      lowSeverity: report.issues.filter((i) => i.severity === 'low').length,
     }
 
     return report
@@ -306,7 +309,7 @@ class DependencyAnalyzer {
       { name: 'nx', fn: () => this.analyzeWithNx() },
       { name: 'rush', fn: () => this.analyzeWithRush() },
       { name: 'madge', fn: () => this.analyzeWithMadge() },
-      { name: 'cruiser', fn: () => this.analyzeWithCruiser() }
+      { name: 'cruiser', fn: () => this.analyzeWithCruiser() },
     ]
 
     for (const analysis of analyses) {
@@ -358,7 +361,7 @@ class DependencyAnalyzer {
 
     if (report.recommendations.length > 0) {
       console.log('\n💡 建议:')
-      report.recommendations.forEach(rec => console.log(`- ${rec}`))
+      report.recommendations.forEach((rec) => console.log(`- ${rec}`))
     }
 
     console.log('\n📄 详细报告已保存到: dependency-analysis-report.json')

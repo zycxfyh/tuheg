@@ -1,4 +1,4 @@
-const { name } = require('./package.json');
+const { name } = require('./package.json')
 
 module.exports = {
   displayName: name,
@@ -10,4 +10,4 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/packages/config-management',
   collectCoverageFrom: ['src/**/*.{ts,js}', '!src/**/*.d.ts'],
-};
+}

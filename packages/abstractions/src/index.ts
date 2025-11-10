@@ -3,11 +3,10 @@
 // Creation Ring - Core Abstractions
 // ============================================================================
 
-// 领域接口定义
-export * from './interfaces/index'
-
 // 数据传输对象
 export * from './dtos/index'
+// 领域接口定义
+export * from './interfaces/index'
 
 // 领域类型定义
 export * from './types/index'

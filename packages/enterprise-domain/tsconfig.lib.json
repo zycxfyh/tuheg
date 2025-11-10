@@ -5,10 +5,5 @@
     "outDir": "../../dist/packages/enterprise-domain"
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "jest.config.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/**/*.stories.ts"
-  ]
+  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.stories.ts"]
 }

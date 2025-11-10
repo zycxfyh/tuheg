@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs'
-import { AiProvider, AiConfiguration } from '@tuheg/shared-types'
+import type { AiConfiguration, AiProvider } from '@tuheg/shared-types'
+import type { Observable } from 'rxjs'
 
 // ============================================================================
 // AI 请求和响应类型 (AI Request/Response Types)
@@ -235,7 +235,10 @@ export interface IPromptManager {
    * @param templateName 模板名称
    * @param variables 变量值
    */
-  validateTemplateVariables(templateName: string, variables: Record<string, unknown>): Promise<boolean>
+  validateTemplateVariables(
+    templateName: string,
+    variables: Record<string, unknown>
+  ): Promise<boolean>
 
   /**
    * 获取模板元信息
