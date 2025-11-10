@@ -8,6 +8,14 @@ coverage/
 .nyc_output/
 *.lcov
 
+# Jest cache
+.jest-cache/
+apps/*/jest-cache/
+packages/*/jest-cache/
+
+# Industrial cache
+.industrial-cache/
+
 # Production builds
 dist/
 build/
