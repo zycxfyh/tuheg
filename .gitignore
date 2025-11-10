@@ -157,3 +157,8 @@ industrial-test-results/
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+# Repomix output files (large XML files for AI analysis)
+repomix-output.xml
+repomix-output.*
+*.repomix.*
