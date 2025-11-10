@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { PluginSandboxService } from '@tuheg/common-backend'
+import type { PluginSandboxService } from '@tuheg/ai-domain'
 import chalk from 'chalk'
 import ora from 'ora'
 

@@ -46,6 +46,261 @@
     }
   },
   "useInferencePlugins": false,
+  "projects": {
+    "backend-gateway": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "options": {
+            "main": "apps/backend-gateway/src/main.ts",
+            "outputPath": "dist/apps/backend-gateway",
+            "tsConfig": "apps/backend-gateway/tsconfig.app.json"
+          }
+        },
+        "serve": {
+          "executor": "@nx/js:node",
+          "options": {
+            "buildTarget": "backend-gateway:build"
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "options": {
+            "jestConfig": "apps/backend-gateway/jest.config.js"
+          }
+        }
+      }
+    },
+    "creation-agent": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "options": {
+            "main": "apps/creation-agent/src/main.ts",
+            "outputPath": "dist/apps/creation-agent",
+            "tsConfig": "apps/creation-agent/tsconfig.app.json"
+          }
+        },
+        "serve": {
+          "executor": "@nx/js:node",
+          "options": {
+            "buildTarget": "creation-agent:build"
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "options": {
+            "jestConfig": "apps/creation-agent/jest.config.js"
+          }
+        }
+      }
+    },
+    "logic-agent": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "options": {
+            "main": "apps/logic-agent/src/main.ts",
+            "outputPath": "dist/apps/logic-agent",
+            "tsConfig": "apps/logic-agent/tsconfig.app.json"
+          }
+        },
+        "serve": {
+          "executor": "@nx/js:node",
+          "options": {
+            "buildTarget": "logic-agent:build"
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "options": {
+            "jestConfig": "apps/logic-agent/jest.config.js"
+          }
+        }
+      }
+    },
+    "narrative-agent": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "options": {
+            "main": "apps/narrative-agent/src/main.ts",
+            "outputPath": "dist/apps/narrative-agent",
+            "tsConfig": "apps/narrative-agent/tsconfig.app.json"
+          }
+        },
+        "serve": {
+          "executor": "@nx/js:node",
+          "options": {
+            "buildTarget": "narrative-agent:build"
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "options": {
+            "jestConfig": "apps/narrative-agent/jest.config.js"
+          }
+        }
+      }
+    },
+    "frontend": {
+      "targets": {
+        "build": {
+          "executor": "@nx/vite:build",
+          "options": {
+            "configFile": "apps/frontend/vite.config.js"
+          }
+        },
+        "serve": {
+          "executor": "@nx/vite:dev-server",
+          "options": {
+            "configFile": "apps/frontend/vite.config.js"
+          }
+        },
+        "test": {
+          "executor": "@nx/vite:test",
+          "options": {
+            "configFile": "apps/frontend/vitest.config.js"
+          }
+        }
+      }
+    },
+    "abstractions": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/abstractions",
+            "main": "packages/abstractions/src/index.ts",
+            "tsConfig": "packages/abstractions/tsconfig.lib.json"
+          }
+        },
+        "lint": {
+          "executor": "@nx/eslint:lint",
+          "outputs": ["{workspaceRoot}/reports/eslint/packages/abstractions"],
+          "options": {
+            "lintFilePatterns": ["packages/abstractions/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "outputs": ["{workspaceRoot}/coverage/packages/abstractions"],
+          "options": {
+            "jestConfig": "packages/abstractions/jest.config.js"
+          }
+        }
+      }
+    },
+    "config-management": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/config-management",
+            "main": "packages/config-management/src/index.ts",
+            "tsConfig": "packages/config-management/tsconfig.lib.json"
+          }
+        },
+        "lint": {
+          "executor": "@nx/eslint:lint",
+          "outputs": ["{workspaceRoot}/reports/eslint/packages/config-management"],
+          "options": {
+            "lintFilePatterns": ["packages/config-management/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "outputs": ["{workspaceRoot}/coverage/packages/config-management"],
+          "options": {
+            "jestConfig": "packages/config-management/jest.config.js"
+          }
+        }
+      }
+    },
+    "database": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/database",
+            "main": "packages/database/src/index.ts",
+            "tsConfig": "packages/database/tsconfig.lib.json"
+          }
+        },
+        "lint": {
+          "executor": "@nx/eslint:lint",
+          "outputs": ["{workspaceRoot}/reports/eslint/packages/database"],
+          "options": {
+            "lintFilePatterns": ["packages/database/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "outputs": ["{workspaceRoot}/coverage/packages/database"],
+          "options": {
+            "jestConfig": "packages/database/jest.config.js"
+          }
+        }
+      }
+    },
+    "ai-providers": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/ai-providers",
+            "main": "packages/ai-providers/src/index.ts",
+            "tsConfig": "packages/ai-providers/tsconfig.lib.json"
+          }
+        },
+        "lint": {
+          "executor": "@nx/eslint:lint",
+          "outputs": ["{workspaceRoot}/reports/eslint/packages/ai-providers"],
+          "options": {
+            "lintFilePatterns": ["packages/ai-providers/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "outputs": ["{workspaceRoot}/coverage/packages/ai-providers"],
+          "options": {
+            "jestConfig": "packages/ai-providers/jest.config.js"
+          }
+        }
+      }
+    },
+    "event-bus": {
+      "targets": {
+        "build": {
+          "executor": "@nx/js:tsc",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/event-bus",
+            "main": "packages/event-bus/src/index.ts",
+            "tsConfig": "packages/event-bus/tsconfig.lib.json"
+          }
+        },
+        "lint": {
+          "executor": "@nx/eslint:lint",
+          "outputs": ["{workspaceRoot}/reports/eslint/packages/event-bus"],
+          "options": {
+            "lintFilePatterns": ["packages/event-bus/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nx/jest:jest",
+          "outputs": ["{workspaceRoot}/coverage/packages/event-bus"],
+          "options": {
+            "jestConfig": "packages/event-bus/jest.config.js"
+          }
+        }
+      }
+    }
+  },
   "defaultBase": "origin/main",
   "tasksRunnerOptions": {
     "default": {

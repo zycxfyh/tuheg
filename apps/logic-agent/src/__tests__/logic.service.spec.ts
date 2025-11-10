@@ -1,23 +1,21 @@
 // 文件路径: apps/logic-agent/src/__tests__/logic.service.spec.ts
 
 import { Test, type TestingModule } from '@nestjs/testing'
-import {
+import type {
   callAiWithGuard,
-  type DirectiveSet,
-  DynamicAiSchedulerService,
-  EventBusService,
-  type GameActionJobData,
-  PrismaService,
+  DirectiveSet,
   PromptInjectionGuard,
   PromptManagerService,
-} from '@tuheg/common-backend'
+} from '@tuheg/ai-domain'
+import { DynamicAiSchedulerService, type EventBusService, type PrismaService } from '@tuheg/infrastructure'
+import type { GameActionJobData } from '@tuheg/ai-domain'
 import { type MockProxy, mock } from 'jest-mock-extended'
 import { LogicService } from '../logic.service'
 import { RuleEngineService } from '../rule-engine.service'
 
-// [核心] 模拟 @tuheg/common-backend 模块，特别是 callAiWithGuard 函数
-jest.mock('@tuheg/common-backend', () => ({
-  ...jest.requireActual('@tuheg/common-backend'), // 保留其他真实导出
+// [核心] 模拟 @tuheg/ai-domain 模块，特别是 callAiWithGuard 函数
+jest.mock('@tuheg/ai-domain', () => ({
+  ...jest.requireActual('@tuheg/ai-domain'), // 保留其他真实导出
   callAiWithGuard: jest.fn(), // 将 callAiWithGuard 替换为一个 Jest 模拟函数
 }))
 

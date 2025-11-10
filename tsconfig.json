@@ -36,12 +36,17 @@
     "**/*.test.tsx"
   ],
   "references": [
-    { "path": "./apps/backend-gateway" },
-    { "path": "./apps/creation-agent" },
-    { "path": "./apps/frontend" },
-    { "path": "./apps/logic-agent" },
-    { "path": "./apps/narrative-agent" },
-    { "path": "./packages/common-backend" },
+    { "path": "./packages/shared-types" },
+    { "path": "./packages/abstractions" },
+    { "path": "./packages/infrastructure" },
+    { "path": "./packages/config-management" },
+    { "path": "./packages/ai-providers" },
+    { "path": "./packages/database" },
+    { "path": "./packages/event-bus" },
+    { "path": "./packages/ai-domain" },
+    { "path": "./packages/narrative-domain" },
+    { "path": "./packages/enterprise-domain" },
+    { "path": "./packages/game-core" },
     { "path": "./packages/vcptoolbox-sdk" }
   ]
 }

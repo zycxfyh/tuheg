@@ -2,16 +2,12 @@
 
 import { Module } from '@nestjs/common'
 
-// 从 @tuheg/common-backend 导入所有需要的共享模块
-import {
-  AiProviderFactory,
-  ConfigModule,
-  DynamicAiSchedulerService,
-  EventBusModule,
-  PrismaModule,
-  PromptInjectionGuard,
-  PromptManagerModule,
-} from '@tuheg/common-backend'
+// 从不同领域包导入需要的模块
+import { AiProviderFactory } from '@tuheg/ai-providers'
+import { ConfigModule } from '@tuheg/config-management'
+import { DatabaseModule } from '@tuheg/database'
+// TODO: 需要从ai-domain或其他包导入这些服务
+// import { DynamicAiSchedulerService, PromptInjectionGuard, PromptManagerModule } from '@tuheg/ai-services'
 import { CreationService } from './creation.service'
 // 导入本模块自己的器官
 import { CreationAgentController } from './creation-agent.controller'
@@ -19,11 +15,18 @@ import { CreationAgentController } from './creation-agent.controller'
 @Module({
   imports: [
     ConfigModule, // 使用共享的类型安全配置模块
-    PrismaModule,
-    PromptManagerModule,
-    EventBusModule,
+    DatabaseModule, // 使用数据库模块
+    // TODO: 添加其他必要的模块
+    // PromptManagerModule,
+    // EventBusModule,
   ],
   controllers: [CreationAgentController],
-  providers: [CreationService, DynamicAiSchedulerService, AiProviderFactory, PromptInjectionGuard],
+  providers: [
+    CreationService,
+    AiProviderFactory,
+    // TODO: 需要从相应的包导入这些服务
+    // DynamicAiSchedulerService,
+    // PromptInjectionGuard
+  ],
 })
 export class CreationAgentModule {}

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule, EventBusModule, PrismaModule } from '@tuheg/common-backend'
+import { ConfigModule, EventBusModule, PrismaModule } from '@tuheg/infrastructure'
 import { DlqConsumerService } from './dlq-consumer.service'
 
 @Module({

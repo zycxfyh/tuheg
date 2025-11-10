@@ -8,12 +8,15 @@ RUN npm install -g pnpm@8.15.0
 WORKDIR /app
 
 # Copy package files
-COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ./
+COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../nx.json ./
 COPY ../../packages/common-backend/package.json ./packages/common-backend/
 COPY ./package.json ./apps/backend-gateway/
 
 # Install dependencies
 RUN pnpm install
+
+# Install NestJS CLI globally for building
+RUN npm install -g @nestjs/cli
 
 # Copy source code
 COPY packages/common-backend ./packages/common-backend/
@@ -21,7 +24,7 @@ COPY tsconfig*.json ./
 COPY apps/backend-gateway/src ./apps/backend-gateway/src/
 COPY apps/backend-gateway/tsconfig*.json ./apps/backend-gateway/
 
-# Build the application using npm script
+# Build the application
 RUN cd apps/backend-gateway && npm run build
 
 # Production stage

@@ -1,0 +1,32 @@
+{
+  "name": "ai-providers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/ai-providers/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/ai-providers",
+        "main": "packages/ai-providers/src/index.ts",
+        "tsConfig": "packages/ai-providers/tsconfig.lib.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{workspaceRoot}/reports/eslint/packages/ai-providers"],
+      "options": {
+        "lintFilePatterns": ["packages/ai-providers/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/ai-providers"],
+      "options": {
+        "jestConfig": "packages/ai-providers/jest.config.js"
+      }
+    }
+  },
+  "tags": ["type:domain", "scope:ai", "domain:ai-providers"]
+}

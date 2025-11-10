@@ -1,0 +1,30 @@
+{
+  "name": "@tuheg/ai-domain",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/ai-domain/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/ai-domain",
+        "main": "packages/ai-domain/src/index.ts",
+        "tsConfig": "packages/ai-domain/tsconfig.lib.json",
+        "assets": ["packages/ai-domain/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/ai-domain/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["scope:domain", "type:feature"],
+  "implicitDependencies": ["@tuheg/infrastructure", "@tuheg/shared-types"]
+}

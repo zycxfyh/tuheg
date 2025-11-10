@@ -1,0 +1,32 @@
+{
+  "name": "event-bus",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/event-bus/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/event-bus",
+        "main": "packages/event-bus/src/index.ts",
+        "tsConfig": "packages/event-bus/tsconfig.lib.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{workspaceRoot}/reports/eslint/packages/event-bus"],
+      "options": {
+        "lintFilePatterns": ["packages/event-bus/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/event-bus"],
+      "options": {
+        "jestConfig": "packages/event-bus/jest.config.js"
+      }
+    }
+  },
+  "tags": ["type:infrastructure", "scope:shared", "domain:event-driven"]
+}

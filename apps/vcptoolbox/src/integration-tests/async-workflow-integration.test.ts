@@ -5,7 +5,7 @@
 
 import { ConfigService } from '@nestjs/config'
 import { Test, type TestingModule } from '@nestjs/testing'
-import { AsyncWorkflowService } from '../../../../packages/common-backend/src/vcp/async-workflow.service'
+import { AsyncWorkflowService } from '@tuheg/ai-domain'
 
 describe('AsyncWorkflowService Integration', () => {
   let service: AsyncWorkflowService

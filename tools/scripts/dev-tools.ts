@@ -244,11 +244,11 @@ Commands:
   health <package>             Check package health
 
 Examples:
-  node dev-tools.ts test common-backend
-  node dev-tools.ts coverage common-backend 85
+  node dev-tools.ts test ai-domain
+  node dev-tools.ts coverage infrastructure 85
   node dev-tools.ts lint --fix
   node dev-tools.ts validate
-  node dev-tools.ts health common-backend
+  node dev-tools.ts health narrative-domain
       `)
       process.exit(1)
   }

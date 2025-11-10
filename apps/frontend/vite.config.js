@@ -179,16 +179,13 @@ export default defineConfig(({ mode }) => ({
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-    __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'web'),
   },
 
-  // Capacitor支持
-  base: process.env.PLATFORM === 'capacitor' ? './' : '/',
 
   // 开发服务器配置增强
   server: {
     port: 5173,
-    host: true, // 允许外部访问（用于Capacitor开发）
+    host: true, // 允许外部访问
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
@@ -203,5 +200,5 @@ export default defineConfig(({ mode }) => ({
   },
 
   // 环境变量前缀
-  envPrefix: ['VITE_', 'CAPACITOR_'],
+  envPrefix: ['VITE_'],
 }))

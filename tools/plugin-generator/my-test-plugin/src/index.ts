@@ -1,4 +1,4 @@
-import type { AiToolContribution, Plugin, PluginContext } from '@tuheg/common-backend'
+import type { AiToolContribution, Plugin, PluginContext } from '@tuheg/ai-domain'
 
 /**
  * my-test-plugin - A test plugin for VCPToolBox

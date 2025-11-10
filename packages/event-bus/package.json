@@ -1,0 +1,24 @@
+{
+  "name": "@tuheg/event-bus",
+  "version": "1.0.0",
+  "description": "Event-driven architecture implementation with message queuing",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "@tuheg/abstractions": "workspace:*",
+    "@nestjs/common": "^10.4.20",
+    "@nestjs/cqrs": "^10.2.2",
+    "rxjs": "^7.8.2",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

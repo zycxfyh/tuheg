@@ -1,0 +1,70 @@
+ff6db7d4ba4c3b1fb3c6b6e29c52261d
+"use strict";
+// 文件路径: apps/backend-gateway/src/auth/auth.controller.ts
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const common_1 = require("@nestjs/common");
+const throttler_1 = require("@nestjs/throttler");
+// [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
+const infrastructure_1 = require("@tuheg/infrastructure");
+const login_dto_1 = require("./dto/login.dto");
+const register_dto_1 = require("./dto/register.dto");
+const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
+let AuthController = class AuthController {
+    authService;
+    constructor(authService) {
+        this.authService = authService;
+    }
+    async register(registerDto) {
+        return this.authService.register(registerDto);
+    }
+    async login(loginDto) {
+        return this.authService.login(loginDto);
+    }
+    getProfile(req) {
+        return req.user;
+    }
+};
+exports.AuthController = AuthController;
+__decorate([
+    (0, common_1.Post)('register'),
+    __param(0, (0, common_1.Body)(new infrastructure_1.ZodValidationPipe(register_dto_1.registerSchema))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "register", null);
+__decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 5, ttl: 300000 } }) // 5次/5分钟
+    ,
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('login'),
+    __param(0, (0, common_1.Body)(new infrastructure_1.ZodValidationPipe(login_dto_1.loginSchema))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('profile'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "getProfile", null);
+exports.AuthController = AuthController = __decorate([
+    (0, common_1.Controller)('auth'),
+    __metadata("design:paramtypes", [Object])
+], AuthController);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxhdXRoLmNvbnRyb2xsZXIudHMiLCJtYXBwaW5ncyI6IjtBQUFBLHlEQUF5RDs7Ozs7Ozs7Ozs7Ozs7O0FBRXpELDJDQUFrRztBQUNsRyxpREFBNEM7QUFDNUMseURBQXlEO0FBQ3pELDBEQUF5RDtBQUl6RCwrQ0FBNkM7QUFHN0MscURBQW1EO0FBQ25ELDREQUFzRDtBQUcvQyxJQUFNLGNBQWMsR0FBcEIsTUFBTSxjQUFjO0lBQ0k7SUFBN0IsWUFBNkIsV0FBd0I7UUFBeEIsZ0JBQVcsR0FBWCxXQUFXLENBQWE7SUFBRyxDQUFDO0lBRzVDLEFBQU4sS0FBSyxDQUFDLFFBQVEsQ0FBOEMsV0FBd0I7UUFDekYsT0FBTyxJQUFJLENBQUMsV0FBVyxDQUFDLFFBQVEsQ0FBQyxXQUFXLENBQUMsQ0FBQTtJQUMvQyxDQUFDO0lBS1ksQUFBTixLQUFLLENBQUMsS0FBSyxDQUEyQyxRQUFrQjtRQUM3RSxPQUFPLElBQUksQ0FBQyxXQUFXLENBQUMsS0FBSyxDQUFDLFFBQVEsQ0FBQyxDQUFBO0lBQ3pDLENBQUM7SUFJTSxVQUFVLENBQVEsR0FBWTtRQUNuQyxPQUFPLEdBQUcsQ0FBQyxJQUFJLENBQUE7SUFDakIsQ0FBQztDQUNGLENBQUE7QUFwQlksd0NBQWM7QUFJWjtJQURaLElBQUEsYUFBSSxFQUFDLFVBQVUsQ0FBQztJQUNNLFdBQUEsSUFBQSxhQUFJLEVBQUMsSUFBSSxrQ0FBaUIsQ0FBQyw2QkFBYyxDQUFDLENBQUMsQ0FBQTs7Ozs4Q0FFakU7QUFLWTtJQUhaLElBQUEsb0JBQVEsRUFBQyxFQUFFLE9BQU8sRUFBRSxFQUFFLEtBQUssRUFBRSxDQUFDLEVBQUUsR0FBRyxFQUFFLE1BQU0sRUFBRSxFQUFFLENBQUMsQ0FBQyxTQUFTOztJQUMxRCxJQUFBLGlCQUFRLEVBQUMsbUJBQVUsQ0FBQyxFQUFFLENBQUM7SUFDdkIsSUFBQSxhQUFJLEVBQUMsT0FBTyxDQUFDO0lBQ00sV0FBQSxJQUFBLGFBQUksRUFBQyxJQUFJLGtDQUFpQixDQUFDLHVCQUFXLENBQUMsQ0FBQyxDQUFBOzs7OzJDQUUzRDtBQUlNO0lBRk4sSUFBQSxrQkFBUyxFQUFDLDZCQUFZLENBQUM7SUFDdkIsSUFBQSxZQUFHLEVBQUMsU0FBUyxDQUFDO0lBQ0ksV0FBQSxJQUFBLFlBQUcsR0FBRSxDQUFBOzs7O2dEQUV2Qjt5QkFuQlUsY0FBYztJQUQxQixJQUFBLG1CQUFVLEVBQUMsTUFBTSxDQUFDOztHQUNOLGNBQWMsQ0FvQjFCIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxVc2Vyc1xcMTY2NjNcXERlc2t0b3BcXHR1aGVnXFxhcHBzXFxiYWNrZW5kLWdhdGV3YXlcXHNyY1xcYXV0aFxcYXV0aC5jb250cm9sbGVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogYXBwcy9iYWNrZW5kLWdhdGV3YXkvc3JjL2F1dGgvYXV0aC5jb250cm9sbGVyLnRzXG5cbmltcG9ydCB7IEJvZHksIENvbnRyb2xsZXIsIEdldCwgSHR0cENvZGUsIEh0dHBTdGF0dXMsIFBvc3QsIFJlcSwgVXNlR3VhcmRzIH0gZnJvbSAnQG5lc3Rqcy9jb21tb24nXG5pbXBvcnQgeyBUaHJvdHRsZSB9IGZyb20gJ0BuZXN0anMvdGhyb3R0bGVyJ1xuLy8gW+aguOW/g+S/ruato10g5LuOIEB0dWhlZy9jb21tb24tYmFja2VuZCDlr7zlhaXlhbHkuqvnmoQgWm9kVmFsaWRhdGlvblBpcGVcbmltcG9ydCB7IFpvZFZhbGlkYXRpb25QaXBlIH0gZnJvbSAnQHR1aGVnL2luZnJhc3RydWN0dXJlJ1xuaW1wb3J0IHR5cGUgeyBSZXF1ZXN0IH0gZnJvbSAnZXhwcmVzcydcbmltcG9ydCB0eXBlIHsgQXV0aFNlcnZpY2UgfSBmcm9tICcuL2F1dGguc2VydmljZSdcbmltcG9ydCB0eXBlIHsgTG9naW5EdG8gfSBmcm9tICcuL2R0by9sb2dpbi5kdG8nXG5pbXBvcnQgeyBsb2dpblNjaGVtYSB9IGZyb20gJy4vZHRvL2xvZ2luLmR0bydcbi8vIOWvvOWFpURUT+exu+Wei+WSjFpvZCBzY2hlbWFcbmltcG9ydCB0eXBlIHsgUmVnaXN0ZXJEdG8gfSBmcm9tICcuL2R0by9yZWdpc3Rlci5kdG8nXG5pbXBvcnQgeyByZWdpc3RlclNjaGVtYSB9IGZyb20gJy4vZHRvL3JlZ2lzdGVyLmR0bydcbmltcG9ydCB7IEp3dEF1dGhHdWFyZCB9IGZyb20gJy4vZ3VhcmRzL2p3dC1hdXRoLmd1YXJkJ1xuXG5AQ29udHJvbGxlcignYXV0aCcpXG5leHBvcnQgY2xhc3MgQXV0aENvbnRyb2xsZXIge1xuICBjb25zdHJ1Y3Rvcihwcml2YXRlIHJlYWRvbmx5IGF1dGhTZXJ2aWNlOiBBdXRoU2VydmljZSkge31cblxuICBAUG9zdCgncmVnaXN0ZXInKVxuICBwdWJsaWMgYXN5bmMgcmVnaXN0ZXIoQEJvZHkobmV3IFpvZFZhbGlkYXRpb25QaXBlKHJlZ2lzdGVyU2NoZW1hKSkgcmVnaXN0ZXJEdG86IFJlZ2lzdGVyRHRvKSB7XG4gICAgcmV0dXJuIHRoaXMuYXV0aFNlcnZpY2UucmVnaXN0ZXIocmVnaXN0ZXJEdG8pXG4gIH1cblxuICBAVGhyb3R0bGUoeyBkZWZhdWx0OiB7IGxpbWl0OiA1LCB0dGw6IDMwMDAwMCB9IH0pIC8vIDXmrKEvNeWIhumSn1xuICBASHR0cENvZGUoSHR0cFN0YXR1cy5PSylcbiAgQFBvc3QoJ2xvZ2luJylcbiAgcHVibGljIGFzeW5jIGxvZ2luKEBCb2R5KG5ldyBab2RWYWxpZGF0aW9uUGlwZShsb2dpblNjaGVtYSkpIGxvZ2luRHRvOiBMb2dpbkR0bykge1xuICAgIHJldHVybiB0aGlzLmF1dGhTZXJ2aWNlLmxvZ2luKGxvZ2luRHRvKVxuICB9XG5cbiAgQFVzZUd1YXJkcyhKd3RBdXRoR3VhcmQpXG4gIEBHZXQoJ3Byb2ZpbGUnKVxuICBwdWJsaWMgZ2V0UHJvZmlsZShAUmVxKCkgcmVxOiBSZXF1ZXN0KSB7XG4gICAgcmV0dXJuIHJlcS51c2VyXG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

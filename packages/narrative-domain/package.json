@@ -1,0 +1,21 @@
+{
+  "name": "@tuheg/narrative-domain",
+  "version": "1.0.0",
+  "description": "Narrative domain business logic and DTOs",
+  "main": "src/index.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@tuheg/infrastructure": "workspace:*",
+    "@tuheg/shared-types": "workspace:*",
+    "@nestjs/common": "^10.4.20",
+    "@nestjs/event-emitter": "^2.1.1",
+    "nestjs-zod": "^3.0.0",
+    "zod": "^3.25.76"
+  }
+}

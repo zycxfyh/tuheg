@@ -1,0 +1,24 @@
+201ec0b271f0d5c2960c39a137093507
+"use strict";
+// 文件路径: src/auth/guards/jwt-auth.guard.ts
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JwtAuthGuard = void 0;
+const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
+/**
+ * 一个实现了JWT认证策略的守卫。
+ * 当应用到控制器或路由处理程序时，它会自动调用JwtStrategy来验证请求。
+ */
+let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
+};
+exports.JwtAuthGuard = JwtAuthGuard;
+exports.JwtAuthGuard = JwtAuthGuard = __decorate([
+    (0, common_1.Injectable)()
+], JwtAuthGuard);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxndWFyZHNcXGp3dC1hdXRoLmd1YXJkLnRzIiwibWFwcGluZ3MiOiI7QUFBQSwwQ0FBMEM7Ozs7Ozs7OztBQUUxQywyQ0FBMkM7QUFDM0MsK0NBQTRDO0FBRTVDOzs7R0FHRztBQUVJLElBQU0sWUFBWSxHQUFsQixNQUFNLFlBQWEsU0FBUSxJQUFBLG9CQUFTLEVBQUMsS0FBSyxDQUFDO0NBQUcsQ0FBQTtBQUF4QyxvQ0FBWTt1QkFBWixZQUFZO0lBRHhCLElBQUEsbUJBQVUsR0FBRTtHQUNBLFlBQVksQ0FBNEIiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXGFwcHNcXGJhY2tlbmQtZ2F0ZXdheVxcc3JjXFxhdXRoXFxndWFyZHNcXGp3dC1hdXRoLmd1YXJkLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogc3JjL2F1dGgvZ3VhcmRzL2p3dC1hdXRoLmd1YXJkLnRzXG5cbmltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAbmVzdGpzL2NvbW1vbidcbmltcG9ydCB7IEF1dGhHdWFyZCB9IGZyb20gJ0BuZXN0anMvcGFzc3BvcnQnXG5cbi8qKlxuICog5LiA5Liq5a6e546w5LqGSldU6K6k6K+B562W55Wl55qE5a6I5Y2r44CCXG4gKiDlvZPlupTnlKjliLDmjqfliLblmajmiJbot6/nlLHlpITnkIbnqIvluo/ml7bvvIzlroPkvJroh6rliqjosIPnlKhKd3RTdHJhdGVneeadpemqjOivgeivt+axguOAglxuICovXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgSnd0QXV0aEd1YXJkIGV4dGVuZHMgQXV0aEd1YXJkKCdqd3QnKSB7fVxuIl0sInZlcnNpb24iOjN9

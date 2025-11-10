@@ -10,8 +10,8 @@
 
 - **前端框架**: Vue 3 + TypeScript
 - **构建工具**: Vite
-- **移动端**: Capacitor 6
-- **桌面端**: Tauri 2
+- **PWA**: 渐进式Web应用
+- **Web应用**: 响应式Web应用
 - **PWA支持**: Vite PWA插件 + Workbox
 
 ### 构建脚本
@@ -23,14 +23,9 @@ npm run build:all
 # 单独构建
 npm run build:web          # Web应用
 npm run build:pwa          # PWA应用
-npm run capacitor:build:android  # Android应用
-npm run capacitor:build:ios      # iOS应用
-npm run desktop:build      # 桌面应用
-
 # 开发模式
 npm run dev                # Web开发
-npm run capacitor:dev      # 移动端开发
-npm run desktop:dev        # 桌面端开发
+npm run dev:pwa           # PWA开发
 ```
 
 ### 高级构建选项
@@ -111,76 +106,18 @@ node scripts/build-cross-platform.js web --skip-tests
 ### 前置要求
 
 - **Node.js**: 18+
-- **Android Studio**: for Android builds
-- **Xcode**: for iOS builds (macOS only)
-- **Capacitor CLI**: 已安装
+- **现代浏览器**: 支持PWA和ES2020+
+- **Workbox CLI**: PWA构建工具
 
-### Android部署
+### PWA优化特性
 
-1. **环境配置**
-   ```bash
-   # 安装Android SDK
-   # 配置ANDROID_HOME环境变量
+- **离线支持**: Service Worker缓存策略
+- **安装体验**: Add to Home Screen提示
+- **推送通知**: Web Notifications API
+- **后台同步**: Background Sync API
+- **响应式设计**: 移动端友好的UI适配
 
-   # 添加Android平台
-   npm run capacitor:add:android
-   ```
-
-2. **构建和部署**
-   ```bash
-   # 构建Web资源
-   npm run capacitor:build:android
-
-   # 打开Android Studio
-   npm run capacitor:open:android
-
-   # 在Android Studio中构建APK
-   # Build > Build Bundle(s)/APK(s) > Build APK(s)
-   ```
-
-3. **Google Play发布**
-   - 生成签名密钥
-   - 构建发布版本APK/AAB
-   - 上传到Google Play Console
-   - 配置应用信息和截图
-
-### iOS部署
-
-1. **环境配置 (macOS only)**
-   ```bash
-   # 安装Xcode命令行工具
-   xcode-select --install
-
-   # 添加iOS平台
-   npm run capacitor:add:ios
-   ```
-
-2. **构建和部署**
-   ```bash
-   # 构建Web资源
-   npm run capacitor:build:ios
-
-   # 打开Xcode
-   npm run capacitor:open:ios
-
-   # 在Xcode中配置签名和证书
-   # Product > Archive > Distribute App
-   ```
-
-3. **App Store发布**
-   - 配置App Store Connect
-   - 上传构建版本
-   - 填写应用信息和截图
-   - 提交审核
-
-### 移动端优化特性
-
-- **原生功能集成**: 相机、文件系统、通知等
-- **性能优化**: 针对移动设备优化的打包策略
-- **UI适配**: 刘海屏、安全区域适配
-- **手势支持**: 触摸友好的交互设计
-
-## 💻 桌面端部署
+## 💻 Web部署
 
 ### 前置要求
 
@@ -189,45 +126,6 @@ node scripts/build-cross-platform.js web --skip-tests
   - Windows: Visual Studio Build Tools
   - macOS: Xcode Command Line Tools
   - Linux: `webkit2gtk`, `openssl`, `curl`
-
-### Tauri构建
-
-1. **环境配置**
-   ```bash
-   # 安装Tauri CLI
-   npm install -g @tauri-apps/cli
-
-   # 初始化Tauri项目
-   npm run tauri:init
-   ```
-
-2. **构建桌面应用**
-   ```bash
-   # 开发模式
-   npm run desktop:dev
-
-   # 生产构建
-   npm run desktop:build
-   ```
-
-3. **平台特定构建**
-   ```bash
-   # Windows
-   npm run desktop:build -- --target x86_64-pc-windows-msvc
-
-   # macOS
-   npm run desktop:build -- --target x86_64-apple-darwin
-
-   # Linux
-   npm run desktop:build -- --target x86_64-unknown-linux-gnu
-   ```
-
-### 桌面端特性
-
-- **原生性能**: Rust核心，高效能
-- **小体积**: 相比Electron更轻量
-- **系统集成**: 托盘图标、系统通知、文件关联
-- **跨平台**: Windows/macOS/Linux统一体验
 
 ## 🚀 CI/CD部署
 
@@ -292,7 +190,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: desktop-build-${{ matrix.os }}
-          path: apps/desktop/src-tauri/target/release/bundle/
+          path: dist/
 ```
 
 ### 自动发布
@@ -314,32 +212,16 @@ jobs:
       - name: Deploy to Vercel
         run: vercel --prod --yes
 
-  publish-android:
+  publish-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: npm ci
-      - run: npm run capacitor:build:android
-      - name: Upload to Google Play
+      - run: npm run build
+      - name: Deploy to production
         run: |
-          # 使用Google Play上传工具
-          # fastlane supply
-
-  publish-desktop:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-    steps:
-      - uses: actions/checkout@v3
-      - run: npm ci
-      - run: npm run desktop:build
-      - name: Upload to GitHub Releases
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./apps/desktop/src-tauri/target/release/bundle/*
-          asset_name: creation-ring-${{ matrix.os }}.zip
+          # 部署到生产环境
+          # 可以是Vercel、Netlify、AWS等
 ```
 
 ## 📊 性能监控
@@ -347,8 +229,8 @@ jobs:
 ### 平台特定监控
 
 - **Web**: Lighthouse, Web Vitals
-- **移动端**: Android Profiler, Xcode Instruments
-- **桌面端**: Tauri DevTools, 系统性能监控
+- **PWA**: Web App Manifest, Service Worker调试
+- **Web应用**: Lighthouse CI, Web Vitals监控
 
 ### 错误追踪
 
@@ -371,20 +253,20 @@ Sentry.init({
 
 ### 常见问题
 
-1. **Capacitor构建失败**
+1. **依赖安装失败**
    ```bash
-   # 清理并重新添加平台
-   npx cap remove android
-   npx cap add android
+   # 清理依赖缓存
+   rm -rf node_modules package-lock.json
+   npm install
    ```
 
-2. **Tauri构建失败**
+2. **Web构建失败**
    ```bash
-   # 更新Rust工具链
-   rustup update
+   # 清理缓存
+   rm -rf node_modules/.vite
 
-   # 清理Tauri缓存
-   npm run tauri:build -- --no-bundle
+   # 重新构建
+   npm run build
    ```
 
 3. **PWA不工作**
@@ -398,8 +280,8 @@ Sentry.init({
 
 ### 调试技巧
 
-- **移动端调试**: 使用Chrome DevTools远程调试
-- **桌面端调试**: 使用Tauri DevTools
+- **PWA调试**: 使用Application面板检查安装状态
+- **Web调试**: 使用Chrome DevTools
 - **PWA调试**: 使用Lighthouse和Application面板
 
 ## 📈 发布清单

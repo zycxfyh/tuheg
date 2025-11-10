@@ -3,15 +3,13 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import type { Character, Game, WorldBookEntry } from '@prisma/client'
 
-// [核心修正] 从 @tuheg/common-backend 导入所有需要的共享模块
+// [核心修正] 从 narrative-domain 导入DTO，从 infrastructure 导入服务
 import type {
-  CacheService,
   CreateNarrativeGameDto,
-  EventBusService,
-  PrismaService,
   SubmitActionDto,
   UpdateCharacterDto,
-} from '@tuheg/common-backend'
+} from '@tuheg/narrative-domain'
+import type { CacheService, EventBusService, PrismaService } from '@tuheg/infrastructure'
 
 @Injectable()
 export class GamesService {

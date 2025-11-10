@@ -5,7 +5,7 @@
 
 import { ConfigService } from '@nestjs/config'
 import { Test, type TestingModule } from '@nestjs/testing'
-import { VCPProtocolService } from '../../../../packages/common-backend/src/vcp/vcp-protocol.service'
+import { VCPProtocolService } from '@tuheg/ai-domain'
 
 describe('VCPProtocolService Integration', () => {
   let service: VCPProtocolService

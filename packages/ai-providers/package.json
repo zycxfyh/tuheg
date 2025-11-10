@@ -1,0 +1,23 @@
+{
+  "name": "@tuheg/ai-providers",
+  "version": "1.0.0",
+  "description": "AI providers abstraction and implementations for the Creation Ring system",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "@tuheg/abstractions": "workspace:*",
+    "@tuheg/shared-types": "workspace:*",
+    "axios": "^1.7.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

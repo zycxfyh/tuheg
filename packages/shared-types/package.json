@@ -1,0 +1,14 @@
+{
+  "name": "@tuheg/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for the creation ring project",
+  "main": "src/index.ts",
+  "types": "src/index.d.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

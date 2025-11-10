@@ -3,7 +3,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common'
 import { Throttle } from '@nestjs/throttler'
 // [核心修正] 从 @tuheg/common-backend 导入共享的 ZodValidationPipe
-import { ZodValidationPipe } from '@tuheg/common-backend'
+import { ZodValidationPipe } from '@tuheg/infrastructure'
 import type { Request } from 'express'
 import type { AuthService } from './auth.service'
 import type { LoginDto } from './dto/login.dto'

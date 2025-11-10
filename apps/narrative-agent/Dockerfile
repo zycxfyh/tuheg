@@ -8,12 +8,15 @@ RUN npm install -g pnpm@8.15.0
 WORKDIR /app
 
 # Copy package files
-COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ./
+COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../nx.json ./
 COPY ../../packages/common-backend/package.json ./packages/common-backend/
 COPY ./package.json ./apps/narrative-agent/
 
 # Install dependencies
 RUN pnpm install
+
+# Install NestJS CLI globally for building
+RUN npm install -g @nestjs/cli
 
 # Copy source code
 COPY packages/common-backend ./packages/common-backend/
@@ -22,7 +25,7 @@ COPY apps/narrative-agent/src ./apps/narrative-agent/src/
 COPY apps/narrative-agent/tsconfig*.json ./apps/narrative-agent/
 
 # Build the application
-RUN npx nest build narrative-agent --webpack
+RUN cd apps/narrative-agent && npm run build
 
 # Production stage
 FROM node:20-alpine AS production

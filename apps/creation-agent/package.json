@@ -22,7 +22,10 @@
     "@nestjs/microservices": "^10.4.20",
     "@prisma/client": "^5.22.0",
     "@sentry/node": "^8.21.0",
-    "@tuheg/common-backend": "workspace:*",
+    "@tuheg/abstractions": "workspace:*",
+    "@tuheg/config-management": "workspace:*",
+    "@tuheg/database": "workspace:*",
+    "@tuheg/ai-providers": "workspace:*",
     "amqplib": "^0.10.9",
     "rxjs": "^7.8.2",
     "zod": "^3.25.76"

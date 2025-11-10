@@ -1,0 +1,30 @@
+{
+  "name": "@tuheg/narrative-domain",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/narrative-domain/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/narrative-domain",
+        "main": "packages/narrative-domain/src/index.ts",
+        "tsConfig": "packages/narrative-domain/tsconfig.lib.json",
+        "assets": ["packages/narrative-domain/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/narrative-domain/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["scope:domain", "type:feature"],
+  "implicitDependencies": ["@tuheg/infrastructure", "@tuheg/shared-types"]
+}

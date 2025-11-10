@@ -4,7 +4,7 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import type { JwtService } from '@nestjs/jwt'
 import type { User } from '@prisma/client'
 // [核心修正] 放弃旧的 '@/' 别名，从 @tuheg/common-backend 导入共享的 PrismaService
-import type { PrismaService } from '@tuheg/common-backend'
+import type { PrismaService } from '@tuheg/infrastructure'
 import * as bcryptjs from 'bcryptjs'
 import type { LoginDto } from './dto/login.dto'
 // [注释] 导入DTO类型，确保数据结构一致

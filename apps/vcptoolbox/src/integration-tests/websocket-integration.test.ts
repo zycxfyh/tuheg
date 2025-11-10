@@ -5,7 +5,7 @@
 
 import { ConfigService } from '@nestjs/config'
 import { Test, type TestingModule } from '@nestjs/testing'
-import { WebSocketService } from '../../../../packages/common-backend/src/vcp/websocket.service'
+import { WebSocketService } from '@tuheg/ai-domain'
 
 describe('WebSocketService Integration', () => {
   let service: WebSocketService

@@ -1,0 +1,24 @@
+3ec4ab3e328cfa656aae33fa817e7e8b
+"use strict";
+// 文件路径: libs/common/src/prisma/prisma.service.ts
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PrismaService = void 0;
+const common_1 = require("@nestjs/common");
+const client_1 = require("@prisma/client");
+let PrismaService = class PrismaService extends client_1.PrismaClient {
+    async onModuleInit() {
+        // 在 NestJS 模块初始化时连接到数据库
+        await this.$connect();
+    }
+};
+exports.PrismaService = PrismaService;
+exports.PrismaService = PrismaService = __decorate([
+    (0, common_1.Injectable)()
+], PrismaService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxwcmlzbWFcXHByaXNtYS5zZXJ2aWNlLnRzIiwibWFwcGluZ3MiOiI7QUFBQSxpREFBaUQ7Ozs7Ozs7OztBQUVqRCwyQ0FBOEQ7QUFDOUQsMkNBQTZDO0FBR3RDLElBQU0sYUFBYSxHQUFuQixNQUFNLGFBQWMsU0FBUSxxQkFBWTtJQUM3QyxLQUFLLENBQUMsWUFBWTtRQUNoQix3QkFBd0I7UUFDeEIsTUFBTSxJQUFJLENBQUMsUUFBUSxFQUFFLENBQUE7SUFDdkIsQ0FBQztDQUNGLENBQUE7QUFMWSxzQ0FBYTt3QkFBYixhQUFhO0lBRHpCLElBQUEsbUJBQVUsR0FBRTtHQUNBLGFBQWEsQ0FLekIiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxwcmlzbWFcXHByaXNtYS5zZXJ2aWNlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIOaWh+S7tui3r+W+hDogbGlicy9jb21tb24vc3JjL3ByaXNtYS9wcmlzbWEuc2VydmljZS50c1xuXG5pbXBvcnQgeyBJbmplY3RhYmxlLCB0eXBlIE9uTW9kdWxlSW5pdCB9IGZyb20gJ0BuZXN0anMvY29tbW9uJ1xuaW1wb3J0IHsgUHJpc21hQ2xpZW50IH0gZnJvbSAnQHByaXNtYS9jbGllbnQnXG5cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBQcmlzbWFTZXJ2aWNlIGV4dGVuZHMgUHJpc21hQ2xpZW50IGltcGxlbWVudHMgT25Nb2R1bGVJbml0IHtcbiAgYXN5bmMgb25Nb2R1bGVJbml0KCkge1xuICAgIC8vIOWcqCBOZXN0SlMg5qih5Z2X5Yid5aeL5YyW5pe26L+e5o6l5Yiw5pWw5o2u5bqTXG4gICAgYXdhaXQgdGhpcy4kY29ubmVjdCgpXG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

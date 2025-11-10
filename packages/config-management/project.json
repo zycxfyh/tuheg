@@ -1,0 +1,32 @@
+{
+  "name": "config-management",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/config-management/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/config-management",
+        "main": "packages/config-management/src/index.ts",
+        "tsConfig": "packages/config-management/tsconfig.lib.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{workspaceRoot}/reports/eslint/packages/config-management"],
+      "options": {
+        "lintFilePatterns": ["packages/config-management/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/config-management"],
+      "options": {
+        "jestConfig": "packages/config-management/jest.config.js"
+      }
+    }
+  },
+  "tags": ["type:infrastructure", "scope:shared", "domain:config"]
+}

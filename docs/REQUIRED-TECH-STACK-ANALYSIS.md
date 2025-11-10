@@ -154,12 +154,6 @@
 "@capacitor/cli": "^5.6.0"
 ```
 
-### 桌面应用
-**必须**: Tauri - 跨平台桌面应用
-```json
-"@tauri-apps/cli": "^2.9.3"
-"@tauri-apps/api": "^2.9.3"
-```
 
 ---
 

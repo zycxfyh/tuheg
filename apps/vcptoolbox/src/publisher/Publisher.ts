@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto'
 import { EventEmitter } from 'node:events'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { getErrorMessage } from '@tuheg/common-backend'
+import { getErrorMessage } from '@tuheg/infrastructure'
 import type { PluginMetadata, VCPPlugin } from '../PluginFramework'
 
 // VCPToolBox 发布系统

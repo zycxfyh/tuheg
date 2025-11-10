@@ -1,16 +1,9 @@
 // 文件路径: apps/logic-agent/src/logic-agent.module.ts
 
 import { Module } from '@nestjs/common'
-// [核心修正] 从 @tuheg/common-backend 的总出口 (index.ts) 导入所有需要的共享模块
-import {
-  AiProviderFactory,
-  ConfigModule,
-  DynamicAiSchedulerService,
-  EventBusModule,
-  PrismaModule,
-  PromptInjectionGuard,
-  PromptManagerModule, // [核心] 导入我们新建的"图书馆部门"
-} from '@tuheg/common-backend'
+// 从不同领域包导入需要的模块
+import { AiProviderFactory, DynamicAiSchedulerService, PromptInjectionGuard, PromptManagerModule } from '@tuheg/ai-domain'
+import { ConfigModule, EventBusModule, PrismaModule } from '@tuheg/infrastructure'
 import { LogicService } from './logic.service'
 import { LogicAgentController } from './logic-agent.controller'
 import { RuleEngineService } from './rule-engine.service'

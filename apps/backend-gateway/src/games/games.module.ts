@@ -2,7 +2,7 @@
 
 import { Module } from '@nestjs/common'
 // [核心修正] 从 @tuheg/common-backend 导入共享模块
-import { EventBusModule, PrismaModule } from '@tuheg/common-backend'
+import { EventBusModule, PrismaModule } from '@tuheg/infrastructure'
 import { GamesController } from './games.controller'
 import { GamesService } from './games.service'
 

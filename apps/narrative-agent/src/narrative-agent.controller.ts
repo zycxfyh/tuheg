@@ -1,7 +1,7 @@
 import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
 import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
 import * as Sentry from '@sentry/node'
-import type { LogicCompletePayload } from '@tuheg/common-backend'
+import type { LogicCompletePayload } from '@tuheg/ai-domain'
 import { z } from 'zod'
 import type { NarrativeService } from './narrative.service'
 

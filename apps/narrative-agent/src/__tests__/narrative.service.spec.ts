@@ -6,24 +6,22 @@ import { HttpService } from '@nestjs/axios'
 import { NotFoundException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import type { PrismaClient } from '@prisma/client'
-import {
+import type {
   AiGenerationException,
   ContextSummarizerService,
   callAiWithGuard,
-  DynamicAiSchedulerService,
-  EventBusService,
   MemoryHierarchyService,
-  type NarrativeRenderingPayload,
-  PrismaService,
-  type PromptInjectionCheckResult,
+  NarrativeRenderingPayload,
+  PromptInjectionCheckResult,
   PromptInjectionGuard,
   PromptManagerService,
-} from '@tuheg/common-backend'
+} from '@tuheg/ai-domain'
+import { DynamicAiSchedulerService, type EventBusService, type PrismaService } from '@tuheg/infrastructure'
 import { type DeepMockProxy, mockDeep } from 'jest-mock-extended'
 import { NarrativeService } from '../narrative.service'
 
-jest.mock('@tuheg/common-backend', () => ({
-  ...jest.requireActual('@tuheg/common-backend'),
+jest.mock('@tuheg/ai-domain', () => ({
+  ...jest.requireActual('@tuheg/ai-domain'),
   callAiWithGuard: jest.fn(),
 }))
 

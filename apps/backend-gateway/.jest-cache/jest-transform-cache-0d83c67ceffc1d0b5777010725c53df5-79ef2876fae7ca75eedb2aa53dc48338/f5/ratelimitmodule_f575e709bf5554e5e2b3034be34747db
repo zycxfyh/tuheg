@@ -1,0 +1,30 @@
+1876aaa0a6dd89d6c7f111cf0a2dde07
+"use strict";
+// 文件路径: packages/common-backend/src/rate-limit/rate-limit.module.ts
+// 核心理念: 模块化导出限流功能
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RateLimitModule = void 0;
+const common_1 = require("@nestjs/common");
+const rate_limit_guard_1 = require("./rate-limit.guard");
+const rate_limit_service_1 = require("./rate-limit.service");
+/**
+ * @module RateLimitModule
+ * @description 限流模块
+ * 提供 API 限流保护功能
+ */
+let RateLimitModule = class RateLimitModule {
+};
+exports.RateLimitModule = RateLimitModule;
+exports.RateLimitModule = RateLimitModule = __decorate([
+    (0, common_1.Module)({
+        providers: [rate_limit_service_1.RateLimitService, rate_limit_guard_1.RateLimitGuard],
+        exports: [rate_limit_service_1.RateLimitService, rate_limit_guard_1.RateLimitGuard],
+    })
+], RateLimitModule);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxyYXRlLWxpbWl0XFxyYXRlLWxpbWl0Lm1vZHVsZS50cyIsIm1hcHBpbmdzIjoiO0FBQUEsb0VBQW9FO0FBQ3BFLGtCQUFrQjs7Ozs7Ozs7O0FBRWxCLDJDQUF1QztBQUN2Qyx5REFBbUQ7QUFDbkQsNkRBQXVEO0FBRXZEOzs7O0dBSUc7QUFLSSxJQUFNLGVBQWUsR0FBckIsTUFBTSxlQUFlO0NBQUcsQ0FBQTtBQUFsQiwwQ0FBZTswQkFBZixlQUFlO0lBSjNCLElBQUEsZUFBTSxFQUFDO1FBQ04sU0FBUyxFQUFFLENBQUMscUNBQWdCLEVBQUUsaUNBQWMsQ0FBQztRQUM3QyxPQUFPLEVBQUUsQ0FBQyxxQ0FBZ0IsRUFBRSxpQ0FBYyxDQUFDO0tBQzVDLENBQUM7R0FDVyxlQUFlLENBQUciLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxyYXRlLWxpbWl0XFxyYXRlLWxpbWl0Lm1vZHVsZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyDmlofku7bot6/lvoQ6IHBhY2thZ2VzL2NvbW1vbi1iYWNrZW5kL3NyYy9yYXRlLWxpbWl0L3JhdGUtbGltaXQubW9kdWxlLnRzXG4vLyDmoLjlv4PnkIblv7U6IOaooeWdl+WMluWvvOWHuumZkOa1geWKn+iDvVxuXG5pbXBvcnQgeyBNb2R1bGUgfSBmcm9tICdAbmVzdGpzL2NvbW1vbidcbmltcG9ydCB7IFJhdGVMaW1pdEd1YXJkIH0gZnJvbSAnLi9yYXRlLWxpbWl0Lmd1YXJkJ1xuaW1wb3J0IHsgUmF0ZUxpbWl0U2VydmljZSB9IGZyb20gJy4vcmF0ZS1saW1pdC5zZXJ2aWNlJ1xuXG4vKipcbiAqIEBtb2R1bGUgUmF0ZUxpbWl0TW9kdWxlXG4gKiBAZGVzY3JpcHRpb24g6ZmQ5rWB5qih5Z2XXG4gKiDmj5DkvpsgQVBJIOmZkOa1geS/neaKpOWKn+iDvVxuICovXG5ATW9kdWxlKHtcbiAgcHJvdmlkZXJzOiBbUmF0ZUxpbWl0U2VydmljZSwgUmF0ZUxpbWl0R3VhcmRdLFxuICBleHBvcnRzOiBbUmF0ZUxpbWl0U2VydmljZSwgUmF0ZUxpbWl0R3VhcmRdLFxufSlcbmV4cG9ydCBjbGFzcyBSYXRlTGltaXRNb2R1bGUge31cbiJdLCJ2ZXJzaW9uIjozfQ==

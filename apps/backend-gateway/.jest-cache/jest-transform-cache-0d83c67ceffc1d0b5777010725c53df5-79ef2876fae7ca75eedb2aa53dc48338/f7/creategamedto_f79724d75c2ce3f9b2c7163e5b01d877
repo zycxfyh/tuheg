@@ -1,0 +1,16 @@
+4f221245cff17343f8438a501f9f387a
+"use strict";
+// 文件路径: packages/common-backend/src/dto/create-game.dto.ts
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createNarrativeGameSchema = void 0;
+const zod_1 = require("zod");
+// [核心] 定义叙事驱动创世的请求体验证规则
+exports.createNarrativeGameSchema = zod_1.z.object({
+    concept: zod_1.z
+        .string()
+        .min(10, { message: 'Concept must be at least 10 characters long.' })
+        .max(500, { message: 'Concept must be 500 characters or less.' }),
+    // [未来扩展] 可以在这里加入世界参数，如
+    // params: z.object({ chaos: z.number().min(0).max(100), ... }).optional()
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxkdG9cXGNyZWF0ZS1nYW1lLmR0by50cyIsIm1hcHBpbmdzIjoiO0FBQUEsMkRBQTJEOzs7QUFFM0QsNkJBQXVCO0FBRXZCLHdCQUF3QjtBQUNYLFFBQUEseUJBQXlCLEdBQUcsT0FBQyxDQUFDLE1BQU0sQ0FBQztJQUNoRCxPQUFPLEVBQUUsT0FBQztTQUNQLE1BQU0sRUFBRTtTQUNSLEdBQUcsQ0FBQyxFQUFFLEVBQUUsRUFBRSxPQUFPLEVBQUUsOENBQThDLEVBQUUsQ0FBQztTQUNwRSxHQUFHLENBQUMsR0FBRyxFQUFFLEVBQUUsT0FBTyxFQUFFLHlDQUF5QyxFQUFFLENBQUM7SUFFbkUsdUJBQXVCO0lBQ3ZCLDBFQUEwRTtDQUMzRSxDQUFDLENBQUEiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXFVzZXJzXFwxNjY2M1xcRGVza3RvcFxcdHVoZWdcXHBhY2thZ2VzXFxjb21tb24tYmFja2VuZFxcc3JjXFxkdG9cXGNyZWF0ZS1nYW1lLmR0by50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyDmlofku7bot6/lvoQ6IHBhY2thZ2VzL2NvbW1vbi1iYWNrZW5kL3NyYy9kdG8vY3JlYXRlLWdhbWUuZHRvLnRzXG5cbmltcG9ydCB7IHogfSBmcm9tICd6b2QnXG5cbi8vIFvmoLjlv4NdIOWumuS5ieWPmeS6i+mpseWKqOWIm+S4lueahOivt+axguS9k+mqjOivgeinhOWImVxuZXhwb3J0IGNvbnN0IGNyZWF0ZU5hcnJhdGl2ZUdhbWVTY2hlbWEgPSB6Lm9iamVjdCh7XG4gIGNvbmNlcHQ6IHpcbiAgICAuc3RyaW5nKClcbiAgICAubWluKDEwLCB7IG1lc3NhZ2U6ICdDb25jZXB0IG11c3QgYmUgYXQgbGVhc3QgMTAgY2hhcmFjdGVycyBsb25nLicgfSlcbiAgICAubWF4KDUwMCwgeyBtZXNzYWdlOiAnQ29uY2VwdCBtdXN0IGJlIDUwMCBjaGFyYWN0ZXJzIG9yIGxlc3MuJyB9KSxcblxuICAvLyBb5pyq5p2l5omp5bGVXSDlj6/ku6XlnKjov5nph4zliqDlhaXkuJbnlYzlj4LmlbDvvIzlpoJcbiAgLy8gcGFyYW1zOiB6Lm9iamVjdCh7IGNoYW9zOiB6Lm51bWJlcigpLm1pbigwKS5tYXgoMTAwKSwgLi4uIH0pLm9wdGlvbmFsKClcbn0pXG5cbmV4cG9ydCB0eXBlIENyZWF0ZU5hcnJhdGl2ZUdhbWVEdG8gPSB6LmluZmVyPHR5cGVvZiBjcmVhdGVOYXJyYXRpdmVHYW1lU2NoZW1hPlxuIl0sInZlcnNpb24iOjN9

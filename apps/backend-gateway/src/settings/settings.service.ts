@@ -8,7 +8,7 @@ import {
   type PrismaService,
   type TestAiConnectionDto,
   type UpdateAiSettingsDto,
-} from '@tuheg/common-backend' // 你提供的共享 PrismaService
+} from '@tuheg/infrastructure' // 你提供的共享 PrismaService
 import { lastValueFrom } from 'rxjs'
 
 @Injectable()

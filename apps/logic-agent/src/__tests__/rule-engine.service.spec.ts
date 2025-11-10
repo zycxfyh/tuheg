@@ -3,7 +3,8 @@
 import { BadRequestException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import type { Character, Prisma, PrismaClient } from '@prisma/client'
-import { type DirectiveSet, PrismaService } from '@tuheg/common-backend'
+import type { DirectiveSet } from '@tuheg/ai-domain'
+import type { PrismaService } from '@tuheg/infrastructure'
 import { type DeepMockProxy, mockDeep } from 'jest-mock-extended'
 import { RuleEngineService } from '../rule-engine.service'
 

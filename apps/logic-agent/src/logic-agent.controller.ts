@@ -3,7 +3,7 @@
 import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
 import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
 import * as Sentry from '@sentry/node'
-import type { GameActionJobData } from '@tuheg/common-backend'
+import type { GameActionJobData } from '@tuheg/ai-domain'
 import { z } from 'zod'
 import type { LogicService } from './logic.service'
 

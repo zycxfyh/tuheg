@@ -9,17 +9,16 @@ import {
   Logger,
 } from '@nestjs/common'
 import type { User } from '@prisma/client'
-import {
-  AiGenerationException, // <-- 导入自定义异常
-  callAiWithGuard, // <-- 导入护栏函数
-  type DirectiveSet,
-  type DynamicAiSchedulerService,
-  directiveSetSchema,
-  type EventBusService,
-  type GameActionJobData,
-  type PromptInjectionGuard, // <-- 导入提示注入防护
-  type PromptManagerService,
-} from '@tuheg/common-backend'
+import type {
+  AiGenerationException,
+  callAiWithGuard,
+  DirectiveSet,
+  DynamicAiSchedulerService,
+  PromptInjectionGuard,
+  PromptManagerService,
+} from '@tuheg/ai-domain'
+import { directiveSetSchema, type EventBusService } from '@tuheg/infrastructure'
+import type { GameActionJobData } from '@tuheg/ai-domain'
 import type { RuleEngineService } from './rule-engine.service'
 
 @Injectable()

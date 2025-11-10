@@ -2,7 +2,7 @@
 
 import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common'
 import { Ctx, MessagePattern, Payload, type RmqContext } from '@nestjs/microservices'
-import { getErrorMessage } from '@tuheg/common-backend'
+import { getErrorMessage } from '@tuheg/infrastructure'
 import { z } from 'zod'
 import type { CreationService } from './creation.service'
 

@@ -1,0 +1,13 @@
+const { name } = require('./package.json');
+
+module.exports = {
+  displayName: name,
+  preset: '../../jest.preset.js',
+  testEnvironment: 'node',
+  transform: {
+    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
+  },
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/packages/event-bus',
+  collectCoverageFrom: ['src/**/*.{ts,js}', '!src/**/*.d.ts'],
+};

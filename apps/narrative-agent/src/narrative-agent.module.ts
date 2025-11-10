@@ -1,15 +1,9 @@
 // 文件路径: apps/narrative-agent/src/narrative-agent.module.ts
 
 import { Module } from '@nestjs/common'
-// [核心修正] 从 @tuheg/common-backend 导入所有需要的共享模块
-import {
-  AiProviderFactory,
-  ConfigModule,
-  DynamicAiSchedulerService,
-  EventBusModule,
-  PrismaModule,
-  PromptManagerModule, // [核心] 导入"图书馆部门"
-} from '@tuheg/common-backend'
+// [核心修正] 从领域包导入所有需要的共享模块
+import { AiProviderFactory, PromptManagerModule } from '@tuheg/ai-domain'
+import { ConfigModule, EventBusModule, PrismaModule } from '@tuheg/infrastructure'
 import { NarrativeService } from './narrative.service'
 import { NarrativeAgentController } from './narrative-agent.controller'
 

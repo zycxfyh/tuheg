@@ -97,7 +97,7 @@ export function generateTestTemplate(options: TestTemplateOptions): string {
 import { Test, TestingModule } from '@nestjs/testing';
 import { ${serviceName} } from '../${serviceName.toLowerCase()}.service';
 ${mockImports}
-${hasDatabase ? "import { PrismaService } from '@tuheg/common-backend';" : ''}
+${hasDatabase ? "import type { PrismaService } from '@tuheg/infrastructure';" : ''}
 ${hasExternalAPI ? "import { HttpService } from '@nestjs/axios';" : ''}
 
 describe('${serviceName}', () => {

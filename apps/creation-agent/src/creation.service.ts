@@ -6,13 +6,10 @@ import {
   AiGenerationException,
   callAiWithGuard,
   type DynamicAiSchedulerService,
-  type EventBusService,
-  getErrorMessage,
-  getErrorStack,
-  type PrismaService,
-  type PromptInjectionGuard,
-  type PromptManagerService,
-} from '@tuheg/common-backend'
+  PromptInjectionGuard,
+  PromptManagerService,
+} from '@tuheg/ai-domain'
+import { getErrorMessage, getErrorStack, type EventBusService, type PrismaService } from '@tuheg/infrastructure'
 import { z } from 'zod'
 
 interface GameCreationPayload {

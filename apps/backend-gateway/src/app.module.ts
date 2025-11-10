@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
 import { ThrottlerModule } from '@nestjs/throttler'
 // 1. 明确导入所有需要的"联邦服务"
-import { ConfigModule, HealthModule, PrismaModule } from '@tuheg/common-backend'
+import { ConfigModule } from '@tuheg/config-management'
+import { DatabaseModule } from '@tuheg/database'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 // 2. 明确导入所有本应用的"内部模块"
@@ -15,14 +16,13 @@ import { WebhooksModule } from './webhooks/webhooks.module'
   imports: [
     // 3. 在 imports 数组中，清晰地列出所有依赖
     ConfigModule, // 使用共享的类型安全配置模块
+    DatabaseModule, // 使用数据库模块
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
         limit: 100,
       },
     ]),
-    PrismaModule, // <-- [核心修复] 我们现在明确声明：此应用依赖数据库
-    HealthModule,
     AuthModule,
     GamesModule,
     SettingsModule,

@@ -5,7 +5,7 @@
 
 import { ConfigService } from '@nestjs/config'
 import { Test, type TestingModule } from '@nestjs/testing'
-import { TarVariableService } from '../../../../packages/common-backend/src/vcp/tar-variable.service'
+import { TarVariableService } from '@tuheg/ai-domain'
 
 describe('TarVariableService Integration', () => {
   let service: TarVariableService

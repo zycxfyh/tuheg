@@ -1,0 +1,25 @@
+{
+  "name": "@tuheg/config-management",
+  "version": "1.0.0",
+  "description": "Configuration management and environment handling",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "@tuheg/abstractions": "workspace:*",
+    "@nestjs/common": "^10.4.20",
+    "@nestjs/config": "^4.0.2",
+    "zod": "^3.25.76",
+    "dotenv": "^16.4.5",
+    "dotenv-expand": "^11.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

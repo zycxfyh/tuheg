@@ -5,7 +5,7 @@
 
 import { ConfigService } from '@nestjs/config'
 import { Test, type TestingModule } from '@nestjs/testing'
-import { CrossMemoryService } from '../../../../packages/common-backend/src/vcp/cross-memory.service'
+import { CrossMemoryService } from '@tuheg/ai-domain'
 
 describe('CrossMemoryService Integration', () => {
   let service: CrossMemoryService

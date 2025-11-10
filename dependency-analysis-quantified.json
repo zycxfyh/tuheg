@@ -1,0 +1,119 @@
+{
+  "timestamp": "2025-11-10T17:53:37.572Z",
+  "duration": 981,
+  "summary": {
+    "totalModules": 18,
+    "totalInternalDeps": 25,
+    "architectureViolations": 0,
+    "circularDependencies": 0,
+    "filesAnalyzed": 452,
+    "totalImports": 962
+  },
+  "results": {
+    "structure": {
+      "packages": [
+        "abstractions",
+        "ai-domain",
+        "ai-providers",
+        "config-management",
+        "database",
+        "enterprise-domain",
+        "event-bus",
+        "infrastructure",
+        "narrative-domain",
+        "shared-types",
+        "vcptoolbox-sdk"
+      ],
+      "apps": [
+        "backend-gateway",
+        "creation-agent",
+        "dlq-consumer",
+        "frontend",
+        "logic-agent",
+        "narrative-agent",
+        "vcptoolbox-core"
+      ],
+      "total": 18
+    },
+    "dependencies": {
+      "internal": {
+        "@tuheg/abstractions": [
+          "@tuheg/shared-types"
+        ],
+        "@tuheg/ai-domain": [
+          "@tuheg/infrastructure",
+          "@tuheg/shared-types"
+        ],
+        "@tuheg/ai-providers": [
+          "@tuheg/abstractions",
+          "@tuheg/shared-types"
+        ],
+        "@tuheg/config-management": [
+          "@tuheg/abstractions"
+        ],
+        "@tuheg/database": [
+          "@tuheg/abstractions"
+        ],
+        "@tuheg/enterprise-domain": [
+          "@tuheg/infrastructure",
+          "@tuheg/shared-types"
+        ],
+        "@tuheg/event-bus": [
+          "@tuheg/abstractions"
+        ],
+        "@tuheg/narrative-domain": [
+          "@tuheg/infrastructure",
+          "@tuheg/shared-types"
+        ],
+        "@tuheg/backend-gateway": [
+          "@tuheg/abstractions",
+          "@tuheg/config-management",
+          "@tuheg/database",
+          "@tuheg/ai-providers",
+          "@tuheg/narrative-domain"
+        ],
+        "@tuheg/creation-agent": [
+          "@tuheg/abstractions",
+          "@tuheg/config-management",
+          "@tuheg/database",
+          "@tuheg/ai-providers"
+        ],
+        "@tuheg/dlq-consumer": [
+          "@tuheg/common-backend"
+        ],
+        "@tuheg/logic-agent": [
+          "@tuheg/infrastructure",
+          "@tuheg/ai-domain"
+        ],
+        "@tuheg/narrative-agent": [
+          "@tuheg/common-backend"
+        ]
+      },
+      "externalCount": 17,
+      "totalInternalDeps": 25
+    },
+    "architecture": {
+      "violations": [],
+      "compliance": true,
+      "violationCount": 0,
+      "highSeverityCount": 0
+    },
+    "cycles": {
+      "found": false,
+      "count": 0,
+      "cycles": []
+    },
+    "codeDeps": {
+      "totalImports": 962,
+      "internalImports": 76,
+      "externalImports": 560,
+      "filesAnalyzed": 452
+    }
+  },
+  "recommendations": [
+    "📦 同步 package.json 和代码导入",
+    "🧪 实施自动化依赖检测",
+    "📚 创建依赖管理文档"
+  ],
+  "health": 85
+}

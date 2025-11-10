@@ -2,17 +2,15 @@
 
 import { Injectable, Logger } from '@nestjs/common'
 import type { User } from '@prisma/client'
-import {
+import type {
   AiGenerationException,
   callAiWithGuard,
-  type DynamicAiSchedulerService,
-  type EventBusService,
-  type LogicCompletePayload,
-  type PrismaService,
   PromptInjectionDetectedException,
-  type PromptInjectionGuard,
-  type PromptManagerService,
-} from '@tuheg/common-backend'
+  PromptInjectionGuard,
+  PromptManagerService,
+  LogicCompletePayload
+} from '@tuheg/ai-domain'
+import { type DynamicAiSchedulerService, type EventBusService, type PrismaService } from '@tuheg/infrastructure'
 import { z } from 'zod'
 
 // --- Zod Schemas for AI I/O ---

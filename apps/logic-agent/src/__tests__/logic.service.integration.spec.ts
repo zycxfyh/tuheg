@@ -4,18 +4,17 @@ import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import { Test, type TestingModule } from '@nestjs/testing'
 import type { User } from '@prisma/client'
-import {
+import type {
   AiGenerationException,
   callAiWithGuard,
-  type DirectiveSet,
-  DynamicAiSchedulerService,
-  EventBusService,
-  type GameActionJobData,
+  DirectiveSet,
   LangfuseService,
-  type PromptInjectionCheckResult,
+  PromptInjectionCheckResult,
   PromptInjectionGuard,
   PromptManagerService,
-} from '@tuheg/common-backend'
+} from '@tuheg/ai-domain'
+import { DynamicAiSchedulerService, type EventBusService } from '@tuheg/infrastructure'
+import type { GameActionJobData } from '@tuheg/ai-domain'
 import { type MockProxy, mock } from 'jest-mock-extended'
 import { LogicService } from '../logic.service'
 import { RuleEngineService } from '../rule-engine.service'

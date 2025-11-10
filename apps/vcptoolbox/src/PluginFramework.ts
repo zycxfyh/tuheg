@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events'
-import { getErrorMessage } from '@tuheg/common-backend'
+import { getErrorMessage } from '@tuheg/infrastructure'
 
 // ============================================================================
 // VCPToolBox - 创世星环插件框架核心

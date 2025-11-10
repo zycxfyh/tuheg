@@ -1,0 +1,30 @@
+{
+  "name": "@tuheg/enterprise-domain",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/enterprise-domain/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/enterprise-domain",
+        "main": "packages/enterprise-domain/src/index.ts",
+        "tsConfig": "packages/enterprise-domain/tsconfig.lib.json",
+        "assets": ["packages/enterprise-domain/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/enterprise-domain/jest.config.ts"
+      }
+    }
+  },
+  "tags": ["scope:domain", "type:feature"],
+  "implicitDependencies": ["@tuheg/infrastructure", "@tuheg/shared-types"]
+}

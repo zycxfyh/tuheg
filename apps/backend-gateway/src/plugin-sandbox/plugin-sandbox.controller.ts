@@ -12,7 +12,7 @@ import type {
   PluginSandboxService,
   SandboxOptions,
   SandboxResult,
-} from '@tuheg/common-backend'
+} from '@tuheg/infrastructure'
 
 interface TestActivationDto {
   options?: SandboxOptions

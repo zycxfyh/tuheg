@@ -1,0 +1,28 @@
+{
+  "name": "@tuheg/ai-domain",
+  "version": "1.0.0",
+  "description": "AI domain business logic and services",
+  "main": "src/index.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@tuheg/infrastructure": "workspace:*",
+    "@tuheg/shared-types": "workspace:*",
+    "@langchain/core": "^1.0.3",
+    "@langchain/openai": "^1.0.0",
+    "@nestjs/common": "^10.4.20",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/event-emitter": "^2.1.1",
+    "@prisma/client": "^5.22.0",
+    "@qdrant/js-client-rest": "^1.15.1",
+    "@sentry/node": "^8.21.0",
+    "jsonrepair": "^3.8.0",
+    "langfuse": "^3.38.6",
+    "zod": "^3.25.76"
+  }
+}

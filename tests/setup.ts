@@ -7,6 +7,10 @@
 // @ts-expect-error - Jest is available globally in test environment
 jest.setTimeout(30000)
 
+// 启用全局fake timers以避免定时器相关警告
+// @ts-expect-error - Jest is available globally in test environment
+jest.useFakeTimers({ enableGlobally: true })
+
 // 全局错误处理 - 任何未处理的错误都会导致测试失败
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason)
@@ -79,17 +83,37 @@ process.env.CREATION_AGENT_HTTP_PORT = '8080'
 process.env.LOGIC_AGENT_HTTP_PORT = '8081'
 process.env.NARRATIVE_AGENT_HTTP_PORT = '8082'
 
-// 清理函数 - 在每个测试后运行
+// 测试性能监控和超时检测
+const testStartTime = new Date()
+
+beforeEach(() => {
+  testStartTime.setTime(Date.now())
+})
+
 afterEach(() => {
+  const testDuration = Date.now() - testStartTime.getTime()
+
+  // 检测慢测试 (>10秒)
+  if (testDuration > 10000) {
+    console.warn(`🐌 Slow test detected: ${expect.getState().currentTestName} took ${testDuration}ms`)
+  }
+
+  // 检测潜在的无限循环 (>30秒)
+  if (testDuration > 30000) {
+    console.error(`🚨 Potential infinite loop detected: ${expect.getState().currentTestName} took ${testDuration}ms`)
+    throw new Error(`Test timeout: ${expect.getState().currentTestName} exceeded 30 seconds`)
+  }
+
   // 重置所有mock
   jest.clearAllMocks()
 
-  // 清理任何可能的文件系统更改（如果适用）
-  // 注意：实际的文件系统操作应该在集成测试中进行
-
   // 检查是否有未处理的异步操作
-  if (jest.getTimerCount() > 0) {
-    console.warn(`Warning: ${jest.getTimerCount()} timers still active after test`)
+  try {
+    if (jest.getTimerCount() > 0) {
+      console.warn(`⚠️ Warning: ${jest.getTimerCount()} timers still active after test: ${expect.getState().currentTestName}`)
+    }
+  } catch (error) {
+    // fake timers可能未启用，忽略错误
   }
 })
 
