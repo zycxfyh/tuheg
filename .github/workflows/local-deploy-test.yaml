@@ -1,0 +1,210 @@
+name: Local Deploy Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      skip_tests:
+        description: 'Skip tests'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  validate:
+    name: Validate Configuration
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Validate turbo configuration
+      run: npx turbo run build --dry-run
+
+    - name: Validate Docker files
+      run: |
+        docker build --dry-run -f apps/backend-gateway/Dockerfile apps/backend-gateway
+        docker build --dry-run -f apps/frontend/Dockerfile apps/frontend
+
+  local-test:
+    name: Local Environment Test
+    runs-on: ubuntu-latest
+    needs: validate
+    if: inputs.skip_tests == false
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Type check
+      run: pnpm type-check
+
+    - name: Lint
+      run: pnpm lint
+
+    - name: Test backend
+      run: pnpm test:ci
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+        REDIS_URL: redis://localhost:6379
+
+    - name: Build backend
+      run: pnpm build:backend
+
+    - name: Build frontend
+      run: pnpm build:frontend
+
+  docker-test:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build backend-gateway Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./apps/backend-gateway
+        file: ./apps/backend-gateway/Dockerfile
+        push: false
+        tags: creation-ring/backend-gateway:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build frontend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./apps/frontend
+        file: ./apps/frontend/Dockerfile
+        push: false
+        tags: creation-ring/frontend:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Test Docker images
+      run: |
+        # Test backend-gateway image
+        docker run --rm creation-ring/backend-gateway:test node --version
+
+        # Test frontend image
+        docker run --rm creation-ring/frontend:test nginx -v
+
+  k8s-validation:
+    name: Kubernetes Manifests Validation
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v4
+      with:
+        version: 'v1.28.0'
+
+    - name: Validate Kubernetes manifests
+      run: |
+        # Validate all YAML files in infrastructure/k8s/
+        find infrastructure/k8s/ -name "*.yaml" -exec kubectl apply --dry-run=client --validate=true -f {} \;
+
+        # Validate Istio configurations
+        find infrastructure/istio/ -name "*.yaml" -exec kubectl apply --dry-run=client --validate=true -f {} \;
+
+  deploy-simulation:
+    name: Deployment Simulation
+    runs-on: ubuntu-latest
+    needs: [local-test, docker-test, k8s-validation]
+    if: inputs.environment == 'staging'
+    environment: staging
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Simulate deployment
+      run: |
+        echo "🔄 Starting deployment simulation to ${{ inputs.environment }}..."
+
+        # Simulate blue-green deployment
+        echo "🌊 Creating green environment..."
+        echo "✅ Green environment ready"
+
+        echo "🔄 Switching traffic to green..."
+        sleep 2
+        echo "✅ Traffic switched"
+
+        echo "🧹 Cleaning up blue environment..."
+        sleep 1
+        echo "✅ Cleanup complete"
+
+        echo "🎉 Deployment to ${{ inputs.environment }} completed successfully!"
+
+    - name: Create deployment report
+      run: |
+        echo "## Deployment Report" > deployment-report.md
+        echo "- Environment: ${{ inputs.environment }}" >> deployment-report.md
+        echo "- Timestamp: $(date)" >> deployment-report.md
+        echo "- Status: ✅ Success" >> deployment-report.md
+        echo "- Build: $(git rev-parse --short HEAD)" >> deployment-report.md
+
+        cat deployment-report.md

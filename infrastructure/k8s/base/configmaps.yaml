@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-gateway-config
+  namespace: creation-ring
+data:
+  # 应用配置
+  APP_NAME: "Creation Ring Backend Gateway"
+  APP_VERSION: "1.0.0"
+  NODE_ENV: "production"
+
+  # 服务器配置
+  PORT: "3000"
+  HOST: "0.0.0.0"
+
+  # CORS配置
+  CORS_ORIGIN: "https://app.creation-ring.com"
+  CORS_CREDENTIALS: "true"
+
+  # 会话配置
+  SESSION_SECRET: "your-session-secret-here"
+  SESSION_MAX_AGE: "86400000"  # 24小时
+
+  # 缓存配置
+  CACHE_TTL: "3600"  # 1小时
+  CACHE_MAX_SIZE: "100000000"  # 100MB
+
+  # 限流配置
+  RATE_LIMIT_WINDOW: "900000"  # 15分钟
+  RATE_LIMIT_MAX_REQUESTS: "1000"
+
+  # 日志配置
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+
+  # 监控配置
+  METRICS_ENABLED: "true"
+  TRACING_ENABLED: "true"
+  TRACING_SAMPLE_RATE: "0.1"
+
+  # AI配置
+  AI_REQUEST_TIMEOUT: "30000"  # 30秒
+  AI_MAX_RETRIES: "3"
+  AI_RETRY_DELAY: "1000"
+
+  # 数据库配置
+  DB_CONNECTION_TIMEOUT: "10000"
+  DB_POOL_MIN: "2"
+  DB_POOL_MAX: "10"
+  DB_STATEMENT_TIMEOUT: "30000"
+
+  # Redis配置
+  REDIS_KEY_PREFIX: "creation-ring:"
+  REDIS_RETRY_DELAY: "100"
+  REDIS_MAX_RETRIES: "3"
+
+  # WebSocket配置
+  WS_HEARTBEAT_INTERVAL: "30000"
+  WS_CONNECTION_TIMEOUT: "10000"
+  WS_MAX_CONNECTIONS_PER_USER: "5"
+
+  # 文件上传配置
+  UPLOAD_MAX_SIZE: "10485760"  # 10MB
+  UPLOAD_ALLOWED_TYPES: "image/jpeg,image/png,image/gif,text/plain"
+
+  # 安全配置
+  SECURITY_HELMET_ENABLED: "true"
+  SECURITY_RATE_LIMIT_ENABLED: "true"
+  SECURITY_CORS_ENABLED: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: creation-ring
+data:
+  # 应用配置
+  APP_NAME: "Creation Ring Frontend"
+  APP_VERSION: "1.0.0"
+  NODE_ENV: "production"
+
+  # API配置
+  VITE_API_BASE_URL: "https://api.creation-ring.com"
+  VITE_BACKEND_URL: "wss://api.creation-ring.com"
+
+  # 功能开关
+  VITE_ENABLE_PWA: "true"
+  VITE_ENABLE_ANALYTICS: "true"
+  VITE_ENABLE_ERROR_REPORTING: "true"
+
+  # UI配置
+  VITE_THEME_DEFAULT: "light"
+  VITE_LOCALE_DEFAULT: "zh-CN"
+  VITE_EDITOR_THEME: "vs-dark"
+
+  # 性能配置
+  VITE_LAZY_LOAD_IMAGES: "true"
+  VITE_ENABLE_SERVICE_WORKER: "true"
+  VITE_CACHE_STRATEGY: "network-first"
+
+  # 安全配置
+  VITE_CSP_ENABLED: "true"
+  VITE_ENABLE_HTTPS_REDIRECT: "true"
+
+  # 监控配置
+  VITE_SENTRY_DSN: ""
+  VITE_GA_TRACKING_ID: ""
+  VITE_MIXPANEL_TOKEN: ""
+
+  # 功能配置
+  VITE_MAX_FILE_SIZE: "10485760"
+  VITE_SUPPORTED_FORMATS: "jpg,png,gif,pdf,txt,md"
+  VITE_AI_MODEL_TIMEOUT: "30000"
+
+  # 协作配置
+  VITE_COLLABORATION_ENABLED: "true"
+  VITE_MAX_COLLABORATORS: "10"
+  VITE_COLLABORATION_TIMEOUT: "3600000"  # 1小时
+
+  # PWA配置
+  VITE_PWA_UPDATE_STRATEGY: "prompt"
+  VITE_PWA_CACHE_NAME: "creation-ring-v1"
+  VITE_PWA_CACHE_MAX_SIZE: "50000000"  # 50MB

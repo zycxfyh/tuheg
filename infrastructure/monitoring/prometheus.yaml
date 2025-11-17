@@ -1,0 +1,223 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+  labels:
+    app: prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+      scrape_timeout: 10s
+
+    rule_files:
+      - /etc/prometheus/rules/*.yml
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+                - alertmanager:9093
+
+    scrape_configs:
+      # Kubernetes API服务器
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+          - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: default;kubernetes;https
+
+      # Kubernetes节点
+      - job_name: 'kubernetes-nodes'
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+
+      # Kubernetes服务
+      - job_name: 'kubernetes-service-endpoints'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - action: drop
+            source_labels: [__meta_kubernetes_pod_container_init]
+            regex: true
+          - action: keep_if_equal
+            source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - action: keep_if_equal
+            source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            target_label: __meta_kubernetes_service_annotation_prometheus_io_scrape
+          - action: replace
+            source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+            target_label: __scheme__
+          - action: replace
+            source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+            target_label: __metrics_path__
+          - action: replace
+            regex: (https?)
+            source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+            target_label: __scheme__
+          - action: replace
+            regex: (.+)
+            source_labels: [__meta_kubernetes_service_annotation_prometheus_io_port]
+            target_label: __address__
+            replacement: $1
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            action: replace
+            target_label: kubernetes_name
+
+      # Creation Ring 应用指标
+      - job_name: 'creation-ring-backend'
+        static_configs:
+          - targets: ['backend-gateway.creation-ring.svc.cluster.local:3000']
+        scrape_interval: 10s
+        metrics_path: '/metrics'
+        params:
+          format: ['prometheus']
+
+      - job_name: 'creation-ring-frontend'
+        static_configs:
+          - targets: ['frontend.creation-ring.svc.cluster.local:80']
+        scrape_interval: 30s
+        metrics_path: '/metrics'
+        params:
+          format: ['prometheus']
+
+      # 数据库指标
+      - job_name: 'postgres-exporter'
+        static_configs:
+          - targets: ['postgres-exporter:9187']
+        scrape_interval: 30s
+
+      # Redis指标
+      - job_name: 'redis-exporter'
+        static_configs:
+          - targets: ['redis-exporter:9121']
+        scrape_interval: 30s
+
+      # Istio指标
+      - job_name: 'istio-mesh'
+        static_configs:
+          - targets: ['istiod.istio-system:15014']
+        scrape_interval: 15s
+
+      # Kubernetes Ingress控制器
+      - job_name: 'nginx-ingress'
+        static_configs:
+          - targets: ['nginx-ingress-controller.metrics:9913']
+        scrape_interval: 30s
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: monitoring
+  labels:
+    app: prometheus
+data:
+  creation-ring.rules.yml: |
+    groups:
+      - name: creation-ring
+        rules:
+          # API响应时间告警
+          - alert: HighApiResponseTime
+            expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="creation-ring-backend"}[5m])) > 2
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "API响应时间过高"
+              description: "95%的API请求响应时间超过2秒"
+
+          # API错误率告警
+          - alert: HighApiErrorRate
+            expr: rate(http_requests_total{job="creation-ring-backend", status=~"5.."}[5m]) / rate(http_requests_total{job="creation-ring-backend"}[5m]) > 0.05
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "API错误率过高"
+              description: "5分钟内API错误率超过5%"
+
+          # 数据库连接池告警
+          - alert: DatabaseConnectionPoolExhausted
+            expr: db_connections_active / db_connections_max > 0.9
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "数据库连接池即将耗尽"
+              description: "数据库活跃连接数超过最大连接数的90%"
+
+          # Redis内存使用告警
+          - alert: RedisMemoryHigh
+            expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Redis内存使用率过高"
+              description: "Redis内存使用率超过80%"
+
+          # Pod重启告警
+          - alert: PodRestartingFrequently
+            expr: increase(kube_pod_container_status_restarts_total{namespace="creation-ring"}[10m]) > 3
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Pod频繁重启"
+              description: "10分钟内Pod重启次数超过3次"
+
+          # CPU使用率告警
+          - alert: HighCPUUsage
+            expr: rate(container_cpu_usage_seconds_total{namespace="creation-ring"}[5m]) > 0.8
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "CPU使用率过高"
+              description: "容器CPU使用率超过80%"
+
+          # 内存使用率告警
+          - alert: HighMemoryUsage
+            expr: container_memory_usage_bytes{namespace="creation-ring"} / container_spec_memory_limit_bytes > 0.9
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "内存使用率过高"
+              description: "容器内存使用率超过90%"
+
+      - name: istio
+        rules:
+          # Istio代理错误率
+          - alert: IstioProxyErrors
+            expr: rate(istio_requests_total{response_code=~"5.."}[5m]) / rate(istio_requests_total[5m]) > 0.1
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Istio代理错误率过高"
+              description: "Istio代理5分钟内错误率超过10%"

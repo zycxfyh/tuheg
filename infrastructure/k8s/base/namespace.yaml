@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: creation-ring
+  labels:
+    name: creation-ring
+    app.kubernetes.io/name: creation-ring
+    app.kubernetes.io/component: application
+  annotations:
+    description: "Creation Ring AI 叙事系统命名空间"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+    app.kubernetes.io/name: monitoring
+    app.kubernetes.io/component: monitoring
+  annotations:
+    description: "监控系统命名空间"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+  labels:
+    name: istio-system
+    app.kubernetes.io/name: istio-system
+    app.kubernetes.io/component: service-mesh
+  annotations:
+    description: "Istio服务网格命名空间"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    name: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: certificate-management
+  annotations:
+    description: "证书管理器命名空间"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+  labels:
+    name: argocd
+    app.kubernetes.io/name: argocd
+    app.kubernetes.io/component: gitops
+  annotations:
+    description: "ArgoCD GitOps命名空间"

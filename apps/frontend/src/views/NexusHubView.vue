@@ -27,6 +27,33 @@
             @delete-game="deleteGame"
           />
         </div>
+        <div class="nexus-panel">
+          <h3>🛠️ 系统工具</h3>
+          <p>访问强大的插件生态系统和系统管理工具。</p>
+          <div class="tool-buttons">
+            <router-link to="/plugins" class="button secondary">
+              🛍️ 插件市场
+            </router-link>
+            <router-link to="/orchestration" class="button secondary">
+              🤖 Agent编排
+            </router-link>
+            <router-link to="/collaboration" class="button secondary">
+              👥 多人协作
+            </router-link>
+          </div>
+        </div>
+        <div class="nexus-panel admin-panel" v-if="authStore.user?.role === 'admin'">
+          <h3>⚡ 管理员面板</h3>
+          <p>管理系统设置、用户和插件市场。</p>
+          <div class="admin-buttons">
+            <router-link to="/admin/plugins" class="button warning">
+              🛡️ 插件管理
+            </router-link>
+            <router-link to="/tenants" class="button warning">
+              🏢 租户管理
+            </router-link>
+          </div>
+        </div>
       </div>
       <div class="button-group" style="justify-content: center">
         <button @click="authStore.logout()" class="button">断开连接</button>
@@ -105,5 +132,81 @@ onMounted(fetchGames)
 .api-settings-icon:hover {
   background-color: rgba(255, 255, 255, 0.1);
   transform: rotate(45deg);
+}
+
+/* 工具按钮组样式 */
+.tool-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tool-buttons .button {
+  width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 管理员面板样式 */
+.admin-panel {
+  border: 2px solid var(--warning-color, #f59e0b);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+}
+
+.admin-panel h3 {
+  color: var(--warning-color, #f59e0b);
+}
+
+.admin-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.admin-buttons .button {
+  width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  background: var(--warning-color, #f59e0b);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.admin-buttons .button:hover {
+  background: var(--warning-hover, #d97706);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* 响应式布局调整 */
+@media (max-width: 768px) {
+  .nexus-main-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tool-buttons,
+  .admin-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .tool-buttons .button,
+  .admin-buttons .button {
+    flex: 1;
+    min-width: 120px;
+  }
 }
 </style>

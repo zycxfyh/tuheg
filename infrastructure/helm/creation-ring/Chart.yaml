@@ -1,0 +1,26 @@
+apiVersion: v2
+name: creation-ring
+description: A Helm chart for Creation Ring AI narrative system
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - ai
+  - narrative
+  - gaming
+  - microservices
+home: https://github.com/your-org/creation-ring
+sources:
+  - https://github.com/your-org/creation-ring
+maintainers:
+  - name: Creation Ring Team
+    email: team@creation-ring.com
+dependencies:
+  - name: postgresql
+    version: "15.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "18.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled

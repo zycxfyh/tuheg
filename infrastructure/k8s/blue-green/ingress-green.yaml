@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: creation-ring-green
+  namespace: creation-ring
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - api.creation-ring.com
+    - app.creation-ring.com
+    secretName: creation-ring-tls
+  rules:
+  - host: api.creation-ring.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-gateway-green
+            port:
+              number: 3000
+  - host: app.creation-ring.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-green
+            port:
+              number: 80

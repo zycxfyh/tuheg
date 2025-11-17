@@ -4,12 +4,34 @@
 // API 类型
 export * from './api/types'
 
-// 游戏相关类型（示例）
+// 游戏相关类型
 export interface Game {
   id: string
   name: string
-  createdAt: string
-  updatedAt: string
+  ownerId: string
+  createdAt: Date | string
+  updatedAt: Date | string
+}
+
+export interface Character {
+  id: string
+  gameId: string
+  name: string
+  description: string
+  stats?: Record<string, any>
+  inventory?: any[]
+  createdAt: Date | string
+  updatedAt: Date | string
+}
+
+export interface WorldBookEntry {
+  id: string
+  gameId: string
+  title: string
+  content: string
+  category?: string
+  createdAt: Date | string
+  updatedAt: Date | string
 }
 
 export interface GameAction {
@@ -17,7 +39,7 @@ export interface GameAction {
   payload: Record<string, unknown>
 }
 
-// 用户相关类型（示例）
+// 用户相关类型
 export interface User {
   id: string
   email: string

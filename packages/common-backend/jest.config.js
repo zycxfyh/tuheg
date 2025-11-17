@@ -1,29 +1,41 @@
 // Jest configuration for common-backend package
-const baseConfig = require('../../shared/jest.config.js')
-
 module.exports = {
-  ...baseConfig,
-  rootDir: '../..',
-  setupFiles: ['<rootDir>/packages/common-backend/test/env-setup.js'],
-  setupFilesAfterEnv: ['<rootDir>/packages/common-backend/test/setup.ts'],
-  moduleNameMapper: {
-    ...baseConfig.moduleNameMapper,
-    '^@tuheg/common-backend$': '<rootDir>/packages/common-backend/src/index.ts',
-    '^@tuheg/common-backend/(.*)$': '<rootDir>/packages/common-backend/src/$1',
-    // Mock external libraries
-    '^langfuse-core$': '<rootDir>/tests/mocks/langfuse-core.ts',
-    '^langfuse-core/(.*)$': '<rootDir>/tests/mocks/langfuse-core.ts',
-    '^jsonrepair$': '<rootDir>/tests/mocks/jsonrepair.ts',
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['src', 'test'],
+  testMatch: [
+    '**/__tests__/**/*.spec.ts',
+    '**/__tests__/**/*.test.ts',
+    '**/*.spec.ts',
+    '**/*.test.ts',
+  ],
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          jsx: 'react-jsx',
+          esModuleInterop: true,
+          allowSyntheticDefaultImports: true,
+          isolatedModules: true,
+        },
+      },
+    ],
   },
   collectCoverageFrom: [
-    '**/*.ts',
-    '!**/*.d.ts',
+    'src/**/*.ts',
+    'packages/**/*.ts',
+    '!**/*.spec.ts',
+    '!**/*.test.ts',
     '!**/node_modules/**',
     '!**/dist/**',
     '!**/coverage/**',
+    '!**/*.d.ts',
+    '!**/*.config.ts',
+    '!**/*.config.js',
   ],
   coverageDirectory: './coverage',
-  coverageReporters: ['text', 'json', 'html', 'lcov'],
+  coverageReporters: ['text', 'lcov', 'html', 'json'],
   coverageThreshold: {
     global: {
       lines: 80,
@@ -32,4 +44,26 @@ module.exports = {
       statements: 80,
     },
   },
+  moduleFileExtensions: ['ts', 'js', 'json'],
+  moduleNameMapper: {
+    '^@tuheg/common-backend$': '<rootDir>/src/index.ts',
+    '^@tuheg/common-backend/(.*)$': '<rootDir>/src/$1',
+    '^@tuheg/(.*)$': '<rootDir>/../$1/src',
+    '^langfuse$': '<rootDir>/../tests/mocks/langfuse.ts',
+    '^langfuse/(.*)$': '<rootDir>/../tests/mocks/langfuse.ts',
+    '^jsonrepair$': '<rootDir>/../tests/mocks/jsonrepair.ts',
+  },
+  setupFilesAfterEnv: [
+    '<rootDir>/test/setup.ts',
+  ],
+  testTimeout: 10000,
+  maxWorkers: '50%',
+  bail: 1,
+  verbose: true,
+  detectOpenHandles: true,
+  forceExit: true,
+  clearMocks: true,
+  restoreMocks: true,
+  resetMocks: true,
+  resetModules: true,
 }

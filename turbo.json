@@ -20,12 +20,21 @@
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"],
       "outputs": ["coverage/**"]
     },
+    "test:ci": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"],
+      "outputs": ["coverage/**"]
+    },
     "test:watch": {
       "cache": false,
       "persistent": true
     },
     "test:coverage": {
       "dependsOn": ["^build"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "cache": false
     },
     "type-check": {
       "dependsOn": ["^build"]

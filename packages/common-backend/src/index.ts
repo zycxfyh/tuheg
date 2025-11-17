@@ -68,14 +68,48 @@ export * from './health/health.module'
 
 // Middleware exports
 
+// API Gateway exports
+export * from './api-gateway/api-gateway.module'
+export * from './api-gateway/version-management.service'
+export * from './api-gateway/rate-limit.middleware'
+
+// Multi-tenant exports
+export * from './multi-tenant/multi-tenant.module'
+export * from './multi-tenant/tenant.service'
+export * from './multi-tenant/tenant.middleware'
+export * from './multi-tenant/tenant.guard'
+export * from './multi-tenant/tenant-usage.service'
+
 // Observability exports
 export * from './observability/observability.module'
 export * from './observability/performance-monitor.service'
 export * from './observability/sentry.module'
 export * from './observability/sentry.config'
 
+// AI Agent exports
+export * from './ai-agent/ai-agent.module'
+export * from './ai-agent/services/agent-manager.service'
+export * from './ai-agent/standard-protocol/agent.interface'
+export * from './ai-agent/standard-protocol/agent-registry.interface'
+export * from './ai-agent/standard-protocol/tool-system.interface'
+export * from './ai-agent/dynamic-orchestration/dynamic-orchestration.module'
+export * from './ai-agent/dynamic-orchestration/services/dynamic-orchestration-manager.service'
+export * from './ai-agent/advanced-capabilities/advanced-capabilities.module'
+export * from './ai-agent/advanced-capabilities/services/multimodal.service'
+export * from './ai-agent/advanced-capabilities/services/personalization.service'
+export * from './ai-agent/advanced-capabilities/services/reasoning.service'
+export * from './ai-agent/advanced-capabilities/services/model-fusion.service'
+export * from './ai-agent/advanced-capabilities/services/context-learning.service'
+export * from './vector-database/vector-database.module'
+export * from './vector-database/vector-database.service'
+export * from './vector-database/vector-database.interface'
+export * from './data-warehouse/data-warehouse.module'
+export * from './data-warehouse/data-warehouse.interface'
+
 // Plugins exports
 export * from './plugins/plugin.module'
+export * from './plugins/plugin-marketplace.module'
+export * from './plugins/standard-protocol/plugin-protocol.module'
 export * from './plugins/plugin.loader'
 export * from './plugins/plugin.registry'
 export * from './plugins/plugin.types'
